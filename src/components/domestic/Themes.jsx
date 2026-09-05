@@ -320,7 +320,7 @@ export default function Themes() {
     const el = cardTrackRef.current;
     if (el) el.scrollTo({ left: 0 });
     updateCardNav();
-  }, [activeCategory, updateCardNav]);
+  }, []);
 
   // -- scroll actions -----------------------------------------------
 
