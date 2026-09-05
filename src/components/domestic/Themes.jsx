@@ -349,97 +349,102 @@ export default function Themes() {
   const pageCount = Math.max(1, Math.ceil(destinations?.length / perPage));
 
   return (
-    <section className="max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-16 py-20 lg:py-28 font-sans text-[#141414]">
-      <SectionHeader
-        title={"Explore destinations that inspire"}
-        description={
-          "From serene beaches to majestic mountains, find places that match your vibe."
-        }
-      />
-
-      {/* Category carousel */}
-      <div className="mt-14 lg:mt-16 flex items-center gap-3">
-        <NavButton
-          direction="left"
-          onClick={() => scrollChips(-1)}
-          disabled={chipNav.atStart}
-          className="hidden sm:flex"
+    <section className="bg-white px-6 sm:px-10 lg:px-16 font-sans text-[#141414]">
+      <div className="max-w-[1440px] mx-auto">
+        <SectionHeader
+          title={"Explore destinations that inspire"}
+          description={
+            "From serene beaches to majestic mountains, find places that match your vibe."
+          }
         />
 
-        <div className="relative flex-1 overflow-hidden">
-          <div
-            ref={chipTrackRef}
-            onScroll={updateChipNav}
-            role="tablist"
-            aria-label="Destination categories"
-            className="flex gap-2.5 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-          >
-            {categories?.map((cat) => (
-              <CategoryChip
-                key={cat.id}
-                label={cat.name}
-                // Icon={cat.Icon}
-                active={cat.id === activeCategory}
-                onClick={() => handleCategoryClick(cat.id)}
+        {/* Category carousel */}
+        <div className="mt-7 lg:mt-8 flex items-center gap-3">
+          <NavButton
+            direction="left"
+            onClick={() => scrollChips(-1)}
+            disabled={chipNav.atStart}
+            className="hidden sm:flex"
+          />
+
+          <div className="relative flex-1 overflow-hidden">
+            <div
+              ref={chipTrackRef}
+              onScroll={updateChipNav}
+              role="tablist"
+              aria-label="Destination categories"
+              className="flex gap-2.5 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {categories?.map((cat) => (
+                <CategoryChip
+                  key={cat.id}
+                  label={cat.name}
+                  // Icon={cat.Icon}
+                  active={cat.id === activeCategory}
+                  onClick={() => handleCategoryClick(cat.id)}
+                />
+              ))}
+            </div>
+          </div>
+
+          <NavButton
+            direction="right"
+            onClick={() => scrollChips(1)}
+            disabled={chipNav.atEnd}
+            className="hidden sm:flex"
+          />
+        </div>
+
+        {/* Destinations header */}
+        <div className="mt-8 lg:mt-10 flex items-end justify-between border-b border-[#E3E1DC] pb-5">
+          <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8A877F]">
+            {/* Top Destinations */}
+          </span>
+
+          <div className="flex items-center gap-4">
+            <a
+              href="#"
+              className="hidden sm:inline-flex items-center gap-1.5 text-sm text-[#141414] hover:text-[#8A877F] transition-colors"
+            >
+              View all
+              <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
+            </a>
+            <div className="flex items-center gap-2">
+              <NavButton
+                direction="left"
+                size="sm"
+                onClick={() => scrollCards(-1)}
+                disabled={cardNav.atStart}
               />
-            ))}
+              <NavButton
+                direction="right"
+                size="sm"
+                onClick={() => scrollCards(1)}
+                disabled={cardNav.atEnd}
+              />
+            </div>
           </div>
         </div>
 
-        <NavButton
-          direction="right"
-          onClick={() => scrollChips(1)}
-          disabled={chipNav.atEnd}
-          className="hidden sm:flex"
-        />
-      </div>
-
-      {/* Destinations header */}
-      <div className="mt-16 lg:mt-20 flex items-end justify-between border-b border-[#E3E1DC] pb-5">
-        <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8A877F]">
-          Top Destinations
-        </span>
-
-        <div className="flex items-center gap-4">
-          <a
-            href="#"
-            className="hidden sm:inline-flex items-center gap-1.5 text-sm text-[#141414] hover:text-[#8A877F] transition-colors"
+        {/* Destination carousel */}
+        <div className="mt-8 -mx-6 sm:-mx-10 lg:-mx-16 px-6 sm:px-10 lg:px-16">
+          <div
+            ref={cardTrackRef}
+            onScroll={updateCardNav}
+            onKeyDown={onCardsKeyDown}
+            tabIndex={0}
+            aria-label="Destination cards, use arrow keys to navigate"
+            className="flex gap-5 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
-            View all
-            <ArrowRight className="w-3.5 h-3.5" strokeWidth={1.75} />
-          </a>
-          <div className="flex items-center gap-2">
-            <NavButton
-              direction="left"
-              size="sm"
-              onClick={() => scrollCards(-1)}
-              disabled={cardNav.atStart}
-            />
-            <NavButton
-              direction="right"
-              size="sm"
-              onClick={() => scrollCards(1)}
-              disabled={cardNav.atEnd}
-            />
+            <AnimatePresence mode="popLayout" initial={false}>
+              {destinations?.map((destination) => (
+                <DestinationCard
+                  key={destination.id}
+                  destination={destination}
+                />
+              ))}
+            </AnimatePresence>
           </div>
-        </div>
-      </div>
-
-      {/* Destination carousel */}
-      <div className="mt-8 -mx-6 sm:-mx-10 lg:-mx-16 px-6 sm:px-10 lg:px-16">
-        <div
-          ref={cardTrackRef}
-          onScroll={updateCardNav}
-          onKeyDown={onCardsKeyDown}
-          tabIndex={0}
-          aria-label="Destination cards, use arrow keys to navigate"
-          className="flex gap-5 overflow-x-auto py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          <AnimatePresence mode="popLayout" initial={false}>
-            {destinations?.map((destination) => (
-              <DestinationCard key={destination.id} destination={destination} />
-            ))}
-          </AnimatePresence>
         </div>
       </div>
     </section>
