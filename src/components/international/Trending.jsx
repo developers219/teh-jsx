@@ -5,6 +5,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import DestinationCard from "../ui/DestinationCard";
 import SectionHeader from "../home/SectionHeader";
 
+
 const trendingDestinations = [
   {
     name: "Manali",
