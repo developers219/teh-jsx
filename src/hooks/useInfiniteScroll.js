@@ -1,17 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-/**
- * Reusable infinite-scroll hook
- *
- * @param {Array} items - Complete data array
- * @param {number} initialCount - Items shown initially
- * @param {number} batchSize - Number of items loaded per scroll
- */
-const useInfiniteScroll = (
-  items = [],
-  initialCount = 12,
-  batchSize = 12
-) => {
+const useInfiniteScroll = (items = [], initialCount = 12, batchSize = 12) => {
   const [visibleCount, setVisibleCount] = useState(initialCount);
   const observerRef = useRef(null);
 
@@ -20,9 +9,7 @@ const useInfiniteScroll = (
   const loadMore = useCallback(() => {
     if (!hasMore) return;
 
-    setVisibleCount((prev) =>
-      Math.min(prev + batchSize, items.length)
-    );
+    setVisibleCount((prev) => Math.min(prev + batchSize, items.length));
   }, [hasMore, batchSize, items.length]);
 
   /**

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   Box,
@@ -17,6 +17,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
 import DestinationCard from "../ui/DestinationCard";
 import SectionHeader from "../home/SectionHeader";
+import api from "../../services/api";
 
 // -----------------------------------------------------
 // DUMMY DESTINATION DATA
@@ -36,299 +37,6 @@ const destinationImages = [
   "https://images.unsplash.com/photo-1512453979798-5ea266f8880c",
   "https://images.unsplash.com/photo-1528181304800-259b08848526",
   "https://images.unsplash.com/photo-1526392060635-9d6019884377",
-];
-
-const baseDestinations = [
-  {
-    name: "Manali",
-    region: "Himachal Pradesh",
-    type: "Hill Station",
-  },
-  {
-    name: "Goa",
-    region: "India",
-    type: "Beach",
-  },
-  {
-    name: "Jaipur",
-    region: "Rajasthan",
-    type: "Heritage",
-  },
-  {
-    name: "Maldives",
-    region: "Maldives",
-    type: "Beach",
-  },
-  {
-    name: "Kashmir",
-    region: "Jammu & Kashmir",
-    type: "Hill Station",
-  },
-  {
-    name: "Udaipur",
-    region: "Rajasthan",
-    type: "Heritage",
-  },
-  {
-    name: "Kerala",
-    region: "India",
-    type: "Nature",
-  },
-  {
-    name: "Bali",
-    region: "Indonesia",
-    type: "Beach",
-  },
-  {
-    name: "Sri Lanka",
-    region: "Sri Lanka",
-    type: "Nature",
-  },
-  {
-    name: "Dubai",
-    region: "UAE",
-    type: "International",
-  },
-  {
-    name: "Thailand",
-    region: "Thailand",
-    type: "Beach",
-  },
-  {
-    name: "Nepal",
-    region: "Nepal",
-    type: "Adventure",
-  },
-  {
-    name: "Rishikesh",
-    region: "Uttarakhand",
-    type: "Adventure",
-  },
-  {
-    name: "Shimla",
-    region: "Himachal Pradesh",
-    type: "Hill Station",
-  },
-  {
-    name: "Munnar",
-    region: "Kerala",
-    type: "Nature",
-  },
-  {
-    name: "Andaman",
-    region: "India",
-    type: "Beach",
-  },
-  {
-    name: "Agra",
-    region: "Uttar Pradesh",
-    type: "Heritage",
-  },
-  {
-    name: "Jodhpur",
-    region: "Rajasthan",
-    type: "Heritage",
-  },
-  {
-    name: "Darjeeling",
-    region: "West Bengal",
-    type: "Hill Station",
-  },
-  {
-    name: "Ooty",
-    region: "Tamil Nadu",
-    type: "Hill Station",
-  },
-  {
-    name: "Varanasi",
-    region: "Uttar Pradesh",
-    type: "Spiritual",
-  },
-  {
-    name: "Amritsar",
-    region: "Punjab",
-    type: "Spiritual",
-  },
-  {
-    name: "Coorg",
-    region: "Karnataka",
-    type: "Nature",
-  },
-  {
-    name: "Alleppey",
-    region: "Kerala",
-    type: "Nature",
-  },
-  {
-    name: "Ladakh",
-    region: "India",
-    type: "Adventure",
-  },
-  {
-    name: "Mussoorie",
-    region: "Uttarakhand",
-    type: "Hill Station",
-  },
-  {
-    name: "Ranthambore",
-    region: "Rajasthan",
-    type: "Wildlife",
-  },
-  {
-    name: "Jim Corbett",
-    region: "Uttarakhand",
-    type: "Wildlife",
-  },
-  {
-    name: "Pondicherry",
-    region: "India",
-    type: "Beach",
-  },
-  {
-    name: "Mysore",
-    region: "Karnataka",
-    type: "Heritage",
-  },
-  {
-    name: "Singapore",
-    region: "Singapore",
-    type: "International",
-  },
-  {
-    name: "Paris",
-    region: "France",
-    type: "International",
-  },
-  {
-    name: "Switzerland",
-    region: "Europe",
-    type: "International",
-  },
-  {
-    name: "London",
-    region: "United Kingdom",
-    type: "International",
-  },
-  {
-    name: "New York",
-    region: "USA",
-    type: "International",
-  },
-  {
-    name: "Tokyo",
-    region: "Japan",
-    type: "International",
-  },
-  {
-    name: "Kyoto",
-    region: "Japan",
-    type: "International",
-  },
-  {
-    name: "Vietnam",
-    region: "Vietnam",
-    type: "International",
-  },
-  {
-    name: "Mauritius",
-    region: "Mauritius",
-    type: "Beach",
-  },
-  {
-    name: "Seychelles",
-    region: "Seychelles",
-    type: "Beach",
-  },
-  {
-    name: "Baku",
-    region: "Azerbaijan",
-    type: "International",
-  },
-  {
-    name: "Istanbul",
-    region: "Turkey",
-    type: "International",
-  },
-  {
-    name: "Cairo",
-    region: "Egypt",
-    type: "Heritage",
-  },
-  {
-    name: "Santorini",
-    region: "Greece",
-    type: "Beach",
-  },
-  {
-    name: "Dubai",
-    region: "UAE",
-    type: "International",
-  },
-  {
-    name: "Abu Dhabi",
-    region: "UAE",
-    type: "International",
-  },
-  {
-    name: "Phuket",
-    region: "Thailand",
-    type: "Beach",
-  },
-  {
-    name: "Krabi",
-    region: "Thailand",
-    type: "Beach",
-  },
-  {
-    name: "Phu Quoc",
-    region: "Vietnam",
-    type: "Beach",
-  },
-  {
-    name: "Da Nang",
-    region: "Vietnam",
-    type: "International",
-  },
-  {
-    name: "Bali",
-    region: "Indonesia",
-    type: "Beach",
-  },
-  {
-    name: "Yogyakarta",
-    region: "Indonesia",
-    type: "Heritage",
-  },
-  {
-    name: "Malacca",
-    region: "Malaysia",
-    type: "Heritage",
-  },
-  {
-    name: "Kuala Lumpur",
-    region: "Malaysia",
-    type: "International",
-  },
-  {
-    name: "Langkawi",
-    region: "Malaysia",
-    type: "Beach",
-  },
-  {
-    name: "Sikkim",
-    region: "India",
-    type: "Hill Station",
-  },
-  {
-    name: "Meghalaya",
-    region: "India",
-    type: "Nature",
-  },
-  {
-    name: "Goa",
-    region: "India",
-    type: "Beach",
-  },
 ];
 
 // -----------------------------------------------------
@@ -567,12 +275,16 @@ const baseDestinations = [
 // -----------------------------------------------------
 
 const AllDestinations = () => {
-  const {
-    visibleItems,
-    loadMoreRef,
-    hasMore,
-  } = useInfiniteScroll(
-    baseDestinations,
+  const [destinations, setDestinations] = useState([]);
+  useEffect(() => {
+    const fetchDestinations = async () => {
+      const res = await api.get("/destinations/category/1");
+      setDestinations(res.data.data);
+    };
+    fetchDestinations();
+  }, []);
+  const { visibleItems, loadMoreRef, hasMore } = useInfiniteScroll(
+    destinations,
     12,
     12
   );
@@ -683,7 +395,12 @@ const AllDestinations = () => {
             unforgettable journey.
           </Typography>
         </Box> */}
-        <SectionHeader title={"All Destinations"} description={"From serene beaches to majestic mountains, discover handpicked destinations for your next unforgettable journey."}/>
+        <SectionHeader
+          title={"All Destinations"}
+          description={
+            "From serene beaches to majestic mountains, discover handpicked destinations for your next unforgettable journey."
+          }
+        />
 
         {/* -------------------------------------------
             DESTINATION GRID
@@ -700,7 +417,7 @@ const AllDestinations = () => {
               lg: "repeat(4, minmax(0, 1fr))",
               xl: "repeat(5, minmax(0, 1fr))",
             },
-marginTop:"20px",
+            marginTop: "20px",
             gap: {
               xs: 2,
               sm: 2.5,
@@ -709,10 +426,7 @@ marginTop:"20px",
           }}
         >
           {visibleItems.map((destination) => (
-            <DestinationCard
-              key={destination.id}
-              destination={destination}
-            />
+            <DestinationCard key={destination.id} destination={destination} />
           ))}
         </Box>
 
@@ -733,10 +447,7 @@ marginTop:"20px",
           }}
         >
           {hasMore ? (
-            <Stack
-              alignItems="center"
-              spacing={1.2}
-            >
+            <Stack alignItems="center" spacing={1.2}>
               <CircularProgress
                 size={25}
                 thickness={4}
