@@ -1,72 +1,16 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 import DestinationCard from "../ui/DestinationCard";
 import SectionHeader from "../home/SectionHeader";
+import api from "../../services/api";
 
-
-const trendingDestinations = [
-  {
-    name: "Manali",
-    state: "HIMACHAL PRADESH",
-    image:
-      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/manali",
-  },
-  {
-    name: "Kerala",
-    state: "KERALA",
-    image:
-      "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/kerala",
-  },
-  {
-    name: "Udaipur",
-    state: "RAJASTHAN",
-    image:
-      "https://images.unsplash.com/photo-1599661046289-e31897846e41?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/udaipur",
-  },
-  {
-    name: "Darjeeling",
-    state: "WEST BENGAL",
-    image:
-      "https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/darjeeling",
-  },
-  {
-    name: "Goa",
-    state: "GOA",
-    image:
-      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/goa",
-  },
-  {
-    name: "Jaipur",
-    state: "RAJASTHAN",
-    image:
-      "https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/jaipur",
-  },
-  {
-    name: "Shimla",
-    state: "HIMACHAL PRADESH",
-    image:
-      "https://images.unsplash.com/photo-1597074866923-dc0589150358?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/shimla",
-  },
-  {
-    name: "Andaman",
-    state: "ANDAMAN & NICOBAR",
-    image:
-      "https://images.unsplash.com/photo-1589197331516-4d84b72ebde3?auto=format&fit=crop&w=1200&q=85",
-    link: "/destinations/andaman",
-  },
-];
 
 export default function Trending() {
   const carouselRef = useRef(null);
+  const [trendingDestinations, setTrendingDestinations] = useState(null);
+  
 
   // -------------------------------------------------------
   // MOVE CAROUSEL
@@ -94,6 +38,16 @@ export default function Trending() {
       behavior: "smooth",
     });
   };
+     useEffect(() => {
+    const fetchTrendingDestinations = async () => {
+      const res = await api.get("/destinations/featured");
+
+      const filtered = res.data.data.filter((r) => r.categoryId === 2);
+      setTrendingDestinations(filtered);
+    };
+    fetchTrendingDestinations();
+  }, []);
+
 
   return (
     <section className="w-full overflow-hidden bg-white py-14 sm:py-16 lg:py-20">
@@ -197,7 +151,7 @@ export default function Trending() {
           "
         >
 
-          {trendingDestinations.map((destination) => (
+          {trendingDestinations?.map((destination) => (
             <div
               key={destination.name}
               data-destination-card

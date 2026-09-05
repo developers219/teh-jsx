@@ -257,7 +257,7 @@ function useDragScroll(ref) {
 // ---------------------------------------------------------------------------
 
 export default function Themes() {
-  const [activeCategory, setActiveCategory] = useState(4);
+  const [activeCategory, setActiveCategory] = useState(1);
   const [chipNav, setChipNav] = useState({ atStart: true, atEnd: false });
   const [cardNav, setCardNav] = useState({ atStart: true, atEnd: false });
   const [categories, setCategories] = useState(null);
@@ -313,14 +313,15 @@ export default function Themes() {
     async function fetchThemes() {
       const res = await getThemes();
       setCategories(res.data);
-      const res2 = await getDestinationsByTheme(1, 4);
+      const res2 = await getDestinationsByTheme(2, 7);
+      console.log(res2)
       setDestinations(res2);
     }
     fetchThemes();
     const el = cardTrackRef.current;
     if (el) el.scrollTo({ left: 0 });
     updateCardNav();
-  }, [activeCategory, updateCardNav]);
+  }, []);
 
   // -- scroll actions -----------------------------------------------
 
@@ -341,7 +342,7 @@ export default function Themes() {
   const handleCategoryClick = async (id) => {
     console.log(id);
     setActiveCategory(id);
-    const res = await getDestinationsByTheme(1, id);
+    const res = await getDestinationsByTheme(2, id);
     console.log(res);
     setDestinations(res);
   };
