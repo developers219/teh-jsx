@@ -27,7 +27,7 @@ import Deals from "../pages/Deals";
 import DestinationDetails from "../pages/DestinationDetails";
 import Destinations from "../pages/Destinations";
 import DomesticDestinations from "../pages/DomesticDestinations";
-// import InternationalDestinations from "../pages/InternationalDestinations"
+import InternationalDestinations from "../pages/InternationalDestinations"
 import EditDestination from "../pages/EditDestination";
 import Gallery from "../pages/Gallery";
 import GalleryEditor from "../pages/GalleryEditor";
@@ -52,7 +52,7 @@ function AppRoutes() {
         <Route path="/" element={<Home />}/>
         <Route path="/destinations" element={<Destinations />}/>
         <Route path="/destinations/dom" element={<DomesticDestinations />}/>
-        {/* <Route path="/destinations/intl" element={<InternationalDestinations />}/> */}
+        <Route path="/destinations/intl" element={<InternationalDestinations />}/>
         <Route path="/destinations/:slug" element={<DestinationDetails />}/>
         <Route path="/packages" element={<Packages />}/>
         <Route path="/packages/:slug" element={<PackageDetails />}/>
