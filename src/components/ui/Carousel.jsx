@@ -1,47 +1,50 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const Carousel = ({
+export default function Carousel({
   items = [],
   renderItem,
   desktopItems = 5,
   tabletItems = 2,
   mobileItems = 1,
   gap = 20,
-}) => {
+  showArrows = true,
+}) {
   const containerRef = useRef(null);
 
-  const [containerWidth, setContainerWidth] = useState(0);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [visibleItems, setVisibleItems] = useState(desktopItems);
+  const [itemsPerView, setItemsPerView] =
+    useState(desktopItems);
+  const [cardWidth, setCardWidth] = useState(0);
 
-  // ---------------------------------------------
-  // Get container width
-  // ---------------------------------------------
+  // -------------------------------------------------------
+  // RESPONSIVE ITEMS PER VIEW
+  // -------------------------------------------------------
 
   useEffect(() => {
-    const updateSize = () => {
-      if (!containerRef.current) return;
+    const updateItemsPerView = () => {
+      const width = window.innerWidth;
 
-      const width = containerRef.current.offsetWidth;
-
-      setContainerWidth(width);
-
-      if (window.innerWidth < 640) {
-        setVisibleItems(mobileItems);
-      } else if (window.innerWidth < 1024) {
-        setVisibleItems(tabletItems);
+      if (width < 640) {
+        setItemsPerView(mobileItems);
+      } else if (width < 1024) {
+        setItemsPerView(tabletItems);
       } else {
-        setVisibleItems(desktopItems);
+        setItemsPerView(desktopItems);
       }
     };
 
-    updateSize();
+    updateItemsPerView();
 
-    window.addEventListener("resize", updateSize);
+    window.addEventListener(
+      "resize",
+      updateItemsPerView
+    );
 
     return () => {
-      window.removeEventListener("resize", updateSize);
+      window.removeEventListener(
+        "resize",
+        updateItemsPerView
+      );
     };
   }, [
     desktopItems,
@@ -49,182 +52,243 @@ const Carousel = ({
     mobileItems,
   ]);
 
-  // ---------------------------------------------
-  // Card width
-  // ---------------------------------------------
+  // -------------------------------------------------------
+  // CALCULATE CARD WIDTH
+  // -------------------------------------------------------
 
-  const cardWidth =
-    containerWidth > 0
-      ? (containerWidth - gap * (visibleItems - 1)) /
-        visibleItems
-      : 0;
+  useEffect(() => {
+    const calculateCardWidth = () => {
+      if (!containerRef.current) return;
 
-  // ---------------------------------------------
-  // Maximum index
-  // ---------------------------------------------
+      const containerWidth =
+        containerRef.current.offsetWidth;
+
+      const totalGap =
+        gap * (itemsPerView - 1);
+
+      const width =
+        (containerWidth - totalGap) /
+        itemsPerView;
+
+      setCardWidth(width);
+    };
+
+    calculateCardWidth();
+
+    window.addEventListener(
+      "resize",
+      calculateCardWidth
+    );
+
+    return () => {
+      window.removeEventListener(
+        "resize",
+        calculateCardWidth
+      );
+    };
+  }, [itemsPerView, gap]);
+
+  // -------------------------------------------------------
+  // MAXIMUM SLIDE
+  // -------------------------------------------------------
 
   const maxIndex = Math.max(
     0,
-    items.length - visibleItems
+    items.length - itemsPerView
   );
 
-  // ---------------------------------------------
-  // Reset index when screen changes
-  // ---------------------------------------------
+  const canGoPrevious = currentIndex > 0;
+  const canGoNext = currentIndex < maxIndex;
 
-  useEffect(() => {
-    setCurrentIndex((prev) =>
-      Math.min(prev, maxIndex)
-    );
-  }, [maxIndex]);
-
-  // ---------------------------------------------
-  // Navigation
-  // ---------------------------------------------
+  // -------------------------------------------------------
+  // NEXT
+  // -------------------------------------------------------
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => {
-      if (prev >= maxIndex) {
-        return 0;
-      }
+    if (!canGoNext) return;
 
-      return prev + 1;
-    });
+    setCurrentIndex((previous) =>
+      Math.min(previous + 1, maxIndex)
+    );
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => {
-      if (prev <= 0) {
-        return maxIndex;
-      }
+  // -------------------------------------------------------
+  // PREVIOUS
+  // -------------------------------------------------------
 
-      return prev - 1;
-    });
+  const previousSlide = () => {
+    if (!canGoPrevious) return;
+
+    setCurrentIndex((previous) =>
+      Math.max(previous - 1, 0)
+    );
   };
 
-  // ---------------------------------------------
-  // Empty state
-  // ---------------------------------------------
+  // -------------------------------------------------------
+  // RESET WHEN ITEMS CHANGE
+  // -------------------------------------------------------
 
-  if (!items || items.length === 0) {
-    return null;
-  }
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [items.length]);
 
-  // ---------------------------------------------
-  // Transform
-  // ---------------------------------------------
+  // -------------------------------------------------------
+  // TRANSLATION
+  // -------------------------------------------------------
 
   const translateX =
     currentIndex * (cardWidth + gap);
 
   return (
-    <div className="relative w-full">
+    <div className="w-full">
 
-      {/* Viewport */}
+      {/* =================================================
+          ARROWS
+      ================================================== */}
+
+      {showArrows && (
+        <div className="mb-6 flex justify-end gap-3">
+
+          {/* PREVIOUS ARROW */}
+
+          <button
+            type="button"
+            onClick={previousSlide}
+            disabled={!canGoPrevious}
+            aria-label="Previous destinations"
+            className={`
+              flex
+              h-10
+              w-10
+              shrink-0
+              items-center
+              justify-center
+              rounded-full
+              border
+              bg-white
+              transition-all
+              duration-300
+
+              ${
+                canGoPrevious
+                  ? `
+                    border-[#e8ded4]
+                    text-slate-700
+                    hover:bg-slate-50
+                    hover:shadow-sm
+                  `
+                  : `
+                    cursor-not-allowed
+                    border-[#f1eee9]
+                    text-[#d8d1ca]
+                  `
+              }
+            `}
+          >
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M15 18L9 12L15 6" />
+            </svg>
+          </button>
+
+          {/* NEXT ARROW */}
+
+          <button
+            type="button"
+            onClick={nextSlide}
+            disabled={!canGoNext}
+            aria-label="Next destinations"
+            className={`
+              flex
+              h-10
+              w-10
+              shrink-0
+              items-center
+              justify-center
+              rounded-full
+              border
+              bg-white
+              transition-all
+              duration-300
+
+              ${
+                canGoNext
+                  ? `
+                    border-[#e8ded4]
+                    text-slate-800
+                    hover:bg-slate-50
+                    hover:shadow-sm
+                  `
+                  : `
+                    cursor-not-allowed
+                    border-[#f1eee9]
+                    text-[#d8d1ca]
+                  `
+              }
+            `}
+          >
+            <svg
+              width="17"
+              height="17"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 18L15 12L9 6" />
+            </svg>
+          </button>
+
+        </div>
+      )}
+
+      {/* =================================================
+          VIEWPORT
+      ================================================== */}
 
       <div
         ref={containerRef}
         className="w-full overflow-hidden"
       >
 
-        {/* Track */}
+        {/* =================================================
+            SLIDING TRACK
+        ================================================== */}
 
         <div
-          className="flex transition-transform duration-500 ease-out"
+          className="flex"
           style={{
             gap: `${gap}px`,
-            transform: `translateX(-${translateX}px)`,
+            transform: `translate3d(-${translateX}px, 0, 0)`,
+            transition:
+              "transform 550ms cubic-bezier(0.22, 1, 0.36, 1)",
+            willChange: "transform",
           }}
         >
-
           {items.map((item, index) => (
-
             <div
-              key={
-                item.id ||
-                `${item.name}-${index}`
-              }
+              key={item.id ?? index}
               className="shrink-0"
               style={{
-                width:
-                  cardWidth > 0
-                    ? `${cardWidth}px`
-                    : `calc((100% - ${
-                        gap * (visibleItems - 1)
-                      }px) / ${visibleItems})`,
+                width: `${cardWidth}px`,
               }}
             >
               {renderItem(item, index)}
             </div>
-
           ))}
-
         </div>
 
       </div>
-
-
-      {/* Navigation */}
-
-      {items.length > visibleItems && (
-
-        <div className="mt-5 flex justify-end gap-2">
-
-          <button
-            type="button"
-            onClick={prevSlide}
-            aria-label="Previous destinations"
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-slate-200
-              bg-white
-              text-slate-700
-              shadow-sm
-              transition-all
-              hover:bg-slate-900
-              hover:text-white
-            "
-          >
-            <ChevronLeft size={18} />
-          </button>
-
-
-          <button
-            type="button"
-            onClick={nextSlide}
-            aria-label="Next destinations"
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-              rounded-full
-              border
-              border-slate-200
-              bg-white
-              text-slate-700
-              shadow-sm
-              transition-all
-              hover:bg-slate-900
-              hover:text-white
-            "
-          >
-            <ChevronRight size={18} />
-          </button>
-
-        </div>
-
-      )}
-
     </div>
   );
-};
-
-export default Carousel;
+}
