@@ -1,131 +1,16 @@
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useState } from "react";
 
 export default function Carousel({
   items = [],
   renderItem,
-  desktopItems = 5,
-  tabletItems = 2,
-  mobileItems = 1,
   gap = 20,
   showArrows = true,
 }) {
-  const containerRef = useRef(null);
-
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerView, setItemsPerView] =
-    useState(desktopItems);
-  const [cardWidth, setCardWidth] = useState(0);
 
   // -------------------------------------------------------
-  // RESPONSIVE ITEMS PER VIEW
-  // -------------------------------------------------------
-
-  useEffect(() => {
-    const updateItemsPerView = () => {
-      const width = window.innerWidth;
-
-      if (width < 640) {
-        setItemsPerView(mobileItems);
-      } else if (width < 1024) {
-        setItemsPerView(tabletItems);
-      } else {
-        setItemsPerView(desktopItems);
-      }
-    };
-
-    updateItemsPerView();
-
-    window.addEventListener(
-      "resize",
-      updateItemsPerView
-    );
-
-    return () => {
-      window.removeEventListener(
-        "resize",
-        updateItemsPerView
-      );
-    };
-  }, [
-    desktopItems,
-    tabletItems,
-    mobileItems,
-  ]);
-
-  // -------------------------------------------------------
-  // CALCULATE CARD WIDTH
-  // -------------------------------------------------------
-
-  useEffect(() => {
-    const calculateCardWidth = () => {
-      if (!containerRef.current) return;
-
-      const containerWidth =
-        containerRef.current.offsetWidth;
-
-      const totalGap =
-        gap * (itemsPerView - 1);
-
-      const width =
-        (containerWidth - totalGap) /
-        itemsPerView;
-
-      setCardWidth(width);
-    };
-
-    calculateCardWidth();
-
-    window.addEventListener(
-      "resize",
-      calculateCardWidth
-    );
-
-    return () => {
-      window.removeEventListener(
-        "resize",
-        calculateCardWidth
-      );
-    };
-  }, [itemsPerView, gap]);
-
-  // -------------------------------------------------------
-  // MAXIMUM SLIDE
-  // -------------------------------------------------------
-
-  const maxIndex = Math.max(
-    0,
-    items.length - itemsPerView
-  );
-
-  const canGoPrevious = currentIndex > 0;
-  const canGoNext = currentIndex < maxIndex;
-
-  // -------------------------------------------------------
-  // NEXT
-  // -------------------------------------------------------
-
-  const nextSlide = () => {
-    if (!canGoNext) return;
-
-    setCurrentIndex((previous) =>
-      Math.min(previous + 1, maxIndex)
-    );
-  };
-
-  // -------------------------------------------------------
-  // PREVIOUS
-  // -------------------------------------------------------
-
-  const previousSlide = () => {
-    if (!canGoPrevious) return;
-
-    setCurrentIndex((previous) =>
-      Math.max(previous - 1, 0)
-    );
-  };
-
-  // -------------------------------------------------------
-  // RESET WHEN ITEMS CHANGE
+  // RESET POSITION WHEN ITEMS CHANGE
   // -------------------------------------------------------
 
   useEffect(() => {
@@ -133,29 +18,36 @@ export default function Carousel({
   }, [items.length]);
 
   // -------------------------------------------------------
-  // TRANSLATION
+  // NAVIGATION
   // -------------------------------------------------------
 
-  const translateX =
-    currentIndex * (cardWidth + gap);
+  const previousSlide = () => {
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prev) => prev + 1);
+  };
+
+  // -------------------------------------------------------
+  // RENDER
+  // -------------------------------------------------------
 
   return (
     <div className="w-full">
-
       {/* =================================================
           ARROWS
       ================================================== */}
 
       {showArrows && (
         <div className="mb-6 flex justify-end gap-3">
-
-          {/* PREVIOUS ARROW */}
+          {/* PREVIOUS */}
 
           <button
             type="button"
             onClick={previousSlide}
-            disabled={!canGoPrevious}
-            aria-label="Previous destinations"
+            disabled={currentIndex === 0}
+            aria-label="Previous"
             className={`
               flex
               h-10
@@ -170,7 +62,7 @@ export default function Carousel({
               duration-300
 
               ${
-                canGoPrevious
+                currentIndex > 0
                   ? `
                     border-[#e8ded4]
                     text-slate-700
@@ -199,13 +91,13 @@ export default function Carousel({
             </svg>
           </button>
 
-          {/* NEXT ARROW */}
+          {/* NEXT */}
 
           <button
             type="button"
             onClick={nextSlide}
-            disabled={!canGoNext}
-            aria-label="Next destinations"
+            disabled={currentIndex >= items.length - 1}
+            aria-label="Next"
             className={`
               flex
               h-10
@@ -220,7 +112,7 @@ export default function Carousel({
               duration-300
 
               ${
-                canGoNext
+                currentIndex < items.length - 1
                   ? `
                     border-[#e8ded4]
                     text-slate-800
@@ -248,7 +140,6 @@ export default function Carousel({
               <path d="M9 18L15 12L9 6" />
             </svg>
           </button>
-
         </div>
       )}
 
@@ -256,39 +147,65 @@ export default function Carousel({
           VIEWPORT
       ================================================== */}
 
-      <div
-        ref={containerRef}
-        className="w-full overflow-hidden"
-      >
-
+      <div className="w-full overflow-hidden">
         {/* =================================================
-            SLIDING TRACK
+            SLIDING GRID TRACK
         ================================================== */}
 
         <div
-          className="flex"
+          className="
+            grid
+            grid-flow-col
+
+            auto-cols-[100%]
+
+            min-[640px]:auto-cols-[calc((100%-20px)/2)]
+
+            min-[768px]:auto-cols-[calc((100%-40px)/3)]
+
+            min-[1024px]:auto-cols-[calc((100%-60px)/4)]
+
+            min-[1280px]:auto-cols-[calc((100%-80px)/5)]
+
+            transition-transform
+            duration-500
+            ease-out
+            will-change-transform
+          "
           style={{
             gap: `${gap}px`,
-            transform: `translate3d(-${translateX}px, 0, 0)`,
-            transition:
-              "transform 550ms cubic-bezier(0.22, 1, 0.36, 1)",
-            willChange: "transform",
+
+            /*
+             * Move one complete card + gap.
+             *
+             * The responsive card widths above match
+             * these calculations.
+             */
+            transform: `
+              translateX(
+                calc(
+                  -${currentIndex} *
+                  (
+                    100% +
+                    ${gap}px
+                  )
+                )
+              )
+            `,
           }}
         >
           {items.map((item, index) => (
             <div
               key={item.id ?? index}
-              className="shrink-0"
-              style={{
-                width: `${cardWidth}px`,
-              }}
+              className="min-w-0 w-full"
             >
               {renderItem(item, index)}
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
 }
+
+

@@ -316,7 +316,7 @@ function TravelCategories() {
             <section>
 
               {/* Heading + CTA */}
-              <div className="mb-7 flex items-center justify-between gap-4">
+              <div className="mb-0 flex items-center justify-between gap-4">
 
                 <Link
                   to={"/destinations/dom"}
@@ -351,7 +351,7 @@ function TravelCategories() {
             <section>
 
               {/* Heading + CTA */}
-              <div className="mb-7 flex items-center justify-between gap-4">
+              <div className="mb-0 flex items-center justify-between gap-4">
 
                 <Link
                   to={"/destinations/intl"}

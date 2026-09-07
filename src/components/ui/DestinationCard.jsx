@@ -25,10 +25,10 @@ function DestinationCard({ destination }) {
         /* =========================================
                FIXED REFERENCE CARD SIZE
                ========================================= */
-        width: "243px",
+        // width: "243px",
         height: "300px",
         minWidth: "243px",
-        maxWidth: "243px",
+        // maxWidth: "243px",
         minHeight: "300px",
         maxHeight: "300px",
         flex: "0 0 243px",
