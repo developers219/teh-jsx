@@ -14,13 +14,13 @@ export default function BestSellingPackages({
         <div className="mb-10 md:mb-12">
 
           {/* Small eyebrow */}
-          <div className="mb-3 flex items-center gap-3">
+          {/* <div className="mb-3 flex items-center gap-3">
             <span className="h-[3px] w-10 rounded-full bg-[#17694d]" />
 
             <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#17694d]">
               Best Selling
             </span>
-          </div>
+          </div> */}
 
           {/* Heading */}
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
