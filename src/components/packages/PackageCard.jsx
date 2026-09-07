@@ -16,7 +16,7 @@ function PackageCard({ travelPackage }) {
     const previousImage = () => {
         setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
     };
-    return (<article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    return (<article className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl h-full">
       
       {/* ================= IMAGE ================= */}
       <div className="relative h-[200px] overflow-hidden">

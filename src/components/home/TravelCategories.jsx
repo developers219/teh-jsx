@@ -6,6 +6,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { Link } from "react-router-dom";
 import { getTravelCategories } from "../../services/travel-category.service";
 import api from "../../services/api";
+import Carousel from "../ui/Carousel";
 import DestinationCard from "../ui/DestinationCard";
 const fallbackCategories = [
   {
