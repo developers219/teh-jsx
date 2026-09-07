@@ -106,25 +106,25 @@ export default function DestinationDetails() {
         }
       />
       <PackageByCategories
-  heading={"Romantic Getaways"}
-  subheading={
-    "Create unforgettable moments together with handpicked romantic escapes, perfect for honeymoons, anniversaries, and couples looking for a special getaway."
-  }
-/>
+        heading={"Romantic Getaways"}
+        subheading={
+          "Create unforgettable moments together with handpicked romantic escapes, perfect for honeymoons, anniversaries, and couples looking for a special getaway."
+        }
+      />
 
-<PackageByCategories
-  heading={"Group Adventures"}
-  subheading={
-    "Travel together, create lasting memories, and enjoy exciting group experiences with carefully curated packages designed for friends, families, and groups."
-  }
-/>
+      <PackageByCategories
+        heading={"Group Adventures"}
+        subheading={
+          "Travel together, create lasting memories, and enjoy exciting group experiences with carefully curated packages designed for friends, families, and groups."
+        }
+      />
 
-<PackageByCategories
-  heading={"Solo Adventures"}
-  subheading={
-    "Discover the freedom to travel your way with curated solo experiences, exciting destinations, and unforgettable adventures made for independent explorers."
-  }
-/>
+      <PackageByCategories
+        heading={"Solo Adventures"}
+        subheading={
+          "Discover the freedom to travel your way with curated solo experiences, exciting destinations, and unforgettable adventures made for independent explorers."
+        }
+      />
     </>
   );
 }
