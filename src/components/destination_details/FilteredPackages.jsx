@@ -328,8 +328,8 @@ export const FilteredPackages = () => {
   }, [filters]);
 
   return (
-    <section>
-      <div className="max-w-7xl mx-auto my-16 px-4">
+    <section className="bg-white">
+      <div className="max-w-7xl mx-auto py-16 px-4">
         <SectionHeader
           title="Explore Filtered Packages"
           description="Choose what suits your needs."

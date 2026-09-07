@@ -57,7 +57,7 @@ export default function DestinationDetails() {
   }
   if (errorMessage) {
     return (
-      <main className="bg-slate-50 px-6 py-16 lg:px-8">
+      <main className="px-6 py-16 lg:px-8">
         <div className="mx-auto max-w-3xl">
           <Alert
             severity="error"
