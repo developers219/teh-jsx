@@ -1,4 +1,4 @@
-
+import SectionHeader from "../home/SectionHeader";
 import PackageCard from "../packages/PackageCard";
 import Carousel from "../ui/Carousel";
 
@@ -194,17 +194,14 @@ const packages = [
   },
 ];
 
-
-export default function BestSellingPackages() {
+export default function PackageByCategories({ heading, subheading, link }) {
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-
         {/* =================================================
             SECTION HEADER
         ================================================== */}
         <div className="mb-10 md:mb-12">
-
           {/* Small eyebrow */}
           {/* <div className="mb-3 flex items-center gap-3">
             <span className="h-[3px] w-10 rounded-full bg-[#17694d]" />
@@ -215,16 +212,16 @@ export default function BestSellingPackages() {
           </div> */}
 
           {/* Heading */}
-          <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
+          <SectionHeader title={heading} description={subheading} />
+          {/* <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl lg:text-5xl">
             Best Selling Packages
           </h2>
 
-          {/* Subheading */}
+          
           <p className="mt-3 max-w-2xl text-base leading-7 text-slate-500 sm:text-lg">
-            Handpicked travel experiences loved by travelers. Explore our
-            most popular holiday packages and start planning your next
-            adventure.
-          </p>
+            Handpicked travel experiences loved by travelers. Explore our most
+            popular holiday packages and start planning your next adventure.
+          </p> */}
         </div>
 
         {/* =================================================
@@ -233,13 +230,13 @@ export default function BestSellingPackages() {
         {packages.length > 0 ? (
           <Carousel
             items={packages}
-            desktopItems={4}
+            desktopItems={3}
             tabletItems={2}
             mobileItems={1}
             gap={24}
             showArrows={true}
             renderItem={(travelPackage) => (
-              <PackageCard travelPackage={travelPackage}/>
+              <PackageCard travelPackage={travelPackage} />
             )}
           />
         ) : (
@@ -249,7 +246,6 @@ export default function BestSellingPackages() {
             </p>
           </div>
         )}
-
       </div>
     </section>
   );
