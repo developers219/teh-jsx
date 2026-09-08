@@ -1,5 +1,5 @@
 import LeadForm from "../forms/LeadForm";
-import formBackground from "../../assets/images/ss.png";
+import formBackground from "../../assets/images/form.png";
 function PersonalizedHolidayPlan() {
     return (<section className="relative overflow-hidden bg-white">
       <div className="
@@ -83,15 +83,7 @@ function PersonalizedHolidayPlan() {
                   w-full
                   object-cover
                   object-center
-                  -translate-x-4
-    sm:-translate-x-5
-    md:-translate-x-6
-    lg:-translate-x-8
-    xl:-translate-x-10
-                  sm:h-[320px]
-                  md:h-[360px]
-                  lg:h-[380px]
-                  xl:h-[420px]
+              
                 "/>
 
               {/* HIDE TOP LINE */}
