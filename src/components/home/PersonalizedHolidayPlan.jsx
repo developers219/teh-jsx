@@ -13,7 +13,7 @@ function PersonalizedHolidayPlan() {
           md:px-10
           md:py-20
           xl:px-12
-          xl:py-24
+          xl:py-7
         ">
         <div className="
             grid
