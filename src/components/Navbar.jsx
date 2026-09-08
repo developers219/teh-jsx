@@ -18,11 +18,6 @@ import { navigationItems } from "../constants/navigation";
 function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-<<<<<<< HEAD
-  /* =========================================================
-       DETECT SCROLL
-    ========================================================= */
-=======
 
   /* =========================================================
      MOBILE MENU ITEMS
@@ -62,40 +57,23 @@ function Navbar() {
      DETECT SCROLL
   ========================================================= */
 
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-<<<<<<< HEAD
-    window.addEventListener("scroll", handleScroll);
-=======
 
     window.addEventListener("scroll", handleScroll);
 
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-<<<<<<< HEAD
   /* =========================================================
        CLOSE MOBILE MENU
     ========================================================= */
   const closeMobileMenu = () => {
     setIsMobileOpen(false);
   };
-=======
-
-  /* =========================================================
-     CLOSE MOBILE MENU
-  ========================================================= */
-
-  const closeMobileMenu = () => {
-    setIsMobileOpen(false);
-  };
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
   return (
     <AppBar
       elevation={0}
@@ -107,9 +85,7 @@ function Navbar() {
         width: "100%",
         zIndex: 1200,
 
-        backgroundColor: isScrolled
-          ? "rgba(0,0,0,0.2)"
-          : "rgba(0,0,0,0.2)",
+        backgroundColor: isScrolled ? "rgba(0,0,0,0.2)" : "rgba(0,0,0,0.2)",
 
         border: isScrolled
           ? "1px solid rgba(148, 163, 184, 0.16)"
@@ -121,13 +97,9 @@ function Navbar() {
         //   ? "0 12px 35px rgba(0, 0, 0, 0.22)"
         //   : "none",
 
-        backdropFilter: isScrolled
-          ? "blur(14px)"
-          : "none",
+        backdropFilter: isScrolled ? "blur(14px)" : "none",
 
-        WebkitBackdropFilter: isScrolled
-          ? "blur(14px)"
-          : "none",
+        WebkitBackdropFilter: isScrolled ? "blur(14px)" : "none",
 
         transition:
           "top 0.4s ease, left 0.4s ease, right 0.4s ease, width 0.4s ease, background-color 0.4s ease, border-radius 0.4s ease, box-shadow 0.4s ease, border 0.4s ease",
@@ -136,14 +108,9 @@ function Navbar() {
       }}
     >
       {/* =====================================================
-<<<<<<< HEAD
-            NAVBAR TOOLBAR
-        ===================================================== */}
-=======
           NAVBAR TOOLBAR
       ===================================================== */}
 
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
       <Toolbar
         className="mx-auto w-full max-w-7xl"
         sx={{
@@ -158,10 +125,6 @@ function Navbar() {
         {/* ===================================================
             LOGO
         =================================================== */}
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
         <Button
           component={Link}
           to="/"
@@ -205,10 +168,6 @@ function Navbar() {
         {/* ===================================================
             SPACER
         =================================================== */}
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
         <Box sx={{ flexGrow: 1 }} />
 
         {/* ===================================================
@@ -219,12 +178,8 @@ function Navbar() {
             Therefore desktop navbar continues to show
             ONLY your existing 2 options.
         =================================================== */}
-<<<<<<< HEAD
-        <nav className="hidden items-center gap-1 lg:flex ">
-=======
 
         <nav className="hidden items-center gap-1 lg:flex">
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
           {navigationItems.map((item) => (
             <Button
               key={item.path}
@@ -241,17 +196,10 @@ function Navbar() {
                 fontSize: "14px",
                 color: "white",
 
-                transition:
-                  "background-color 0.25s ease, color 0.25s ease",
+                transition: "background-color 0.25s ease, color 0.25s ease",
 
                 "&:hover": {
-<<<<<<< HEAD
-                  // backgroundColor: "transparent)",
                   color: "black",
-                  //textDecoration: "underline",
-=======
-                  color: "black",
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
                 },
 
                 "&.active": {
@@ -273,10 +221,6 @@ function Navbar() {
         {/* ===================================================
             MOBILE MENU BUTTON
         =================================================== */}
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
         <IconButton
           color="inherit"
           aria-label="Open navigation"
@@ -301,14 +245,9 @@ function Navbar() {
       </Toolbar>
 
       {/* =====================================================
-<<<<<<< HEAD
-            MOBILE DRAWER
-        ===================================================== */}
-=======
           MOBILE DRAWER
       ===================================================== */}
 
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
       <Drawer
         anchor="right"
         open={isMobileOpen}
@@ -320,10 +259,6 @@ function Navbar() {
                 xs: "85%",
                 sm: 340,
               },
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
               maxWidth: 340,
               backgroundColor: "#0f172a",
               color: "#ffffff",
@@ -362,10 +297,6 @@ function Navbar() {
             sx={{
               color: "#ffffff",
               borderRadius: "10px",
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
               "&:hover": {
                 backgroundColor: "rgba(255,255,255,0.08)",
               },
@@ -381,21 +312,13 @@ function Navbar() {
             This uses mobileMenuItems instead of
             navigationItems, so the drawer has 5 options.
         =================================================== */}
-<<<<<<< HEAD
-=======
-
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
         <List
           sx={{
             px: 1,
             py: 2,
           }}
         >
-<<<<<<< HEAD
-          {navigationItems.map((item) => (
-=======
           {mobileMenuItems.map((item) => (
->>>>>>> bd575177e31401c192a78c57943a119697a2e328
             <ListItemButton
               key={item.path}
               component={NavLink}
@@ -408,8 +331,7 @@ function Navbar() {
                 borderRadius: "10px",
                 color: "#cbd5e1",
 
-                transition:
-                  "background-color 0.25s ease, color 0.25s ease",
+                transition: "background-color 0.25s ease, color 0.25s ease",
 
                 "&:hover": {
                   backgroundColor: "rgba(255,255,255,0.08)",

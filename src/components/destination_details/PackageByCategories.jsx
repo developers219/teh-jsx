@@ -199,9 +199,10 @@ const packages = [
 export default function PackageByCategories({ heading, subheading, themeId }) {
   const [packages, setPackages] = useState(null);
   useEffect(() => {
-    function fetchPackagesByTheme() {
-      const res = api.get(`/packages/theme/${themeId}`);
-      setPackages(res);
+    async function fetchPackagesByTheme() {
+      const res = await api.get(`/packages/theme/${themeId}`);
+      console.log(res);
+      setPackages(res.data.data);
     }
     fetchPackagesByTheme();
   }, []);

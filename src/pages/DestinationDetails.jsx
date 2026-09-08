@@ -86,7 +86,7 @@ export default function DestinationDetails() {
       </main>
     );
   }
-  console.log(destination);
+
   const heroImage =
     destination.imageUrl ??
     "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=85";

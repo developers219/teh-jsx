@@ -416,8 +416,6 @@ function PackageDetails() {
 
         const response = await api.get(`/packages/slug/${slug}`);
 
-        console.log(response);
-
         setTravelPackage(response.data.data);
       } catch (error) {
         console.error(error);
