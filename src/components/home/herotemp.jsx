@@ -1,25 +1,26 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import heroVideo from "../../assets/images/hero-video.mp4";
+import heroVideo from "../../assets/images/hero_m.mp4";
 const destinations = [
-    "Bali",
-    "Dubai",
-    "Thailand",
-    "Vietnam",
-    "Maldives",
-    "Mauritius",
-    "Japan",
-    "Sri Lanka",
+  "Bali",
+  "Dubai",
+  "Thailand",
+  "Vietnam",
+  "Maldives",
+  "Mauritius",
+  "Japan",
+  "Sri Lanka",
 ];
 export default function HeroSection() {
-    const [destination, setDestination] = useState("");
-    const handleExplore = () => {
-        if (!destination.trim())
-            return;
-        console.log("Searching for:", destination);
-    };
-    return (<section className="
+  const [destination, setDestination] = useState("");
+  const handleExplore = () => {
+    if (!destination.trim()) return;
+    console.log("Searching for:", destination);
+  };
+  return (
+    <section
+      className="
         relative
         min-h-[560px]
         w-full
@@ -29,28 +30,37 @@ export default function HeroSection() {
         md:min-h-[640px]
         lg:min-h-[680px]
         xl:min-h-[720px]
-      ">
+      "
+    >
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      <video autoPlay muted loop playsInline src={heroVideo} className="
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        src={heroVideo}
+        className="
           absolute
           inset-0
           h-full
           w-full
           object-cover
-        "/>
+        "
+      />
 
       {/* =========================================================
             GENERAL DARK OVERLAY
         ========================================================== */}
-      <div className="absolute inset-0 "/>
+      <div className="absolute inset-0 " />
 
       {/* =========================================================
             LEFT GRADIENT
             Stronger on desktop, softer on mobile
         ========================================================== */}
-      <div className="
+      <div
+        className="
           absolute
           inset-0
           bg-gradient-to-r
@@ -61,12 +71,14 @@ export default function HeroSection() {
           sm:from-black/6
           md:from-black/8
           lg:from-black/43
-        "/>
+        "
+      />
 
       {/* =========================================================
             HERO CONTENT
         ========================================================== */}
-      <div className="
+      <div
+        className="
           relative
           z-10
           mx-auto
@@ -93,16 +105,20 @@ export default function HeroSection() {
 
           xl:min-h-[720px]
           xl:px-12
-        ">
-        <div className="
+        "
+      >
+        <div
+          className="
             w-full
             max-w-3xl
             text-white
-          ">
+          "
+        >
           {/* =====================================================
             HEADING
         ====================================================== */}
-          <h1 className="
+          <h1
+            className="
               max-w-[650px]
               text-4xl
               font-semibold
@@ -118,12 +134,11 @@ export default function HeroSection() {
 
               xl:max-w-[720px]
               xl:text-[76px]
-            ">
+            "
+          >
             Your next
             <br />
-            <span className="text-white">
-              great escape
-            </span>
+            <span className="text-white">great escape</span>
             <br />
             starts here.
           </h1>
@@ -131,7 +146,8 @@ export default function HeroSection() {
           {/* =====================================================
             DESCRIPTION
         ====================================================== */}
-          <p className="
+          <p
+            className="
               mt-5
               max-w-[520px]
               text-sm
@@ -146,16 +162,18 @@ export default function HeroSection() {
               md:text-lg
 
               lg:mt-7
-            ">
-            Discover handpicked destinations, thoughtfully crafted
-            holidays, and unforgettable experiences designed around
-            the way you love to travel.
+            "
+          >
+            Discover handpicked destinations, thoughtfully crafted holidays, and
+            unforgettable experiences designed around the way you love to
+            travel.
           </p>
 
           {/* =====================================================
             SEARCH BAR
         ====================================================== */}
-          <div className="
+          <div
+            className="
               mt-7
               w-full
               max-w-[560px]
@@ -163,8 +181,10 @@ export default function HeroSection() {
               sm:mt-8
 
               md:mt-9
-            ">
-            <div className="
+            "
+          >
+            <div
+              className="
                 flex
                 h-[54px]
                 w-full
@@ -182,20 +202,24 @@ export default function HeroSection() {
                 md:px-6
 
                 focus-within:shadow-[0_15px_45px_rgba(0,0,0,0.35)]
-              ">
+              "
+            >
               {/* =================================================
             SEARCH ICON
         ================================================== */}
-              <SearchIcon sx={{
-            fontSize: 24,
-            color: "black",
-            flexShrink: 0,
-        }}/>
+              <SearchIcon
+                sx={{
+                  fontSize: 24,
+                  color: "black",
+                  flexShrink: 0,
+                }}
+              />
 
               {/* =================================================
             SEARCH INPUT
         ================================================== */}
-              <div className="
+              <div
+                className="
                   ml-3
                   flex
                   min-w-0
@@ -204,8 +228,17 @@ export default function HeroSection() {
                   justify-center
 
                   sm:ml-4
-                ">
-                <input id="destination" type="text" value={destination} onChange={(e) => setDestination(e.target.value)} placeholder="Search destinations..." autoComplete="off" list="destinations" className="
+                "
+              >
+                <input
+                  id="destination"
+                  type="text"
+                  value={destination}
+                  onChange={(e) => setDestination(e.target.value)}
+                  placeholder="Search destinations..."
+                  autoComplete="off"
+                  list="destinations"
+                  className="
                     mt-0.5
                     w-full
                     border-none
@@ -217,18 +250,25 @@ export default function HeroSection() {
                     placeholder:text-slate-400
 
                     sm:text-[15px]
-                  "/>
+                  "
+                />
 
                 {/* Destination Suggestions */}
                 <datalist id="destinations">
-                  {destinations.map((item) => (<option key={item} value={item}/>))}
+                  {destinations.map((item) => (
+                    <option key={item} value={item} />
+                  ))}
                 </datalist>
               </div>
 
               {/* =================================================
             EXPLORE BUTTON
         ================================================== */}
-              <button type="button" onClick={handleExplore} aria-label="Explore destination" className="
+              <button
+                type="button"
+                onClick={handleExplore}
+                aria-label="Explore destination"
+                className="
                   ml-2
                   flex
                   h-[40px]
@@ -248,10 +288,13 @@ export default function HeroSection() {
                   sm:ml-3
                   sm:h-[42px]
                   sm:w-[42px]
-                ">
-                <ArrowForwardIcon sx={{
-            fontSize: 23,
-        }}/>
+                "
+              >
+                <ArrowForwardIcon
+                  sx={{
+                    fontSize: 23,
+                  }}
+                />
               </button>
             </div>
           </div>
@@ -284,5 +327,6 @@ export default function HeroSection() {
           <span className="h-px w-10 bg-white/50" />
         </div>
         */}
-    </section>);
+    </section>
+  );
 }

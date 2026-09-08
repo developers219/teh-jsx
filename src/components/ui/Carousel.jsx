@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 export default function Carousel({
@@ -163,9 +162,7 @@ export default function Carousel({
 
             min-[768px]:auto-cols-[calc((100%-40px)/3)]
 
-            min-[1024px]:auto-cols-[calc((100%-60px)/4)]
-
-            min-[1280px]:auto-cols-[calc((100%-80px)/5)]
+           
 
             transition-transform
             duration-500
@@ -195,10 +192,7 @@ export default function Carousel({
           }}
         >
           {items.map((item, index) => (
-            <div
-              key={item.id ?? index}
-              className="min-w-0 w-full"
-            >
+            <div key={item.id ?? index} className="min-w-0 w-full">
               {renderItem(item, index)}
             </div>
           ))}
@@ -207,5 +201,3 @@ export default function Carousel({
     </div>
   );
 }
-
-

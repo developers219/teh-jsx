@@ -23,18 +23,14 @@ export default function Trending() {
         console.log("Featured destinations:", res.data.data);
 
         const filtered = res.data.data.filter(
-          (destination) =>
-            Number(destination.categoryId) === 1
+          (destination) => Number(destination.categoryId) === 1
         );
 
         console.log("Trending destinations:", filtered);
 
         setTrendingDestinations(filtered);
       } catch (error) {
-        console.error(
-          "Failed to fetch trending destinations:",
-          error
-        );
+        console.error("Failed to fetch trending destinations:", error);
 
         setTrendingDestinations([]);
       } finally {
@@ -48,7 +44,6 @@ export default function Trending() {
   return (
     <section className="w-full overflow-hidden bg-white py-14 sm:py-16 lg:py-20">
       <div className="mx-auto max-w-[1400px] px-5 sm:px-8 lg:px-10">
-
         {/* =====================================================
             SECTION HEADER
         ====================================================== */}
@@ -72,9 +67,7 @@ export default function Trending() {
             mobileItems={1}
             gap={20}
             renderItem={(destination) => (
-              <DestinationCard
-                destination={destination}
-              />
+              <DestinationCard destination={destination} />
             )}
           />
         )}
@@ -110,7 +103,6 @@ export default function Trending() {
             No trending destinations available.
           </div>
         )}
-
       </div>
     </section>
   );
