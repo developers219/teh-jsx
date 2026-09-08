@@ -108,8 +108,8 @@ function Navbar() {
         zIndex: 1200,
 
         backgroundColor: isScrolled
-          ? "transparent"
-          : "transparent",
+          ? "rgba(0,0,0,0.2)"
+          : "rgba(0,0,0,0.2)",
 
         border: isScrolled
           ? "1px solid rgba(148, 163, 184, 0.16)"
