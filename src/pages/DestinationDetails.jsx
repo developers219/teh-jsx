@@ -24,7 +24,6 @@ export default function DestinationDetails() {
         setIsLoading(true);
         setErrorMessage("");
         const response = await api.get(`/destinations/${slug}`);
-        console.log(response);
         setDestination(response.data.data);
       } catch (error) {
         setErrorMessage(
@@ -104,12 +103,14 @@ export default function DestinationDetails() {
         subheading={
           "Handpicked travel experiences loved by travelers. Explore our most popular holiday packages and start planning your next adventure."
         }
+        themeId={4}
       />
       <PackageByCategories
         heading={"Romantic Getaways"}
         subheading={
           "Create unforgettable moments together with handpicked romantic escapes, perfect for honeymoons, anniversaries, and couples looking for a special getaway."
         }
+        themeId={5}
       />
 
       <PackageByCategories
@@ -117,6 +118,7 @@ export default function DestinationDetails() {
         subheading={
           "Travel together, create lasting memories, and enjoy exciting group experiences with carefully curated packages designed for friends, families, and groups."
         }
+        themeId={6}
       />
 
       <PackageByCategories
@@ -124,6 +126,7 @@ export default function DestinationDetails() {
         subheading={
           "Discover the freedom to travel your way with curated solo experiences, exciting destinations, and unforgettable adventures made for independent explorers."
         }
+        themeId={4}
       />
     </>
   );

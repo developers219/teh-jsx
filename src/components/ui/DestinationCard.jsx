@@ -21,7 +21,7 @@ function DestinationCard({ destination }) {
       : "27px";
   return (
     <Link
-      to={`destinations/${
+      to={`/destinations/${
         destination.categoryName === "International" ? "intl" : "dom"
       }/${destination?.slug}`}
     >

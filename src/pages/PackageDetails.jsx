@@ -414,7 +414,7 @@ function PackageDetails() {
         setIsLoading(true);
         setErrorMessage("");
 
-        const response = await api.get(`/packages/${slug}`);
+        const response = await api.get(`/packages/slug/${slug}`);
 
         console.log(response);
 

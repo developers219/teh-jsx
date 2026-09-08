@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import SectionHeader from "../home/SectionHeader";
 import PackageCard from "../packages/PackageCard";
 import Carousel from "../ui/Carousel";
+import api from "../../services/api";
 
 const packages = [
   {
@@ -194,7 +196,15 @@ const packages = [
   },
 ];
 
-export default function PackageByCategories({ heading, subheading, link }) {
+export default function PackageByCategories({ heading, subheading, themeId }) {
+  const [packages, setPackages] = useState(null);
+  useEffect(() => {
+    function fetchPackagesByTheme() {
+      const res = api.get(`/packages/theme/${themeId}`);
+      setPackages(res);
+    }
+    fetchPackagesByTheme();
+  }, []);
   return (
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
@@ -227,7 +237,7 @@ export default function PackageByCategories({ heading, subheading, link }) {
         {/* =================================================
             PACKAGE CAROUSEL
         ================================================== */}
-        {packages.length > 0 ? (
+        {packages?.length > 0 ? (
           <Carousel
             items={packages}
             desktopItems={3}
