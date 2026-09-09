@@ -112,12 +112,13 @@
 //   );
 // };
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SectionHeader from "../home/SectionHeader";
 // import PackageCard from "./PackageCard";
 
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
+import api from "../../services/api";
 
 const PackageFilters = ({ filters, setFilters }) => {
   const updateFilter = (key, value) => {
@@ -232,6 +233,14 @@ export const FilteredPackages = () => {
     people: "",
     sort: "popular",
   });
+
+  useEffect(() => {
+    const fetchPackagesByFiltering = async () => {
+      const res = await api("/packages");
+      console.log(res);
+    };
+    fetchPackagesByFiltering();
+  }, []);
 
   const filteredPackages = useMemo(() => {
     let result = [...packages];

@@ -99,6 +99,7 @@ export default function DestinationDetails() {
       />
       <FilteredPackages />
       <PackageByCategories
+        destinationSlug={slug}
         heading={"Best Selling Packages"}
         subheading={
           "Handpicked travel experiences loved by travelers. Explore our most popular holiday packages and start planning your next adventure."
@@ -106,6 +107,7 @@ export default function DestinationDetails() {
         themeId={4}
       />
       <PackageByCategories
+        destinationSlug={slug}
         heading={"Romantic Getaways"}
         subheading={
           "Create unforgettable moments together with handpicked romantic escapes, perfect for honeymoons, anniversaries, and couples looking for a special getaway."
@@ -114,6 +116,7 @@ export default function DestinationDetails() {
       />
 
       <PackageByCategories
+        destinationSlug={slug}
         heading={"Group Adventures"}
         subheading={
           "Travel together, create lasting memories, and enjoy exciting group experiences with carefully curated packages designed for friends, families, and groups."
@@ -122,6 +125,7 @@ export default function DestinationDetails() {
       />
 
       <PackageByCategories
+        destinationSlug={slug}
         heading={"Solo Adventures"}
         subheading={
           "Discover the freedom to travel your way with curated solo experiences, exciting destinations, and unforgettable adventures made for independent explorers."

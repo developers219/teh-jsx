@@ -196,13 +196,18 @@ const packages = [
   },
 ];
 
-export default function PackageByCategories({ heading, subheading, themeId }) {
+export default function PackageByCategories({
+  heading,
+  subheading,
+  themeId,
+  destinationSlug,
+}) {
   const [packages, setPackages] = useState(null);
   console.log(themeId, packages);
   useEffect(() => {
     async function fetchPackagesByTheme() {
       const res = await api.get(
-        `/destinations/manali-destination/themes/${themeId}`
+        `/destinations/${destinationSlug}/themes/${themeId}`
       );
       console.log(res);
       setPackages(res.data.data);
