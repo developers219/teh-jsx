@@ -19,7 +19,7 @@ function HowItWorks() {
 
         {/* Centered heading */}
         <div className="mx-auto max-w-3xl text-center">
-          <SectionHeader title="Simple planning, clear next steps" description="The process stays easy for travellers and structured for the team handling the holiday request." align="center"/>
+          <SectionHeader title="How it Works" description="The process stays easy for travellers and structured for the team handling the holiday request." align="center"/>
         </div>
 
         {/* Cards */}

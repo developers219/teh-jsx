@@ -2,7 +2,7 @@ import HeroSection from "../components/home/herotemp";
 import HowItWorks from "../components/home/HowItWorks";
 import PersonalizedHolidayPlan from "../components/home/PersonalizedHolidayPlan";
 import PopularDestinations from "../components/home/PopularDestinations";
-// import SearchWidget from "../components/home/SearchWidget";
+import LatestBlogs from "../components/home/LatestBlogs";
 import TravelCategories from "../components/home/TravelCategories";
 import TravelReviews from "../components/home/TravelReviews";
 import TrustCenter from "../components/home/TrustCenter";
@@ -17,7 +17,7 @@ const Home = () => {
       <TravelCategories />
       <HowItWorks />
       <WhyChooseUs />
-      {/* <LatestBlogs /> */}
+      <LatestBlogs />
       <TravelReviews />
       <TrustCenter />
       <VideoTestimonials />

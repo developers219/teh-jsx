@@ -68,12 +68,15 @@ function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
   /* =========================================================
-       CLOSE MOBILE MENU
-    ========================================================= */
+     CLOSE MOBILE MENU
+  ========================================================= */
+
   const closeMobileMenu = () => {
     setIsMobileOpen(false);
   };
+
   return (
     <AppBar
       elevation={0}
