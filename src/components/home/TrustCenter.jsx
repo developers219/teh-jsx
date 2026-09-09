@@ -38,10 +38,10 @@ function TrustCenter() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {trustItems.map((item) => {
             const Icon = item.icon;
-            return (<article key={item.title} className="group flex min-h-[100px] flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 p-7 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-200 hover:bg-white hover:shadow-xl hover:shadow-slate-200/60">
+            return (<article key={item.title} className="group flex min-h-[100px] flex-col overflow-hidden rounded-[28px] border border-slate-200 bg-slate-50 p-7 transition-all duration-300 hover:-translate-y-1  hover:bg-white hover:shadow-xl hover:shadow-slate-200/60">
                 {/* Icon */}
                 <div className="mb-5+
-                 flex h-12 w-12 items-center justify-center self-center rounded-xl bg-cyan-100 text-cyan-700 transition-all duration-300 group-hover:bg-cyan-500 group-hover:text-white mb-5">
+                 flex h-12 w-12 items-center justify-center self-center rounded-xl bg-black text-white transition-all duration-300 group-hover:bg-black group-hover:text-white mb-5">
                   <Icon sx={{ fontSize: 23 }}/>
                 </div>
 

@@ -693,8 +693,8 @@ function PackageDetails() {
               }}
               className="lg:sticky lg:top-8 lg:self-start"
             >
-              <div className="overflow-hidden rounded-[30px] border border-black bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                <div className="bg-black px-7 py-6 text-white">
+              <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+                <div className="bg-black/90 px-7 py-6 text-white">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
@@ -750,15 +750,15 @@ function PackageDetails() {
                   >
                     <span>Plan this trip</span>
 
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-black transition-transform duration-300 group-hover:translate-x-1">
-                      <ArrowRight size={17} />
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 group-hover:translate-x-1">
+                      <Phone size={17} />
                     </span>
                   </Link>
 
-                  <div className="mt-5 flex items-center justify-center gap-2 text-center text-[11px] text-black/40">
+                  {/* <div className="mt-5 flex items-center justify-center gap-2 text-center text-[11px] text-black/40">
                     <Phone size={13} />
                     Talk to our travel experts
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </motion.aside>
@@ -953,7 +953,7 @@ function PackageDetails() {
                 description="Everything arranged as part of your journey."
               />
 
-              <div className="mt-10 grid gap-6 lg:grid-cols-2">
+              <div className="mt-10 grid gap-16 lg:grid-cols-2">
                 {/* HOTELS */}
 
                 {hotels.length > 0 && (
@@ -1123,7 +1123,7 @@ function PackageDetails() {
                 description="Know exactly what is and isn't covered in your package."
               />
 
-              <div className="mt-10 grid gap-6 md:grid-cols-2">
+              <div className="mt-10 grid gap-16 md:grid-cols-2">
                 {/* INCLUSIONS */}
 
                 {inclusions.length > 0 && (
@@ -1147,10 +1147,10 @@ function PackageDetails() {
                         >
                           <Check
                             size={16}
-                            className="mt-0.5 shrink-0 text-emerald-400"
+                            className="mt-0.5 shrink-0 text-white"
                           />
 
-                          <p className="text-sm leading-6 text-white/70">
+                          <p className="text-sm leading-6 text-white">
                             {item.description}
                           </p>
                         </div>
@@ -1182,10 +1182,10 @@ function PackageDetails() {
                         >
                           <X
                             size={16}
-                            className="mt-0.5 shrink-0 text-red-500"
+                            className="mt-0.5 shrink-0 text-black"
                           />
 
-                          <p className="text-sm leading-6 text-black/55">
+                          <p className="text-sm leading-6 text-black">
                             {item.description}
                           </p>
                         </div>
@@ -1217,7 +1217,7 @@ function PackageDetails() {
                 Make it yours
               </div>
 
-              <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-[-0.04em] sm:text-6xl">
+              <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-[-0.04em] sm:text-2xl">
                 Ready to experience{" "}
                 <span className="text-white/35">{title}?</span>
               </h2>
@@ -1238,10 +1238,10 @@ function PackageDetails() {
                 </span>
               </Link>
             </div>
-
+{/* 
             <div className="pointer-events-none absolute -bottom-24 -right-10 select-none text-[170px] font-black leading-none tracking-[-0.08em] text-white/[0.035] sm:text-[240px]">
               GO
-            </div>
+            </div> */}
           </motion.section>
         </div>
       </section>
