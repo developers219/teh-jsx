@@ -33,13 +33,13 @@ export default function Carousel({
   // -------------------------------------------------------
 
   return (
-    <div className="w-full">
+    <div className="w-full ">
       {/* =================================================
           ARROWS
       ================================================== */}
 
       {showArrows && (
-        <div className="mb-6 flex justify-end gap-3">
+        <div className=" flex justify-end gap-3">
           {/* PREVIOUS */}
 
           <button
@@ -167,7 +167,7 @@ export default function Carousel({
             transition-transform
             duration-500
             ease-out
-            will-change-transform
+            will-change-transform py-8
           "
           style={{
             gap: `${gap}px`,
