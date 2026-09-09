@@ -151,20 +151,18 @@ function PackageGallery({ images = [], title = "Package" }) {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${
-                    isActive
-                      ? "border-black ring-2 ring-black ring-offset-2"
-                      : "border-black/10 hover:border-black/40"
-                  }`}
+                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${isActive
+                    ? "border-black ring-2 ring-black ring-offset-2"
+                    : "border-black/10 hover:border-black/40"
+                    }`}
                 >
                   <img
                     src={image}
                     alt={`${title} ${index + 1}`}
-                    className={`h-full w-full object-cover transition duration-500 ${
-                      isActive
-                        ? "scale-105"
-                        : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
-                    }`}
+                    className={`h-full w-full object-cover transition duration-500 ${isActive
+                      ? "scale-105"
+                      : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
+                      }`}
                   />
 
                   {isActive && <div className="absolute inset-0 bg-black/10" />}
@@ -369,11 +367,10 @@ function PackageGallery({ images = [], title = "Package" }) {
                     key={`${image}-modal-${index}`}
                     type="button"
                     onClick={() => setModalIndex(index)}
-                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${
-                      isActive
-                        ? "border-white ring-2 ring-white/30"
-                        : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
-                    }`}
+                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${isActive
+                      ? "border-white ring-2 ring-white/30"
+                      : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
+                      }`}
                   >
                     <img
                       src={image}
@@ -416,7 +413,9 @@ function PackageDetails() {
 
         const response = await api.get(`/packages/slug/${slug}`);
 
-        setTravelPackage(response.data.data);
+
+
+        setTravelPackage(response.data.data[0]);
       } catch (error) {
         console.error(error);
 
@@ -1238,7 +1237,7 @@ function PackageDetails() {
                 </span>
               </Link>
             </div>
-{/* 
+            {/* 
             <div className="pointer-events-none absolute -bottom-24 -right-10 select-none text-[170px] font-black leading-none tracking-[-0.08em] text-white/[0.035] sm:text-[240px]">
               GO
             </div> */}
