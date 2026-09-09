@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 function DestinationCard({ destination }) {
   const imageUrl =
-    destination.imageUrl ??
+    destination.images[0].imageUrl ??
     destination.image ??
     "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=90";
   /*
