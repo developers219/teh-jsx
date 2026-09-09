@@ -1,5 +1,6 @@
 import SectionHeader from "./SectionHeader";
 import Carousel from "../ui/Carousel";
+import { Link } from "react-router-dom";
 
 const blogs = [
     {
@@ -321,7 +322,7 @@ function LatestBlogs() {
                         gap={20}
                         showArrows={true}
                         renderItem={(blog) => (
-                            <BlogCard blog={blog} />
+                            <Link to="/blogs/random"><BlogCard blog={blog} /></Link>
                         )}
                     />
                 </div>
