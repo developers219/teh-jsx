@@ -472,7 +472,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
 
         {durations.map((duration) => (
           <option key={duration.id} value={duration.id}>
-            {duration.days} Days / {duration.nights} Nights
+            {duration.name}
           </option>
         ))}
       </select>
