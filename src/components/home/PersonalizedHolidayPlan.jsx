@@ -177,7 +177,7 @@ function PersonalizedHolidayPlan() {
         ================================================== */}
 
             <div className="w-full">
-              <LeadForm title="" subtitle="" submitLabel="Request My Travel Plan" successMessage="Your holiday plan request has been received." initialValues={{
+              <LeadForm title="" subtitle="" submitLabel="Submit" successMessage="Your holiday plan request has been received." initialValues={{
             source: "Personalized Holiday Plan",
             destinationInterest: "",
             packageInterest: "",
