@@ -831,8 +831,8 @@ function PageOne({
 
       <StepHeading
         // step="STEP 01"
-        title="Let's Get Started"
-        description="Tell us how we can get in touch with you."
+         title="Let's Get Started"
+        // description="Tell us how we can get in touch with you."
       />
 
 
@@ -1035,7 +1035,7 @@ function PageTwo({
       <StepHeading
         // step="STEP 02"
         title="Plan Your Trip"
-        description="Tell us where you would like to travel and when."
+        // description="Tell us where you would like to travel and when."
       />
 
 
@@ -1278,7 +1278,7 @@ function PageThree({
       <StepHeading
         // step="STEP 03"
         title="What Do You Prefer?"
-        description="Help us understand your ideal holiday."
+        // description="Help us understand your ideal holiday."
       />
 
 
@@ -1526,7 +1526,7 @@ function PageFour({
       <StepHeading
         // step="STEP 04"
         title="Almost Done"
-        description="Just a few more preferences before we create your enquiry."
+        // description="Just a few more preferences before we create your enquiry."
       />
 
 
