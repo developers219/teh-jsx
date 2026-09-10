@@ -79,7 +79,7 @@ function PersonalizedHolidayPlan() {
               ">
               <img src={formBackground} alt="Plan your next journey" className="
                   block
-                  h-auto
+                  h-full
                   w-full
                   object-cover
                   object-center
@@ -131,7 +131,7 @@ function PersonalizedHolidayPlan() {
             {/* FORM HEADING */}
 
             <div className="mb-6 sm:mb-7">
-              <p className="
+              {/* <p className="
                   mb-2
                   text-[10px]
                   font-bold
@@ -142,7 +142,7 @@ function PersonalizedHolidayPlan() {
                   sm:text-[11px]
                 ">
                 Start Here
-              </p>
+              </p> */}
 
               <h3 className="
                   text-[32px]
@@ -177,7 +177,7 @@ function PersonalizedHolidayPlan() {
         ================================================== */}
 
             <div className="w-full">
-              <LeadForm title="" subtitle="" submitLabel="Request My Travel Plan" successMessage="Your holiday plan request has been received." initialValues={{
+              <LeadForm title="" subtitle="" submitLabel="Submit" successMessage="Your holiday plan request has been received." initialValues={{
             source: "Personalized Holiday Plan",
             destinationInterest: "",
             packageInterest: "",
