@@ -36,7 +36,7 @@ function FloatingContactWidget() {
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
               <Phone size={18} className="text-cyan-600" />
-              Request A Call Back
+              Plan a Trip
             </a>
 
             <a

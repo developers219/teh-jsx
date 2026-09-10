@@ -11,9 +11,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import MenuIcon from "@mui/icons-material/Menu";
+import PhoneIcon from "@mui/icons-material/Phone";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import { Link, NavLink } from "react-router-dom";
 import { navigationItems } from "../constants/navigation";
+
+// TODO: apna real contact number yahan daal dena
+const CONTACT_PHONE_DISPLAY = "+91 90000 00000";
+const CONTACT_PHONE_TEL = "+919000000000";
 
 function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
@@ -220,6 +225,35 @@ function Navbar() {
             </Button>
           ))}
         </nav>
+
+        {/* ===================================================
+            CALL BUTTON (DESKTOP ONLY)
+        =================================================== */}
+        <Button
+          component="a"
+          href={`tel:${CONTACT_PHONE_TEL}`}
+          color="inherit"
+          startIcon={<PhoneIcon sx={{ fontSize: "16px !important" }} />}
+          className="hidden lg:inline-flex"
+          sx={{
+            ml: 1.5,
+            px: 2,
+            py: 0.9,
+            borderRadius: "999px",
+            textTransform: "none",
+            fontWeight: 800,
+            fontSize: "13px",
+            color: "white",
+            border: "1px solid rgba(255,255,255,0.5)",
+            whiteSpace: "nowrap",
+
+            "&:hover": {
+              backgroundColor: "rgba(255,255,255,0.10)",
+            },
+          }}
+        >
+          {CONTACT_PHONE_DISPLAY}
+        </Button>
 
         {/* ===================================================
             MOBILE MENU BUTTON
