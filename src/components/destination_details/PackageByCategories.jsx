@@ -215,7 +215,7 @@ export default function PackageByCategories({
     fetchPackagesByTheme();
   }, []);
   return (
-    <section className="bg-white py-16 md:py-20">
+    <section className="bg-white my-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* =================================================
             SECTION HEADER
