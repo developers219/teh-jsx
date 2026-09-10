@@ -607,8 +607,8 @@ function LeadForm({
         overflow-y-auto
         px-5
         py-6
-        sm:px-8
-        sm:py-8
+        sm:px-4
+        sm:py-2
 
         [&::-webkit-scrollbar]:w-[5px]
         [&::-webkit-scrollbar-track]:bg-neutral-100
