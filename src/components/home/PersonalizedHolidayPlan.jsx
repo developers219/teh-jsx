@@ -144,7 +144,7 @@ function PersonalizedHolidayPlan() {
                 Start Here
               </p> */}
 
-              <h3 className="
+              {/* <h3 className="
                   text-[32px]
                   font-extrabold
                   leading-[1.05]
@@ -157,9 +157,9 @@ function PersonalizedHolidayPlan() {
                 <span className="block">
                   go next?
                 </span>
-              </h3>
+              </h3> */}
 
-              <p className="
+              {/* <p className="
                   mt-3
                   max-w-[500px]
                   text-[13px]
@@ -169,7 +169,7 @@ function PersonalizedHolidayPlan() {
                 ">
                 Share a few details about your trip and our experts
                 will get back to you with suitable options.
-              </p>
+              </p> */}
             </div>
 
             {/* =================================================
