@@ -6,6 +6,7 @@ import { getTravelCategories } from "../../services/travel-category.service";
 import api from "../../services/api";
 import Carousel from "../ui/Carousel";
 import DestinationCard from "../ui/DestinationCard";
+import SectionHeader from "./SectionHeader";
 
 const fallbackCategories = [
   {
@@ -202,9 +203,7 @@ function TravelCategories() {
           setCategories(travelCategories);
         }
       } catch (error) {
-        setErrorMessage(
-          "Travel categories could not be loaded right now."
-        );
+        setErrorMessage("Travel categories could not be loaded right now.");
         console.log(error);
       } finally {
         setIsLoading(false);
@@ -243,52 +242,33 @@ function TravelCategories() {
   return (
     <section className="bg-white px-6 py-16 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
-
         {/* =================================================
             LOADING STATE
         ================================================== */}
 
         {isLoading ? (
           <div className="space-y-16">
-
             {/* Domestic Skeleton */}
             <div>
-              <Skeleton
-                variant="rounded"
-                height={45}
-                className="mb-7"
-              />
+              <Skeleton variant="rounded" height={45} className="mb-7" />
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton
-                    key={index}
-                    variant="rounded"
-                    height={300}
-                  />
+                  <Skeleton key={index} variant="rounded" height={300} />
                 ))}
               </div>
             </div>
 
             {/* International Skeleton */}
             <div>
-              <Skeleton
-                variant="rounded"
-                height={45}
-                className="mb-7"
-              />
+              <Skeleton variant="rounded" height={45} className="mb-7" />
 
               <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
                 {Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton
-                    key={index}
-                    variant="rounded"
-                    height={300}
-                  />
+                  <Skeleton key={index} variant="rounded" height={300} />
                 ))}
               </div>
             </div>
-
           </div>
         ) : null}
 
@@ -308,25 +288,18 @@ function TravelCategories() {
 
         {!isLoading && (
           <div className="space-y-16">
-
             {/* =================================================
                 DOMESTIC DESTINATIONS
             ================================================= */}
 
             <section>
-
               {/* Heading + CTA */}
               <div className="mb-0 flex items-center justify-between gap-4">
-
-                <Link
-                  to={"/destinations/dom"}
-                  className="group inline-flex items-center gap-3"
-                >
-                  <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 transition-colors duration-300 sm:text-3xl">
-                    DOMESTIC DESTINATIONS
-                  </h2>
-                </Link>
-
+                <SectionHeader
+                  title={"Domestic Destinations"}
+                  description={"Choose from your own country"}
+                  align="center"
+                />
               </div>
 
               {/* Domestic Carousel */}
@@ -341,7 +314,6 @@ function TravelCategories() {
                   <DestinationCard destination={destination} />
                 )}
               />
-
             </section>
 
             {/* =================================================
@@ -349,19 +321,13 @@ function TravelCategories() {
             ================================================= */}
 
             <section>
-
               {/* Heading + CTA */}
               <div className="mb-0 flex items-center justify-between gap-4">
-
-                <Link
-                  to={"/destinations/intl"}
-                  className="group inline-flex items-center gap-3"
-                >
-                  <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 transition-colors duration-300 sm:text-3xl">
-                    INTERNATIONAL DESTINATIONS
-                  </h2>
-                </Link>
-
+                <SectionHeader
+                  title={"International Destinations"}
+                  description={"Choose from your own country"}
+                  align="center"
+                />
               </div>
 
               {/* International Carousel */}
@@ -376,12 +342,9 @@ function TravelCategories() {
                   <DestinationCard destination={destination} />
                 )}
               />
-
             </section>
-
           </div>
         )}
-
       </div>
     </section>
   );

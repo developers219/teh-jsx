@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "motion/react";
 import Alert from "@mui/material/Alert";
 import Skeleton from "@mui/material/Skeleton";
 import DestinationCard from "../ui/DestinationCard";
@@ -80,20 +81,30 @@ function PopularDestinations() {
         {/* ================= DESTINATION CARDS ================= */}
 
         {!isLoading && !errorMessage && trendingDestinations.length > 0 ? (
-          <div
-            className="
-              mt-12
-              grid
-              grid-cols-1
-              gap-6
-              md:grid-cols-2
-              lg:grid-cols-4
-              xl:grid-cols-5
-            "
-          >
-            {trendingDestinations.map((destination) => (
-              <DestinationCard key={destination.id} destination={destination} />
-            ))}
+          <div className="overflow-hidden mt-12">
+            <motion.div
+              className="flex w-max gap-6"
+              animate={{
+                x: ["0%", "-50%"],
+              }}
+              transition={{
+                x: {
+                  repeat: Infinity,
+                  repeatType: "loop",
+                  duration: 15,
+                  ease: "linear",
+                },
+              }}
+            >
+              {[...trendingDestinations, ...trendingDestinations].map(
+                (destination) => (
+                  <DestinationCard
+                    key={destination.id}
+                    destination={destination}
+                  />
+                )
+              )}
+            </motion.div>
           </div>
         ) : null}
 
