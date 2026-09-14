@@ -24,8 +24,6 @@ export default function HeroSection() {
         relative
         min-h-[560px]
         w-full
-        overflow-hidden
-
         sm:min-h-[600px]
         md:min-h-[640px]
         lg:min-h-[680px]
@@ -63,14 +61,8 @@ export default function HeroSection() {
         className="
           absolute
           inset-0
-          bg-gradient-to-r
-          from-black/3
-          via-black/2
-          to-transparent
-
-          sm:from-black/6
-          md:from-black/8
-          lg:from-black/43
+          bg-linear-to-b from-black/80 via-black/50 to-transparent
+        
         "
       />
 
@@ -86,7 +78,8 @@ export default function HeroSection() {
           min-h-[560px]
           w-full
           max-w-7xl
-          items-center
+          items-end
+          justify-center
 
           px-5
           py-16
@@ -101,7 +94,7 @@ export default function HeroSection() {
 
           lg:min-h-[680px]
           lg:px-10
-          lg:py-24
+          lg:py-48
 
           xl:min-h-[720px]
           xl:px-12
@@ -121,11 +114,9 @@ export default function HeroSection() {
             className="
               max-w-[650px]
               text-4xl
-              font-semibold
-              leading-[1.05]
-              tracking-tight
+              font-thin
               text-white
-
+text-center
               sm:text-5xl
 
               md:text-6xl
@@ -135,11 +126,12 @@ export default function HeroSection() {
               xl:max-w-[720px]
               xl:text-[76px]
             "
+            style={{ fontWeight: 100 }}
           >
             Your next
-            <br />
-            <span className="text-white">great escape</span>
-            <br />
+            {/* <br /> */}
+            <span className="text-white"> great escape </span>
+            {/* <br /> */}
             starts here.
           </h1>
 
@@ -149,16 +141,16 @@ export default function HeroSection() {
           <p
             className="
               mt-5
-              max-w-[520px]
+              
               text-sm
               leading-6
               text-white
-
+text-center
               sm:mt-6
               sm:text-base
               sm:leading-7
 
-              md:max-w-xl
+              
               md:text-lg
 
               lg:mt-7
@@ -176,11 +168,8 @@ export default function HeroSection() {
             className="
               mt-7
               w-full
-              max-w-[560px]
-
-              sm:mt-8
-
-              md:mt-9
+              max-w-[800px]
+absolute -bottom-6 z-10
             "
           >
             <div
