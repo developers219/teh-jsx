@@ -2,6 +2,8 @@ import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import heroVideo from "../../assets/images/hero_m.mp4";
+import SectionHeader from "./SectionHeader";
+import { Typography } from "@mui/material";
 const destinations = [
   "Bali",
   "Dubai",
@@ -51,7 +53,7 @@ export default function HeroSection() {
       {/* =========================================================
             GENERAL DARK OVERLAY
         ========================================================== */}
-      <div className="absolute inset-0 " />
+      {/* <div className="absolute inset-0 " /> */}
 
       {/* =========================================================
             LEFT GRADIENT
@@ -61,7 +63,7 @@ export default function HeroSection() {
         className="
           absolute
           inset-0
-          bg-linear-to-b from-black/80 via-black/50 to-transparent
+          bg-linear-to-b from-black/60 via-black/20 to-transparent
         
         "
       />
@@ -110,18 +112,18 @@ export default function HeroSection() {
           {/* =====================================================
             HEADING
         ====================================================== */}
-          <h1
+          {/* <h1
             className="
               max-w-[650px]
               text-4xl
-              font-thin
               text-white
+              leading-tight
 text-center
               sm:text-5xl
 
               md:text-6xl
 
-              lg:text-7xl
+              lg:text-xl
 
               xl:max-w-[720px]
               xl:text-[76px]
@@ -130,10 +132,19 @@ text-center
           >
             Your next
             {/* <br /> */}
-            <span className="text-white"> great escape </span>
-            {/* <br /> */}
-            starts here.
-          </h1>
+           
+          <SectionHeader  title={""}/>
+          <Typography
+        variant="h2"
+        className={
+          
+            "text-3xl font-black text-white sm:text-7xl font-cg"
+        }
+        style={{ fontFamily: '"Cormorant Garamond", serif' }}
+        sx={{ lineHeight: 1.12 }}
+      >
+        {"Your next great escape starts here"}
+      </Typography>
 
           {/* =====================================================
             DESCRIPTION
@@ -153,12 +164,12 @@ text-center
               
               md:text-lg
 
-              lg:mt-7
+              lg:mt-5
+              max-w-2xl
             "
+            style={{fontFamily: "Montserrat"}}
           >
-            Discover handpicked destinations, thoughtfully crafted holidays, and
-            unforgettable experiences designed around the way you love to
-            travel.
+            Discover handpicked destinations, thoughtfully crafted holidays now 
           </p>
 
           {/* =====================================================
