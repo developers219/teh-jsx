@@ -143,7 +143,7 @@ function DestinationCard({ destination }) {
                */
               fontSize: nameFontSize,
               lineHeight: 1,
-              fontWeight: 700,
+              // fontWeight: 700,
               letterSpacing: "-0.2px",
               textTransform: "uppercase",
               color: "#fff",
@@ -156,7 +156,6 @@ function DestinationCard({ destination }) {
               textOverflow: "clip",
               textShadow: "0 2px 8px rgba(0,0,0,0.65)",
             }}
-            style={{ fontFamily: "Alex Brush" }}
           >
             {destinationName}
           </Typography>
