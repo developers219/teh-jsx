@@ -152,15 +152,24 @@ text-center
             Your next
             {/* <br /> */}
 
-          <SectionHeader title={""} />
-          <Typography
+          {/* <SectionHeader title={"Your next great escape starts here"} dark /> */}
+          {/* <Typography
             variant="h2"
             className={"font-black text-white text-8xl font-cg"}
             style={{ fontFamily: '"Cormorant Garamond", serif' }}
-            sx={{ lineHeight: 1.12, fontSize: 80 }}
+            sx={{
+              lineHeight: 1.12,
+              fontSize: 80,
+            }}
           >
             {"Your next great escape starts here"}
-          </Typography>
+          </Typography> */}
+          <h2
+            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            className="text-white/80 text-6xl font-cg font-thin"
+          >
+            Your next great escape starts here
+          </h2>
 
           {/* =====================================================
             DESCRIPTION
@@ -169,23 +178,18 @@ text-center
             className="
               mt-5
               
-              text-sm
-              leading-6
-              text-white
+              text-xs
+              text-white/80 uppercase tracking-[8px]
 text-center
               sm:mt-6
-              sm:text-base
-              sm:leading-7
-
-              
-              md:text-lg
+            
 
               lg:mt-5
               
             "
             style={{ fontFamily: "Montserrat" }}
           >
-            Discover handpicked destinations, thoughtfully crafted holidays now
+            Discover handpicked destinations, thoughtfully crafted holidays
           </p>
 
           {/* =====================================================
