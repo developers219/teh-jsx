@@ -14,8 +14,8 @@ const Home = () => {
       <HeroSection />
       {/* <SearchWidget /> */}
       {/* <FeaturedPackages /> */}
-      <PopularDestinations />
       <TravelCategories />
+      <PopularDestinations />
       <HowItWorks />
       <WhyChooseUs />
       <LatestBlogs />

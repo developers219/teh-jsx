@@ -35,7 +35,7 @@ function FloatingContactWidget() {
               href={`tel:${CALLBACK_PHONE_NUMBER}`}
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              <Phone size={18} className="text-cyan-600" />
+              <Phone size={18} className="text-[#c5bd96]" />
               Plan a Trip
             </a>
 
@@ -45,7 +45,7 @@ function FloatingContactWidget() {
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              <MessageCircle size={18} className="text-emerald-500" />
+              <MessageCircle size={18} className="text-[#c5bd96]" />
               Chat With Our Executive
             </a>
           </div>
@@ -56,9 +56,9 @@ function FloatingContactWidget() {
         type="button"
         onClick={handleToggle}
         aria-label="Contact us"
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500 text-white shadow-xl transition hover:bg-emerald-600"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-[#c5bd96] text-white shadow-xl transition hover:bg-[#c5bd96]/80 cursor-pointer"
       >
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c5bd96] opacity-75" />
         <MessageCircle size={26} className="relative" />
       </button>
     </div>

@@ -67,16 +67,9 @@ function HowItWorks() {
       */
       const transitionDistance = window.innerHeight * 2;
 
-      const scrolled =
-        window.scrollY - sectionTop;
+      const scrolled = window.scrollY - sectionTop;
 
-      const progress = Math.max(
-        0,
-        Math.min(
-          scrolled / transitionDistance,
-          1
-        )
-      );
+      const progress = Math.max(0, Math.min(scrolled / transitionDistance, 1));
 
       setScrollProgress(progress);
 
@@ -93,27 +86,14 @@ function HowItWorks() {
 
     updateScroll();
 
-    window.addEventListener(
-      "scroll",
-      handleScroll,
-      { passive: true }
-    );
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
-    window.addEventListener(
-      "resize",
-      updateScroll
-    );
+    window.addEventListener("resize", updateScroll);
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
+      window.removeEventListener("scroll", handleScroll);
 
-      window.removeEventListener(
-        "resize",
-        updateScroll
-      );
+      window.removeEventListener("resize", updateScroll);
     };
   }, []);
 
@@ -124,16 +104,12 @@ function HowItWorks() {
      1 → 2 = IMAGE 2 → IMAGE 3
   ============================================================ */
 
-  const storyProgress =
-    scrollProgress * (steps.length - 1);
+  const storyProgress = scrollProgress * (steps.length - 1);
 
   /*
     Which image is currently on top.
   */
-  const currentIndex = Math.min(
-    Math.floor(storyProgress),
-    steps.length - 1
-  );
+  const currentIndex = Math.min(Math.floor(storyProgress), steps.length - 1);
 
   /*
     Progress of the current transition.
@@ -145,9 +121,7 @@ function HowItWorks() {
       0 → 1
   */
   const localProgress =
-    currentIndex >= steps.length - 1
-      ? 0
-      : storyProgress - currentIndex;
+    currentIndex >= steps.length - 1 ? 0 : storyProgress - currentIndex;
 
   return (
     <section
@@ -157,7 +131,6 @@ function HowItWorks() {
         height: "300vh",
       }}
     >
-
       {/* ========================================================
           DESKTOP
       ========================================================= */}
@@ -173,7 +146,6 @@ function HowItWorks() {
           lg:block
         "
       >
-
         <div
           className="
             grid
@@ -182,7 +154,6 @@ function HowItWorks() {
             grid-cols-2
           "
         >
-
           {/* ======================================================
               LEFT SIDE — TEXT
           ====================================================== */}
@@ -196,7 +167,6 @@ function HowItWorks() {
               bg-white
             "
           >
-
             <div
               className="
                 flex
@@ -210,7 +180,6 @@ function HowItWorks() {
                 2xl:px-24
               "
             >
-
               <div
                 className="
                   w-full
@@ -220,7 +189,6 @@ function HowItWorks() {
                   xl:pr-12
                 "
               >
-
                 {/* =================================================
                     HOW IT WORKS LABEL
                 ================================================== */}
@@ -232,9 +200,7 @@ function HowItWorks() {
                     justify-end
                   "
                 >
-
                   <div className="w-fit">
-
                     <div
                       className="
                         h-px
@@ -265,9 +231,7 @@ function HowItWorks() {
                         bg-[#1f2937]
                       "
                     />
-
                   </div>
-
                 </div>
 
                 {/* =================================================
@@ -281,9 +245,7 @@ function HowItWorks() {
                     overflow-hidden
                   "
                 >
-
                   {steps.map((step, index) => {
-
                     let translateY = 80;
 
                     let opacity = 0;
@@ -295,12 +257,9 @@ function HowItWorks() {
                       moves upward.
                     */
                     if (index === currentIndex) {
+                      translateY = -localProgress * 80;
 
-                      translateY =
-                        -localProgress * 80;
-
-                      opacity =
-                        1 - localProgress;
+                      opacity = 1 - localProgress;
                     }
 
                     /*
@@ -308,16 +267,10 @@ function HowItWorks() {
 
                       Comes from below.
                     */
-                    if (
-                      index === currentIndex + 1
-                    ) {
+                    if (index === currentIndex + 1) {
+                      translateY = 80 - localProgress * 80;
 
-                      translateY =
-                        80 -
-                        localProgress * 80;
-
-                      opacity =
-                        localProgress;
+                      opacity = localProgress;
                     }
 
                     /*
@@ -327,7 +280,6 @@ function HowItWorks() {
                       index === steps.length - 1 &&
                       currentIndex === steps.length - 1
                     ) {
-
                       translateY = 0;
 
                       opacity = 1;
@@ -345,18 +297,13 @@ function HowItWorks() {
                           will-change-transform
                         "
                         style={{
-                          transform:
-                            `translateY(${translateY}px)`,
+                          transform: `translateY(${translateY}px)`,
 
                           opacity,
 
-                          zIndex:
-                            index === currentIndex + 1
-                              ? 20
-                              : 10,
+                          zIndex: index === currentIndex + 1 ? 20 : 10,
                         }}
                       >
-
                         {/* STEP INFO */}
 
                         <div
@@ -368,7 +315,6 @@ function HowItWorks() {
                             gap-4
                           "
                         >
-
                           <span
                             className="
                               text-[11px]
@@ -399,7 +345,6 @@ function HowItWorks() {
                           >
                             {step.eyebrow}
                           </span>
-
                         </div>
 
                         {/* TITLE */}
@@ -408,7 +353,6 @@ function HowItWorks() {
                           className="
                             ml-auto
                             max-w-[620px]
-                            font-serif
                             text-[40px]
                             font-normal
                             leading-[1.08]
@@ -430,7 +374,6 @@ function HowItWorks() {
                             ml-auto
                             mt-7
                             max-w-[520px]
-                            font-serif
                             text-[15px]
                             font-normal
                             leading-[1.85]
@@ -440,17 +383,12 @@ function HowItWorks() {
                         >
                           {step.description}
                         </p>
-
                       </div>
                     );
                   })}
-
                 </div>
-
               </div>
-
             </div>
-
           </div>
 
           {/* ======================================================
@@ -465,9 +403,7 @@ function HowItWorks() {
               overflow-hidden
             "
           >
-
             {steps.map((step, index) => {
-
               /*
                 ==================================================
                 EVERY IMAGE HAS THE SAME POSITION
@@ -496,23 +432,19 @@ function HowItWorks() {
               */
 
               if (index === 0) {
-
                 if (currentIndex === 0) {
-
                   /*
                     Image 1 acts like a page.
 
                     It moves completely UP.
                   */
 
-                  y =
-                    -localProgress * 100;
+                  y = -localProgress * 100;
 
                   blur = 0;
 
                   scale = 1;
                 } else {
-
                   /*
                     Image 1 has already left.
                   */
@@ -532,7 +464,6 @@ function HowItWorks() {
               */
 
               if (index === 1) {
-
                 /*
                   FIRST TRANSITION
 
@@ -544,7 +475,6 @@ function HowItWorks() {
                 */
 
                 if (currentIndex === 0) {
-
                   y = 0;
 
                   /*
@@ -559,13 +489,9 @@ function HowItWorks() {
                       blur = 0px
                   */
 
-                  blur =
-                    14 -
-                    localProgress * 14;
+                  blur = 14 - localProgress * 14;
 
-                  scale =
-                    1.035 -
-                    localProgress * 0.035;
+                  scale = 1.035 - localProgress * 0.035;
                 }
 
                 /*
@@ -577,9 +503,7 @@ function HowItWorks() {
                 */
 
                 if (currentIndex === 1) {
-
-                  y =
-                    -localProgress * 100;
+                  y = -localProgress * 100;
 
                   blur = 0;
 
@@ -591,7 +515,6 @@ function HowItWorks() {
                 */
 
                 if (currentIndex >= 2) {
-
                   y = -100;
 
                   blur = 0;
@@ -607,14 +530,12 @@ function HowItWorks() {
               */
 
               if (index === 2) {
-
                 /*
                   Image 3 is completely hidden
                   underneath Images 1 and 2.
                 */
 
                 if (currentIndex === 0) {
-
                   y = 0;
 
                   blur = 14;
@@ -629,16 +550,11 @@ function HowItWorks() {
                 */
 
                 if (currentIndex === 1) {
-
                   y = 0;
 
-                  blur =
-                    14 -
-                    localProgress * 14;
+                  blur = 14 - localProgress * 14;
 
-                  scale =
-                    1.035 -
-                    localProgress * 0.035;
+                  scale = 1.035 - localProgress * 0.035;
                 }
 
                 /*
@@ -646,7 +562,6 @@ function HowItWorks() {
                 */
 
                 if (currentIndex >= 2) {
-
                   y = 0;
 
                   blur = 0;
@@ -679,8 +594,7 @@ function HowItWorks() {
                       03 = BOTTOM
                     */
 
-                    zIndex:
-                      steps.length - index,
+                    zIndex: steps.length - index,
 
                     /*
                       IMPORTANT:
@@ -697,23 +611,17 @@ function HowItWorks() {
 
                     opacity: 1,
 
-                    transform:
-                      `translate3d(0, ${y}%, 0) scale(${scale})`,
+                    transform: `translate3d(0, ${y}%, 0) scale(${scale})`,
 
-                    filter:
-                      `blur(${blur}px)`,
+                    filter: `blur(${blur}px)`,
 
-                    transition:
-                      "filter 40ms linear",
+                    transition: "filter 40ms linear",
                   }}
                 />
               );
             })}
-
           </div>
-
         </div>
-
       </div>
 
       {/* ========================================================
@@ -721,7 +629,6 @@ function HowItWorks() {
       ========================================================= */}
 
       <div className="lg:hidden">
-
         {steps.map((step) => (
           <div
             key={step.number}
@@ -730,7 +637,6 @@ function HowItWorks() {
               bg-white
             "
           >
-
             {/* IMAGE */}
 
             <div
@@ -741,7 +647,6 @@ function HowItWorks() {
                 overflow-hidden
               "
             >
-
               <img
                 src={step.image}
                 alt={step.imageAlt}
@@ -751,7 +656,6 @@ function HowItWorks() {
                   object-cover
                 "
               />
-
             </div>
 
             {/* TEXT */}
@@ -764,7 +668,6 @@ function HowItWorks() {
                 sm:px-10
               "
             >
-
               <div
                 className="
                   flex
@@ -773,7 +676,6 @@ function HowItWorks() {
                   gap-4
                 "
               >
-
                 <span
                   className="
                     text-[11px]
@@ -802,7 +704,6 @@ function HowItWorks() {
                 >
                   {step.eyebrow}
                 </span>
-
               </div>
 
               <h2
@@ -834,14 +735,10 @@ function HowItWorks() {
               >
                 {step.description}
               </p>
-
             </div>
-
           </div>
         ))}
-
       </div>
-
     </section>
   );
 }

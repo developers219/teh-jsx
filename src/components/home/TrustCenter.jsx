@@ -58,83 +58,66 @@ function TrustCenter() {
     if (!section) return;
 
     const handleScroll = () => {
-  const rect = section.getBoundingClientRect();
+      const rect = section.getBoundingClientRect();
 
-  const scrollInside = Math.max(
-    -rect.top,
-    0
-  );
+      const scrollInside = Math.max(-rect.top, 0);
 
-  const viewportHeight = window.innerHeight;
+      const viewportHeight = window.innerHeight;
 
-  const currentScrollY = window.scrollY;
+      const currentScrollY = window.scrollY;
 
-  const scrollDirection =
-    currentScrollY >= lastScrollY.current
-      ? 1
-      : -1;
+      const scrollDirection = currentScrollY >= lastScrollY.current ? 1 : -1;
 
-  lastScrollY.current = currentScrollY;
+      lastScrollY.current = currentScrollY;
 
-  setDirection(scrollDirection);
+      setDirection(scrollDirection);
 
-  /*
-   * -----------------------------------------
-   * NORMAL STORIES
-   * -----------------------------------------
-   *
-   * 0 → 1 = Story 1
-   * 1 → 2 = Story 2
-   * 2 → 3 = Story 3
-   * 3 → 4 = Story 4
-   */
+      /*
+       * -----------------------------------------
+       * NORMAL STORIES
+       * -----------------------------------------
+       *
+       * 0 → 1 = Story 1
+       * 1 → 2 = Story 2
+       * 2 → 3 = Story 3
+       * 3 → 4 = Story 4
+       */
 
-  const normalStoryIndex = Math.min(
-    stories.length - 1,
-    Math.floor(
-      scrollInside / viewportHeight
-    )
-  );
+      const normalStoryIndex = Math.min(
+        stories.length - 1,
+        Math.floor(scrollInside / viewportHeight)
+      );
 
-  setActiveIndex(normalStoryIndex);
+      setActiveIndex(normalStoryIndex);
 
-  /*
-   * -----------------------------------------
-   * FINAL EXIT
-   * -----------------------------------------
-   *
-   * Story 4 has finished its normal
-   * viewport at 4 × viewportHeight.
-   *
-   * From 4 → 5:
-   *
-   * 4th text moves UP completely.
-   */
+      /*
+       * -----------------------------------------
+       * FINAL EXIT
+       * -----------------------------------------
+       *
+       * Story 4 has finished its normal
+       * viewport at 4 × viewportHeight.
+       *
+       * From 4 → 5:
+       *
+       * 4th text moves UP completely.
+       */
 
-  const finalExitStart =
-    stories.length * viewportHeight;
+      const finalExitStart = stories.length * viewportHeight;
 
-  const finalExitDistance =
-    scrollInside - finalExitStart;
+      const finalExitDistance = scrollInside - finalExitStart;
 
-  if (
-    normalStoryIndex ===
-    stories.length - 1
-  ) {
-    const progress = Math.max(
-      0,
-      Math.min(
-        1,
-        finalExitDistance /
-          viewportHeight
-      )
-    );
+      if (normalStoryIndex === stories.length - 1) {
+        const progress = Math.max(
+          0,
+          Math.min(1, finalExitDistance / viewportHeight)
+        );
 
-    setFinalExitProgress(progress);
-  } else {
-    setFinalExitProgress(0);
-  }
-};
+        setFinalExitProgress(progress);
+      } else {
+        setFinalExitProgress(0);
+      }
+    };
     window.addEventListener("scroll", handleScroll, {
       passive: true,
     });
@@ -231,15 +214,14 @@ function TrustCenter() {
       ref={sectionRef}
       className="relative bg-white"
       style={{
-  height: `${(stories.length + 1) * 100}vh`,
-}}
+        height: `${(stories.length + 1) * 100}vh`,
+      }}
     >
       {/* =====================================================
           STICKY VIEWPORT
       ====================================================== */}
 
       <div className="sticky top-0 h-screen overflow-hidden bg-white">
-
         {/* ===================================================
             FIXED IMAGE AREA
 
@@ -299,32 +281,28 @@ function TrustCenter() {
             TEXT
         ==================================================== */}
 
-        <AnimatePresence
-          mode="wait"
-          custom={direction}
-        >
+        <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={activeIndex}
             custom={direction}
             variants={textVariants}
             initial="enter"
             animate={
-  activeIndex === stories.length - 1 &&
-  finalExitProgress > 0
-    ? {
-        y: `${-finalExitProgress * 100}vh`,
-        opacity: 1 - finalExitProgress,
-        filter: `blur(${finalExitProgress * 12}px)`,
-      }
-    : "center"
-}
+              activeIndex === stories.length - 1 && finalExitProgress > 0
+                ? {
+                    y: `${-finalExitProgress * 100}vh`,
+                    opacity: 1 - finalExitProgress,
+                    filter: `blur(${finalExitProgress * 12}px)`,
+                  }
+                : "center"
+            }
             exit="exit"
             transition={{
               /*
                * TEXT MOVES FIRST
                */
               y: {
-                duration: activeIndex === 3?0.3:0.5,
+                duration: activeIndex === 3 ? 0.3 : 0.5,
                 ease: [0.22, 1, 0.36, 1],
               },
 
@@ -353,7 +331,6 @@ function TrustCenter() {
               }
             `}
           >
-
             {/* =================================================
                 LABEL
             ================================================== */}
@@ -380,7 +357,6 @@ function TrustCenter() {
             <h2
               className="
                 max-w-[470px]
-                font-sans
                 text-[38px]
                 font-normal
                 leading-[1.04]
@@ -471,30 +447,24 @@ function TrustCenter() {
             gap-2
           "
         > */}
-          {stories.map((_, index) => (
-            <div
-              key={index}
-              className="
+        {stories.map((_, index) => (
+          <div
+            key={index}
+            className="
                 h-[3px]
                 rounded-full
                 bg-neutral-900
                 transition-all
                 duration-500
               "
-              style={{
-                width:
-                  activeIndex === index
-                    ? "28px"
-                    : "8px",
+            style={{
+              width: activeIndex === index ? "28px" : "8px",
 
-                opacity:
-                  activeIndex === index
-                    ? 1
-                    : 0.2,
-              }}
-            />
-          ))}
-        </div>
+              opacity: activeIndex === index ? 1 : 0.2,
+            }}
+          />
+        ))}
+      </div>
       {/* </div> */}
     </section>
   );
