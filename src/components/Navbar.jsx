@@ -15,6 +15,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import TravelExploreIcon from "@mui/icons-material/TravelExplore";
 import { Link, NavLink } from "react-router-dom";
 import { navigationItems } from "../constants/navigation";
+import Escapeora from "../assets/images/escapeora.jpeg";
 
 // TODO: apna real contact number yahan daal dena
 const CONTACT_PHONE_DISPLAY = "+91 90000 00000";
@@ -86,9 +87,14 @@ function Navbar() {
     <nav className="fixed inset-0 z-20 text-white/80 font-medium">
       <div className="flex">
         <div className="p-4 px-12">Menu</div>
-        <div className="flex-1 border-x p-4 border-gray-500 text-center">
-          Escapeora
-        </div>
+         <div className="flex-1 border-x p-4 border-gray-500 flex items-center justify-center">
+      <img
+  src={Escapeora}
+  alt="Escapeora"
+  className="w-28 h-auto object-contain"
+/>
+    </div>
+
         <div>
           <Link
             to={"tel:+915785162122"}
