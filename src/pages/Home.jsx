@@ -9,12 +9,13 @@ import TrustCenter from "../components/home/TrustCenter";
 import VideoTestimonials from "../components/home/VideoTestimonials";
 import WhyChooseUs from "../components/home/WhyChooseUs";
 const Home = () => {
-    return (<>
+  return (
+    <>
       <HeroSection />
       {/* <SearchWidget /> */}
       {/* <FeaturedPackages /> */}
-      <PopularDestinations />
       <TravelCategories />
+      <PopularDestinations />
       <HowItWorks />
       <WhyChooseUs />
       <LatestBlogs />
@@ -25,6 +26,7 @@ const Home = () => {
         <PersonalizedHolidayPlan />
       </div>
       {/* <ContactCTA /> */}
-    </>);
+    </>
+  );
 };
 export default Home;
