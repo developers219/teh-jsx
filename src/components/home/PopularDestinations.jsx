@@ -409,7 +409,10 @@ function DestinationContent({ destination, index, slidePosition }) {
 
           {/* TITLE */}
 
-          <h2 className="text-6xl font-thin leading-[0.88] tracking-[-0.045em] text-white sm:text-7xl lg:text-[7.5rem]">
+          <h2
+            className="text-6xl font-thin leading-[0.88] tracking-[-0.045em] text-white sm:text-7xl lg:text-[7.5rem]"
+            style={{ fontFamily: "Cormorant Garamond" }}
+          >
             {destination.name}
           </h2>
 
@@ -425,7 +428,7 @@ function DestinationContent({ destination, index, slidePosition }) {
             {/* WHITE BUTTON */}
 
             <button className="group relative flex h-12 items-center overflow-hidden rounded-full bg-white px-6 text-xs font-semibold uppercase tracking-[0.12em] text-black">
-              <span className="transition-transform duration-500 group-hover:-translate-y-full">
+              <span className="transition-transform duration-500">
                 Explore More
               </span>
 
@@ -437,7 +440,7 @@ function DestinationContent({ destination, index, slidePosition }) {
 
             {/* GLASS BUTTON */}
 
-            <button className="group flex h-12 items-center rounded-full border border-white/30 bg-white/10 px-5 text-xs uppercase tracking-[0.1em] text-white backdrop-blur-md transition-colors hover:bg-white/20">
+            <button className="group flex h-12 items-center rounded-full border border-white/30 bg-white/20 px-5 text-xs uppercase tracking-[0.1em] text-white backdrop-blur-md transition-colors hover:bg-white/30">
               Explore {destination.name}
               <ArrowUpRight
                 size={15}
@@ -460,7 +463,10 @@ function DestinationCounter({ activeIndex, total }) {
 
   return (
     <div className="absolute left-7 top-24 z-40 lg:left-12 lg:top-28 size-48">
-      <div className="flex h-[110px] overflow-hidden font-serif text-[6rem] leading-none tracking-[-0.06em] text-white/80 lg:text-[7rem]">
+      <div
+        className="flex h-[110px]  font-serif text-[6rem] leading-none tracking-[-0.06em] text-white/80 lg:text-[7rem]"
+        style={{ fontFamily: "Cormorant Garamond" }}
+      >
         <span>0</span>
 
         <div className="relative h-[1em]">

@@ -40,7 +40,7 @@ function DestinationCard({ destination }) {
           flex: "0 0 243px",
           flexShrink: 0,
           overflow: "hidden",
-          borderRadius: "16px",
+          // borderRadius: "16px",
           backgroundColor: "#111",
           // boxShadow: "0 8px 24px rgba(15, 23, 42, 0.15)",
           cursor: "pointer",
@@ -137,7 +137,7 @@ function DestinationCard({ destination }) {
             component="h2"
             sx={{
               margin: 0,
-              fontFamily: "Georgia, 'Times New Roman', serif",
+              fontFamily: "Cormorant Garamond",
               /*
                * Automatically adjusts for long names.
                */

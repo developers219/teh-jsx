@@ -24,18 +24,14 @@ export default function HeroSection() {
     <section
       className="
         relative
-        min-h-[560px]
         w-full
-        sm:min-h-[600px]
-        md:min-h-[640px]
-        lg:min-h-[680px]
-        xl:min-h-[720px]
+        h-[110vh]
       "
     >
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      <video
+      {/* <video
         autoPlay
         muted
         loop
@@ -48,7 +44,29 @@ export default function HeroSection() {
           w-full
           object-cover
         "
-      />
+      /> */}
+      <video
+        autoplay=""
+        loop
+        muted
+        id="myVideo"
+        className="absolute
+          inset-0
+          h-full
+          w-full
+          object-cover"
+        preload="true"
+        playsinline=""
+      >
+        <source
+          src="https://maryculterhouse.com/wp-content/uploads/2020/10/Home-short-loop-1.webm"
+          type="video/webm"
+        />
+        <source
+          src="https://maryculterhouse.com/wp-content/uploads/2020/10/Home-short-loop-1.mp4"
+          type="video/mp4"
+        />
+      </video>
 
       {/* =========================================================
             GENERAL DARK OVERLAY
@@ -63,7 +81,7 @@ export default function HeroSection() {
         className="
           absolute
           inset-0
-          bg-linear-to-b from-black/60 via-black/20 to-transparent
+          bg-linear-to-b from-black/60 via-black/50 to-transparent
         
         "
       />
@@ -105,8 +123,9 @@ export default function HeroSection() {
         <div
           className="
             w-full
-            max-w-3xl
             text-white
+            
+            text-center
           "
         >
           {/* =====================================================
@@ -132,19 +151,16 @@ text-center
           >
             Your next
             {/* <br /> */}
-           
-          <SectionHeader  title={""}/>
+
+          <SectionHeader title={""} />
           <Typography
-        variant="h2"
-        className={
-          
-            "text-3xl font-black text-white sm:text-7xl font-cg"
-        }
-        style={{ fontFamily: '"Cormorant Garamond", serif' }}
-        sx={{ lineHeight: 1.12 }}
-      >
-        {"Your next great escape starts here"}
-      </Typography>
+            variant="h2"
+            className={"font-black text-white text-8xl font-cg"}
+            style={{ fontFamily: '"Cormorant Garamond", serif' }}
+            sx={{ lineHeight: 1.12, fontSize: 80 }}
+          >
+            {"Your next great escape starts here"}
+          </Typography>
 
           {/* =====================================================
             DESCRIPTION
@@ -165,11 +181,11 @@ text-center
               md:text-lg
 
               lg:mt-5
-              max-w-2xl
+              
             "
-            style={{fontFamily: "Montserrat"}}
+            style={{ fontFamily: "Montserrat" }}
           >
-            Discover handpicked destinations, thoughtfully crafted holidays now 
+            Discover handpicked destinations, thoughtfully crafted holidays now
           </p>
 
           {/* =====================================================
@@ -180,7 +196,8 @@ text-center
               mt-7
               w-full
               max-w-[800px]
-absolute -bottom-6 z-10
+              absolute -bottom-16
+              left-1/2 -translate-x-1/2
             "
           >
             <div
