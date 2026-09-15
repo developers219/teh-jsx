@@ -427,7 +427,7 @@ function DestinationContent({ destination, index, slidePosition }) {
           <div className="mt-9 flex flex-wrap gap-3">
             {/* WHITE BUTTON */}
 
-            <button className="group relative flex h-12 items-center overflow-hidden rounded-full bg-[#f0e2c3] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-black">
+            <button className="group relative flex h-12 items-center overflow-hidden rounded-full bg-[#c5bd96] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-black">
               <span className="transition-transform duration-500">
                 Explore More
               </span>
