@@ -1,79 +1,97 @@
+import { useEffect, useRef, useState } from "react";
 import SectionHeader from "./SectionHeader";
-import Carousel from "../ui/Carousel";
-import { Link } from "react-router-dom";
+
+/* =========================================================
+   BLOG DATA
+========================================================= */
 
 const blogs = [
     {
         id: 1,
-        category: "Data Science",
-        author: "William Ashford",
-        readTime: "5 min read",
-        title: "Optimizing Business decisions with Advanced data Analytics",
+        category: "Beach Escapes",
+        title: "The Best Beach Destinations for Your Next Escape",
         description:
-            "Discover how web solutions are reshaping the business landscape.",
+            "Discover beautiful beaches, crystal-clear waters and unforgettable coastal experiences for your next holiday.",
         date: "Mar 09, 2024",
         image:
-            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=85",
+            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=90",
     },
+
     {
         id: 2,
-        category: "Travel Tips",
-        author: "Emily Carter",
-        readTime: "6 min read",
-        title: "How to Plan the Perfect International Holiday",
+        category: "Travel Inspiration",
+        title: "Beautiful Journeys Worth Taking Once in a Lifetime",
         description:
-            "Simple planning strategies to make your next international trip smoother.",
+            "From hidden escapes to iconic destinations, explore journeys that deserve a place on your travel list.",
         date: "Mar 05, 2024",
         image:
-            "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85",
+            "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1600&q=90",
     },
+
     {
         id: 3,
-        category: "Destinations",
-        author: "Daniel Wilson",
-        readTime: "4 min read",
-        title: "Top Destinations to Add to Your Travel List",
-        description:
-            "Explore beautiful destinations and discover experiences worth planning for.",
-        date: "Feb 28, 2024",
-        image:
-            "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=85",
-    },
-    {
-        id: 4,
         category: "Travel Guide",
-        author: "Sophia Martin",
-        readTime: "7 min read",
         title: "A Complete Guide to Planning Your Dream Vacation",
         description:
-            "Everything you need to know before turning your holiday plans into reality.",
+            "Everything you need to know before turning your holiday plans into a beautifully planned travel experience.",
+        date: "Feb 28, 2024",
+        image:
+            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1600&q=90",
+    },
+
+    {
+        id: 4,
+        category: "Luxury Travel",
+        title: "Luxury Experiences That Make Every Journey Special",
+        description:
+            "Explore handpicked stays, remarkable experiences and destinations designed for travellers who want something more.",
         date: "Feb 22, 2024",
         image:
-            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=1200&q=85",
+            "https://images.unsplash.com/photo-1540541338287-41700207dee6?auto=format&fit=crop&w=1600&q=90",
     },
+
     {
         id: 5,
-        category: "Holiday Ideas",
-        author: "James Anderson",
-        readTime: "5 min read",
-        title: "Family Holiday Ideas for an Unforgettable Escape",
+        category: "Adventure",
+        title: "Adventure Holidays for Those Who Love to Explore",
         description:
-            "Find inspiring holiday ideas designed for memorable family experiences.",
+            "Take the road less travelled with exciting destinations, unforgettable landscapes and experiences full of adventure.",
         date: "Feb 18, 2024",
         image:
-            "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1200&q=85",
+            "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1600&q=90",
     },
+
     {
         id: 6,
-        category: "Travel Trends",
-        author: "Olivia Brown",
-        readTime: "5 min read",
-        title: "The Travel Trends Shaping Holidays This Year",
+        category: "Family Holidays",
+        title: "Family Holiday Ideas for an Unforgettable Escape",
         description:
-            "Discover the latest travel trends and how they are changing the way we explore.",
+            "Find inspiring destinations and memorable experiences designed to bring the whole family closer together.",
         date: "Feb 12, 2024",
         image:
-            "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85",
+            "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1600&q=90",
+    },
+
+    {
+        id: 7,
+        category: "International",
+        title: "International Destinations You Should Visit This Year",
+        description:
+            "Discover incredible international destinations and start planning your next unforgettable journey.",
+        date: "Feb 08, 2024",
+        image:
+            "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?auto=format&fit=crop&w=1600&q=90",
+    },
+
+    {
+        id: 8,
+        category: "Honeymoon",
+        title: "Romantic Getaways for an Unforgettable Honeymoon",
+        description:
+            "From private villas to beautiful beaches, discover romantic escapes perfect for celebrating your love.",
+        date: "Feb 02, 2024",
+        image:
+            "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?auto=format&fit=crop&w=1600&q=90",
     },
 ];
 
@@ -84,8 +102,8 @@ const blogs = [
 function CalendarIcon() {
     return (
         <svg
-            width="17"
-            height="17"
+            width="15"
+            height="15"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -109,8 +127,8 @@ function CalendarIcon() {
 function ArrowIcon() {
     return (
         <svg
-            width="22"
-            height="22"
+            width="20"
+            height="20"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -130,167 +148,277 @@ function ArrowIcon() {
 ========================================================= */
 
 function BlogCard({ blog }) {
+    const [hovered, setHovered] = useState(false);
+
     return (
         <article
             className="
-        group
-        h-full
-        overflow-hidden
-        rounded-[22px]
-        border
-        border-slate-200
-        bg-white
-       
-        transition-all
-        duration-700
-        hover:scale-105
-       
-      "
+                relative
+                h-[520px]
+                w-full
+                shrink-0
+                overflow-hidden
+                bg-slate-200
+                md:h-[570px]
+                lg:h-[620px]
+            "
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
         >
             {/* =================================================
-          IMAGE
-      ================================================== */}
+                IMAGE
+            ================================================== */}
 
-            <div className="relative m-3 overflow-hidden rounded-[16px]">
-                <div className="aspect-[1.65/1] w-full overflow-hidden bg-slate-100">
-                    <img
-                        src={blog.image}
-                        alt={blog.title}
-                        className="
-              h-full
-              w-full
-              object-cover
-              transition-transform
-              duration-500
-              group-hover:scale-[1.04]
-            "
-                        loading="lazy"
-                    />
-                </div>
-
-                {/* CATEGORY BADGE */}
-
-                <div
-                    className="
-            absolute
-            left-3
-            top-3
-            inline-flex
-            items-center
-            gap-2
-            rounded-full
-            bg-white/95
-            px-3
-            py-1.5
-            text-[11px]
-            font-semibold
-            text-slate-800
-            shadow-sm
-            backdrop-blur-sm
-          "
-                >
-                    <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" />
-
-                    {blog.category}
-                </div>
-            </div>
+            <img
+                src={blog.image}
+                alt={blog.title}
+                draggable="false"
+                className="
+                    absolute
+                    inset-0
+                    h-full
+                    w-full
+                    object-cover
+                    transition-transform
+                    duration-[1800ms]
+                    ease-out
+                    hover:scale-[1.04]
+                "
+            />
 
             {/* =================================================
-          CONTENT
-      ================================================== */}
+                IMAGE OVERLAY
+            ================================================== */}
 
-            <div className="px-4 pb-5 pt-1 sm:px-5">
-                {/* AUTHOR + READ TIME */}
+            <div
+                className="
+                    pointer-events-none
+                    absolute
+                    inset-0
+                    bg-gradient-to-t
+                    from-black/75
+                    via-black/10
+                    to-transparent
+                "
+            />
 
-                <div
+            {/* =================================================
+                TOP CATEGORY BADGE
+            ================================================== */}
+
+            {/* <div
+                className="
+                    absolute
+                    left-6
+                    top-6
+                    z-20
+                    rounded-full
+                    border
+                    border-white/40
+                    bg-black/20
+                    px-4
+                    py-2
+                    text-[10px]
+                    font-semibold
+                    uppercase
+                    tracking-[0.14em]
+                    text-white
+                    backdrop-blur-md
+                "
+            >
+                {blog.category}
+            </div> */}
+
+            {/* =================================================
+                NORMAL BOTTOM CONTENT
+            ================================================== */}
+
+            <div
+                className={`
+                    absolute
+                    bottom-0
+                    left-0
+                    right-0
+                    z-10
+                    p-6
+                    transition-all
+                    duration-500
+                    ease-out
+                    ${
+                        hovered
+                            ? "translate-y-3 opacity-0"
+                            : "translate-y-0 opacity-100"
+                    }
+                `}
+            >
+                {/* DATE */}
+
+                {/* <div
                     className="
-            flex
-            items-center
-            gap-2
-            text-[11px]
-            font-medium
-            text-slate-500
-          "
+                        mb-3
+                        flex
+                        items-center
+                        gap-2
+                        text-[11px]
+                        font-medium
+                        text-white/75
+                    "
                 >
-                    <span className="text-slate-700">
-                        {blog.author}
-                    </span>
+                    <CalendarIcon />
 
-                    <span className="h-1 w-1 rounded-full bg-slate-400" />
+                    <span>{blog.date}</span>
+                </div> */}
 
-                    <span>{blog.readTime}</span>
-                </div>
+                {/* TITLE */}
 
-                {/* TITLE + ARROW */}
-
-                <div className="mt-3 flex items-start gap-3">
+                <div className="flex items-end justify-between gap-4">
                     <h3
                         className="
-              min-w-0
-              flex-1
-              text-[17px]
-              font-extrabold
-              leading-[1.25]
-              tracking-[-0.02em]
-              text-slate-950
-            "
+                            max-w-[90%]
+                            text-[21px]
+                            font-semibold
+                            leading-[1.18]
+                            tracking-[-0.025em]
+                            text-white
+                            md:text-[23px]
+                        "
                     >
                         {blog.title}
                     </h3>
 
-                    <button
-                        type="button"
-                        aria-label={`Read ${blog.title}`}
+                    {/* ARROW */}
+
+                    {/* <span
                         className="
-              mt-0.5
-              flex
-              h-8
-              w-8
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              text-slate-600
-              transition-all
-              duration-300
-              group-hover:bg-slate-100
-              group-hover:text-slate-950
-            "
+                            flex
+                            h-10
+                            w-10
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-full
+                            border
+                            border-white/40
+                            bg-white/10
+                            text-white
+                            backdrop-blur-md
+                        "
                     >
                         <ArrowIcon />
-                    </button>
+                    </span> */}
                 </div>
+            </div>
+
+            {/* =================================================
+                HOVER GLASSMORPHISM DESCRIPTION
+            ================================================== */}
+
+            <div
+                className={`
+                    absolute
+                    bottom-0
+                    
+                   
+                   
+                    border
+                    border-white/30
+                    bg-white/[0.14]
+                    p-5
+                    text-white
+                    shadow-2xl
+                    backdrop-blur-xl
+                    transition-all
+                    duration-700
+                    ease-[cubic-bezier(0.22,1,0.36,1)]
+                    ${
+                        hovered
+                            ? "translate-y-0 opacity-100"
+                            : "translate-y-[110%] opacity-0"
+                    }
+                `}
+            >
+                {/* CATEGORY */}
+
+                <div
+                    className="
+                        text-[10px]
+                        font-semibold
+                        uppercase
+                        tracking-[0.15em]
+                        text-white/70
+                    "
+                >
+                    {blog.category}
+                </div>
+
+                {/* TITLE */}
+
+                <h3
+                    className="
+                        mt-2
+                        text-[21px]
+                        font-semibold
+                        leading-[1.2]
+                        tracking-[-0.02em]
+                        text-white
+                    "
+                >
+                    {blog.title}
+                </h3>
 
                 {/* DESCRIPTION */}
 
                 <p
                     className="
-            mt-2.5
-            line-clamp-2
-            text-[13px]
-            leading-[1.55]
-            text-slate-500
-          "
+                        mt-3
+                        text-[13px]
+                        leading-[1.55]
+                        text-white/80
+                    "
                 >
                     {blog.description}
                 </p>
 
-                {/* DATE */}
+                {/* BOTTOM */}
 
                 <div
                     className="
-            mt-4
-            flex
-            items-center
-            gap-2
-            text-[12px]
-            font-medium
-            text-slate-500
-          "
+                        mt-4
+                        flex
+                        items-center
+                        justify-between
+                        border-t
+                        border-white/20
+                        pt-4
+                    "
                 >
-                    <CalendarIcon />
+                    <div
+                        className="
+                            flex
+                            items-center
+                            gap-2
+                            text-[11px]
+                            text-white/70
+                        "
+                    >
+                        <CalendarIcon />
 
-                    <span>{blog.date}</span>
+                        {blog.date}
+                    </div>
+
+                    <span
+                        className="
+                            flex
+                            items-center
+                            gap-1.5
+                            text-[12px]
+                            font-semibold
+                            text-white
+                        "
+                    >
+                        Read More
+                        <ArrowIcon />
+                    </span>
                 </div>
             </div>
         </article>
@@ -298,36 +426,196 @@ function BlogCard({ blog }) {
 }
 
 /* =========================================================
-   LATEST BLOGS SECTION
+   LATEST BLOGS
 ========================================================= */
 
 function LatestBlogs() {
+    const trackRef = useRef(null);
+
+    const [isPaused, setIsPaused] = useState(false);
+
+    const animationFrame = useRef(null);
+
+    const position = useRef(0);
+
+    const lastTime = useRef(null);
+
+    /*
+     * Speed of movement.
+     *
+     * Lower number = slower.
+     *
+     * 0.035 gives a very slow premium
+     * travel-site style movement.
+     */
+    const SPEED = 0.035;
+
+    /* =======================================================
+       CONTINUOUS MOVEMENT
+    ======================================================= */
+
+    useEffect(() => {
+        const move = (time) => {
+            if (lastTime.current === null) {
+                lastTime.current = time;
+            }
+
+            const delta = time - lastTime.current;
+
+            lastTime.current = time;
+
+            if (!isPaused && trackRef.current) {
+                position.current -= SPEED * delta;
+
+                /*
+                 * We have two identical copies of the cards.
+                 *
+                 * Once the first copy has completely moved away,
+                 * reset position by exactly half of the track.
+                 *
+                 * This creates a seamless infinite loop.
+                 */
+
+                const halfWidth =
+                    trackRef.current.scrollWidth / 2;
+
+                if (Math.abs(position.current) >= halfWidth) {
+                    position.current += halfWidth;
+                }
+
+                trackRef.current.style.transform = `translate3d(${position.current}px, 0, 0)`;
+            }
+
+            animationFrame.current =
+                requestAnimationFrame(move);
+        };
+
+        animationFrame.current =
+            requestAnimationFrame(move);
+
+        return () => {
+            cancelAnimationFrame(animationFrame.current);
+        };
+    }, [isPaused]);
+
+    /* =======================================================
+       RESET TIMER WHEN PAUSED / RESUMED
+    ======================================================= */
+
+    useEffect(() => {
+        lastTime.current = null;
+    }, [isPaused]);
+
+    /* =======================================================
+       DUPLICATE CARDS
+    ======================================================= */
+
+    const duplicatedBlogs = [...blogs, ...blogs];
+
     return (
-        <section className="bg-slate-50 px-6 py-20 lg:px-8">
-            <div className="mx-auto max-w-7xl">
+        <section
+            className="
+                overflow-hidden
+                bg-slate-50
+                py-20
+                lg:py-24
+            "
+        >
+            {/* =================================================
+                HEADER
+            ================================================== */}
 
-                {/* SECTION HEADER */}
-
+            <div className="mx-auto max-w-7xl px-6 lg:px-8">
                 <SectionHeader
-                    // eyebrow="OUR BLOG"
                     title="Latest Blogs"
                     description="Explore travel inspiration, destination guides, useful tips, and ideas to help you plan your next journey."
                 />
-
-                {/* BLOG CAROUSEL */}
-
-                <div >
-                    <Carousel
-                        items={blogs}
-                        gap={20}
-                        showArrows={true}
-                        renderItem={(blog) => (
-                            <Link to="/blogs/random"><BlogCard blog={blog} /></Link>
-                        )}
-                    />
-                </div>
-
             </div>
+
+            {/* =================================================
+                SPACE
+            ================================================== */}
+
+            <div className="h-12" />
+
+            {/* =================================================
+                CAROUSEL VIEWPORT
+            ================================================== */}
+
+            <div
+                className="
+                    relative
+                    w-full
+                    overflow-hidden
+                "
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
+            >
+                {/* =================================================
+                    MOVING TRACK
+                ================================================== */}
+
+                <div
+                    ref={trackRef}
+                    className="
+                        flex
+                        w-max
+                        will-change-transform
+                    "
+                >
+                    {duplicatedBlogs.map((blog, index) => (
+                        <div
+                            key={`${blog.id}-${index}`}
+                            className="
+                                w-[88vw]
+                                shrink-0
+                                sm:w-[65vw]
+                                md:w-[50vw]
+                                lg:w-[25vw]
+                                xl:w-[25vw]
+                            "
+                        >
+                            <BlogCard blog={blog} />
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* =================================================
+                BOTTOM INDICATOR
+            ================================================== */}
+
+            {/* <div
+                className="
+                    mx-auto
+                    mt-8
+                    flex
+                    items-center
+                    justify-center
+                    gap-3
+                "
+            >
+                <span
+                    className="
+                        h-1.5
+                        w-8
+                        rounded-full
+                        bg-slate-900
+                    "
+                />
+
+                <span
+                    className="
+                        text-[10px]
+                        font-medium
+                        uppercase
+                        tracking-[0.18em]
+                        text-slate-400
+                    "
+                >
+                    Explore Stories
+                </span>
+            </div> */}
         </section>
     );
 }
