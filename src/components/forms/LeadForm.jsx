@@ -1,28 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-
-import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import InputAdornment from "@mui/material/InputAdornment";
-import TextField from "@mui/material/TextField";
-
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import CheckIcon from "@mui/icons-material/Check";
-import EmailIcon from "@mui/icons-material/Email";
-import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import PersonIcon from "@mui/icons-material/Person";
-import PhoneIcon from "@mui/icons-material/Phone";
-import WhatsAppIcon from "@mui/icons-material/WhatsApp";
-
-
+import Alert from "@mui/material/Alert";
 import { createLead } from "../../services/lead.service";
 
-
 /* =========================================================
-   DEFAULT FORM VALUES
+   DEFAULT VALUES
 ========================================================= */
 
 const emptyLeadValues = {
@@ -60,7 +43,6 @@ const emptyLeadValues = {
   source: "Website",
 };
 
-
 /* =========================================================
    OPTIONS
 ========================================================= */
@@ -71,12 +53,6 @@ const hotelOptions = [
   "3 Star",
   "2 Star",
   "No Hotel",
-];
-
-const budgetOptions = [
-  "₹47,000",
-  "₹49,500",
-  "₹52,000",
 ];
 
 const packageOptions = [
@@ -102,36 +78,51 @@ const tourOptions = [
   "Religious",
 ];
 
-
 /* =========================================================
-   DEFAULT VALUES HELPER
+   DEFAULT VALUE HELPER
 ========================================================= */
 
 function getDefaultValues(initialValues) {
   return {
     ...emptyLeadValues,
-    ...initialValues,
+    ...(initialValues || {}),
   };
 }
 
-
 /* =========================================================
-   MAIN LEAD FORM
+   MAIN COMPONENT
 ========================================================= */
 
 function LeadForm({
   initialValues,
   title = "",
   subtitle = "",
-  submitLabel = "Submit Enquiry",
-  successMessage =
-    "Your holiday enquiry has been received. Our travel expert will contact you shortly.",
+  submitLabel = "Submit",
+  successMessage = "Your holiday enquiry has been received. Our travel expert will contact you shortly.",
   onSubmitLead = createLead,
   onSuccess,
 }) {
+  /* =======================================================
+     STEP / STATUS
+  ======================================================== */
+
   const [step, setStep] = useState(1);
   const [formSuccess, setFormSuccess] = useState("");
   const [formError, setFormError] = useState("");
+
+  /* =======================================================
+     MAIN FORM STATE
+     
+     THIS STATE HOLDS ALL USER ENTERED DATA
+  ======================================================== */
+
+  const [formData, setFormData] = useState(
+    getDefaultValues(initialValues)
+  );
+
+  /* =======================================================
+     REACT HOOK FORM
+  ======================================================== */
 
   const {
     register,
@@ -149,35 +140,84 @@ function LeadForm({
     mode: "onBlur",
   });
 
+  /* =======================================================
+     UPDATE STATE
+     
+     Every input goes through this function.
+  ======================================================== */
+
+  function handleFieldChange(field, value) {
+    setFormData((previous) => ({
+      ...previous,
+      [field]: value,
+    }));
+
+    /*
+      Keep react-hook-form synchronized too.
+    */
+    setValue(field, value, {
+      shouldValidate: false,
+      shouldDirty: true,
+    });
+  }
 
   /* =======================================================
      WATCH VALUES
-  ======================================================= */
+  ======================================================== */
 
   const exploringDestinations = watch(
-    "exploringDestinations"
+    "exploringDestinations",
+    formData.exploringDestinations
   );
 
-  const hotelCategory = watch("hotelCategory");
-  const flightsIncluded = watch("flightsIncluded");
+  const hotelCategory = watch(
+    "hotelCategory",
+    formData.hotelCategory
+  );
+
+  const flightsIncluded = watch(
+    "flightsIncluded",
+    formData.flightsIncluded
+  );
+
   const budgetWithAirfare = watch(
-    "budgetWithAirfare"
+    "budgetWithAirfare",
+    formData.budgetWithAirfare
   );
 
-  const adults = watch("adults");
-  const infants = watch("infants");
-  const children = watch("children");
+  const adults = watch(
+    "adults",
+    formData.adults
+  );
 
-  const packageType = watch("packageType");
+  const infants = watch(
+    "infants",
+    formData.infants
+  );
+
+  const children = watch(
+    "children",
+    formData.children
+  );
+
+  const packageType = watch(
+    "packageType",
+    formData.packageType
+  );
+
   const preferredCallTime = watch(
-    "preferredCallTime"
+    "preferredCallTime",
+    formData.preferredCallTime
   );
-  const tourType = watch("tourType");
 
+  const tourType = watch(
+    "tourType",
+    formData.tourType
+  );
 
   /* =======================================================
-     TOTAL TRAVELLERS
-  ======================================================= */
+     TRAVELLER COUNT
+  ======================================================== */
 
   const travellersCount = useMemo(() => {
     return (
@@ -187,38 +227,64 @@ function LeadForm({
     );
   }, [adults, infants, children]);
 
-
   /* =======================================================
-     RESET WHEN INITIAL VALUES CHANGE
-  ======================================================= */
+     KEEP STATE SYNCHRONIZED WITH WATCHED VALUES
+  ======================================================== */
 
   useEffect(() => {
-    reset(getDefaultValues(initialValues));
+    setFormData((previous) => ({
+      ...previous,
+
+      hotelCategory,
+      flightsIncluded,
+      budgetWithAirfare,
+
+      adults,
+      infants,
+      children,
+
+      packageType,
+      preferredCallTime,
+      tourType,
+
+      exploringDestinations,
+      travellersCount,
+    }));
+  }, [
+    hotelCategory,
+    flightsIncluded,
+    budgetWithAirfare,
+    adults,
+    infants,
+    children,
+    packageType,
+    preferredCallTime,
+    tourType,
+    exploringDestinations,
+    travellersCount,
+  ]);
+
+  /* =======================================================
+     INITIAL VALUES CHANGE
+  ======================================================== */
+
+  useEffect(() => {
+    const values = getDefaultValues(initialValues);
+
+    setFormData(values);
+    reset(values);
+
     setStep(1);
     setFormSuccess("");
     setFormError("");
   }, [initialValues, reset]);
 
-
-  /* =======================================================
-     SCROLL TO WEBSITE TOP
-  ======================================================= */
-
-//   function goToTop() {
-//     window.scrollTo({
-//       top: 0,
-//       left: 0,
-//       behavior: "smooth",
-//     });
-
-//     document.documentElement.scrollTop = 0;
-//     document.body.scrollTop = 0;
-//   }
-
-
   /* =======================================================
      NEXT STEP
-  ======================================================= */
+     
+     IMPORTANT:
+     NO WINDOW SCROLL HERE.
+  ======================================================== */
 
   async function nextStep() {
     setFormError("");
@@ -269,284 +335,510 @@ function LeadForm({
       return;
     }
 
+    /*
+      Save latest values before moving.
+    */
+    const currentValues = {
+      name: watch("name"),
+      phone: watch("phone"),
+      whatsappUpdates: watch("whatsappUpdates"),
+      email: watch("email"),
+
+      destinationInterest:
+        watch("destinationInterest"),
+
+      destinationInterest2:
+        watch("destinationInterest2"),
+
+      exploringDestinations:
+        watch("exploringDestinations"),
+
+      fromLocation:
+        watch("fromLocation"),
+
+      departureDate:
+        watch("departureDate"),
+
+      travelDate:
+        watch("travelDate"),
+
+      hotelCategory:
+        watch("hotelCategory"),
+
+      flightsIncluded:
+        watch("flightsIncluded"),
+
+      budgetWithAirfare:
+        watch("budgetWithAirfare"),
+
+      adults:
+        watch("adults"),
+
+      infants:
+        watch("infants"),
+
+      children:
+        watch("children"),
+
+      packageType:
+        watch("packageType"),
+
+      preferredCallTime:
+        watch("preferredCallTime"),
+
+      tourType:
+        watch("tourType"),
+
+      packageInterest:
+        watch("packageInterest"),
+
+      message:
+        watch("message"),
+    };
+
+    setFormData((previous) => ({
+      ...previous,
+      ...currentValues,
+      travellersCount:
+        Number(currentValues.adults || 0) +
+        Number(currentValues.infants || 0) +
+        Number(currentValues.children || 0),
+    }));
+
+    /*
+      Move only the internal form step.
+
+      No window.scrollTo().
+      No document.scrollTop.
+    */
     if (step < 4) {
       setStep((currentStep) => currentStep + 1);
-
-      setTimeout(() => {
-        goToTop();
-      }, 100);
     }
   }
 
-
   /* =======================================================
      PREVIOUS STEP
-  ======================================================= */
+     
+     NO SCROLL
+  ======================================================== */
 
   function previousStep() {
     setFormError("");
 
     if (step > 1) {
       setStep((currentStep) => currentStep - 1);
-
-      setTimeout(() => {
-        goToTop();
-      }, 100);
     }
   }
-
 
   /* =======================================================
      SUBMIT
-  ======================================================= */
+  ======================================================== */
 
   async function submitLead(values) {
-  try {
-    setFormError("");
-    setFormSuccess("");
+    try {
+      setFormError("");
+      setFormSuccess("");
 
-    const totalTravellers =
-      Number(values.adults || 0) +
-      Number(values.children || 0) +
-      Number(values.infants || 0);
+      /*
+        Merge react-hook-form values
+        with our useState values.
 
-    // Clean and format everything before sending to backend
-    const leadData = {
-      // =========================
-      // CONTACT DETAILS
-      // =========================
-      contact: {
-        name: values.name?.trim() || "",
-        phone: values.phone?.trim() || "",
-        email: values.email?.trim() || "",
-        whatsappUpdates: Boolean(values.whatsappUpdates),
-      },
+        useState is the persistent form state.
+      */
 
-      // =========================
-      // TRIP DETAILS
-      // =========================
-      trip: {
-        destination: values.destinationInterest?.trim() || "",
-        alternateDestination:
-          values.exploringDestinations
-            ? values.destinationInterest2?.trim() || ""
-            : "",
+      const finalValues = {
+        ...formData,
+        ...values,
+      };
 
-        exploringDestinations: Boolean(
-          values.exploringDestinations
-        ),
+      const totalTravellers =
+        Number(finalValues.adults || 0) +
+        Number(finalValues.children || 0) +
+        Number(finalValues.infants || 0);
 
-        departureFrom: values.fromLocation?.trim() || "",
+      /* ===================================================
+         FORMATTED BACKEND PAYLOAD
+      =================================================== */
 
-        departureDate: values.departureDate || "",
-        travelDate: values.departureDate || "",
-      },
+      const leadData = {
+        /* ===============================================
+           CONTACT
+        ================================================ */
 
-      // =========================
-      // TRAVEL PREFERENCES
-      // =========================
-      preferences: {
-        hotelCategory: values.hotelCategory || "",
-        flightsIncluded: values.flightsIncluded || "",
-        budget: values.budgetWithAirfare || "",
-        budgetType:
-          values.flightsIncluded === "Yes"
-            ? "With Airfare"
-            : "Without Airfare",
-      },
+        contact: {
+          name:
+            finalValues.name?.trim() || "",
 
-      // =========================
-      // TRAVELLERS
-      // =========================
-      travellers: {
-        adults: Number(values.adults || 0),
-        children: Number(values.children || 0),
-        infants: Number(values.infants || 0),
-        total: totalTravellers,
-      },
+          phone:
+            finalValues.phone?.trim() || "",
 
-      // =========================
-      // PACKAGE
-      // =========================
-      package: {
-        type: values.packageType || "",
-        tourType: values.tourType || "",
+          email:
+            finalValues.email?.trim() || "",
+
+          whatsappUpdates:
+            Boolean(
+              finalValues.whatsappUpdates
+            ),
+        },
+
+        /* ===============================================
+           TRIP
+        ================================================ */
+
+        trip: {
+          destination:
+            finalValues.destinationInterest
+              ?.trim() || "",
+
+          alternateDestination:
+            finalValues.exploringDestinations
+              ? finalValues.destinationInterest2
+                  ?.trim() || ""
+              : "",
+
+          exploringDestinations:
+            Boolean(
+              finalValues.exploringDestinations
+            ),
+
+          departureFrom:
+            finalValues.fromLocation
+              ?.trim() || "",
+
+          departureDate:
+            finalValues.departureDate || "",
+
+          travelDate:
+            finalValues.departureDate || "",
+        },
+
+        /* ===============================================
+           PREFERENCES
+        ================================================ */
+
+        preferences: {
+          hotelCategory:
+            finalValues.hotelCategory || "",
+
+          flightsIncluded:
+            finalValues.flightsIncluded || "",
+
+          budget:
+            finalValues.budgetWithAirfare || "",
+
+          budgetType:
+            finalValues.flightsIncluded === "Yes"
+              ? "With Airfare"
+              : "Without Airfare",
+        },
+
+        /* ===============================================
+           TRAVELLERS
+        ================================================ */
+
+        travellers: {
+          adults:
+            Number(finalValues.adults || 0),
+
+          children:
+            Number(finalValues.children || 0),
+
+          infants:
+            Number(finalValues.infants || 0),
+
+          total:
+            totalTravellers,
+        },
+
+        /* ===============================================
+           PACKAGE
+        ================================================ */
+
+        package: {
+          type:
+            finalValues.packageType || "",
+
+          tourType:
+            finalValues.tourType || "",
+
+          preferredCallTime:
+            finalValues.preferredCallTime || "",
+        },
+
+        /* ===============================================
+           MESSAGE
+        ================================================ */
+
+        message:
+          finalValues.message?.trim() || "",
+
+        /* ===============================================
+           STATUS
+        ================================================ */
+
+        status: "New",
+
+        source:
+          finalValues.source || "Website",
+
+        /* ===============================================
+           FLAT FIELDS
+           Backend compatibility
+        ================================================ */
+
+        name:
+          finalValues.name?.trim() || "",
+
+        phone:
+          finalValues.phone?.trim() || "",
+
+        email:
+          finalValues.email?.trim() || "",
+
+        destinationInterest:
+          finalValues.destinationInterest
+            ?.trim() || "",
+
+        destinationInterest2:
+          finalValues.destinationInterest2
+            ?.trim() || "",
+
+        fromLocation:
+          finalValues.fromLocation
+            ?.trim() || "",
+
+        departureDate:
+          finalValues.departureDate || "",
+
+        travelDate:
+          finalValues.departureDate || "",
+
+        hotelCategory:
+          finalValues.hotelCategory || "",
+
+        flightsIncluded:
+          finalValues.flightsIncluded || "",
+
+        budgetWithAirfare:
+          finalValues.budgetWithAirfare || "",
+
+        adults:
+          Number(finalValues.adults || 0),
+
+        children:
+          Number(finalValues.children || 0),
+
+        infants:
+          Number(finalValues.infants || 0),
+
+        travellersCount:
+          totalTravellers,
+
+        packageType:
+          finalValues.packageType || "",
+
         preferredCallTime:
-          values.preferredCallTime || "",
-      },
+          finalValues.preferredCallTime || "",
 
-      // =========================
-      // MESSAGE
-      // =========================
-      message: values.message?.trim() || "",
+        tourType:
+          finalValues.tourType || "",
 
-      // =========================
-      // SYSTEM
-      // =========================
-      status: "New",
-      source: "Website",
+        packageInterest:
+          finalValues.tourType || "",
 
-      // =========================
-      // OPTIONAL FLAT FIELDS
-      // Useful if your existing backend expects these
-      // =========================
-      name: values.name?.trim() || "",
-      phone: values.phone?.trim() || "",
-      email: values.email?.trim() || "",
-      destinationInterest:
-        values.destinationInterest?.trim() || "",
-      destinationInterest2:
-        values.destinationInterest2?.trim() || "",
-      fromLocation: values.fromLocation?.trim() || "",
-      departureDate: values.departureDate || "",
-      travelDate: values.departureDate || "",
-      hotelCategory: values.hotelCategory || "",
-      flightsIncluded: values.flightsIncluded || "",
-      budgetWithAirfare:
-        values.budgetWithAirfare || "",
-      adults: Number(values.adults || 0),
-      children: Number(values.children || 0),
-      infants: Number(values.infants || 0),
-      travellersCount: totalTravellers,
-      packageType: values.packageType || "",
-      preferredCallTime:
-        values.preferredCallTime || "",
-      tourType: values.tourType || "",
-      packageInterest: values.tourType || "",
-      whatsappUpdates: Boolean(values.whatsappUpdates),
-      exploringDestinations: Boolean(
-        values.exploringDestinations
-      ),
-    };
+        whatsappUpdates:
+          Boolean(
+            finalValues.whatsappUpdates
+          ),
 
-    console.log(
-      "FORMATTED LEAD DATA:",
-      leadData
-    );
+        exploringDestinations:
+          Boolean(
+            finalValues.exploringDestinations
+          ),
+      };
 
-    const lead = await onSubmitLead(leadData);
+      console.log(
+        "FINAL FORM STATE:",
+        finalValues
+      );
 
-    setFormSuccess(successMessage);
+      console.log(
+        "FORMATTED LEAD DATA:",
+        leadData
+      );
 
-    onSuccess?.(lead);
+      /* ===============================================
+         SEND TO BACKEND
+      ================================================ */
 
-    if (!initialValues) {
-      reset(emptyLeadValues);
-      setStep(1);
+      const lead =
+        await onSubmitLead(leadData);
+
+      /* ===============================================
+         SUCCESS
+      ================================================ */
+
+      setFormSuccess(successMessage);
+
+      if (onSuccess) {
+        onSuccess(lead);
+      }
+
+    } catch (error) {
+      console.error(
+        "Lead submission error:",
+        error
+      );
+
+      setFormError(
+        "We couldn't save your enquiry. Please review your details and try again."
+      );
     }
-
-  } catch (error) {
-    console.error("Lead submission error:", error);
-
-    setFormError(
-      "We couldn't save your enquiry. Please review your details and try again."
-    );
   }
-}
-
 
   /* =======================================================
      SUCCESS SCREEN
-  ======================================================= */
+  ======================================================== */
 
   if (formSuccess) {
     return (
-      <div className="flex min-h-[480px] w-full items-center justify-center bg-white px-5 py-12">
-
+      <div
+        className="
+          flex
+          min-h-[350px]
+          w-full
+          items-center
+          justify-center
+          bg-transparent
+        "
+      >
         <div className="w-full max-w-md text-center">
 
-          <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-black">
-            <CheckIcon
-              sx={{
-                color: "#fff",
-                fontSize: 32,
-              }}
-            />
+          <div
+            className="
+              mx-auto
+              mb-5
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-full
+              bg-[#080b0b]
+              text-white
+            "
+          >
+            ✓
           </div>
 
-          <h3 className="text-[30px] font-extrabold tracking-[-0.8px] text-black sm:text-[36px]">
+          <h3
+            className="
+              font-serif
+              text-[32px]
+              font-medium
+              text-[#080b0b]
+            "
+          >
             Enquiry Received!
           </h3>
 
-          <p className="mt-4 text-[14px] leading-7 text-neutral-600">
+          <p
+            className="
+              mt-3
+              text-[13px]
+              leading-6
+              text-black/60
+            "
+          >
             {formSuccess}
           </p>
 
           <button
             type="button"
             onClick={() => {
+              const resetValues =
+                getDefaultValues(initialValues);
+
               setFormSuccess("");
               setFormError("");
               setStep(1);
-              reset(emptyLeadValues);
 
-              setTimeout(() => {
-                goToTop();
-              }, 100);
+              setFormData(resetValues);
+              reset(resetValues);
             }}
             className="
-              mt-8
-              border
-              border-black
-              bg-black
+              mt-7
+              bg-[#080b0b]
               px-7
               py-3
-              text-[12px]
-              font-bold
+              text-[10px]
+              font-semibold
               uppercase
-              tracking-wide
+              tracking-[0.08em]
               text-white
               transition
-              hover:bg-white
-              hover:text-black
+              hover:bg-neutral-800
             "
           >
             Submit Another Enquiry
           </button>
 
         </div>
-
       </div>
     );
   }
 
-
   /* =======================================================
      FORM
-  ======================================================= */
+  ======================================================== */
 
   return (
-    <div className="w-full bg-white text-black">
+    <div
+      className="
+        w-full
+        bg-transparent
+        text-[#080b0b]
+      "
+    >
 
       {/* ===================================================
-          OPTIONAL HEADER
+          OPTIONAL TITLE
       ==================================================== */}
 
       {(title || subtitle) && (
         <div className="mb-7">
 
           {title && (
-            <h2 className="text-[30px] font-extrabold leading-tight tracking-[-1px] text-black sm:text-[38px]">
+            <h3
+              className="
+                font-serif
+                text-[29px]
+                font-medium
+                leading-none
+                tracking-[-1.2px]
+                text-[#080b0b]
+                sm:text-[31px]
+              "
+            >
               {title}
-            </h2>
+            </h3>
           )}
 
           {subtitle && (
-            <p className="mt-2 text-[13px] leading-6 text-neutral-500">
+            <p
+              className="
+                mt-3
+                text-[13px]
+                leading-5
+                text-black/60
+              "
+            >
               {subtitle}
             </p>
           )}
 
         </div>
       )}
-
-
-      {/* ===================================================
-          STEP INDICATOR
-      ==================================================== */}
-
-      <StepIndicator step={step} />
-
 
       {/* ===================================================
           ERROR
@@ -558,14 +850,17 @@ function LeadForm({
           <Alert
             severity="error"
             sx={{
-              borderRadius: "0px",
-              border: "1px solid #000",
-              backgroundColor: "#fff",
-              color: "#000",
-              fontSize: "12px",
+              borderRadius: 0,
+              border:
+                "1px solid rgba(0,0,0,0.3)",
+              backgroundColor:
+                "transparent",
+              color: "#080b0b",
+              fontSize: "11px",
+              padding: "2px 10px",
 
               "& .MuiAlert-icon": {
-                color: "#000",
+                color: "#080b0b",
               },
             }}
           >
@@ -575,245 +870,137 @@ function LeadForm({
         </div>
       )}
 
+      <form
+        onSubmit={handleSubmit(submitLead)}
+        noValidate
+      >
 
-     <form
-  onSubmit={handleSubmit(submitLead)}
-  noValidate
->
-  {/* =================================================
-      MAIN FORM BOX
-  ================================================== */}
+        {/* =================================================
+            PAGE 1
+        ================================================== */}
 
-  <div
-    className="
-      mx-auto
-      w-full
-      max-w-full
-      overflow-hidden
-      border
-      border-neutral-300
-      bg-white
-      shadow-[0_10px_30px_rgba(0,0,0,0.06)]
-    "
-  >
+        {step === 1 && (
+          <PageOne
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            nextStep={nextStep}
+            formData={formData}
+            handleFieldChange={
+              handleFieldChange
+            }
+          />
+        )}
 
-    {/* =================================================
-        SCROLLABLE CONTENT
-    ================================================== */}
+        {/* =================================================
+            PAGE 2
+        ================================================== */}
 
-    <div
-      className="
-        max-h-[680px]
-        overflow-y-auto
-        px-5
-        py-6
-        sm:px-4
-        sm:py-2
+        {step === 2 && (
+          <PageTwo
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            exploringDestinations={
+              exploringDestinations
+            }
+            nextStep={nextStep}
+            previousStep={
+              previousStep
+            }
+            formData={formData}
+            handleFieldChange={
+              handleFieldChange
+            }
+          />
+        )}
 
-        [&::-webkit-scrollbar]:w-[5px]
-        [&::-webkit-scrollbar-track]:bg-neutral-100
-        [&::-webkit-scrollbar-thumb]:bg-black
-      "
-    >
+        {/* =================================================
+            PAGE 3
+        ================================================== */}
 
-      {/* =================================================
-          PAGE 1
-      ================================================== */}
+        {step === 3 && (
+          <PageThree
+            register={register}
+            setValue={setValue}
+            errors={errors}
+            hotelCategory={
+              hotelCategory
+            }
+            flightsIncluded={
+              flightsIncluded
+            }
+            budgetWithAirfare={
+              budgetWithAirfare
+            }
+            adults={adults}
+            infants={infants}
+            children={children}
+            travellersCount={
+              travellersCount
+            }
+            nextStep={nextStep}
+            previousStep={
+              previousStep
+            }
+            formData={formData}
+            handleFieldChange={
+              handleFieldChange
+            }
+          />
+        )}
 
-      {step === 1 && (
-        <PageOne
-          register={register}
-          errors={errors}
-          nextStep={nextStep}
-        />
-      )}
+        {/* =================================================
+            PAGE 4
+        ================================================== */}
 
+        {step === 4 && (
+          <PageFour
+            setValue={setValue}
+            packageType={
+              packageType
+            }
+            preferredCallTime={
+              preferredCallTime
+            }
+            tourType={tourType}
+            isSubmitting={
+              isSubmitting
+            }
+            submitLabel={
+              submitLabel
+            }
+            previousStep={
+              previousStep
+            }
+            formData={formData}
+            handleFieldChange={
+              handleFieldChange
+            }
+          />
+        )}
 
-      {/* =================================================
-          PAGE 2
-      ================================================== */}
-
-      {step === 2 && (
-        <PageTwo
-          register={register}
-          errors={errors}
-          exploringDestinations={
-            exploringDestinations
-          }
-          nextStep={nextStep}
-          previousStep={previousStep}
-        />
-      )}
-
-
-      {/* =================================================
-          PAGE 3
-      ================================================== */}
-
-      {step === 3 && (
-        <PageThree
-          register={register}
-          setValue={setValue}
-          errors={errors}
-          hotelCategory={hotelCategory}
-          flightsIncluded={flightsIncluded}
-          budgetWithAirfare={
-            budgetWithAirfare
-          }
-          adults={adults}
-          infants={infants}
-          children={children}
-          travellersCount={
-            travellersCount
-          }
-          nextStep={nextStep}
-          previousStep={previousStep}
-        />
-      )}
-
-
-      {/* =================================================
-          PAGE 4
-      ================================================== */}
-
-      {step === 4 && (
-        <PageFour
-          setValue={setValue}
-          packageType={packageType}
-          preferredCallTime={
-            preferredCallTime
-          }
-          tourType={tourType}
-          isSubmitting={isSubmitting}
-          submitLabel={submitLabel}
-          nextStep={nextStep}
-          previousStep={previousStep}
-        />
-      )}
-
-    </div>
-
-  </div>
-
-</form>
-
+      </form>
 
       {/* ===================================================
-          PRIVACY
+          PRIVACY NOTE
       ==================================================== */}
 
-      <div className="mt-6 text-center">
-
-        <p className="text-[10px] leading-5 text-neutral-400">
-          Your information is secure and will only be
-          used to prepare your travel plan.
-        </p>
-
-      </div>
-
-    </div>
-  );
-}
-
-
-/* =========================================================
-   STEP INDICATOR
-========================================================= */
-
-function StepIndicator({ step }) {
-  return (
-    <div className="mb-0">
-
-      <div className="flex items-center">
-
-        {[1, 2, 3, 4].map((number) => (
-          <div
-            key={number}
-            className="flex flex-1 items-center"
-          >
-
-            {/* <div
-              className={`
-                flex
-                h-8
-                w-8
-                shrink-0
-                items-center
-                justify-center
-                rounded-full
-                border
-                text-[11px]
-                font-bold
-                ${
-                  number <= step
-                    ? "border-black bg-black text-white"
-                    : "border-neutral-300 bg-white text-neutral-400"
-                }
-              `}
-            >
-              {number}
-            </div> */}
-
-            {/* {number !== 4 && (
-              <div
-                className={`
-                  mx-2
-                  h-px
-                  flex-1
-                  ${
-                    number < step
-                      ? "bg-black"
-                      : "bg-neutral-200"
-                  }
-                `}
-              />
-            )} */}
-
-          </div>
-        ))}
-
-      </div>
-
-      <div className="mt-2 flex justify-between text-[9px] font-semibold uppercase tracking-[0.08em] text-neutral-400">
-
-        {/* <span
-          className={
-            step === 1 ? "text-black" : ""
-          }
-        >
-          Contact
-        </span> */}
-
-        {/* <span
-          className={
-            step === 2 ? "text-black" : ""
-          }
-        >
-          Trip
-        </span> */}
-
-        {/* <span
-          className={
-            step === 3 ? "text-black" : ""
-          }
-        >
-          Preferences
-        </span> */}
-
-        {/* <span
-          className={
-            step === 4 ? "text-black" : ""
-          }
-        >
-          Finish
-        </span> */}
-
-      </div>
+      <p
+        className="
+          mt-6
+          text-[9px]
+          leading-4
+          text-black/40
+        "
+      >
+        Your information is secure and will only be
+        used to prepare your travel plan.
+      </p>
 
     </div>
   );
 }
-
 
 /* =========================================================
    PAGE 1
@@ -821,195 +1008,165 @@ function StepIndicator({ step }) {
 
 function PageOne({
   register,
+  setValue,
   errors,
   nextStep,
+  formData,
+  handleFieldChange,
 }) {
   return (
     <div className="w-full">
 
-      {/* HEADING */}
+      <div className="space-y-5">
 
-      <StepHeading
-        // step="STEP 01"
-         title="Let's Get Started"
-        // description="Tell us how we can get in touch with you."
-      />
+        {/* FULL NAME */}
 
-
-      {/* NAME */}
-
-      <div className="mb-5">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          Full Name
-          <span className="ml-1 text-red-500">*</span>
-        </label>
-
-        <TextField
-          {...register("name", {
-            required: "Name is required.",
-            minLength: {
-              value: 2,
-              message:
-                "Name must be at least 2 characters.",
-            },
-          })}
+        <MinimalField
+          label="Full Name"
+          required
           placeholder="Enter your full name"
-          fullWidth
-          error={Boolean(errors.name)}
-          helperText={errors.name?.message}
-          sx={cleanFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PersonIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-      </div>
-
-
-      {/* PHONE */}
-
-      <div className="mb-5">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          Phone Number
-          <span className="ml-1 text-red-500">*</span>
-        </label>
-
-        <TextField
-          {...register("phone", {
-            required:
-              "Phone number is required.",
-            minLength: {
-              value: 7,
-              message:
-                "Enter a valid phone number.",
-            },
-            maxLength: {
-              value: 30,
-              message:
-                "Phone number is too long.",
-            },
-          })}
-          placeholder="Enter your phone number"
-          fullWidth
-          error={Boolean(errors.phone)}
-          helperText={errors.phone?.message}
-          sx={cleanFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <PhoneIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
-        />
-
-      </div>
-
-
-      {/* WHATSAPP */}
-
-<div className="mb-5 -mt-2">
-
-  <FormControlLabel
-    sx={{
-      margin: 0,
-      marginLeft: "0px",
-      alignItems: "center",
-    }}
-    control={
-      <Checkbox
-        {...register("whatsappUpdates")}
-        defaultChecked
-        sx={{
-          ...blackCheckboxStyles,
-          padding: "2px",
-          marginRight: "1px",
-
-        }}
-      />
-    }
-    label={
-      <div className="flex items-center gap-1">
-
-        <WhatsAppIcon
-          sx={{
-            fontSize: 17,
-            color: "#000",
-          }}
-        />
-
-        <span className="text-[12px] font-medium text-black">
-          Send trip updates on WhatsApp
-        </span>
-
-      </div>
-    }
-  />
-
-</div>
-
-
-      {/* EMAIL */}
-
-      <div className="mb-2">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          Email Address
-        </label>
-
-        <TextField
-          {...register("email", {
-            pattern: {
-              value:
-                /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-              message:
-                "Enter a valid email address.",
-            },
-          })}
-          type="email"
-          placeholder="Enter your email"
-          fullWidth
-          error={Boolean(errors.email)}
-          helperText={
-            errors.email?.message ||
-            "Optional"
+          value={formData.name}
+          onChange={(value) =>
+            handleFieldChange(
+              "name",
+              value
+            )
           }
-          sx={cleanFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <EmailIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
+          error={errors.name?.message}
+          registration={register(
+            "name",
+            {
+              required:
+                "Name is required.",
+
+              minLength: {
+                value: 2,
+                message:
+                  "Name must be at least 2 characters.",
+              },
+            }
+          )}
+        />
+
+        {/* PHONE */}
+
+        <MinimalField
+          label="Phone Number"
+          required
+          placeholder="Enter your phone number"
+          value={formData.phone}
+          onChange={(value) =>
+            handleFieldChange(
+              "phone",
+              value
+            )
+          }
+          error={errors.phone?.message}
+          registration={register(
+            "phone",
+            {
+              required:
+                "Phone number is required.",
+
+              minLength: {
+                value: 7,
+                message:
+                  "Enter a valid phone number.",
+              },
+
+              maxLength: {
+                value: 30,
+                message:
+                  "Phone number is too long.",
+              },
+            }
+          )}
+        />
+
+        {/* WHATSAPP */}
+
+        <label
+          className="
+            -mt-2
+            flex
+            cursor-pointer
+            items-center
+            gap-2
+            text-[11px]
+            font-medium
+            text-[#080b0b]
+          "
+        >
+          <input
+            type="checkbox"
+            checked={
+              Boolean(
+                formData.whatsappUpdates
+              )
+            }
+            onChange={(event) => {
+              const value =
+                event.target.checked;
+
+              setValue(
+                "whatsappUpdates",
+                value
+              );
+
+              handleFieldChange(
+                "whatsappUpdates",
+                value
+              );
+            }}
+            className="
+              h-[15px]
+              w-[15px]
+              cursor-pointer
+              accent-black
+            "
+          />
+
+          <span>
+            Also WhatsApp me on this number
+          </span>
+        </label>
+
+        {/* EMAIL */}
+
+        <MinimalField
+          label="Email Address"
+          placeholder="Enter your email"
+          value={formData.email}
+          onChange={(value) =>
+            handleFieldChange(
+              "email",
+              value
+            )
+          }
+          error={errors.email?.message}
+          registration={register(
+            "email",
+            {
+              pattern: {
+                value:
+                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+
+                message:
+                  "Enter a valid email address.",
+              },
+            }
+          )}
         />
 
       </div>
-
 
       {/* NEXT */}
 
-      <div className="mt-7 flex justify-end">
+      <div className="mt-4 flex justify-end">
 
-        <NextButton onClick={nextStep} />
+        <NextButton
+          onClick={nextStep}
+        />
 
       </div>
 
@@ -1017,229 +1174,191 @@ function PageOne({
   );
 }
 
-
 /* =========================================================
    PAGE 2
 ========================================================= */
 
 function PageTwo({
   register,
+  setValue,
   errors,
   exploringDestinations,
   nextStep,
   previousStep,
+  formData,
+  handleFieldChange,
 }) {
   return (
     <div className="w-full">
 
-      <StepHeading
-        // step="STEP 02"
+      <StepTitle
         title="Plan Your Trip"
-        // description="Tell us where you would like to travel and when."
       />
 
+      <div className="space-y-5">
 
-      {/* TO */}
+        {/* DESTINATION */}
 
-      <div className="mb-5">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          To
-          <span className="ml-1 text-red-500">*</span>
-        </label>
-
-        <TextField
-          {...register(
+        <MinimalField
+          label="To"
+          required
+          placeholder="Bali, Dubai, Maldives..."
+          value={
+            formData.destinationInterest
+          }
+          onChange={(value) =>
+            handleFieldChange(
+              "destinationInterest",
+              value
+            )
+          }
+          error={
+            errors.destinationInterest
+              ?.message
+          }
+          registration={register(
             "destinationInterest",
             {
               required:
                 "Please enter your destination.",
             }
           )}
-          placeholder="Bali, Dubai, Maldives..."
-          fullWidth
-          error={Boolean(
-            errors.destinationInterest
-          )}
-          helperText={
-            errors.destinationInterest?.message
-          }
-          sx={cleanFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LocationOnOutlinedIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
         />
 
-      </div>
+        {/* EXPLORING */}
 
+        <label
+          className="
+            flex
+            min-h-[42px]
+            cursor-pointer
+            items-center
+            gap-2
+            border-b
+            border-black/30
+            text-[11px]
+            font-medium
+          "
+        >
+          <input
+            type="checkbox"
+            checked={
+              Boolean(
+                formData.exploringDestinations
+              )
+            }
+            onChange={(event) => {
+              const value =
+                event.target.checked;
 
-      {/* EXPLORING DESTINATIONS */}
+              setValue(
+                "exploringDestinations",
+                value
+              );
 
-      <div className="mb-5">
-
-        <div className="flex min-h-[50px] items-center border border-neutral-300 px-3">
-
-          <FormControlLabel
-            sx={{
-              margin: 0,
-              width: "100%",
+              handleFieldChange(
+                "exploringDestinations",
+                value
+              );
             }}
-            control={
-              <Checkbox
-                {...register(
-                  "exploringDestinations"
-                )}
-                sx={blackCheckboxStyles}
-              />
-            }
-            label={
-              <span className="text-[12px] font-medium text-black">
-                I am exploring destinations
-              </span>
-            }
+            className="
+              h-[15px]
+              w-[15px]
+              cursor-pointer
+              accent-black
+            "
           />
 
-        </div>
+          <span>
+            I am exploring destinations
+          </span>
+        </label>
 
-      </div>
+        {/* SECOND DESTINATION */}
 
-
-      {/* SECOND DESTINATION */}
-
-      {exploringDestinations && (
-        <div className="mb-5">
-
-          <label className="mb-2 block text-[12px] font-semibold text-black">
-            Another Destination
-          </label>
-
-          <TextField
-            {...register(
+        {exploringDestinations && (
+          <MinimalField
+            label="Another Destination"
+            placeholder="Add another destination"
+            value={
+              formData.destinationInterest2
+            }
+            onChange={(value) =>
+              handleFieldChange(
+                "destinationInterest2",
+                value
+              )
+            }
+            registration={register(
               "destinationInterest2"
             )}
-            placeholder="Add another destination"
-            fullWidth
-            sx={cleanFieldStyles}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LocationOnOutlinedIcon
-                    sx={{
-                      fontSize: 20,
-                    }}
-                  />
-                </InputAdornment>
-              ),
-            }}
           />
+        )}
 
-        </div>
-      )}
+        {/* FROM */}
 
-
-      {/* FROM */}
-
-      <div className="mb-5">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          From
-          <span className="ml-1 text-red-500">*</span>
-        </label>
-
-        <TextField
-          {...register("fromLocation", {
-            required:
-              "Please enter your departure city.",
-          })}
+        <MinimalField
+          label="From"
+          required
           placeholder="Delhi, Mumbai, Bengaluru..."
-          fullWidth
-          error={Boolean(
-            errors.fromLocation
-          )}
-          helperText={
+          value={
+            formData.fromLocation
+          }
+          onChange={(value) =>
+            handleFieldChange(
+              "fromLocation",
+              value
+            )
+          }
+          error={
             errors.fromLocation?.message
           }
-          sx={cleanFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LocationOnOutlinedIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
+          registration={register(
+            "fromLocation",
+            {
+              required:
+                "Please enter your departure city.",
+            }
+          )}
         />
 
-      </div>
+        {/* DATE */}
 
-
-      {/* DEPARTURE DATE */}
-
-      <div className="mb-2">
-
-        <label className="mb-2 block text-[12px] font-semibold text-black">
-          Departure Date
-          <span className="ml-1 font-normal text-neutral-400">
-            (Choose Any)
-          </span>
-          <span className="ml-1 text-red-500">*</span>
-        </label>
-
-        <TextField
-          {...register(
+        <MinimalField
+          label="Departure Date"
+          required
+          type="date"
+          value={
+            formData.departureDate
+          }
+          onChange={(value) =>
+            handleFieldChange(
+              "departureDate",
+              value
+            )
+          }
+          error={
+            errors.departureDate?.message
+          }
+          registration={register(
             "departureDate",
             {
               required:
                 "Departure date is required.",
             }
           )}
-          type="date"
-          fullWidth
-          error={Boolean(
-            errors.departureDate
-          )}
-          helperText={
-            errors.departureDate?.message
-          }
-          sx={dateFieldStyles}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <CalendarMonthIcon
-                  sx={{
-                    fontSize: 20,
-                  }}
-                />
-              </InputAdornment>
-            ),
-          }}
-          inputProps={{
-            min: new Date()
-              .toISOString()
-              .split("T")[0],
-          }}
         />
 
       </div>
-
 
       {/* BUTTONS */}
 
       <div className="mt-7 flex gap-3">
 
         <BackButton
-          onClick={previousStep}
+          onClick={
+            previousStep
+          }
         />
 
         <NextButton
@@ -1252,7 +1371,6 @@ function PageTwo({
     </div>
   );
 }
-
 
 /* =========================================================
    PAGE 3
@@ -1271,228 +1389,274 @@ function PageThree({
   travellersCount,
   nextStep,
   previousStep,
+  formData,
+  handleFieldChange,
 }) {
   return (
     <div className="w-full">
 
-      <StepHeading
-        // step="STEP 03"
+      <StepTitle
         title="What Do You Prefer?"
-        // description="Help us understand your ideal holiday."
       />
 
+      <div className="space-y-7">
 
-      {/* HOTEL */}
+        {/* HOTEL */}
 
-      <div className="mb-7">
-
-        <SectionLabel
+        <ChoiceSection
           title="Preferred Hotel Category"
-          required
-          rightText="NO HOTEL"
-        />
-        
-
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-
-          {hotelOptions.map((hotel) => (
-            <ChoiceButton
-              key={hotel}
-              selected={
-                hotelCategory === hotel
-              }
-              onClick={() =>
-                setValue(
-                  "hotelCategory",
-                  hotel,
-                  {
-                    shouldValidate: true,
-                  }
-                )
-              }
-            >
-              {hotel}
-            </ChoiceButton>
-          ))}
-
-        </div>
-
-      </div>
-
-
-      {/* FLIGHTS */}
-
-      <div className="mb-7 border-t border-neutral-200 pt-5">
-
-        <SectionLabel
-          title="Flights To Be Included?"
-          icon={
-            <FlightTakeoffIcon
-              sx={{
-                fontSize: 19,
-              }}
-            />
-          }
-        />
-
-        <div className="grid grid-cols-2 gap-2">
-
-          <ChoiceButton
-            selected={
-              flightsIncluded === "Yes"
-            }
-            onClick={() =>
-              setValue(
-                "flightsIncluded",
-                "Yes",
-                {
-                  shouldValidate: true,
-                }
-              )
-            }
-          >
-            YES
-          </ChoiceButton>
-
-          <ChoiceButton
-            selected={
-              flightsIncluded === "No"
-            }
-            onClick={() =>
-              setValue(
-                "flightsIncluded",
-                "No",
-                {
-                  shouldValidate: true,
-                }
-              )
-            }
-          >
-            NO
-          </ChoiceButton>
-
-        </div>
-
-      </div>
-
-
-      {/* BUDGET */}
-
-<div className="mb-7 border-t border-neutral-200 pt-5">
-
-  <SectionLabel
-    title={
-      flightsIncluded === "Yes"
-        ? "Budget With Airfare"
-        : "Budget Without Airfare"
-    }
-    smallText="(per person)"
-    required
-  />
-
-  <TextField
-    {...register("budgetWithAirfare", {
-      required: "Please enter your budget.",
-    })}
-    fullWidth
-    type="text"
-    placeholder="Enter your budget value"
-    error={Boolean(errors.budgetWithAirfare)}
-    helperText={
-      errors.budgetWithAirfare?.message
-    }
-    sx={cleanFieldStyles}
-    InputProps={{
-      startAdornment: (
-        <InputAdornment position="start">
-          <span
+        >
+          <div
             className="
-              flex
-              h-6
-              w-6
-              items-center
-              justify-center
-              text-[18px]
+              grid
+              grid-cols-2
+              gap-2
+              sm:grid-cols-5
             "
           >
-            ⏱
-          </span>
-        </InputAdornment>
-      ),
-    }}
-  />
+            {hotelOptions.map(
+              (hotel) => (
+                <ChoiceButton
+                  key={hotel}
+                  selected={
+                    hotelCategory ===
+                    hotel
+                  }
+                  onClick={() => {
+                    setValue(
+                      "hotelCategory",
+                      hotel,
+                      {
+                        shouldValidate:
+                          true,
+                      }
+                    );
 
-</div>
+                    handleFieldChange(
+                      "hotelCategory",
+                      hotel
+                    );
+                  }}
+                >
+                  {hotel}
+                </ChoiceButton>
+              )
+            )}
+          </div>
+        </ChoiceSection>
 
-      {/* TRAVELLERS */}
+        {/* FLIGHTS */}
 
-      <div className="border-t border-neutral-200 pt-5">
+        <ChoiceSection
+          title="Flights To Be Included?"
+        >
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-2
+            "
+          >
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <ChoiceButton
+              selected={
+                flightsIncluded ===
+                "Yes"
+              }
+              onClick={() => {
+                setValue(
+                  "flightsIncluded",
+                  "Yes",
+                  {
+                    shouldValidate:
+                      true,
+                  }
+                );
 
-          <TravellerSelect
-            label="Adults"
-            subtitle="12+ yrs"
-            value={adults}
+                handleFieldChange(
+                  "flightsIncluded",
+                  "Yes"
+                );
+              }}
+            >
+              YES
+            </ChoiceButton>
+
+            <ChoiceButton
+              selected={
+                flightsIncluded ===
+                "No"
+              }
+              onClick={() => {
+                setValue(
+                  "flightsIncluded",
+                  "No",
+                  {
+                    shouldValidate:
+                      true,
+                  }
+                );
+
+                handleFieldChange(
+                  "flightsIncluded",
+                  "No"
+                );
+              }}
+            >
+              NO
+            </ChoiceButton>
+
+          </div>
+        </ChoiceSection>
+
+        {/* BUDGET */}
+
+        <ChoiceSection
+          title={
+            flightsIncluded === "Yes"
+              ? "Budget With Airfare"
+              : "Budget Without Airfare"
+          }
+          smallText="(per person)"
+        >
+          <MinimalInput
+            type="text"
+            placeholder="Enter your budget value"
+            value={
+              formData.budgetWithAirfare
+            }
+            onChange={(value) =>
+              handleFieldChange(
+                "budgetWithAirfare",
+                value
+              )
+            }
+            error={
+              errors.budgetWithAirfare
+                ?.message
+            }
             registration={register(
-              "adults",
+              "budgetWithAirfare",
               {
-                required: true,
-                valueAsNumber: true,
-                min: 0,
-                max: 20,
+                required:
+                  "Please enter your budget.",
               }
             )}
           />
+        </ChoiceSection>
 
-          <TravellerSelect
-            label="Infant"
-            subtitle="0-2 yrs"
-            value={infants}
-            registration={register(
-              "infants",
-              {
-                required: true,
-                valueAsNumber: true,
-                min: 0,
-                max: 20,
-              }
-            )}
-          />
+        {/* TRAVELLERS */}
 
-          <TravellerSelect
-            label="Children"
-            subtitle="2-12 yrs"
-            value={children}
-            registration={register(
-              "children",
-              {
-                required: true,
-                valueAsNumber: true,
-                min: 0,
-                max: 20,
+        <div
+          className="
+            border-t
+            border-black/20
+            pt-5
+          "
+        >
+
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-4
+              sm:grid-cols-3
+            "
+          >
+
+            <TravellerSelect
+              label="Adults"
+              subtitle="12+ yrs"
+              value={adults}
+              registration={register(
+                "adults",
+                {
+                  required: true,
+                  valueAsNumber:
+                    true,
+                  min: 0,
+                  max: 20,
+                }
+              )}
+              onChange={(value) =>
+                handleFieldChange(
+                  "adults",
+                  Number(value)
+                )
               }
-            )}
-          />
+            />
+
+            <TravellerSelect
+              label="Infant"
+              subtitle="0-2 yrs"
+              value={infants}
+              registration={register(
+                "infants",
+                {
+                  required: true,
+                  valueAsNumber:
+                    true,
+                  min: 0,
+                  max: 20,
+                }
+              )}
+              onChange={(value) =>
+                handleFieldChange(
+                  "infants",
+                  Number(value)
+                )
+              }
+            />
+
+            <TravellerSelect
+              label="Children"
+              subtitle="2-12 yrs"
+              value={children}
+              registration={register(
+                "children",
+                {
+                  required: true,
+                  valueAsNumber:
+                    true,
+                  min: 0,
+                  max: 20,
+                }
+              )}
+              onChange={(value) =>
+                handleFieldChange(
+                  "children",
+                  Number(value)
+                )
+              }
+            />
+
+          </div>
+
+          <p
+            className="
+              mt-3
+              text-[10px]
+              text-black/40
+            "
+          >
+            Total travellers:{" "}
+            <span className="font-bold text-black">
+              {travellersCount}
+            </span>
+          </p>
 
         </div>
 
-        <p className="mt-3 text-[11px] text-neutral-400">
-          Total travellers:{" "}
-          <span className="font-bold text-black">
-            {travellersCount}
-          </span>
-        </p>
-
       </div>
-
 
       {/* BUTTONS */}
 
       <div className="mt-7 flex gap-3">
 
         <BackButton
-          onClick={previousStep}
+          onClick={
+            previousStep
+          }
         />
 
         <NextButton
@@ -1506,7 +1670,6 @@ function PageThree({
   );
 }
 
-
 /* =========================================================
    PAGE 4
 ========================================================= */
@@ -1519,138 +1682,215 @@ function PageFour({
   isSubmitting,
   submitLabel,
   previousStep,
+  formData,
+  handleFieldChange,
 }) {
   return (
     <div className="w-full">
 
-      <StepHeading
-        // step="STEP 04"
+      <StepTitle
         title="Almost Done"
-        // description="Just a few more preferences before we create your enquiry."
       />
 
+      <div className="space-y-7">
 
-      {/* PACKAGE TYPE */}
+        {/* PACKAGE TYPE */}
 
-      <div className="mb-7">
-
-        <SectionLabel
+        <ChoiceSection
           title="Which type of package would you prefer?"
-          required
-        />
-
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-
-          {packageOptions.map((option) => (
-            <ChoiceButton
-              key={option}
-              selected={
-                packageType === option
-              }
-              onClick={() =>
-                setValue(
-                  "packageType",
-                  option,
-                  {
-                    shouldValidate: true,
+        >
+          <div
+            className="
+              grid
+              grid-cols-1
+              gap-2
+              sm:grid-cols-2
+            "
+          >
+            {packageOptions.map(
+              (option) => (
+                <ChoiceButton
+                  key={option}
+                  selected={
+                    packageType ===
+                    option
                   }
-                )
-              }
-            >
-              {option}
-            </ChoiceButton>
-          ))}
+                  onClick={() => {
+                    setValue(
+                      "packageType",
+                      option,
+                      {
+                        shouldValidate:
+                          true,
+                      }
+                    );
 
-        </div>
+                    handleFieldChange(
+                      "packageType",
+                      option
+                    );
+                  }}
+                >
+                  {option}
+                </ChoiceButton>
+              )
+            )}
+          </div>
+        </ChoiceSection>
 
-      </div>
+        {/* CALL TIME */}
 
-
-      {/* CALL TIME */}
-
-      <div className="mb-7 border-t border-neutral-200 pt-5">
-
-        <SectionLabel
+        <ChoiceSection
           title="Preferred Time To Call"
-          required
-        />
-
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-          {callTimeOptions.map((time) => (
-            <ChoiceButton
-              key={time}
-              selected={
-                preferredCallTime === time
-              }
-              onClick={() =>
-                setValue(
-                  "preferredCallTime",
-                  time,
-                  {
-                    shouldValidate: true,
+        >
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-2
+              sm:grid-cols-3
+            "
+          >
+            {callTimeOptions.map(
+              (time) => (
+                <ChoiceButton
+                  key={time}
+                  selected={
+                    preferredCallTime ===
+                    time
                   }
-                )
-              }
-            >
-              {time}
-            </ChoiceButton>
-          ))}
+                  onClick={() => {
+                    setValue(
+                      "preferredCallTime",
+                      time,
+                      {
+                        shouldValidate:
+                          true,
+                      }
+                    );
 
-        </div>
+                    handleFieldChange(
+                      "preferredCallTime",
+                      time
+                    );
+                  }}
+                >
+                  {time}
+                </ChoiceButton>
+              )
+            )}
+          </div>
+        </ChoiceSection>
 
-      </div>
+        {/* TOUR TYPE */}
 
-
-      {/* TOUR TYPE */}
-
-      <div className="border-t border-neutral-200 pt-5">
-
-        <SectionLabel
+        <ChoiceSection
           title="Type Of Tour You Want?"
-          required
-        />
-
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-
-          {tourOptions.map((tour) => (
-            <ChoiceButton
-              key={tour}
-              selected={
-                tourType === tour
-              }
-              onClick={() =>
-                setValue(
-                  "tourType",
-                  tour,
-                  {
-                    shouldValidate: true,
+        >
+          <div
+            className="
+              grid
+              grid-cols-2
+              gap-2
+              sm:grid-cols-3
+            "
+          >
+            {tourOptions.map(
+              (tour) => (
+                <ChoiceButton
+                  key={tour}
+                  selected={
+                    tourType === tour
                   }
-                )
-              }
-            >
-              {tour}
-            </ChoiceButton>
-          ))}
+                  onClick={() => {
+                    setValue(
+                      "tourType",
+                      tour,
+                      {
+                        shouldValidate:
+                          true,
+                      }
+                    );
 
-        </div>
+                    handleFieldChange(
+                      "tourType",
+                      tour
+                    );
+                  }}
+                >
+                  {tour}
+                </ChoiceButton>
+              )
+            )}
+          </div>
+        </ChoiceSection>
 
       </div>
 
+      {/* SUBMIT */}
 
-      {/* BUTTONS */}
-
-      <div className="mt-7 flex gap-3 border-t border-neutral-200 pt-6">
+      <div
+        className="
+          mt-7
+          flex
+          gap-3
+          border-t
+          border-black/20
+          pt-6
+        "
+      >
 
         <BackButton
-          onClick={previousStep}
+          onClick={
+            previousStep
+          }
         />
 
         <Button
           type="submit"
           disabled={isSubmitting}
           fullWidth
-          sx={submitButtonStyles}
+          sx={{
+            minHeight: 42,
+            borderRadius: 0,
+
+            backgroundColor:
+              "#080b0b",
+
+            color: "#ffffff",
+
+            fontFamily:
+              "inherit",
+
+            fontSize:
+              "10px",
+
+            fontWeight:
+              700,
+
+            letterSpacing:
+              "0.06em",
+
+            textTransform:
+              "uppercase",
+
+            boxShadow:
+              "none",
+
+            "&:hover": {
+              backgroundColor:
+                "#202424",
+              boxShadow:
+                "none",
+            },
+
+            "&.Mui-disabled": {
+              backgroundColor:
+                "#777777",
+              color:
+                "#ffffff",
+            },
+          }}
         >
           {isSubmitting
             ? "Submitting..."
@@ -1663,30 +1903,104 @@ function PageFour({
   );
 }
 
-
 /* =========================================================
-   STEP HEADING
+   MINIMAL FIELD
 ========================================================= */
 
-function StepHeading({
-  step,
-  title,
-  description,
+function MinimalField({
+  label,
+  required = false,
+  placeholder,
+  type = "text",
+  registration,
+  error,
+  value,
+  onChange,
 }) {
   return (
-    <div className="mb-7">
+    <div className="w-full">
 
-      <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
-        {step}
-      </p>
+      <label
+        className="
+          mb-2
+          block
+          text-[23px]
+          font-medium
+          text-[#080b0b]
+        "
+      >
+        {label}
 
-      <h2 className="text-[28px] font-extrabold leading-tight tracking-[-0.8px] text-black sm:text-[30px]">
-        {title}
-      </h2>
+        {required && (
+          <span
+            className="
+              ml-1
+              text-black-500
+            "
+          >
+            *
+          </span>
+        )}
+      </label>
 
-      {description && (
-        <p className="mt-2 text-[13px] leading-5 text-neutral-500">
-          {description}
+      <input
+        {...registration}
+        type={type}
+        value={value ?? ""}
+        onChange={(event) => {
+          registration?.onChange?.(
+            event
+          );
+
+          onChange?.(
+            event.target.value
+          );
+        }}
+        placeholder={placeholder}
+        autoComplete="off"
+        spellCheck="false"
+        className="
+          block
+          h-[32px]
+          w-full
+          rounded-none
+          border-0
+          border-b
+          border-black/50
+          bg-transparent
+          px-0
+          pb-2
+          pt-0
+          text-[16px]
+          font-normal
+          text-[#080b0b]
+          outline-none
+          placeholder:text-black/50
+
+          focus:border-black
+          focus:bg-transparent
+          focus:outline-none
+          focus:ring-0
+
+          [&:-webkit-autofill]:bg-transparent
+          [&:-webkit-autofill]:text-[#080b0b]
+          [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset]
+
+          [&:-webkit-autofill:hover]:bg-transparent
+          [&:-webkit-autofill:focus]:bg-transparent
+          [&:-webkit-autofill:active]:bg-transparent
+        "
+      />
+
+      {error && (
+        <p
+          className="
+            mt-1
+            text-[9px]
+            text-black-600
+          "
+        >
+          {error}
         </p>
       )}
 
@@ -1694,57 +2008,174 @@ function StepHeading({
   );
 }
 
-
 /* =========================================================
-   SECTION LABEL
+   MINIMAL INPUT
 ========================================================= */
 
-function SectionLabel({
-  title,
-  smallText,
-  required,
-  rightText,
-  icon,
+function MinimalInput({
+  registration,
+  placeholder,
+  type = "text",
+  error,
+  value,
+  onChange,
 }) {
   return (
-    <div className="mb-3 flex items-center justify-between gap-3">
+    <div>
 
-      <div className="flex items-center gap-2">
+      <input
+        {...registration}
+        type={type}
+        value={value ?? ""}
+        onChange={(event) => {
+          registration?.onChange?.(
+            event
+          );
 
-        {icon && (
-          <span className="flex items-center text-black">
-            {icon}
-          </span>
-        )}
+          onChange?.(
+            event.target.value
+          );
+        }}
+        placeholder={placeholder}
+        autoComplete="off"
+        spellCheck="false"
+        className="
+          block
+          h-[36px]
+          w-full
+          rounded-none
+          border-0
+          border-b
+          border-black/50
+          bg-transparent
+          px-0
+          pb-2
+          text-[12px]
+          text-[#080b0b]
+          outline-none
+          placeholder:text-black/40
 
-        <span className="text-[12px] font-bold text-black">
-          {title}
-        </span>
+          focus:border-black
+          focus:bg-transparent
+          focus:outline-none
+          focus:ring-0
 
-        {smallText && (
-          <span className="text-[10px] font-normal text-neutral-400">
-            {smallText}
-          </span>
-        )}
+          [&:-webkit-autofill]:bg-transparent
+          [&:-webkit-autofill]:text-[#080b0b]
+          [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset]
 
-        {required && (
-          <span className="text-red-500">
-            *
-          </span>
-        )}
+          [&:-webkit-autofill:hover]:bg-transparent
+          [&:-webkit-autofill:focus]:bg-transparent
+          [&:-webkit-autofill:active]:bg-transparent
+        "
+      />
 
-      </div>
-
-      {rightText && (
-        <span className="text-[9px] font-medium uppercase tracking-wide text-neutral-400">
-          {rightText}
-        </span>
+      {error && (
+        <p
+          className="
+            mt-1
+            text-[9px]
+            text-red-600
+          "
+        >
+          {error}
+        </p>
       )}
 
     </div>
   );
 }
 
+/* =========================================================
+   STEP TITLE
+========================================================= */
+
+function StepTitle({
+  title,
+}) {
+  return (
+    <div className="mb-7">
+
+      <h3
+        className="
+          font-serif
+          text-[29px]
+          font-medium
+          leading-[1]
+          tracking-[-1.2px]
+          text-[#080b0b]
+        "
+      >
+        {title}
+      </h3>
+
+    </div>
+  );
+}
+
+/* =========================================================
+   CHOICE SECTION
+========================================================= */
+
+function ChoiceSection({
+  title,
+  smallText,
+  children,
+}) {
+  return (
+    <div
+      className="
+        border-t
+        border-black/20
+        pt-5
+      "
+    >
+
+      <div
+        className="
+          mb-3
+          flex
+          items-center
+          gap-2
+        "
+      >
+
+        <span
+          className="
+            text-[11px]
+            font-semibold
+            text-[#080b0b]
+          "
+        >
+          {title}
+        </span>
+
+        {smallText && (
+          <span
+            className="
+              text-[9px]
+              text-black/40
+            "
+          >
+            {smallText}
+          </span>
+        )}
+
+        <span
+          className="
+            text-red-500
+          "
+        >
+          *
+        </span>
+
+      </div>
+
+      {children}
+
+    </div>
+  );
+}
 
 /* =========================================================
    CHOICE BUTTON
@@ -1760,18 +2191,19 @@ function ChoiceButton({
       type="button"
       onClick={onClick}
       className={`
-        min-h-[44px]
+        min-h-[40px]
         border
         px-3
         py-2
-        text-[11px]
+        text-[10px]
         font-semibold
         transition-all
         duration-150
+
         ${
           selected
             ? "border-black bg-black text-white"
-            : "border-neutral-300 bg-white text-neutral-600 hover:border-black hover:text-black"
+            : "border-black/30 bg-transparent text-black hover:border-black"
         }
       `}
     >
@@ -1779,7 +2211,6 @@ function ChoiceButton({
     </button>
   );
 }
-
 
 /* =========================================================
    TRAVELLER SELECT
@@ -1790,79 +2221,97 @@ function TravellerSelect({
   subtitle,
   value,
   registration,
+  onChange,
 }) {
   return (
     <div>
 
-      <label className="mb-2 block">
+      <label
+        className="
+          mb-2
+          block
+        "
+      >
 
-        <span className="text-[12px] font-bold text-black">
+        <span
+          className="
+            text-[11px]
+            font-semibold
+            text-[#080b0b]
+          "
+        >
           {label}
         </span>
 
-        <span className="ml-1 text-[9px] text-neutral-400">
+        <span
+          className="
+            ml-1
+            text-[9px]
+            text-black/40
+          "
+        >
           ({subtitle})
         </span>
 
       </label>
 
-      <div className="relative">
+      <select
+        {...registration}
+        value={
+          value ?? 0
+        }
+        onChange={(event) => {
+          registration?.onChange?.(
+            event
+          );
 
-        <PersonIcon
-          sx={{
-            position: "absolute",
-            left: "10px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            fontSize: 19,
-            color: "#000",
-            zIndex: 1,
-            pointerEvents: "none",
-          }}
-        />
+          onChange?.(
+            event.target.value
+          );
+        }}
+        className="
+          h-[42px]
+          w-full
+          appearance-none
+          rounded-none
+          border-0
+          border-b
+          border-black/50
+          bg-transparent
+          px-0
+          text-[11px]
+          text-[#080b0b]
+          outline-none
 
-        <select
-          {...registration}
-          value={value}
-          className="
-            h-[48px]
-            w-full
-            appearance-none
-            border
-            border-neutral-300
-            bg-white
-            pl-9
-            pr-8
-            text-[12px]
-            text-black
-            outline-none
-            transition
-            focus:border-black
-          "
-        >
-          {Array.from(
-            { length: 21 },
-            (_, index) => index
-          ).map((number) => (
+          focus:border-black
+          focus:bg-transparent
+          focus:outline-none
+          focus:ring-0
+        "
+      >
+
+        {Array.from(
+          {
+            length: 21,
+          },
+          (_, index) =>
+            index
+        ).map(
+          (number) => (
             <option
               key={number}
               value={number}
             >
               {number}
             </option>
-          ))}
-        </select>
+          )
+        )}
 
-        <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[9px] text-black">
-          ▼
-        </span>
-
-      </div>
+      </select>
 
     </div>
   );
 }
-
 
 /* =========================================================
    NEXT BUTTON
@@ -1878,31 +2327,42 @@ function NextButton({
       onClick={onClick}
       className={`
         flex
-        min-h-[48px]
+        h-[50px]
+        min-w-[102px]
         items-center
         justify-center
         gap-3
-        bg-black
+        rounded-[6px]
+        bg-[#080b0b]
         px-6
-        text-[12px]
-        font-bold
+        text-[px]
+        font-semibold
         uppercase
-        tracking-wide
-        text-white
+        tracking-[0.04em]
+        text-[#c5bd96]
         transition
-        hover:bg-neutral-800
+        hover:bg-[#1b1f1f]
+
         ${className}
       `}
     >
-      Next
 
-      <span className="text-base leading-none">
+      <span>
+        Next
+      </span>
+
+      <span
+        className="
+          text-[15px]
+          leading-none
+        "
+      >
         →
       </span>
+
     </button>
   );
 }
-
 
 /* =========================================================
    BACK BUTTON
@@ -1916,14 +2376,14 @@ function BackButton({
       type="button"
       onClick={onClick}
       className="
-        min-h-[48px]
-        min-w-[82px]
+        min-h-[42px]
+        min-w-[80px]
         border
         border-black
-        bg-white
+        bg-transparent
         px-5
-        text-[12px]
-        font-bold
+        text-[10px]
+        font-semibold
         uppercase
         tracking-wide
         text-black
@@ -1937,124 +2397,8 @@ function BackButton({
   );
 }
 
-
 /* =========================================================
-   INPUT STYLES
+   EXPORT
 ========================================================= */
-
-const cleanFieldStyles = {
-  width: "100%",
-
-  "& .MuiOutlinedInput-root": {
-    minHeight: "52px",
-    borderRadius: "0px",
-    backgroundColor: "#fff",
-
-    "& fieldset": {
-      borderColor: "#d1d1d1",
-      borderWidth: "1px",
-    },
-
-    "&:hover fieldset": {
-      borderColor: "#777",
-    },
-
-    "&.Mui-focused fieldset": {
-      borderColor: "#000",
-      borderWidth: "1px",
-    },
-
-    "&.Mui-error fieldset": {
-      borderColor: "#000",
-    },
-  },
-
-  "& .MuiInputBase-input": {
-    padding: "14px 10px",
-    fontSize: "13px",
-    color: "#000",
-  },
-
-  "& .MuiInputBase-input::placeholder": {
-    color: "#999",
-    opacity: 1,
-  },
-
-  "& .MuiFormHelperText-root": {
-    marginLeft: "0px",
-    marginTop: "4px",
-    fontSize: "10px",
-  },
-
-  "& .MuiInputAdornment-root": {
-    color: "#000",
-    marginRight: "3px",
-  },
-};
-
-
-/* =========================================================
-   DATE FIELD
-========================================================= */
-
-const dateFieldStyles = {
-  ...cleanFieldStyles,
-
-  "& input::-webkit-calendar-picker-indicator": {
-    cursor: "pointer",
-    opacity: 0.7,
-  },
-};
-
-
-/* =========================================================
-   CHECKBOX
-========================================================= */
-
-const blackCheckboxStyles = {
-  padding: "5px",
-  marginRight: "5px",
-  color: "#000",
-
-  "&.Mui-checked": {
-    color: "#000",
-  },
-
-  "& .MuiSvgIcon-root": {
-    fontSize: 20,
-  },
-};
-
-
-/* =========================================================
-   SUBMIT BUTTON
-========================================================= */
-
-const submitButtonStyles = {
-  minHeight: 48,
-  borderRadius: "0px",
-  backgroundColor: "#000",
-  color: "#fff",
-  fontWeight: 800,
-  fontSize: "12px",
-  textTransform: "uppercase",
-  letterSpacing: "0.04em",
-  boxShadow: "none",
-
-  "&:hover": {
-    backgroundColor: "#222",
-    boxShadow: "none",
-  },
-
-  "&:active": {
-    backgroundColor: "#000",
-  },
-
-  "&.Mui-disabled": {
-    backgroundColor: "#737373",
-    color: "#fff",
-  },
-};
-
 
 export default LeadForm;
