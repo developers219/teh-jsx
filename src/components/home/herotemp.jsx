@@ -207,21 +207,15 @@ text-center
             <div
               className="
                 flex
-                h-[54px]
+                
                 w-full
                 items-center
                 rounded-full
                 bg-white
-                px-4
+                p-2
                 shadow-[0_12px_40px_rgba(0,0,0,0.25)]
                 transition-all
                 duration-300
-
-                sm:h-[58px]
-                sm:px-5
-
-                md:px-6
-
                 focus-within:shadow-[0_15px_45px_rgba(0,0,0,0.35)]
               "
             >
@@ -233,6 +227,7 @@ text-center
                   fontSize: 24,
                   color: "black",
                   flexShrink: 0,
+                  margin: 1,
                 }}
               />
 
@@ -292,23 +287,21 @@ text-center
                 className="
                   ml-2
                   flex
-                  h-[40px]
-                  w-[40px]
+                  
+                  
                   shrink-0
                   items-center
                   justify-center
                   rounded-full
-                  bg-black
+                  bg-beige
                   text-white
                   transition-all
                   duration-300
                   hover:scale-105
-                  hover:bg-neutral-800
+                  hover:bg-beigeD
                   active:scale-95
-
-                  sm:ml-3
-                  sm:h-[42px]
-                  sm:w-[42px]
+                  cursor-pointer
+                  p-4
                 "
               >
                 <ArrowForwardIcon

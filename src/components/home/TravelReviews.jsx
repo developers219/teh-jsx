@@ -128,7 +128,7 @@ export default function TravelReviews() {
         ====================================================== */}
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
-        <div className="relative overflow-visible rounded-[24px] bg-[black] shadow-[0_25px_70px_rgba(0,0,0,0.30)]">
+        <div className="relative overflow-visible rounded-[24px] bg-black shadow-[0_25px_70px_rgba(0,0,0,0.30)]">
           {/* <div className="grid lg:grid-cols-[310px_1fr]"> */}
           {/* <div className="grid lg:grid-cols-[310px_1fr]"> */}
           <div className="flex flex-col lg:flex-row">
@@ -147,7 +147,7 @@ export default function TravelReviews() {
                 <FormatQuoteIcon
                   sx={{
                     fontSize: 52,
-                    color: "black",
+                    color: "#c5bd96",
                   }}
                 />
               </div>
@@ -189,7 +189,7 @@ export default function TravelReviews() {
               {/* Read More */}
               <button
                 type="button"
-                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold text-white transition-colors hover:text-[#8ed8c2]"
+                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-beige p-3 px-6 rounded-full cursor-pointer transition-colors "
               >
                 Read More
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[#063b72]">
@@ -306,7 +306,7 @@ export default function TravelReviews() {
                     type="button"
                     onClick={previousReview}
                     aria-label="Previous review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-[white] text-black transition-all hover:bg-white hover:text-[#063b72]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-white hover:text-[#063b72]"
                   >
                     <ArrowBackIosNewIcon sx={{ fontSize: 13 }} />
                   </button>
@@ -315,7 +315,7 @@ export default function TravelReviews() {
                     type="button"
                     onClick={nextReview}
                     aria-label="Next review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-[white] text-black transition-all hover:bg-white hover:text-[#063b72]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-white hover:text-[#063b72]"
                   >
                     <ArrowForwardIosIcon sx={{ fontSize: 13 }} />
                   </button>

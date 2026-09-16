@@ -3,6 +3,8 @@
 
 @theme {
   --font-cg: "Cormorant Garamond", serif;
+  --color-beige: #c5bd96;
+  --color-beigeD: #b1aa87;
 }
 
 :root {

@@ -218,255 +218,578 @@ function TrustCenter() {
       }}
     >
       {/* =====================================================
-          STICKY VIEWPORT
+        STICKY VIEWPORT
+    ====================================================== */}
+      <div className="sticky top-14 sm:top-28 h-fit xl:h-screen overflow-hidden bg-white">
+        {/* =====================================================
+          CONTENT WRAPPER
+
+          Desktop:
+          image centered + text on either side
+
+          Tablet / Mobile:
+          image on top + text underneath
       ====================================================== */}
-
-      <div className="sticky top-0 h-screen overflow-hidden bg-white">
-        {/* ===================================================
-            FIXED IMAGE AREA
-
-            THIS POSITION NEVER CHANGES.
-        ==================================================== */}
-
         <div
           className="
-            absolute
-            left-1/2
-            top-1/2
+          relative
+          flex
+          h-fit
+          xl:h-[600px]
+          w-full
+          flex-col
+          
+          px-5
+          pt-8
+          pb-10
+
+          sm:px-8
+          sm:pt-8
+
+          lg:block
+          lg:px-0
+          lg:pt-0
+          lg:pb-0
+        "
+        >
+          {/* ===================================================
+            IMAGE
+        ==================================================== */}
+          <div
+            className="
+            relative
             z-10
-            h-[58vh]
-            w-[min(42vw,450px)]
-            -translate-x-1/2
-            -translate-y-1/2
+            h-[38vh]
+            w-full
+            max-w-[520px]
+            shrink-0
             overflow-hidden
             rounded-[18px]
             bg-neutral-100
-            sm:h-[62vh]
-            lg:h-[66vh]
-          "
-        >
-          <AnimatePresence initial={false}>
-            <motion.img
-              key={activeStory.image}
-              src={activeStory.image}
-              alt={activeStory.title}
-              variants={imageVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                /*
-                 * TEXT HAS ALREADY STARTED
-                 * BEFORE THIS BEGINS.
-                 */
-                delay: 0.9,
 
-                opacity: {
-                  duration: 2.05,
-                  ease: [0.22, 1, 0.36, 1],
-                },
-              }}
-              className="
+            sm:h-[42vh]
+            sm:max-w-[560px]
+
+            md:h-[46vh]
+            md:max-w-[600px]
+
+            lg:absolute
+            lg:left-1/2
+            lg:top-1/2
+            lg:h-[66vh]
+            lg:w-[min(42vw,450px)]
+            lg:max-w-none
+            lg:-translate-x-1/2
+            lg:-translate-y-1/2
+          "
+          >
+            <AnimatePresence initial={false}>
+              <motion.img
+                key={activeStory.image}
+                src={activeStory.image}
+                alt={activeStory.title}
+                variants={imageVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{
+                  delay: 0.9,
+
+                  opacity: {
+                    duration: 2.05,
+                    ease: [0.22, 1, 0.36, 1],
+                  },
+                }}
+                className="
                 absolute
                 inset-0
                 h-full
                 w-full
                 object-cover
               "
-            />
-          </AnimatePresence>
-        </div>
+              />
+            </AnimatePresence>
+          </div>
 
-        {/* ===================================================
+          {/* ===================================================
             TEXT
         ==================================================== */}
+          <AnimatePresence mode="wait" custom={direction}>
+            <motion.div
+              key={activeIndex}
+              custom={direction}
+              variants={textVariants}
+              initial="enter"
+              animate={
+                activeIndex === stories.length - 1 && finalExitProgress > 0
+                  ? {
+                      y: `${-finalExitProgress * 100}vh`,
+                      opacity: 1 - finalExitProgress,
+                      filter: `blur(${finalExitProgress * 12}px)`,
+                    }
+                  : "center"
+              }
+              exit="exit"
+              transition={{
+                y: {
+                  duration: activeIndex === 3 ? 0.3 : 0.5,
+                  ease: [0.22, 1, 0.36, 1],
+                },
 
-        <AnimatePresence mode="wait" custom={direction}>
-          <motion.div
-            key={activeIndex}
-            custom={direction}
-            variants={textVariants}
-            initial="enter"
-            animate={
-              activeIndex === stories.length - 1 && finalExitProgress > 0
-                ? {
-                    y: `${-finalExitProgress * 100}vh`,
-                    opacity: 1 - finalExitProgress,
-                    filter: `blur(${finalExitProgress * 12}px)`,
-                  }
-                : "center"
-            }
-            exit="exit"
-            transition={{
-              /*
-               * TEXT MOVES FIRST
-               */
-              y: {
-                duration: activeIndex === 3 ? 0.3 : 0.5,
-                ease: [0.22, 1, 0.36, 1],
-              },
+                opacity: {
+                  duration: 0.2,
+                  ease: "easeOut",
+                },
 
-              opacity: {
-                duration: 0.2,
-                ease: "easeOut",
-              },
-
-              filter: {
-                duration: 0.55,
-                ease: "easeOut",
-              },
-            }}
-            className={`
-              absolute
-              top-1/2
+                filter: {
+                  duration: 0.55,
+                  ease: "easeOut",
+                },
+              }}
+              className={`
               z-20
-              w-[calc(50%_-_30px)]
-              max-w-[440px]
-              -translate-y-1/2
+              mt-7
+              w-full
+              max-w-[560px]
+              shrink-0
+
+              sm:mt-8
+              sm:max-w-[600px]
+
+              md:mt-9
+              md:max-w-[650px]
+
+              lg:absolute
+              lg:top-1/2
+              lg:mt-0
+              lg:w-[calc(50%_-_30px)]
+              lg:max-w-[440px]
+              lg:-translate-y-1/2
 
               ${
                 activeStory.side === "left"
-                  ? "left-[5%] lg:left-[7%]"
-                  : "right-[0%] lg:right-[5%]"
+                  ? "lg:left-[5%] xl:left-[7%]"
+                  : "lg:right-[0%] xl:right-[5%]"
               }
             `}
-          >
-            {/* =================================================
+            >
+              {/* =================================================
                 LABEL
             ================================================== */}
-
-            <div className="mb-6">
-              <span
-                className="
-                  text-[10px]
+              <div className="mb-4 sm:mb-5 lg:mb-6">
+                <span
+                  className="
+                  text-[9px]
                   font-medium
                   uppercase
                   tracking-[0.25em]
                   text-neutral-500
-                  sm:text-[11px]
-                "
-              >
-                {activeStory.label}
-              </span>
-            </div>
 
-            {/* =================================================
+                  sm:text-[10px]
+
+                  lg:text-[11px]
+                "
+                >
+                  {activeStory.label}
+                </span>
+              </div>
+
+              {/* =================================================
                 TITLE
             ================================================== */}
-
-            <h2
-              className="
-                max-w-[470px]
-                text-[38px]
+              <h2
+                className="
+                max-w-[560px]
+                text-[32px]
                 font-normal
-                leading-[1.04]
+                leading-[1.06]
                 tracking-[-0.045em]
                 text-[#25272b]
 
-                sm:text-[44px]
+                sm:text-[38px]
 
+                md:text-[44px]
+
+                lg:max-w-[470px]
                 lg:text-[52px]
 
                 xl:text-[56px]
               "
-            >
-              {activeStory.title}
-            </h2>
+              >
+                {activeStory.title}
+              </h2>
 
-            {/* =================================================
+              {/* =================================================
                 DESCRIPTION
             ================================================== */}
-
-            <p
-              className="
-                mt-7
-                max-w-[400px]
-                text-[14px]
+              <p
+                className="
+                mt-5
+                max-w-[560px]
+                text-[13px]
                 font-normal
-                leading-[1.75]
+                leading-[1.7]
                 tracking-[0.01em]
                 text-[#6d6d70]
 
-                sm:text-[15px]
+                sm:mt-6
+                sm:text-[14px]
 
+                md:text-[15px]
+
+                lg:mt-7
+                lg:max-w-[400px]
                 lg:text-[16px]
+                lg:leading-[1.75]
               "
-            >
-              {activeStory.description}
-            </p>
+              >
+                {activeStory.description}
+              </p>
 
-            {/* =================================================
+              {/* =================================================
                 LOGOS
             ================================================== */}
-
-            {activeStory.logos && (
-              <div
-                className="
-                  mt-8
+              {activeStory.logos && (
+                <div
+                  className="
+                  mt-6
                   flex
-                  max-w-[350px]
+                  max-w-[560px]
                   flex-wrap
-                  gap-x-8
-                  gap-y-5
+                  gap-x-6
+                  gap-y-3
+
+                  sm:mt-7
+                  sm:gap-x-8
+                  sm:gap-y-4
+
+                  lg:mt-8
+                  lg:max-w-[350px]
+                  lg:gap-y-5
                 "
-              >
-                {activeStory.logos.map((logo) => (
-                  <div
-                    key={logo}
-                    className="
+                >
+                  {activeStory.logos.map((logo) => (
+                    <div
+                      key={logo}
+                      className="
                       flex
-                      h-[28px]
+                      h-[24px]
                       items-center
-                      text-[12px]
+                      text-[10px]
                       font-medium
                       tracking-[0.12em]
                       text-neutral-600
-                    "
-                  >
-                    {logo}
-                  </div>
-                ))}
-              </div>
-            )}
-          </motion.div>
-        </AnimatePresence>
 
-        {/* ===================================================
+                      sm:h-[28px]
+                      sm:text-[11px]
+
+                      lg:text-[12px]
+                    "
+                    >
+                      {logo}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          {/* ===================================================
             STORY INDICATOR
         ==================================================== */}
-
-        {/* <div
-          className="
+          <div
+            className="
             absolute
-            bottom-8
+            bottom-5
             left-1/2
             z-30
             flex
             -translate-x-1/2
             items-center
             gap-2
+
+            sm:bottom-6
+
+            lg:bottom-8
           "
-        > */}
-        {stories.map((_, index) => (
-          <div
-            key={index}
-            className="
+          >
+            {stories.map((_, index) => (
+              <div
+                key={index}
+                className="
                 h-[3px]
                 rounded-full
                 bg-neutral-900
                 transition-all
                 duration-500
               "
-            style={{
-              width: activeIndex === index ? "28px" : "8px",
-
-              opacity: activeIndex === index ? 1 : 0.2,
-            }}
-          />
-        ))}
+                style={{
+                  width: activeIndex === index ? "28px" : "8px",
+                  opacity: activeIndex === index ? 1 : 0.2,
+                }}
+              />
+            ))}
+          </div>
+        </div>
       </div>
-      {/* </div> */}
     </section>
+    // <section
+    //   ref={sectionRef}
+    //   className="relative bg-white"
+    //   style={{
+    //     height: `${(stories.length + 1) * 100}vh`,
+    //   }}
+    // >
+    //   {/* =====================================================
+    //       STICKY VIEWPORT
+    //   ====================================================== */}
+
+    //   <div className="sticky top-0 h-screen overflow-hidden bg-white">
+    //     {/* ===================================================
+    //         FIXED IMAGE AREA
+
+    //         THIS POSITION NEVER CHANGES.
+    //     ==================================================== */}
+
+    //     <div
+    //       className="
+    //         absolute
+    //         left-1/2
+    //         top-1/2
+    //         z-10
+    //         h-[58vh]
+    //         w-[min(42vw,450px)]
+    //         -translate-x-1/2
+    //         -translate-y-1/2
+    //         overflow-hidden
+    //         rounded-[18px]
+    //         bg-neutral-100
+    //         sm:h-[62vh]
+    //         lg:h-[66vh]
+    //       "
+    //     >
+    //       <AnimatePresence initial={false}>
+    //         <motion.img
+    //           key={activeStory.image}
+    //           src={activeStory.image}
+    //           alt={activeStory.title}
+    //           variants={imageVariants}
+    //           initial="enter"
+    //           animate="center"
+    //           exit="exit"
+    //           transition={{
+    //             /*
+    //              * TEXT HAS ALREADY STARTED
+    //              * BEFORE THIS BEGINS.
+    //              */
+    //             delay: 0.9,
+
+    //             opacity: {
+    //               duration: 2.05,
+    //               ease: [0.22, 1, 0.36, 1],
+    //             },
+    //           }}
+    //           className="
+    //             absolute
+    //             inset-0
+    //             h-full
+    //             w-full
+    //             object-cover
+    //           "
+    //         />
+    //       </AnimatePresence>
+    //     </div>
+
+    //     {/* ===================================================
+    //         TEXT
+    //     ==================================================== */}
+
+    //     <AnimatePresence mode="wait" custom={direction}>
+    //       <motion.div
+    //         key={activeIndex}
+    //         custom={direction}
+    //         variants={textVariants}
+    //         initial="enter"
+    //         animate={
+    //           activeIndex === stories.length - 1 && finalExitProgress > 0
+    //             ? {
+    //                 y: `${-finalExitProgress * 100}vh`,
+    //                 opacity: 1 - finalExitProgress,
+    //                 filter: `blur(${finalExitProgress * 12}px)`,
+    //               }
+    //             : "center"
+    //         }
+    //         exit="exit"
+    //         transition={{
+    //           /*
+    //            * TEXT MOVES FIRST
+    //            */
+    //           y: {
+    //             duration: activeIndex === 3 ? 0.3 : 0.5,
+    //             ease: [0.22, 1, 0.36, 1],
+    //           },
+
+    //           opacity: {
+    //             duration: 0.2,
+    //             ease: "easeOut",
+    //           },
+
+    //           filter: {
+    //             duration: 0.55,
+    //             ease: "easeOut",
+    //           },
+    //         }}
+    //         className={`
+    //           absolute
+    //           top-1/2
+    //           z-20
+    //           w-[calc(50%_-_30px)]
+    //           max-w-[440px]
+    //           -translate-y-1/2
+
+    //           ${
+    //             activeStory.side === "left"
+    //               ? "left-[5%] lg:left-[7%]"
+    //               : "right-[0%] lg:right-[5%]"
+    //           }
+    //         `}
+    //       >
+    //         {/* =================================================
+    //             LABEL
+    //         ================================================== */}
+
+    //         <div className="mb-6">
+    //           <span
+    //             className="
+    //               text-[10px]
+    //               font-medium
+    //               uppercase
+    //               tracking-[0.25em]
+    //               text-neutral-500
+    //               sm:text-[11px]
+    //             "
+    //           >
+    //             {activeStory.label}
+    //           </span>
+    //         </div>
+
+    //         {/* =================================================
+    //             TITLE
+    //         ================================================== */}
+
+    //         <h2
+    //           className="
+    //             max-w-[470px]
+    //             text-[38px]
+    //             font-normal
+    //             leading-[1.04]
+    //             tracking-[-0.045em]
+    //             text-[#25272b]
+
+    //             sm:text-[44px]
+
+    //             lg:text-[52px]
+
+    //             xl:text-[56px]
+    //           "
+    //         >
+    //           {activeStory.title}
+    //         </h2>
+
+    //         {/* =================================================
+    //             DESCRIPTION
+    //         ================================================== */}
+
+    //         <p
+    //           className="
+    //             mt-7
+    //             max-w-[400px]
+    //             text-[14px]
+    //             font-normal
+    //             leading-[1.75]
+    //             tracking-[0.01em]
+    //             text-[#6d6d70]
+
+    //             sm:text-[15px]
+
+    //             lg:text-[16px]
+    //           "
+    //         >
+    //           {activeStory.description}
+    //         </p>
+
+    //         {/* =================================================
+    //             LOGOS
+    //         ================================================== */}
+
+    //         {activeStory.logos && (
+    //           <div
+    //             className="
+    //               mt-8
+    //               flex
+    //               max-w-[350px]
+    //               flex-wrap
+    //               gap-x-8
+    //               gap-y-5
+    //             "
+    //           >
+    //             {activeStory.logos.map((logo) => (
+    //               <div
+    //                 key={logo}
+    //                 className="
+    //                   flex
+    //                   h-[28px]
+    //                   items-center
+    //                   text-[12px]
+    //                   font-medium
+    //                   tracking-[0.12em]
+    //                   text-neutral-600
+    //                 "
+    //               >
+    //                 {logo}
+    //               </div>
+    //             ))}
+    //           </div>
+    //         )}
+    //       </motion.div>
+    //     </AnimatePresence>
+
+    //     {/* ===================================================
+    //         STORY INDICATOR
+    //     ==================================================== */}
+
+    //     {/* <div
+    //       className="
+    //         absolute
+    //         bottom-8
+    //         left-1/2
+    //         z-30
+    //         flex
+    //         -translate-x-1/2
+    //         items-center
+    //         gap-2
+    //       "
+    //     > */}
+    //     {stories.map((_, index) => (
+    //       <div
+    //         key={index}
+    //         className="
+    //             h-[3px]
+    //             rounded-full
+    //             bg-neutral-900
+    //             transition-all
+    //             duration-500
+    //           "
+    //         style={{
+    //           width: activeIndex === index ? "28px" : "8px",
+
+    //           opacity: activeIndex === index ? 1 : 0.2,
+    //         }}
+    //       />
+    //     ))}
+    //   </div>
+    //   {/* </div> */}
+    // </section>
   );
 }
 
