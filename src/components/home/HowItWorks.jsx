@@ -635,6 +635,7 @@ function HowItWorks() {
             className="
               min-h-screen
               bg-white
+              flex flex-col flex-col-reverse
             "
           >
             {/* IMAGE */}
