@@ -10,7 +10,7 @@ function PersonalizedHolidayPlan() {
           max-w-[1190px]
           overflow-hidden
           rounded-[5px]
-          bg-[#c5bd96]
+          bg-beige
         "
       >
         <div
@@ -55,9 +55,7 @@ function PersonalizedHolidayPlan() {
               "
             >
               Let’s plan your
-              <span className="block">
-                next journey.
-              </span>
+              <span className="block">next journey.</span>
             </h2>
           </div>
 

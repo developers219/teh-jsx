@@ -47,18 +47,9 @@ const emptyLeadValues = {
    OPTIONS
 ========================================================= */
 
-const hotelOptions = [
-  "5 Star",
-  "4 Star",
-  "3 Star",
-  "2 Star",
-  "No Hotel",
-];
+const hotelOptions = ["5 Star", "4 Star", "3 Star", "2 Star", "No Hotel"];
 
-const packageOptions = [
-  "Customizable Package",
-  "Bestselling Standard Package",
-];
+const packageOptions = ["Customizable Package", "Bestselling Standard Package"];
 
 const callTimeOptions = [
   "Anytime",
@@ -116,9 +107,7 @@ function LeadForm({
      THIS STATE HOLDS ALL USER ENTERED DATA
   ======================================================== */
 
-  const [formData, setFormData] = useState(
-    getDefaultValues(initialValues)
-  );
+  const [formData, setFormData] = useState(getDefaultValues(initialValues));
 
   /* =======================================================
      REACT HOOK FORM
@@ -131,10 +120,7 @@ function LeadForm({
     trigger,
     setValue,
     watch,
-    formState: {
-      errors,
-      isSubmitting,
-    },
+    formState: { errors, isSubmitting },
   } = useForm({
     defaultValues: getDefaultValues(initialValues),
     mode: "onBlur",
@@ -170,61 +156,36 @@ function LeadForm({
     formData.exploringDestinations
   );
 
-  const hotelCategory = watch(
-    "hotelCategory",
-    formData.hotelCategory
-  );
+  const hotelCategory = watch("hotelCategory", formData.hotelCategory);
 
-  const flightsIncluded = watch(
-    "flightsIncluded",
-    formData.flightsIncluded
-  );
+  const flightsIncluded = watch("flightsIncluded", formData.flightsIncluded);
 
   const budgetWithAirfare = watch(
     "budgetWithAirfare",
     formData.budgetWithAirfare
   );
 
-  const adults = watch(
-    "adults",
-    formData.adults
-  );
+  const adults = watch("adults", formData.adults);
 
-  const infants = watch(
-    "infants",
-    formData.infants
-  );
+  const infants = watch("infants", formData.infants);
 
-  const children = watch(
-    "children",
-    formData.children
-  );
+  const children = watch("children", formData.children);
 
-  const packageType = watch(
-    "packageType",
-    formData.packageType
-  );
+  const packageType = watch("packageType", formData.packageType);
 
   const preferredCallTime = watch(
     "preferredCallTime",
     formData.preferredCallTime
   );
 
-  const tourType = watch(
-    "tourType",
-    formData.tourType
-  );
+  const tourType = watch("tourType", formData.tourType);
 
   /* =======================================================
      TRAVELLER COUNT
   ======================================================== */
 
   const travellersCount = useMemo(() => {
-    return (
-      Number(adults || 0) +
-      Number(infants || 0) +
-      Number(children || 0)
-    );
+    return Number(adults || 0) + Number(infants || 0) + Number(children || 0);
   }, [adults, infants, children]);
 
   /* =======================================================
@@ -292,19 +253,11 @@ function LeadForm({
     let fields = [];
 
     if (step === 1) {
-      fields = [
-        "name",
-        "phone",
-        "email",
-      ];
+      fields = ["name", "phone", "email"];
     }
 
     if (step === 2) {
-      fields = [
-        "destinationInterest",
-        "fromLocation",
-        "departureDate",
-      ];
+      fields = ["destinationInterest", "fromLocation", "departureDate"];
     }
 
     if (step === 3) {
@@ -319,19 +272,13 @@ function LeadForm({
     }
 
     if (step === 4) {
-      fields = [
-        "packageType",
-        "preferredCallTime",
-        "tourType",
-      ];
+      fields = ["packageType", "preferredCallTime", "tourType"];
     }
 
     const valid = await trigger(fields);
 
     if (!valid) {
-      setFormError(
-        "Please complete the required details before continuing."
-      );
+      setFormError("Please complete the required details before continuing.");
       return;
     }
 
@@ -344,56 +291,39 @@ function LeadForm({
       whatsappUpdates: watch("whatsappUpdates"),
       email: watch("email"),
 
-      destinationInterest:
-        watch("destinationInterest"),
+      destinationInterest: watch("destinationInterest"),
 
-      destinationInterest2:
-        watch("destinationInterest2"),
+      destinationInterest2: watch("destinationInterest2"),
 
-      exploringDestinations:
-        watch("exploringDestinations"),
+      exploringDestinations: watch("exploringDestinations"),
 
-      fromLocation:
-        watch("fromLocation"),
+      fromLocation: watch("fromLocation"),
 
-      departureDate:
-        watch("departureDate"),
+      departureDate: watch("departureDate"),
 
-      travelDate:
-        watch("travelDate"),
+      travelDate: watch("travelDate"),
 
-      hotelCategory:
-        watch("hotelCategory"),
+      hotelCategory: watch("hotelCategory"),
 
-      flightsIncluded:
-        watch("flightsIncluded"),
+      flightsIncluded: watch("flightsIncluded"),
 
-      budgetWithAirfare:
-        watch("budgetWithAirfare"),
+      budgetWithAirfare: watch("budgetWithAirfare"),
 
-      adults:
-        watch("adults"),
+      adults: watch("adults"),
 
-      infants:
-        watch("infants"),
+      infants: watch("infants"),
 
-      children:
-        watch("children"),
+      children: watch("children"),
 
-      packageType:
-        watch("packageType"),
+      packageType: watch("packageType"),
 
-      preferredCallTime:
-        watch("preferredCallTime"),
+      preferredCallTime: watch("preferredCallTime"),
 
-      tourType:
-        watch("tourType"),
+      tourType: watch("tourType"),
 
-      packageInterest:
-        watch("packageInterest"),
+      packageInterest: watch("packageInterest"),
 
-      message:
-        watch("message"),
+      message: watch("message"),
     };
 
     setFormData((previous) => ({
@@ -466,19 +396,13 @@ function LeadForm({
         ================================================ */
 
         contact: {
-          name:
-            finalValues.name?.trim() || "",
+          name: finalValues.name?.trim() || "",
 
-          phone:
-            finalValues.phone?.trim() || "",
+          phone: finalValues.phone?.trim() || "",
 
-          email:
-            finalValues.email?.trim() || "",
+          email: finalValues.email?.trim() || "",
 
-          whatsappUpdates:
-            Boolean(
-              finalValues.whatsappUpdates
-            ),
+          whatsappUpdates: Boolean(finalValues.whatsappUpdates),
         },
 
         /* ===============================================
@@ -486,30 +410,19 @@ function LeadForm({
         ================================================ */
 
         trip: {
-          destination:
-            finalValues.destinationInterest
-              ?.trim() || "",
+          destination: finalValues.destinationInterest?.trim() || "",
 
-          alternateDestination:
-            finalValues.exploringDestinations
-              ? finalValues.destinationInterest2
-                  ?.trim() || ""
-              : "",
+          alternateDestination: finalValues.exploringDestinations
+            ? finalValues.destinationInterest2?.trim() || ""
+            : "",
 
-          exploringDestinations:
-            Boolean(
-              finalValues.exploringDestinations
-            ),
+          exploringDestinations: Boolean(finalValues.exploringDestinations),
 
-          departureFrom:
-            finalValues.fromLocation
-              ?.trim() || "",
+          departureFrom: finalValues.fromLocation?.trim() || "",
 
-          departureDate:
-            finalValues.departureDate || "",
+          departureDate: finalValues.departureDate || "",
 
-          travelDate:
-            finalValues.departureDate || "",
+          travelDate: finalValues.departureDate || "",
         },
 
         /* ===============================================
@@ -517,14 +430,11 @@ function LeadForm({
         ================================================ */
 
         preferences: {
-          hotelCategory:
-            finalValues.hotelCategory || "",
+          hotelCategory: finalValues.hotelCategory || "",
 
-          flightsIncluded:
-            finalValues.flightsIncluded || "",
+          flightsIncluded: finalValues.flightsIncluded || "",
 
-          budget:
-            finalValues.budgetWithAirfare || "",
+          budget: finalValues.budgetWithAirfare || "",
 
           budgetType:
             finalValues.flightsIncluded === "Yes"
@@ -537,17 +447,13 @@ function LeadForm({
         ================================================ */
 
         travellers: {
-          adults:
-            Number(finalValues.adults || 0),
+          adults: Number(finalValues.adults || 0),
 
-          children:
-            Number(finalValues.children || 0),
+          children: Number(finalValues.children || 0),
 
-          infants:
-            Number(finalValues.infants || 0),
+          infants: Number(finalValues.infants || 0),
 
-          total:
-            totalTravellers,
+          total: totalTravellers,
         },
 
         /* ===============================================
@@ -555,22 +461,18 @@ function LeadForm({
         ================================================ */
 
         package: {
-          type:
-            finalValues.packageType || "",
+          type: finalValues.packageType || "",
 
-          tourType:
-            finalValues.tourType || "",
+          tourType: finalValues.tourType || "",
 
-          preferredCallTime:
-            finalValues.preferredCallTime || "",
+          preferredCallTime: finalValues.preferredCallTime || "",
         },
 
         /* ===============================================
            MESSAGE
         ================================================ */
 
-        message:
-          finalValues.message?.trim() || "",
+        message: finalValues.message?.trim() || "",
 
         /* ===============================================
            STATUS
@@ -578,101 +480,65 @@ function LeadForm({
 
         status: "New",
 
-        source:
-          finalValues.source || "Website",
+        source: finalValues.source || "Website",
 
         /* ===============================================
            FLAT FIELDS
            Backend compatibility
         ================================================ */
 
-        name:
-          finalValues.name?.trim() || "",
+        name: finalValues.name?.trim() || "",
 
-        phone:
-          finalValues.phone?.trim() || "",
+        phone: finalValues.phone?.trim() || "",
 
-        email:
-          finalValues.email?.trim() || "",
+        email: finalValues.email?.trim() || "",
 
-        destinationInterest:
-          finalValues.destinationInterest
-            ?.trim() || "",
+        destinationInterest: finalValues.destinationInterest?.trim() || "",
 
-        destinationInterest2:
-          finalValues.destinationInterest2
-            ?.trim() || "",
+        destinationInterest2: finalValues.destinationInterest2?.trim() || "",
 
-        fromLocation:
-          finalValues.fromLocation
-            ?.trim() || "",
+        fromLocation: finalValues.fromLocation?.trim() || "",
 
-        departureDate:
-          finalValues.departureDate || "",
+        departureDate: finalValues.departureDate || "",
 
-        travelDate:
-          finalValues.departureDate || "",
+        travelDate: finalValues.departureDate || "",
 
-        hotelCategory:
-          finalValues.hotelCategory || "",
+        hotelCategory: finalValues.hotelCategory || "",
 
-        flightsIncluded:
-          finalValues.flightsIncluded || "",
+        flightsIncluded: finalValues.flightsIncluded || "",
 
-        budgetWithAirfare:
-          finalValues.budgetWithAirfare || "",
+        budgetWithAirfare: finalValues.budgetWithAirfare || "",
 
-        adults:
-          Number(finalValues.adults || 0),
+        adults: Number(finalValues.adults || 0),
 
-        children:
-          Number(finalValues.children || 0),
+        children: Number(finalValues.children || 0),
 
-        infants:
-          Number(finalValues.infants || 0),
+        infants: Number(finalValues.infants || 0),
 
-        travellersCount:
-          totalTravellers,
+        travellersCount: totalTravellers,
 
-        packageType:
-          finalValues.packageType || "",
+        packageType: finalValues.packageType || "",
 
-        preferredCallTime:
-          finalValues.preferredCallTime || "",
+        preferredCallTime: finalValues.preferredCallTime || "",
 
-        tourType:
-          finalValues.tourType || "",
+        tourType: finalValues.tourType || "",
 
-        packageInterest:
-          finalValues.tourType || "",
+        packageInterest: finalValues.tourType || "",
 
-        whatsappUpdates:
-          Boolean(
-            finalValues.whatsappUpdates
-          ),
+        whatsappUpdates: Boolean(finalValues.whatsappUpdates),
 
-        exploringDestinations:
-          Boolean(
-            finalValues.exploringDestinations
-          ),
+        exploringDestinations: Boolean(finalValues.exploringDestinations),
       };
 
-      console.log(
-        "FINAL FORM STATE:",
-        finalValues
-      );
+      console.log("FINAL FORM STATE:", finalValues);
 
-      console.log(
-        "FORMATTED LEAD DATA:",
-        leadData
-      );
+      console.log("FORMATTED LEAD DATA:", leadData);
 
       /* ===============================================
          SEND TO BACKEND
       ================================================ */
 
-      const lead =
-        await onSubmitLead(leadData);
+      const lead = await onSubmitLead(leadData);
 
       /* ===============================================
          SUCCESS
@@ -683,12 +549,8 @@ function LeadForm({
       if (onSuccess) {
         onSuccess(lead);
       }
-
     } catch (error) {
-      console.error(
-        "Lead submission error:",
-        error
-      );
+      console.error("Lead submission error:", error);
 
       setFormError(
         "We couldn't save your enquiry. Please review your details and try again."
@@ -713,7 +575,6 @@ function LeadForm({
         "
       >
         <div className="w-full max-w-md text-center">
-
           <div
             className="
               mx-auto
@@ -756,8 +617,7 @@ function LeadForm({
           <button
             type="button"
             onClick={() => {
-              const resetValues =
-                getDefaultValues(initialValues);
+              const resetValues = getDefaultValues(initialValues);
 
               setFormSuccess("");
               setFormError("");
@@ -782,7 +642,6 @@ function LeadForm({
           >
             Submit Another Enquiry
           </button>
-
         </div>
       </div>
     );
@@ -800,14 +659,12 @@ function LeadForm({
         text-[#080b0b]
       "
     >
-
       {/* ===================================================
           OPTIONAL TITLE
       ==================================================== */}
 
       {(title || subtitle) && (
         <div className="mb-7">
-
           {title && (
             <h3
               className="
@@ -836,7 +693,6 @@ function LeadForm({
               {subtitle}
             </p>
           )}
-
         </div>
       )}
 
@@ -846,15 +702,12 @@ function LeadForm({
 
       {formError && (
         <div className="mb-5">
-
           <Alert
             severity="error"
             sx={{
               borderRadius: 0,
-              border:
-                "1px solid rgba(0,0,0,0.3)",
-              backgroundColor:
-                "transparent",
+              border: "1px solid rgba(0,0,0,0.3)",
+              backgroundColor: "transparent",
               color: "#080b0b",
               fontSize: "11px",
               padding: "2px 10px",
@@ -866,15 +719,10 @@ function LeadForm({
           >
             {formError}
           </Alert>
-
         </div>
       )}
 
-      <form
-        onSubmit={handleSubmit(submitLead)}
-        noValidate
-      >
-
+      <form onSubmit={handleSubmit(submitLead)} noValidate>
         {/* =================================================
             PAGE 1
         ================================================== */}
@@ -886,9 +734,7 @@ function LeadForm({
             errors={errors}
             nextStep={nextStep}
             formData={formData}
-            handleFieldChange={
-              handleFieldChange
-            }
+            handleFieldChange={handleFieldChange}
           />
         )}
 
@@ -901,17 +747,11 @@ function LeadForm({
             register={register}
             setValue={setValue}
             errors={errors}
-            exploringDestinations={
-              exploringDestinations
-            }
+            exploringDestinations={exploringDestinations}
             nextStep={nextStep}
-            previousStep={
-              previousStep
-            }
+            previousStep={previousStep}
             formData={formData}
-            handleFieldChange={
-              handleFieldChange
-            }
+            handleFieldChange={handleFieldChange}
           />
         )}
 
@@ -924,29 +764,17 @@ function LeadForm({
             register={register}
             setValue={setValue}
             errors={errors}
-            hotelCategory={
-              hotelCategory
-            }
-            flightsIncluded={
-              flightsIncluded
-            }
-            budgetWithAirfare={
-              budgetWithAirfare
-            }
+            hotelCategory={hotelCategory}
+            flightsIncluded={flightsIncluded}
+            budgetWithAirfare={budgetWithAirfare}
             adults={adults}
             infants={infants}
             children={children}
-            travellersCount={
-              travellersCount
-            }
+            travellersCount={travellersCount}
             nextStep={nextStep}
-            previousStep={
-              previousStep
-            }
+            previousStep={previousStep}
             formData={formData}
-            handleFieldChange={
-              handleFieldChange
-            }
+            handleFieldChange={handleFieldChange}
           />
         )}
 
@@ -957,29 +785,16 @@ function LeadForm({
         {step === 4 && (
           <PageFour
             setValue={setValue}
-            packageType={
-              packageType
-            }
-            preferredCallTime={
-              preferredCallTime
-            }
+            packageType={packageType}
+            preferredCallTime={preferredCallTime}
             tourType={tourType}
-            isSubmitting={
-              isSubmitting
-            }
-            submitLabel={
-              submitLabel
-            }
-            previousStep={
-              previousStep
-            }
+            isSubmitting={isSubmitting}
+            submitLabel={submitLabel}
+            previousStep={previousStep}
             formData={formData}
-            handleFieldChange={
-              handleFieldChange
-            }
+            handleFieldChange={handleFieldChange}
           />
         )}
-
       </form>
 
       {/* ===================================================
@@ -994,10 +809,9 @@ function LeadForm({
           text-black/40
         "
       >
-        Your information is secure and will only be
-        used to prepare your travel plan.
+        Your information is secure and will only be used to prepare your travel
+        plan.
       </p>
-
     </div>
   );
 }
@@ -1016,9 +830,7 @@ function PageOne({
 }) {
   return (
     <div className="w-full">
-
       <div className="space-y-5">
-
         {/* FULL NAME */}
 
         <MinimalField
@@ -1026,26 +838,16 @@ function PageOne({
           required
           placeholder="Enter your full name"
           value={formData.name}
-          onChange={(value) =>
-            handleFieldChange(
-              "name",
-              value
-            )
-          }
+          onChange={(value) => handleFieldChange("name", value)}
           error={errors.name?.message}
-          registration={register(
-            "name",
-            {
-              required:
-                "Name is required.",
+          registration={register("name", {
+            required: "Name is required.",
 
-              minLength: {
-                value: 2,
-                message:
-                  "Name must be at least 2 characters.",
-              },
-            }
-          )}
+            minLength: {
+              value: 2,
+              message: "Name must be at least 2 characters.",
+            },
+          })}
         />
 
         {/* PHONE */}
@@ -1055,32 +857,21 @@ function PageOne({
           required
           placeholder="Enter your phone number"
           value={formData.phone}
-          onChange={(value) =>
-            handleFieldChange(
-              "phone",
-              value
-            )
-          }
+          onChange={(value) => handleFieldChange("phone", value)}
           error={errors.phone?.message}
-          registration={register(
-            "phone",
-            {
-              required:
-                "Phone number is required.",
+          registration={register("phone", {
+            required: "Phone number is required.",
 
-              minLength: {
-                value: 7,
-                message:
-                  "Enter a valid phone number.",
-              },
+            minLength: {
+              value: 7,
+              message: "Enter a valid phone number.",
+            },
 
-              maxLength: {
-                value: 30,
-                message:
-                  "Phone number is too long.",
-              },
-            }
-          )}
+            maxLength: {
+              value: 30,
+              message: "Phone number is too long.",
+            },
+          })}
         />
 
         {/* WHATSAPP */}
@@ -1099,24 +890,13 @@ function PageOne({
         >
           <input
             type="checkbox"
-            checked={
-              Boolean(
-                formData.whatsappUpdates
-              )
-            }
+            checked={Boolean(formData.whatsappUpdates)}
             onChange={(event) => {
-              const value =
-                event.target.checked;
+              const value = event.target.checked;
 
-              setValue(
-                "whatsappUpdates",
-                value
-              );
+              setValue("whatsappUpdates", value);
 
-              handleFieldChange(
-                "whatsappUpdates",
-                value
-              );
+              handleFieldChange("whatsappUpdates", value);
             }}
             className="
               h-[15px]
@@ -1126,9 +906,7 @@ function PageOne({
             "
           />
 
-          <span>
-            Also WhatsApp me on this number
-          </span>
+          <span>Also WhatsApp me on this number</span>
         </label>
 
         {/* EMAIL */}
@@ -1137,39 +915,23 @@ function PageOne({
           label="Email Address"
           placeholder="Enter your email"
           value={formData.email}
-          onChange={(value) =>
-            handleFieldChange(
-              "email",
-              value
-            )
-          }
+          onChange={(value) => handleFieldChange("email", value)}
           error={errors.email?.message}
-          registration={register(
-            "email",
-            {
-              pattern: {
-                value:
-                  /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          registration={register("email", {
+            pattern: {
+              value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
 
-                message:
-                  "Enter a valid email address.",
-              },
-            }
-          )}
+              message: "Enter a valid email address.",
+            },
+          })}
         />
-
       </div>
 
       {/* NEXT */}
 
       <div className="mt-4 flex justify-end">
-
-        <NextButton
-          onClick={nextStep}
-        />
-
+        <NextButton onClick={nextStep} />
       </div>
-
     </div>
   );
 }
@@ -1190,39 +952,21 @@ function PageTwo({
 }) {
   return (
     <div className="w-full">
-
-      <StepTitle
-        title="Plan Your Trip"
-      />
+      <StepTitle title="Plan Your Trip" />
 
       <div className="space-y-5">
-
         {/* DESTINATION */}
 
         <MinimalField
           label="To"
           required
           placeholder="Bali, Dubai, Maldives..."
-          value={
-            formData.destinationInterest
-          }
-          onChange={(value) =>
-            handleFieldChange(
-              "destinationInterest",
-              value
-            )
-          }
-          error={
-            errors.destinationInterest
-              ?.message
-          }
-          registration={register(
-            "destinationInterest",
-            {
-              required:
-                "Please enter your destination.",
-            }
-          )}
+          value={formData.destinationInterest}
+          onChange={(value) => handleFieldChange("destinationInterest", value)}
+          error={errors.destinationInterest?.message}
+          registration={register("destinationInterest", {
+            required: "Please enter your destination.",
+          })}
         />
 
         {/* EXPLORING */}
@@ -1242,24 +986,13 @@ function PageTwo({
         >
           <input
             type="checkbox"
-            checked={
-              Boolean(
-                formData.exploringDestinations
-              )
-            }
+            checked={Boolean(formData.exploringDestinations)}
             onChange={(event) => {
-              const value =
-                event.target.checked;
+              const value = event.target.checked;
 
-              setValue(
-                "exploringDestinations",
-                value
-              );
+              setValue("exploringDestinations", value);
 
-              handleFieldChange(
-                "exploringDestinations",
-                value
-              );
+              handleFieldChange("exploringDestinations", value);
             }}
             className="
               h-[15px]
@@ -1269,9 +1002,7 @@ function PageTwo({
             "
           />
 
-          <span>
-            I am exploring destinations
-          </span>
+          <span>I am exploring destinations</span>
         </label>
 
         {/* SECOND DESTINATION */}
@@ -1280,18 +1011,11 @@ function PageTwo({
           <MinimalField
             label="Another Destination"
             placeholder="Add another destination"
-            value={
-              formData.destinationInterest2
-            }
+            value={formData.destinationInterest2}
             onChange={(value) =>
-              handleFieldChange(
-                "destinationInterest2",
-                value
-              )
+              handleFieldChange("destinationInterest2", value)
             }
-            registration={register(
-              "destinationInterest2"
-            )}
+            registration={register("destinationInterest2")}
           />
         )}
 
@@ -1301,25 +1025,12 @@ function PageTwo({
           label="From"
           required
           placeholder="Delhi, Mumbai, Bengaluru..."
-          value={
-            formData.fromLocation
-          }
-          onChange={(value) =>
-            handleFieldChange(
-              "fromLocation",
-              value
-            )
-          }
-          error={
-            errors.fromLocation?.message
-          }
-          registration={register(
-            "fromLocation",
-            {
-              required:
-                "Please enter your departure city.",
-            }
-          )}
+          value={formData.fromLocation}
+          onChange={(value) => handleFieldChange("fromLocation", value)}
+          error={errors.fromLocation?.message}
+          registration={register("fromLocation", {
+            required: "Please enter your departure city.",
+          })}
         />
 
         {/* DATE */}
@@ -1328,46 +1039,22 @@ function PageTwo({
           label="Departure Date"
           required
           type="date"
-          value={
-            formData.departureDate
-          }
-          onChange={(value) =>
-            handleFieldChange(
-              "departureDate",
-              value
-            )
-          }
-          error={
-            errors.departureDate?.message
-          }
-          registration={register(
-            "departureDate",
-            {
-              required:
-                "Departure date is required.",
-            }
-          )}
+          value={formData.departureDate}
+          onChange={(value) => handleFieldChange("departureDate", value)}
+          error={errors.departureDate?.message}
+          registration={register("departureDate", {
+            required: "Departure date is required.",
+          })}
         />
-
       </div>
 
       {/* BUTTONS */}
 
       <div className="mt-7 flex gap-3">
+        <BackButton onClick={previousStep} />
 
-        <BackButton
-          onClick={
-            previousStep
-          }
-        />
-
-        <NextButton
-          onClick={nextStep}
-          className="flex-1"
-        />
-
+        <NextButton onClick={nextStep} className="flex-1" />
       </div>
-
     </div>
   );
 }
@@ -1394,18 +1081,12 @@ function PageThree({
 }) {
   return (
     <div className="w-full">
-
-      <StepTitle
-        title="What Do You Prefer?"
-      />
+      <StepTitle title="What Do You Prefer?" />
 
       <div className="space-y-7">
-
         {/* HOTEL */}
 
-        <ChoiceSection
-          title="Preferred Hotel Category"
-        >
+        <ChoiceSection title="Preferred Hotel Category">
           <div
             className="
               grid
@@ -1414,42 +1095,27 @@ function PageThree({
               sm:grid-cols-5
             "
           >
-            {hotelOptions.map(
-              (hotel) => (
-                <ChoiceButton
-                  key={hotel}
-                  selected={
-                    hotelCategory ===
-                    hotel
-                  }
-                  onClick={() => {
-                    setValue(
-                      "hotelCategory",
-                      hotel,
-                      {
-                        shouldValidate:
-                          true,
-                      }
-                    );
+            {hotelOptions.map((hotel) => (
+              <ChoiceButton
+                key={hotel}
+                selected={hotelCategory === hotel}
+                onClick={() => {
+                  setValue("hotelCategory", hotel, {
+                    shouldValidate: true,
+                  });
 
-                    handleFieldChange(
-                      "hotelCategory",
-                      hotel
-                    );
-                  }}
-                >
-                  {hotel}
-                </ChoiceButton>
-              )
-            )}
+                  handleFieldChange("hotelCategory", hotel);
+                }}
+              >
+                {hotel}
+              </ChoiceButton>
+            ))}
           </div>
         </ChoiceSection>
 
         {/* FLIGHTS */}
 
-        <ChoiceSection
-          title="Flights To Be Included?"
-        >
+        <ChoiceSection title="Flights To Be Included?">
           <div
             className="
               grid
@@ -1457,55 +1123,31 @@ function PageThree({
               gap-2
             "
           >
-
             <ChoiceButton
-              selected={
-                flightsIncluded ===
-                "Yes"
-              }
+              selected={flightsIncluded === "Yes"}
               onClick={() => {
-                setValue(
-                  "flightsIncluded",
-                  "Yes",
-                  {
-                    shouldValidate:
-                      true,
-                  }
-                );
+                setValue("flightsIncluded", "Yes", {
+                  shouldValidate: true,
+                });
 
-                handleFieldChange(
-                  "flightsIncluded",
-                  "Yes"
-                );
+                handleFieldChange("flightsIncluded", "Yes");
               }}
             >
               YES
             </ChoiceButton>
 
             <ChoiceButton
-              selected={
-                flightsIncluded ===
-                "No"
-              }
+              selected={flightsIncluded === "No"}
               onClick={() => {
-                setValue(
-                  "flightsIncluded",
-                  "No",
-                  {
-                    shouldValidate:
-                      true,
-                  }
-                );
+                setValue("flightsIncluded", "No", {
+                  shouldValidate: true,
+                });
 
-                handleFieldChange(
-                  "flightsIncluded",
-                  "No"
-                );
+                handleFieldChange("flightsIncluded", "No");
               }}
             >
               NO
             </ChoiceButton>
-
           </div>
         </ChoiceSection>
 
@@ -1522,26 +1164,12 @@ function PageThree({
           <MinimalInput
             type="text"
             placeholder="Enter your budget value"
-            value={
-              formData.budgetWithAirfare
-            }
-            onChange={(value) =>
-              handleFieldChange(
-                "budgetWithAirfare",
-                value
-              )
-            }
-            error={
-              errors.budgetWithAirfare
-                ?.message
-            }
-            registration={register(
-              "budgetWithAirfare",
-              {
-                required:
-                  "Please enter your budget.",
-              }
-            )}
+            value={formData.budgetWithAirfare}
+            onChange={(value) => handleFieldChange("budgetWithAirfare", value)}
+            error={errors.budgetWithAirfare?.message}
+            registration={register("budgetWithAirfare", {
+              required: "Please enter your budget.",
+            })}
           />
         </ChoiceSection>
 
@@ -1554,7 +1182,6 @@ function PageThree({
             pt-5
           "
         >
-
           <div
             className="
               grid
@@ -1563,73 +1190,44 @@ function PageThree({
               sm:grid-cols-3
             "
           >
-
             <TravellerSelect
               label="Adults"
               subtitle="12+ yrs"
               value={adults}
-              registration={register(
-                "adults",
-                {
-                  required: true,
-                  valueAsNumber:
-                    true,
-                  min: 0,
-                  max: 20,
-                }
-              )}
-              onChange={(value) =>
-                handleFieldChange(
-                  "adults",
-                  Number(value)
-                )
-              }
+              registration={register("adults", {
+                required: true,
+                valueAsNumber: true,
+                min: 0,
+                max: 20,
+              })}
+              onChange={(value) => handleFieldChange("adults", Number(value))}
             />
 
             <TravellerSelect
               label="Infant"
               subtitle="0-2 yrs"
               value={infants}
-              registration={register(
-                "infants",
-                {
-                  required: true,
-                  valueAsNumber:
-                    true,
-                  min: 0,
-                  max: 20,
-                }
-              )}
-              onChange={(value) =>
-                handleFieldChange(
-                  "infants",
-                  Number(value)
-                )
-              }
+              registration={register("infants", {
+                required: true,
+                valueAsNumber: true,
+                min: 0,
+                max: 20,
+              })}
+              onChange={(value) => handleFieldChange("infants", Number(value))}
             />
 
             <TravellerSelect
               label="Children"
               subtitle="2-12 yrs"
               value={children}
-              registration={register(
-                "children",
-                {
-                  required: true,
-                  valueAsNumber:
-                    true,
-                  min: 0,
-                  max: 20,
-                }
-              )}
-              onChange={(value) =>
-                handleFieldChange(
-                  "children",
-                  Number(value)
-                )
-              }
+              registration={register("children", {
+                required: true,
+                valueAsNumber: true,
+                min: 0,
+                max: 20,
+              })}
+              onChange={(value) => handleFieldChange("children", Number(value))}
             />
-
           </div>
 
           <p
@@ -1640,32 +1238,18 @@ function PageThree({
             "
           >
             Total travellers:{" "}
-            <span className="font-bold text-black">
-              {travellersCount}
-            </span>
+            <span className="font-bold text-black">{travellersCount}</span>
           </p>
-
         </div>
-
       </div>
 
       {/* BUTTONS */}
 
       <div className="mt-7 flex gap-3">
+        <BackButton onClick={previousStep} />
 
-        <BackButton
-          onClick={
-            previousStep
-          }
-        />
-
-        <NextButton
-          onClick={nextStep}
-          className="flex-1"
-        />
-
+        <NextButton onClick={nextStep} className="flex-1" />
       </div>
-
     </div>
   );
 }
@@ -1687,18 +1271,12 @@ function PageFour({
 }) {
   return (
     <div className="w-full">
-
-      <StepTitle
-        title="Almost Done"
-      />
+      <StepTitle title="Almost Done" />
 
       <div className="space-y-7">
-
         {/* PACKAGE TYPE */}
 
-        <ChoiceSection
-          title="Which type of package would you prefer?"
-        >
+        <ChoiceSection title="Which type of package would you prefer?">
           <div
             className="
               grid
@@ -1707,42 +1285,27 @@ function PageFour({
               sm:grid-cols-2
             "
           >
-            {packageOptions.map(
-              (option) => (
-                <ChoiceButton
-                  key={option}
-                  selected={
-                    packageType ===
-                    option
-                  }
-                  onClick={() => {
-                    setValue(
-                      "packageType",
-                      option,
-                      {
-                        shouldValidate:
-                          true,
-                      }
-                    );
+            {packageOptions.map((option) => (
+              <ChoiceButton
+                key={option}
+                selected={packageType === option}
+                onClick={() => {
+                  setValue("packageType", option, {
+                    shouldValidate: true,
+                  });
 
-                    handleFieldChange(
-                      "packageType",
-                      option
-                    );
-                  }}
-                >
-                  {option}
-                </ChoiceButton>
-              )
-            )}
+                  handleFieldChange("packageType", option);
+                }}
+              >
+                {option}
+              </ChoiceButton>
+            ))}
           </div>
         </ChoiceSection>
 
         {/* CALL TIME */}
 
-        <ChoiceSection
-          title="Preferred Time To Call"
-        >
+        <ChoiceSection title="Preferred Time To Call">
           <div
             className="
               grid
@@ -1751,42 +1314,27 @@ function PageFour({
               sm:grid-cols-3
             "
           >
-            {callTimeOptions.map(
-              (time) => (
-                <ChoiceButton
-                  key={time}
-                  selected={
-                    preferredCallTime ===
-                    time
-                  }
-                  onClick={() => {
-                    setValue(
-                      "preferredCallTime",
-                      time,
-                      {
-                        shouldValidate:
-                          true,
-                      }
-                    );
+            {callTimeOptions.map((time) => (
+              <ChoiceButton
+                key={time}
+                selected={preferredCallTime === time}
+                onClick={() => {
+                  setValue("preferredCallTime", time, {
+                    shouldValidate: true,
+                  });
 
-                    handleFieldChange(
-                      "preferredCallTime",
-                      time
-                    );
-                  }}
-                >
-                  {time}
-                </ChoiceButton>
-              )
-            )}
+                  handleFieldChange("preferredCallTime", time);
+                }}
+              >
+                {time}
+              </ChoiceButton>
+            ))}
           </div>
         </ChoiceSection>
 
         {/* TOUR TYPE */}
 
-        <ChoiceSection
-          title="Type Of Tour You Want?"
-        >
+        <ChoiceSection title="Type Of Tour You Want?">
           <div
             className="
               grid
@@ -1795,36 +1343,23 @@ function PageFour({
               sm:grid-cols-3
             "
           >
-            {tourOptions.map(
-              (tour) => (
-                <ChoiceButton
-                  key={tour}
-                  selected={
-                    tourType === tour
-                  }
-                  onClick={() => {
-                    setValue(
-                      "tourType",
-                      tour,
-                      {
-                        shouldValidate:
-                          true,
-                      }
-                    );
+            {tourOptions.map((tour) => (
+              <ChoiceButton
+                key={tour}
+                selected={tourType === tour}
+                onClick={() => {
+                  setValue("tourType", tour, {
+                    shouldValidate: true,
+                  });
 
-                    handleFieldChange(
-                      "tourType",
-                      tour
-                    );
-                  }}
-                >
-                  {tour}
-                </ChoiceButton>
-              )
-            )}
+                  handleFieldChange("tourType", tour);
+                }}
+              >
+                {tour}
+              </ChoiceButton>
+            ))}
           </div>
         </ChoiceSection>
-
       </div>
 
       {/* SUBMIT */}
@@ -1839,12 +1374,7 @@ function PageFour({
           pt-6
         "
       >
-
-        <BackButton
-          onClick={
-            previousStep
-          }
-        />
+        <BackButton onClick={previousStep} />
 
         <Button
           type="submit"
@@ -1854,51 +1384,36 @@ function PageFour({
             minHeight: 42,
             borderRadius: 0,
 
-            backgroundColor:
-              "#080b0b",
+            backgroundColor: "#080b0b",
 
             color: "#ffffff",
 
-            fontFamily:
-              "inherit",
+            fontFamily: "inherit",
 
-            fontSize:
-              "10px",
+            fontSize: "10px",
 
-            fontWeight:
-              700,
+            fontWeight: 700,
 
-            letterSpacing:
-              "0.06em",
+            letterSpacing: "0.06em",
 
-            textTransform:
-              "uppercase",
+            textTransform: "uppercase",
 
-            boxShadow:
-              "none",
+            boxShadow: "none",
 
             "&:hover": {
-              backgroundColor:
-                "#202424",
-              boxShadow:
-                "none",
+              backgroundColor: "#202424",
+              boxShadow: "none",
             },
 
             "&.Mui-disabled": {
-              backgroundColor:
-                "#777777",
-              color:
-                "#ffffff",
+              backgroundColor: "#777777",
+              color: "#ffffff",
             },
           }}
         >
-          {isSubmitting
-            ? "Submitting..."
-            : submitLabel}
+          {isSubmitting ? "Submitting..." : submitLabel}
         </Button>
-
       </div>
-
     </div>
   );
 }
@@ -1919,7 +1434,6 @@ function MinimalField({
 }) {
   return (
     <div className="w-full">
-
       <label
         className="
           mb-2
@@ -1948,13 +1462,9 @@ function MinimalField({
         type={type}
         value={value ?? ""}
         onChange={(event) => {
-          registration?.onChange?.(
-            event
-          );
+          registration?.onChange?.(event);
 
-          onChange?.(
-            event.target.value
-          );
+          onChange?.(event.target.value);
         }}
         placeholder={placeholder}
         autoComplete="off"
@@ -2003,7 +1513,6 @@ function MinimalField({
           {error}
         </p>
       )}
-
     </div>
   );
 }
@@ -2022,19 +1531,14 @@ function MinimalInput({
 }) {
   return (
     <div>
-
       <input
         {...registration}
         type={type}
         value={value ?? ""}
         onChange={(event) => {
-          registration?.onChange?.(
-            event
-          );
+          registration?.onChange?.(event);
 
-          onChange?.(
-            event.target.value
-          );
+          onChange?.(event.target.value);
         }}
         placeholder={placeholder}
         autoComplete="off"
@@ -2081,7 +1585,6 @@ function MinimalInput({
           {error}
         </p>
       )}
-
     </div>
   );
 }
@@ -2090,12 +1593,9 @@ function MinimalInput({
    STEP TITLE
 ========================================================= */
 
-function StepTitle({
-  title,
-}) {
+function StepTitle({ title }) {
   return (
     <div className="mb-7">
-
       <h3
         className="
           font-serif
@@ -2108,7 +1608,6 @@ function StepTitle({
       >
         {title}
       </h3>
-
     </div>
   );
 }
@@ -2117,11 +1616,7 @@ function StepTitle({
    CHOICE SECTION
 ========================================================= */
 
-function ChoiceSection({
-  title,
-  smallText,
-  children,
-}) {
+function ChoiceSection({ title, smallText, children }) {
   return (
     <div
       className="
@@ -2130,7 +1625,6 @@ function ChoiceSection({
         pt-5
       "
     >
-
       <div
         className="
           mb-3
@@ -2139,7 +1633,6 @@ function ChoiceSection({
           gap-2
         "
       >
-
         <span
           className="
             text-[11px]
@@ -2168,11 +1661,9 @@ function ChoiceSection({
         >
           *
         </span>
-
       </div>
 
       {children}
-
     </div>
   );
 }
@@ -2181,11 +1672,7 @@ function ChoiceSection({
    CHOICE BUTTON
 ========================================================= */
 
-function ChoiceButton({
-  children,
-  selected,
-  onClick,
-}) {
+function ChoiceButton({ children, selected, onClick }) {
   return (
     <button
       type="button"
@@ -2216,23 +1703,15 @@ function ChoiceButton({
    TRAVELLER SELECT
 ========================================================= */
 
-function TravellerSelect({
-  label,
-  subtitle,
-  value,
-  registration,
-  onChange,
-}) {
+function TravellerSelect({ label, subtitle, value, registration, onChange }) {
   return (
     <div>
-
       <label
         className="
           mb-2
           block
         "
       >
-
         <span
           className="
             text-[11px]
@@ -2252,22 +1731,15 @@ function TravellerSelect({
         >
           ({subtitle})
         </span>
-
       </label>
 
       <select
         {...registration}
-        value={
-          value ?? 0
-        }
+        value={value ?? 0}
         onChange={(event) => {
-          registration?.onChange?.(
-            event
-          );
+          registration?.onChange?.(event);
 
-          onChange?.(
-            event.target.value
-          );
+          onChange?.(event.target.value);
         }}
         className="
           h-[42px]
@@ -2289,26 +1761,17 @@ function TravellerSelect({
           focus:ring-0
         "
       >
-
         {Array.from(
           {
             length: 21,
           },
-          (_, index) =>
-            index
-        ).map(
-          (number) => (
-            <option
-              key={number}
-              value={number}
-            >
-              {number}
-            </option>
-          )
-        )}
-
+          (_, index) => index
+        ).map((number) => (
+          <option key={number} value={number}>
+            {number}
+          </option>
+        ))}
       </select>
-
     </div>
   );
 }
@@ -2317,10 +1780,7 @@ function TravellerSelect({
    NEXT BUTTON
 ========================================================= */
 
-function NextButton({
-  onClick,
-  className = "",
-}) {
+function NextButton({ onClick, className = "" }) {
   return (
     <button
       type="button"
@@ -2346,10 +1806,7 @@ function NextButton({
         ${className}
       `}
     >
-
-      <span>
-        Next
-      </span>
+      <span>Next</span>
 
       <span
         className="
@@ -2359,7 +1816,6 @@ function NextButton({
       >
         →
       </span>
-
     </button>
   );
 }
@@ -2368,9 +1824,7 @@ function NextButton({
    BACK BUTTON
 ========================================================= */
 
-function BackButton({
-  onClick,
-}) {
+function BackButton({ onClick }) {
   return (
     <button
       type="button"

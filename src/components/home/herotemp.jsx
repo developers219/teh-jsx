@@ -1,9 +1,7 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import heroVideo from "../../assets/images/hero_m.mp4";
-import SectionHeader from "./SectionHeader";
-import { Typography } from "@mui/material";
+// import heroVideo from "../../assets/images/hero.mp4";
 const destinations = [
   "Bali",
   "Dubai",
