@@ -10,7 +10,6 @@ const stories = [
     image:
       "https://cdn.prod.website-files.com/6773e7b69a04c1b58ee88b3f/67798caae2ec11c30e82d106_hotels.webp",
     side: "left",
-    logos: ["OETKER COLLECTION", "FOUR SEASONS", "AMAN", "BELMOND"],
   },
 
   {
@@ -85,7 +84,7 @@ function TrustCenter() {
 
       const normalStoryIndex = Math.min(
         stories.length - 1,
-        Math.floor(scrollInside / viewportHeight)
+        Math.floor(scrollInside / viewportHeight),
       );
 
       setActiveIndex(normalStoryIndex);
@@ -110,7 +109,7 @@ function TrustCenter() {
       if (normalStoryIndex === stories.length - 1) {
         const progress = Math.max(
           0,
-          Math.min(1, finalExitDistance / viewportHeight)
+          Math.min(1, finalExitDistance / viewportHeight),
         );
 
         setFinalExitProgress(progress);
@@ -381,8 +380,9 @@ function TrustCenter() {
                   className="
                   text-[9px]
                   font-medium
+                  font-mont
                   uppercase
-                  tracking-[0.25em]
+                  tracking-[6px]
                   text-neutral-500
 
                   sm:text-[10px]
@@ -427,10 +427,10 @@ function TrustCenter() {
                 mt-5
                 max-w-[560px]
                 text-[13px]
-                font-normal
+                font-mont
                 leading-[1.7]
                 tracking-[0.01em]
-                text-[#6d6d70]
+                text-gray-600
 
                 sm:mt-6
                 sm:text-[14px]

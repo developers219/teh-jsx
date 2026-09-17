@@ -168,7 +168,7 @@ function Navbar() {
               </Link>
 
               {/* RIGHT SIDE — DESKTOP */}
-              <div className="ml-auto hidden h-full items-center md:flex">
+              <div className="ml-auto hidden h-full items-center md:flex font-mont">
                 {/* DOMESTIC */}
                 <Link
                   to="/destinations/dom"

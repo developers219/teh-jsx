@@ -1,4 +1,5 @@
 import whyImage from "../../assets/images/why.jpg";
+import SectionHeader from "./SectionHeader";
 const reasons = [
   {
     title: "Expert-planned itineraries",
@@ -37,15 +38,12 @@ export default function WhyChooseUs() {
         </div> */}
 
           {/* Heading */}
-          <h2 className="text-4xl  tracking-tight text-slate-950 sm:text-5xl lg:text-6xl">
-            Why choose us?
-          </h2>
-
-          {/* Description */}
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-slate-500 sm:text-lg">
-            Travel planning that feels effortless, from the first idea to the
-            moment you return home.
-          </p>
+          <SectionHeader
+            title={"Why choose us?"}
+            description={
+              "Travel planning that feels effortless, from the first idea to the moment you return home."
+            }
+          />
         </div>
 
         {/* =========================
@@ -53,7 +51,7 @@ export default function WhyChooseUs() {
         ========================== */}
         <div className="relative mx-auto mt-12 max-w-6xl overflow-hidden rounded-[32px]">
           {/* Main Image */}
-          <img
+          {/* <img
             src={whyImage}
             alt="Beautiful travel destination"
             className="
@@ -63,16 +61,16 @@ export default function WhyChooseUs() {
               sm:h-[600px]
               lg:h-[full]
             "
-          />
+          /> */}
 
           {/* Dark Image Overlay */}
-          <div className="absolute inset-0 bg-black/10" />
+          {/* <div className="absolute inset-0 bg-black/10" /> */}
 
           {/* =========================
             DESKTOP BADGES
         ========================== */}
-          <div className="absolute bottom-6 left-6 right-6 z-10 hidden lg:block">
-            <div className="grid grid-cols-4 gap-3">
+          <div className=" z-10 hidden lg:block">
+            <div className="grid grid-cols-4 gap-3 p-8">
               {reasons.map((reason) => (
                 <div
                   key={reason.title}
@@ -80,21 +78,21 @@ export default function WhyChooseUs() {
                     rounded-2xl
                     border
                     border-white/20
-                    bg-white/15
-                    p-5
+                    bg-beige
                     shadow-xl
                     backdrop-blur-2xl
                     hover:-translate-y-1 
                     transition-all
                     duration-300
-                    hover:bg-white/25
+                    hover:bg-beigeD
+                    p-8
                   "
                 >
-                  <h3 className="text-sm font-bold leading-5 text-white">
+                  <h3 className="text-lg font-bold leading-5 text-black">
                     {reason.title}
                   </h3>
 
-                  <p className="mt-2 text-xs leading-5 text-white/85">
+                  <p className="mt-2 text-sm leading-5 text-black/85 font-mont">
                     {reason.description}
                   </p>
                 </div>

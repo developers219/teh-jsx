@@ -1,125 +1,3 @@
-// import { useEffect, useMemo, useState } from "react";
-// import { motion } from "motion/react";
-// import Alert from "@mui/material/Alert";
-// import Skeleton from "@mui/material/Skeleton";
-// import DestinationCard from "../ui/DestinationCard";
-// import api from "../../services/api";
-// import SectionHeader from "./SectionHeader";
-// function PopularDestinations() {
-//   const [destinations, setDestinations] = useState([]);
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [errorMessage, setErrorMessage] = useState("");
-//   useEffect(() => {
-//     async function fetchDestinations() {
-//       try {
-//         setIsLoading(true);
-//         setErrorMessage("");
-//         const response = await api.get("/destinations");
-//         setDestinations(response.data.data);
-//       } catch (error) {
-//         setErrorMessage("Trending destinations could not be loaded right now.");
-//         console.error(error);
-//       } finally {
-//         setIsLoading(false);
-//       }
-//     }
-//     fetchDestinations();
-//   }, []);
-//   /*
-//    * Show exactly up to 3 destinations.
-//    *
-//    * Featured destinations get priority.
-//    * If there are fewer than 3 featured destinations,
-//    * fill the remaining slots with normal destinations.
-//    */
-//   const trendingDestinations = useMemo(() => {
-//     const featured = destinations.filter(
-//       (destination) => destination.isFeatured
-//     );
-//     const nonFeatured = destinations.filter(
-//       (destination) => !destination.isFeatured
-//     );
-//     return [...featured, ...nonFeatured].slice(0, 3);
-//   }, [destinations]);
-//   console.log(trendingDestinations);
-//   return (
-//     <section className="bg-white px-6 py-20 lg:px-8">
-//       <div className="mx-auto w-full max-w-7xl">
-//         {/* ================= SECTION HEADER ================= */}
-
-//         <SectionHeader
-//           title="Trending Destinations"
-//           description="Discover our most popular destinations and start planning your next journey."
-//         />
-
-//         {/* ================= LOADING ================= */}
-
-//         {isLoading ? (
-//           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
-//             {Array.from({ length: 3 }).map((_, index) => (
-//               <Skeleton
-//                 key={index}
-//                 variant="rounded"
-//                 height={430}
-//                 animation="wave"
-//                 sx={{
-//                   borderRadius: "24px",
-//                 }}
-//               />
-//             ))}
-//           </div>
-//         ) : null}
-
-//         {/* ================= ERROR ================= */}
-
-//         {!isLoading && errorMessage ? (
-//           <Alert severity="error" className="mt-12">
-//             {errorMessage}
-//           </Alert>
-//         ) : null}
-
-//         {/* ================= DESTINATION CARDS ================= */}
-
-//         {!isLoading && !errorMessage && trendingDestinations.length > 0 ? (
-//           <div className="overflow-hidden mt-12">
-//             <motion.div
-//               className="flex w-max gap-6"
-//               animate={{
-//                 x: ["0%", "-50%"],
-//               }}
-//               transition={{
-//                 x: {
-//                   repeat: Infinity,
-//                   repeatType: "loop",
-//                   duration: 15,
-//                   ease: "linear",
-//                 },
-//               }}
-//             >
-//               {[...trendingDestinations, ...trendingDestinations].map(
-//                 (destination) => (
-//                   <DestinationCard
-//                     key={destination.id}
-//                     destination={destination}
-//                   />
-//                 )
-//               )}
-//             </motion.div>
-//           </div>
-//         ) : null}
-
-//         {/* ================= NO DESTINATIONS ================= */}
-
-//         {!isLoading && !errorMessage && trendingDestinations.length === 0 ? (
-//           <div className="mt-12 text-center text-sm text-slate-500">
-//             No destinations available right now.
-//           </div>
-//         ) : null}
-//       </div>
-//     </section>
-//   );
-// }
-// export default PopularDestinations;
 import { useRef, useState } from "react";
 import {
   AnimatePresence,
@@ -145,7 +23,7 @@ const destinations = [
     description:
       "Whitewashed villages carved into volcanic cliffs, deep blue waters and sunsets that turn the Aegean into a painting.",
     imageUrl:
-      "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 3,
@@ -202,7 +80,7 @@ function PopularDestinations() {
   const slidePosition = useTransform(
     scrollYProgress,
     [0, 1],
-    [0, destinations.length - 1]
+    [0, destinations.length - 1],
   );
 
   useMotionValueEvent(slidePosition, "change", (latest) => {
@@ -312,7 +190,7 @@ function DestinationImage({ destination, index, slidePosition }) {
   const y = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
-    ["100%", "0%", "-100%"]
+    ["100%", "0%", "-100%"],
   );
 
   /*
@@ -321,7 +199,7 @@ function DestinationImage({ destination, index, slidePosition }) {
   const scale = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
-    [1.12, 1, 1.08]
+    [1.12, 1, 1.08],
   );
 
   /*
@@ -330,7 +208,7 @@ function DestinationImage({ destination, index, slidePosition }) {
   const opacity = useTransform(
     slidePosition,
     [index - 1.15, index - 0.85, index + 0.85, index + 1.15],
-    [0, 1, 1, 0]
+    [0, 1, 1, 0],
   );
 
   return (
@@ -365,7 +243,7 @@ function DestinationContent({ destination, index, slidePosition }) {
   const y = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
-    ["100%", "0%", "-100%"]
+    ["100%", "0%", "-100%"],
   );
 
   /*
@@ -374,7 +252,7 @@ function DestinationContent({ destination, index, slidePosition }) {
   const opacity = useTransform(
     slidePosition,
     [index - 0.75, index - 0.25, index + 0.25, index + 0.75],
-    [0, 1, 1, 0]
+    [0, 1, 1, 0],
   );
 
   /*
@@ -383,7 +261,7 @@ function DestinationContent({ destination, index, slidePosition }) {
   const scale = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
-    [0.97, 1, 0.98]
+    [0.97, 1, 0.98],
   );
 
   return (
@@ -396,13 +274,14 @@ function DestinationContent({ destination, index, slidePosition }) {
       }}
     >
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-12">
+        {/* <div className="ml-auto max-w-2xl lg:mr-[5%] bg-linear-to-b from-black/50 via-transparent to-black/50 p-8"> */}
         <div className="ml-auto max-w-2xl lg:mr-[5%]">
           {/* LABEL */}
 
           <div className="mb-5 flex items-center gap-4 text-white">
             <span className="h-px w-10 bg-white" />
 
-            <span className="text-[10px] uppercase tracking-[0.45em]">
+            <span className="text-[15px] font-semibold uppercase tracking-[0.45em]">
               Destination of the week
             </span>
           </div>
@@ -418,7 +297,7 @@ function DestinationContent({ destination, index, slidePosition }) {
 
           {/* DESCRIPTION */}
 
-          <p className="mt-7 max-w-xl text-sm leading-7 text-white sm:text-base">
+          <p className="mt-7 max-w-xl text-sm leading-7 text-white sm:text-base font-medium font-mont">
             {destination.description}
           </p>
 

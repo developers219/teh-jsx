@@ -728,7 +728,7 @@ function HowItWorks() {
                   ml-auto
                   max-w-[520px]
                   text-right
-                  font-serif
+                  font-mont
                   text-[15px]
                   leading-[1.85]
                   text-[#66717d]

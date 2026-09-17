@@ -3,6 +3,7 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import StarIcon from "@mui/icons-material/Star";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import api from "../../services/api";
 const reviews = [
   {
     name: "Rohan Mehta",
@@ -100,7 +101,14 @@ export default function TravelReviews() {
     setActiveIndex((current) => (current <= 0 ? maxIndex : current - 1));
   };
   /* Automatic carousel */
+  console.log("mew");
   useEffect(() => {
+    const fetchReviews = async () => {
+      const res = await api.get("/reviews");
+      console.log("meow");
+      console.log(res);
+    };
+    fetchReviews();
     const timer = setInterval(() => {
       nextReview();
     }, 5000);

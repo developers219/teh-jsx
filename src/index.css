@@ -3,13 +3,20 @@
 
 @theme {
   --font-cg: "Cormorant Garamond", serif;
+  --font-mont: "Montserrat", sans-serif;
   --color-beige: #c5bd96;
   --color-beigeD: #b1aa87;
 }
 
 :root {
-  font-family: var(--font-cg), ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    var(--font-cg),
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   color: #0f172a;
   background: #f8fafc;
 }

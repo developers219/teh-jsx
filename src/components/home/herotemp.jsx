@@ -200,6 +200,7 @@ text-center
               max-w-[800px]
               absolute -bottom-16
               left-1/2 -translate-x-1/2
+              font-mont
             "
           >
             <div
@@ -249,7 +250,7 @@ text-center
                   type="text"
                   value={destination}
                   onChange={(e) => setDestination(e.target.value)}
-                  placeholder="Search destinations..."
+                  placeholder="Search destinations"
                   autoComplete="off"
                   list="destinations"
                   className="
