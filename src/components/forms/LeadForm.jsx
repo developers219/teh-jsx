@@ -1635,7 +1635,7 @@ function ChoiceSection({ title, smallText, children }) {
       >
         <span
           className="
-            text-[11px]
+            text-[23px]
             font-semibold
             text-[#080b0b]
           "
@@ -1656,7 +1656,7 @@ function ChoiceSection({ title, smallText, children }) {
 
         <span
           className="
-            text-red-500
+            text-black-500
           "
         >
           *
@@ -1682,7 +1682,7 @@ function ChoiceButton({ children, selected, onClick }) {
         border
         px-3
         py-2
-        text-[10px]
+        text-[13px]
         font-semibold
         transition-all
         duration-150
@@ -1714,7 +1714,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
       >
         <span
           className="
-            text-[11px]
+            text-[23px]
             font-semibold
             text-[#080b0b]
           "
@@ -1725,7 +1725,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
         <span
           className="
             ml-1
-            text-[9px]
+            text-[11px]
             text-black/40
           "
         >
@@ -1795,7 +1795,7 @@ function NextButton({ onClick, className = "" }) {
         rounded-[6px]
         bg-[#080b0b]
         px-6
-        text-[px]
+        text-[19px]
         font-semibold
         uppercase
         tracking-[0.04em]
@@ -1810,7 +1810,7 @@ function NextButton({ onClick, className = "" }) {
 
       <span
         className="
-          text-[15px]
+          text-[35px]
           leading-none
         "
       >
@@ -1836,7 +1836,7 @@ function BackButton({ onClick }) {
         border-black
         bg-transparent
         px-5
-        text-[10px]
+        text-[15px]
         font-semibold
         uppercase
         tracking-wide

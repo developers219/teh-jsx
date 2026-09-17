@@ -57,7 +57,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative h-[520px] w-full overflow-hidden sm:h-[570px] md:h-[620px] lg:h-[680px] xl:h-[700px]">
+    <section className="relative h-[520px] w-full overflow-hidden sm:h-[570px] md:h-[620px] lg:h-[680px] xl:h-screen">
       {/* =====================================================
             BACKGROUND SLIDES
         ====================================================== */}
@@ -109,7 +109,7 @@ export default function Hero() {
             Only the background image changes.
         ====================================================== */}
 
-      <div className="absolute inset-0 z-20">
+      <div className="absolute inset-x-0 right-99 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16">
         <div className="mx-auto flex h-full w-full max-w-7xl items-center px-5 sm:px-8 lg:px-12 xl:px-16">
           <div className="max-w-3xl">
             {/* SMALL LABEL */}
@@ -126,7 +126,7 @@ export default function Hero() {
 
             {/* MAIN HEADING */}
 
-            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.00] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Domestic Destinations
             </h1>
 
