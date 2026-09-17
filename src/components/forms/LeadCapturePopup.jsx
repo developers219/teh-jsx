@@ -15,8 +15,15 @@ import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SendIcon from "@mui/icons-material/Send";
+import ContactBg from "../../assets/images/contact_bg.png";
 import LeadForm from "./LeadForm";
 import { createLead } from "../../services/lead.service";
+import Image1 from "../../assets/images/Image1.png";
+import Image2 from "../../assets/images/Image2.png";
+import Image3 from "../../assets/images/Image3.png";
+import Image4 from "../../assets/images/Image4.png";
+
+const images = [Image1, Image2, Image3, Image4];
 const POPUP_DISMISSED_KEY = "trailvista_lead_capture_popup_dismissed";
 const POPUP_SUBMITTED_KEY = "trailvista_lead_capture_popup_submitted";
 const POPUP_DELAY_MS = 0;
@@ -40,7 +47,7 @@ function isLikelyPhoneNumber(value) {
   return digits.length >= 7 && digits.length <= 15;
 }
 function LeadCapturePopup() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
   const [isSuppressed, setIsSuppressed] = useState(() => {
     if (typeof window === "undefined") {
       return true;
@@ -58,6 +65,7 @@ function LeadCapturePopup() {
   });
   const [successMessage, setSuccessMessage] = useState("");
   const [formError, setFormError] = useState("");
+  const [step, setStep] = useState(1);
   const {
     control,
     handleSubmit,
@@ -140,206 +148,28 @@ function LeadCapturePopup() {
   if (isSuppressed && !isOpen) {
     return null;
   }
+  console.log(images[step - 1]);
   return (
-    // <Dialog
-    //   open={isOpen}
-    //   onClose={handleClose}
-    //   maxWidth="sm"
-    //   fullWidth
-    //   sx={{
-    //     "& .MuiDialog-paper": {
-    //       borderRadius: 3,
-    //       overflow: "hidden",
-    //     },
-    //   }}
-    // >
-    //   <DialogTitle
-    //     component="div"
-    //     sx={{
-    //       borderBottom: "1px solid #e2e8f0",
-    //       pb: 2,
-    //       pr: 7,
-    //     }}
-    //   >
-    //     <Typography variant="h2" className="text-2xl font-black text-slate-950">
-    //       Plan Your Dream Vacation
-    //     </Typography>
-    //     <Typography className="mt-2 text-sm leading-6 text-slate-600">
-    //       Get exclusive travel deals and personalized packages.
-    //     </Typography>
-
-    //     <IconButton
-    //       onClick={handleClose}
-    //       aria-label="Close lead capture popup"
-    //       sx={{ position: "absolute", right: 12, top: 12 }}
-    //     >
-    //       <CloseIcon />
-    //     </IconButton>
-    //   </DialogTitle>
-
-    //   <DialogContent sx={{ pt: 3 }}>
-    //     {isSubmitted ? (
-    //       <Alert severity="success">{successMessage}</Alert>
-    //     ) : (
-    //       <>
-    //         {successMessage ? (
-    //           <Alert severity="success" className="mb-4">
-    //             {successMessage}
-    //           </Alert>
-    //         ) : null}
-
-    //         {formError ? (
-    //           <Alert severity="error" className="mb-4">
-    //             {formError}
-    //           </Alert>
-    //         ) : null}
-
-    //         <form
-    //           id="lead-capture-popup-form"
-    //           className="grid gap-4"
-    //           onSubmit={handleSubmit(submitLead)}
-    //           noValidate
-    //         >
-    //           <Controller
-    //             name="name"
-    //             control={control}
-    //             rules={{
-    //               required: "Name is required.",
-    //               minLength: {
-    //                 value: 2,
-    //                 message: "Name must be at least 2 characters.",
-    //               },
-    //               maxLength: {
-    //                 value: 120,
-    //                 message: "Name must be 120 characters or fewer.",
-    //               },
-    //             }}
-    //             render={({ field }) => (
-    //               <TextField
-    //                 {...field}
-    //                 label="Name"
-    //                 fullWidth
-    //                 error={Boolean(errors.name)}
-    //                 helperText={errors.name?.message}
-    //                 slotProps={{
-    //                   input: {
-    //                     startAdornment: (
-    //                       <InputAdornment position="start">
-    //                         <PersonIcon className="text-slate-400" />
-    //                       </InputAdornment>
-    //                     ),
-    //                   },
-    //                 }}
-    //               />
-    //             )}
-    //           />
-
-    //           <Controller
-    //             name="email"
-    //             control={control}
-    //             rules={{
-    //               required: "Email is required.",
-    //               pattern: {
-    //                 value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    //                 message: "Enter a valid email address.",
-    //               },
-    //             }}
-    //             render={({ field }) => (
-    //               <TextField
-    //                 {...field}
-    //                 type="email"
-    //                 label="Email"
-    //                 fullWidth
-    //                 error={Boolean(errors.email)}
-    //                 helperText={errors.email?.message}
-    //                 slotProps={{
-    //                   input: {
-    //                     startAdornment: (
-    //                       <InputAdornment position="start">
-    //                         <EmailIcon className="text-slate-400" />
-    //                       </InputAdornment>
-    //                     ),
-    //                   },
-    //                 }}
-    //               />
-    //             )}
-    //           />
-
-    //           <Controller
-    //             name="phone"
-    //             control={control}
-    //             rules={{
-    //               required: "Mobile number is required.",
-    //               validate: (value) =>
-    //                 isLikelyPhoneNumber(value) ||
-    //                 "Enter a valid mobile number.",
-    //               maxLength: {
-    //                 value: 30,
-    //                 message: "Mobile number must be 30 characters or fewer.",
-    //               },
-    //             }}
-    //             render={({ field }) => (
-    //               <TextField
-    //                 {...field}
-    //                 label="Mobile Number"
-    //                 fullWidth
-    //                 error={Boolean(errors.phone)}
-    //                 helperText={errors.phone?.message}
-    //                 slotProps={{
-    //                   input: {
-    //                     startAdornment: (
-    //                       <InputAdornment position="start">
-    //                         <PhoneIcon className="text-slate-400" />
-    //                       </InputAdornment>
-    //                     ),
-    //                   },
-    //                 }}
-    //               />
-    //             )}
-    //           />
-    //         </form>
-    //       </>
-    //     )}
-    //   </DialogContent>
-
-    //   <DialogActions sx={{ px: 3, pb: 3, pt: 0 }}>
-    //     <Button
-    //       onClick={handleClose}
-    //       variant="outlined"
-    //       sx={{ borderRadius: 2, textTransform: "none", fontWeight: 800 }}
-    //     >
-    //       Close
-    //     </Button>
-
-    //     {!isSubmitted ? (
-    //       <Button
-    //         type="submit"
-    //         form="lead-capture-popup-form"
-    //         variant="contained"
-    //         disabled={isSubmitting}
-    //         startIcon={isSubmitting ? undefined : <SendIcon />}
-    //         sx={{
-    //           borderRadius: 2,
-    //           bgcolor: "#0891b2",
-    //           textTransform: "none",
-    //           fontWeight: 900,
-    //           "&:hover": { bgcolor: "#0e7490" },
-    //         }}
-    //       >
-    //         {isSubmitting ? "Submitting..." : "Submit"}
-    //       </Button>
-    //     ) : null}
-    //   </DialogActions>
-    // </Dialog>
-    <div className="bg-black/50 backdrop-blur-xs absolute inset-0 z-50 flex justify-center items-center">
-      <div className="h-auto bg-white p-6 rounded-2xl w-[90%] lg:w-1/2">
+    <div className="bg-black/50 backdrop-blur-xs h-screen fixed inset-0 z-50 flex justify-center items-center">
+      <div className="h-auto bg- p-6 w-[90%] lg:w-[70%] relative rounded-2xl overflow-hidden">
+        <img
+          className="absolute h-full w-full inset-0 object-cover"
+          src={ContactBg}
+        />
         <div
-          className="flex mb-8 justify-end cursor-pointer"
+          className="relative flex mb-8 justify-end cursor-pointer"
           onClick={suppressPopup}
         >
           <CloseIcon />
         </div>
-        <LeadForm />
+        <div className="relative flex">
+          <div className="flex-1 flex items-center justify-center">
+            <img src={images[step - 1]} alt="steps" className="w-[70%]" />
+          </div>
+          <div className="flex-1" onClick={() => setStep((prev) => prev + 1)}>
+            <LeadForm />
+          </div>
+        </div>
       </div>
     </div>
   );

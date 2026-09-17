@@ -1,4 +1,6 @@
 import LeadForm from "../forms/LeadForm";
+import Contact from "../../assets/images/contact.png";
+import ContactBg from "../../assets/images/contact_bg.png";
 
 function PersonalizedHolidayPlan() {
   return (
@@ -10,11 +12,17 @@ function PersonalizedHolidayPlan() {
           max-w-[1190px]
           overflow-hidden
           rounded-[5px]
-          bg-beige
+          relative
         "
       >
+        <img
+          src={ContactBg}
+          alt="contact-form"
+          className="absolute inset-0 object-contain"
+        />
         <div
           className="
+          relative
             grid
             min-h-[560px]
             w-full
@@ -28,15 +36,14 @@ function PersonalizedHolidayPlan() {
 
           <div
             className="
-              flex
               min-w-0
-              items-center
               px-8
               py-16
               sm:px-12
               md:px-[7%]
               lg:px-[8%]
               xl:px-[8.5%]
+              flex flex-col gap-5
             "
           >
             <h2
@@ -57,6 +64,9 @@ function PersonalizedHolidayPlan() {
               Let’s plan your
               <span className="block">next journey.</span>
             </h2>
+            <div className="size-80 self-center mt-8">
+              <img src={Contact} alt="contact" className="" />
+            </div>
           </div>
 
           {/* =====================================================

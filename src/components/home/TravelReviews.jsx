@@ -167,7 +167,7 @@ export default function TravelReviews() {
               </h2>
 
               {/* Description */}
-              <p className="relative mt-5 max-w-[250px] text-[14px] leading-6 text-blue-100">
+              <p className="relative mt-5 max-w-[250px] font-mont text-[14px] leading-6 text-blue-100">
                 Real experiences from travelers who explored the world with us.
                 Discover why thousands of travelers trust us with their
                 holidays.
@@ -187,17 +187,19 @@ export default function TravelReviews() {
                   ))}
                 </div>
 
-                <span className="text-sm font-semibold text-white">4.9/5</span>
+                <span className="text-sm font-semibold font-mont text-white">
+                  4.9/5
+                </span>
               </div>
 
-              <p className="relative mt-1 text-xs text-blue-200">
+              <p className="relative mt-1 text-xs font-mont text-blue-200">
                 Based on 500+ traveler reviews
               </p>
 
               {/* Read More */}
               <button
                 type="button"
-                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-beige p-3 px-6 rounded-full cursor-pointer transition-colors "
+                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-beige p-3 px-6 rounded-full cursor-pointer transition-colors font-mont text-white hover:bg-beigeD"
               >
                 Read More
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[#063b72]">
@@ -228,7 +230,7 @@ export default function TravelReviews() {
                 LARGE REVIEW CARD
             ================================================= */}
 
-                      <article className="relative overflow-hidden rounded-[20px] bg-white">
+                      <article className="relative font-mont overflow-hidden rounded-[20px] bg-white">
                         {/* Customer Image */}
                         <div className="relative h-[170px] overflow-hidden">
                           <img
@@ -314,7 +316,7 @@ export default function TravelReviews() {
                     type="button"
                     onClick={previousReview}
                     aria-label="Previous review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-white hover:text-[#063b72]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
                   >
                     <ArrowBackIosNewIcon sx={{ fontSize: 13 }} />
                   </button>
@@ -323,7 +325,7 @@ export default function TravelReviews() {
                     type="button"
                     onClick={nextReview}
                     aria-label="Next review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-white hover:text-[#063b72]"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
                   >
                     <ArrowForwardIosIcon sx={{ fontSize: 13 }} />
                   </button>

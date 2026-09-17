@@ -7,9 +7,9 @@ function MainLayout() {
   return (
     <div className="min-h-screen bg-slate-50">
       <Navbar />
+      <LeadCapturePopup />
       <Outlet />
       <Footer />
-      <LeadCapturePopup />
       <FloatingContactWidget />
     </div>
   );

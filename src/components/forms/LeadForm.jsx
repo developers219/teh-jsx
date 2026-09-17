@@ -153,7 +153,7 @@ function LeadForm({
 
   const exploringDestinations = watch(
     "exploringDestinations",
-    formData.exploringDestinations
+    formData.exploringDestinations,
   );
 
   const hotelCategory = watch("hotelCategory", formData.hotelCategory);
@@ -162,7 +162,7 @@ function LeadForm({
 
   const budgetWithAirfare = watch(
     "budgetWithAirfare",
-    formData.budgetWithAirfare
+    formData.budgetWithAirfare,
   );
 
   const adults = watch("adults", formData.adults);
@@ -175,7 +175,7 @@ function LeadForm({
 
   const preferredCallTime = watch(
     "preferredCallTime",
-    formData.preferredCallTime
+    formData.preferredCallTime,
   );
 
   const tourType = watch("tourType", formData.tourType);
@@ -553,7 +553,7 @@ function LeadForm({
       console.error("Lead submission error:", error);
 
       setFormError(
-        "We couldn't save your enquiry. Please review your details and try again."
+        "We couldn't save your enquiry. Please review your details and try again.",
       );
     }
   }
@@ -832,7 +832,7 @@ function PageOne({
     <div className="w-full">
       <div className="space-y-5">
         {/* FULL NAME */}
-
+        <StepTitle title="Let's start with your info" />
         <MinimalField
           label="Full Name"
           required
@@ -1765,7 +1765,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
           {
             length: 21,
           },
-          (_, index) => index
+          (_, index) => index,
         ).map((number) => (
           <option key={number} value={number}>
             {number}

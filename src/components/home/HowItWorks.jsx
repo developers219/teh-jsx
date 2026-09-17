@@ -219,6 +219,7 @@ function HowItWorks() {
                         uppercase
                         tracking-[0.2em]
                         text-[#374151]
+                        font-mont
                       "
                     >
                       How It Works
@@ -313,6 +314,7 @@ function HowItWorks() {
                             items-center
                             justify-end
                             gap-4
+                            font-mont
                           "
                         >
                           <span
@@ -379,6 +381,7 @@ function HowItWorks() {
                             leading-[1.85]
                             text-[#66717d]
                             sm:text-[16px]
+                            font-mont
                           "
                         >
                           {step.description}
