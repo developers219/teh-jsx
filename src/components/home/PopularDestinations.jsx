@@ -399,8 +399,8 @@ function DestinationContent({ destination, index, slidePosition }) {
         <div className="ml-auto max-w-2xl lg:mr-[5%]">
           {/* LABEL */}
 
-          <div className="mb-5 flex items-center gap-4 text-white/80">
-            <span className="h-px w-10 bg-white/80" />
+          <div className="mb-5 flex items-center gap-4 text-white">
+            <span className="h-px w-10 bg-white" />
 
             <span className="text-[10px] uppercase tracking-[0.45em]">
               Destination of the week
@@ -418,7 +418,7 @@ function DestinationContent({ destination, index, slidePosition }) {
 
           {/* DESCRIPTION */}
 
-          <p className="mt-7 max-w-xl text-sm leading-7 text-white/75 sm:text-base">
+          <p className="mt-7 max-w-xl text-sm leading-7 text-white sm:text-base">
             {destination.description}
           </p>
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-// import heroVideo from "../../assets/images/hero.mp4";
+
 const destinations = [
   "Bali",
   "Dubai",
@@ -43,7 +43,7 @@ export default function HeroSection() {
           object-cover
         "
       /> */}
-      <video
+       <video
         autoplay=""
         loop
         muted
@@ -79,7 +79,7 @@ export default function HeroSection() {
         className="
           absolute
           inset-0
-          bg-linear-to-b from-black/60 via-black/50 to-transparent
+          bg-linear-to-b from-black/60 via-black/60 to-transparent
         
         "
       />
