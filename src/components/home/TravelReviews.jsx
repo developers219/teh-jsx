@@ -4,96 +4,17 @@ import StarIcon from "@mui/icons-material/Star";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import api from "../../services/api";
-const reviews = [
-  {
-    name: "Rohan Mehta",
-    location: "Mumbai, India",
-    image: "https://i.pravatar.cc/400?img=12",
-    title: "Amazing Bali Experience",
-    review:
-      "Our trip to Bali was absolutely magical! Every detail was perfectly planned and we didn't have to worry about a thing. The hotels, transfers and experiences were excellent.",
-  },
-  {
-    name: "Ananya Singh",
-    location: "New Delhi, India",
-    image: "https://i.pravatar.cc/400?img=47",
-    title: "Excellent Europe Trip",
-    review:
-      "The team was very supportive throughout our Europe trip. Great hotels, smooth transfers and amazing local experiences made the entire journey completely hassle-free.",
-  },
-  {
-    name: "Karan Patel",
-    location: "Ahmedabad, India",
-    image: "https://i.pravatar.cc/400?img=11",
-    title: "Perfect Maldives Holiday",
-    review:
-      "From booking to the end of the trip, everything was seamless. The Maldives itinerary was beyond our expectations and every arrangement was handled perfectly.",
-  },
-  {
-    name: "Priya & Family",
-    location: "Bengaluru, India",
-    image: "https://i.pravatar.cc/400?img=32",
-    title: "Wonderful Family Vacation",
-    review:
-      "Best travel experience ever! The itinerary, stays and activities were perfect for our family. Everything was comfortable, well organized and enjoyable for everyone.",
-  },
-  {
-    name: "Arjun Nair",
-    location: "Chennai, India",
-    image: "https://i.pravatar.cc/400?img=13",
-    title: "Well Planned Experience",
-    review:
-      "Excellent service and a very well-curated itinerary. The local guides were knowledgeable and friendly, and the entire trip was organized beautifully.",
-  },
-  {
-    name: "Neha Sharma",
-    location: "Pune, India",
-    image: "https://i.pravatar.cc/400?img=44",
-    title: "Dream Honeymoon",
-    review:
-      "Our honeymoon in Switzerland was straight out of a dream. Thank you for making it so special and hassle-free. Every little detail was taken care of.",
-  },
-  {
-    name: "Vikram Kapoor",
-    location: "Delhi, India",
-    image: "https://i.pravatar.cc/400?img=14",
-    title: "Fantastic Dubai Holiday",
-    review:
-      "Our Dubai holiday was incredibly smooth from start to finish. The hotel was excellent, transfers were always on time and the sightseeing arrangements were perfect.",
-  },
-  {
-    name: "Sneha Iyer",
-    location: "Hyderabad, India",
-    image: "https://i.pravatar.cc/400?img=25",
-    title: "Beautiful Thailand Trip",
-    review:
-      "Thailand was such a memorable experience for us. The itinerary had the perfect balance of sightseeing, relaxation and activities. Everything was arranged wonderfully.",
-  },
-  {
-    name: "Rahul Verma",
-    location: "Jaipur, India",
-    image: "https://i.pravatar.cc/400?img=68",
-    title: "Great Service & Support",
-    review:
-      "The support throughout our trip was excellent. Whenever we had a question, the team was quick to respond and make sure everything was taken care of.",
-  },
-  {
-    name: "Meera & Family",
-    location: "Kolkata, India",
-    image: "https://i.pravatar.cc/400?img=49",
-    title: "Memories for a Lifetime",
-    review:
-      "Everything was planned beautifully for our family vacation. From the hotel to the sightseeing and transfers, we had a wonderful experience and created amazing memories.",
-  },
-];
+
 export default function TravelReviews() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [reviews, setReviews] = useState(null);
   /*
    * Two cards are visible on desktop.
    * Therefore there are 9 possible carousel positions
    * for 10 reviews.
    */
-  const maxIndex = reviews.length - 2;
+  console.log(reviews);
+  const maxIndex = reviews?.length - 2;
   const nextReview = () => {
     setActiveIndex((current) => (current >= maxIndex ? 0 : current + 1));
   };
@@ -101,12 +22,11 @@ export default function TravelReviews() {
     setActiveIndex((current) => (current <= 0 ? maxIndex : current - 1));
   };
   /* Automatic carousel */
-  console.log("mew");
   useEffect(() => {
     const fetchReviews = async () => {
       const res = await api.get("/reviews");
-      console.log("meow");
-      console.log(res);
+      console.log(res.data.data);
+      setReviews(res.data.data);
     };
     fetchReviews();
     const timer = setInterval(() => {
@@ -217,11 +137,12 @@ export default function TravelReviews() {
               <div className="overflow-hidden w-full h-full">
                 <div
                   className="flex transition-transform duration-700 ease-in-out h-full"
-                  style={{
-                    transform: `translateX(-${activeIndex * 50}%)`,
-                  }}
+                  // style={{
+                  //   transform: `translateX(-${activeIndex * 50}%)`,
+                  // }}
                 >
-                  {reviews.map((review, index) => (
+                  {/* <h1 className="relative text-white">{reviews[0].userName}</h1> */}
+                  {reviews?.map((review, index) => (
                     <div
                       key={index}
                       className="w-full sm:w-1/2 shrink-0 px-2 h-full"
@@ -234,8 +155,11 @@ export default function TravelReviews() {
                         {/* Customer Image */}
                         <div className="relative h-[170px] overflow-hidden">
                           <img
-                            src={review.image}
-                            alt={review.name}
+                            src={
+                              // review.images ??
+                              "https://i.pravatar.cc/400?img=12"
+                            }
+                            alt={review.userName}
                             className="h-full w-full object-cover"
                           />
 
@@ -263,13 +187,13 @@ export default function TravelReviews() {
                           />
 
                           {/* Review title */}
-                          <h3 className="relative pr-8 text-[14px] font-bold leading-5 text-slate-900">
+                          {/* <h3 className="relative pr-8 text-[14px] font-bold leading-5 text-slate-900">
                             {review.title}
-                          </h3>
+                          </h3> */}
 
                           {/* Review */}
                           <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
-                            {review.review}
+                            {review.description}
                           </p>
 
                           {/* Bottom */}
@@ -277,17 +201,17 @@ export default function TravelReviews() {
                             {/* Customer */}
                             <div>
                               <h4 className="text-sm font-bold text-slate-900">
-                                {review.name}
+                                {review.userName}
                               </h4>
 
                               <p className="mt-0.5 text-[11px] text-slate-500">
-                                {review.location}
+                                {review.location ?? "Bali"}
                               </p>
                             </div>
 
                             {/* Stars */}
                             <div className="flex shrink-0">
-                              {[1, 2, 3, 4, 5].map((star) => (
+                              {[...new Array(review.rating)].map((star) => (
                                 <StarIcon
                                   key={star}
                                   sx={{
