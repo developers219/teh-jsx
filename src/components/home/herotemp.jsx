@@ -44,7 +44,7 @@ export default function HeroSection() {
         "
       /> */}
       <video
-        autoplay
+        autoplay=""
         loop
         muted
         id="myVideo"
@@ -54,7 +54,7 @@ export default function HeroSection() {
           w-full
           object-cover"
         preload="true"
-        playsinline
+        playsinline=""
       >
         <source
           src="https://maryculterhouse.com/wp-content/uploads/2020/10/Home-short-loop-1.webm"

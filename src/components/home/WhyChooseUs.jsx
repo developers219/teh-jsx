@@ -1,5 +1,5 @@
-import whyImage from "../../assets/images/why.jpg";
 import SectionHeader from "./SectionHeader";
+
 const reasons = [
   {
     title: "Expert-planned itineraries",
@@ -22,141 +22,140 @@ const reasons = [
       "We combine famous landmarks with meaningful local activities so every journey feels personal, balanced, and memorable.",
   },
 ];
+
 export default function WhyChooseUs() {
   return (
-    <section className="bg-white px-4 py-16 sm:px-6 lg:px-8 lg:py-20 mt-90 md:mt-0">
+    <section className="mt-20 bg-white px-4 py-16 sm:px-6 md:mt-0 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
+
         {/* =========================
             SECTION HEADER
         ========================== */}
         <div className="mx-auto max-w-3xl text-center">
-          {/* Eyebrow */}
-          {/* <div className="mb-5 inline-flex items-center rounded-full bg-cyan-50 px-4 py-1.5">
-          <span className="text-xs font-bold uppercase tracking-[0.12em] text-cyan-700">
-            Why Choose Us?
-          </span>
-        </div> */}
-
-          {/* Heading */}
           <SectionHeader
-            title={"Why choose us?"}
-            description={
-              "Travel planning that feels effortless, from the first idea to the moment you return home."
-            }
+            title="Why choose us?"
+            description="Travel planning that feels effortless, from the first idea to the moment you return home."
           />
         </div>
 
         {/* =========================
-            IMAGE + BADGES
+            CARDS
         ========================== */}
-        <div className="relative mx-auto mt-12 max-w-6xl overflow-hidden rounded-[32px]">
-          {/* Main Image */}
-          {/* <img
-            src={whyImage}
-            alt="Beautiful travel destination"
-            className="
-              h-[560px]
-              w-full
-              object-cover
-              sm:h-[600px]
-              lg:h-[full]
-            "
-          /> */}
-
-          {/* Dark Image Overlay */}
-          {/* <div className="absolute inset-0 bg-black/10" /> */}
+        <div className="mx-auto mt-10 max-w-6xl sm:mt-12">
 
           {/* =========================
-            DESKTOP BADGES
-        ========================== */}
-          <div className=" z-10 hidden lg:block">
-            <div className="grid grid-cols-4 gap-3 p-8">
+              DESKTOP
+          ========================== */}
+          <div className="hidden lg:grid lg:grid-cols-4 lg:gap-3">
+            {reasons.map((reason) => (
+              <div
+                key={reason.title}
+                className="
+                  rounded-2xl
+                  border
+                  border-black/10
+                  bg-beige
+                  p-8
+                  shadow-xl
+                  transition-all
+                  duration-300
+                  hover:-translate-y-1
+                  hover:bg-beigeD
+                "
+              >
+                <h3 className="text-lg font-bold leading-5 text-black">
+                  {reason.title}
+                </h3>
+
+                <p className="mt-3 font-mont text-sm leading-5 text-black/85">
+                  {reason.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* =========================
+              TABLET
+          ========================== */}
+          <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4 lg:hidden">
+            {reasons.map((reason) => (
+              <div
+                key={reason.title}
+                className="
+                  rounded-2xl
+                  border
+                  border-black/10
+                  bg-beige
+                  p-6
+                  shadow-lg
+                  transition-all
+                  duration-300
+                  hover:-translate-y-1
+                  hover:bg-beigeD
+                "
+              >
+                <h3 className="text-base font-bold leading-5 text-black">
+                  {reason.title}
+                </h3>
+
+                <p className="mt-2 font-mont text-sm leading-5 text-black/80">
+                  {reason.description}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* =========================
+              MOBILE
+          ========================== */}
+          <div className="sm:hidden">
+            <div
+              className="
+                flex
+                gap-3
+                overflow-x-auto
+                pb-4
+                snap-x
+                snap-mandatory
+                [-ms-overflow-style:none]
+                [scrollbar-width:none]
+                [&::-webkit-scrollbar]:hidden
+              "
+            >
               {reasons.map((reason) => (
                 <div
                   key={reason.title}
                   className="
+                    min-w-[82%]
+                    snap-start
                     rounded-2xl
                     border
-                    border-white/20
+                    border-black/10
                     bg-beige
-                    shadow-xl
-                    backdrop-blur-2xl
-                    hover:-translate-y-1 
-                    transition-all
-                    duration-300
-                    hover:bg-beigeD
-                    p-8
+                    p-5
+                    shadow-lg
                   "
                 >
-                  <h3 className="text-lg font-bold leading-5 text-black">
+                  <h3 className="text-base font-bold leading-5 text-black">
                     {reason.title}
                   </h3>
 
-                  <p className="mt-2 text-sm leading-5 text-black/85 font-mont">
+                  <p className="mt-2 font-mont text-sm leading-5 text-black/80">
                     {reason.description}
                   </p>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* =========================
-            TABLET BADGES
-        ========================== */}
-          <div className="absolute bottom-5 left-5 right-5 z-10 hidden sm:block lg:hidden">
-            <div className="grid grid-cols-2 gap-3">
-              {reasons.map((reason) => (
-                <div
+            {/* Mobile scroll hint */}
+            <div className="mt-1 flex justify-center gap-1.5">
+              {reasons.map((reason, index) => (
+                <span
                   key={reason.title}
-                  className="
-                    rounded-2xl
-                    border
-                    border-white/30
-                    bg-white/15
-                    p-4
-                    shadow-xl
-                    backdrop-blur-xl
-                  "
-                >
-                  <h3 className="text-sm font-bold text-white">
-                    {reason.title}
-                  </h3>
-
-                  <p className="mt-1.5 text-xs leading-5 text-white/85">
-                    {reason.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* =========================
-            MOBILE BADGES
-        ========================== */}
-          <div className="absolute bottom-4 left-4 right-4 z-10 sm:hidden">
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              {reasons.map((reason) => (
-                <div
-                  key={reason.title}
-                  className="
-                    min-w-[240px]
-                    rounded-2xl
-                    border
-                    border-white/30
-                    bg-white/15
-                    p-4
-                    shadow-xl
-                    backdrop-blur-xl
-                  "
-                >
-                  <h3 className="text-sm font-bold text-white">
-                    {reason.title}
-                  </h3>
-
-                  <p className="mt-1.5 text-xs leading-5 text-white/85">
-                    {reason.description}
-                  </p>
-                </div>
+                  className={`h-1.5 rounded-full ${
+                    index === 0 ? "w-6 bg-black" : "w-1.5 bg-black/20"
+                  }`}
+                />
               ))}
             </div>
           </div>
