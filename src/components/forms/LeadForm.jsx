@@ -804,7 +804,7 @@ function LeadForm({
       <p
         className="
           mt-6
-          text-[9px]
+          text-[14px]
           leading-4
           text-black/40
         "
@@ -1176,11 +1176,11 @@ function PageThree({
         {/* TRAVELLERS */}
 
         <div
-          className="
-            border-t
-            border-black/20
-            pt-5
-          "
+          // className="
+          //   border-t
+          //   border-black/20
+          //   pt-5
+          // "
         >
           <div
             className="
@@ -1369,9 +1369,8 @@ function PageFour({
           mt-7
           flex
           gap-3
-          border-t
-          border-black/20
-          pt-6
+          
+          pt-4
         "
       >
         <BackButton onClick={previousStep} />
@@ -1619,11 +1618,11 @@ function StepTitle({ title }) {
 function ChoiceSection({ title, smallText, children }) {
   return (
     <div
-      className="
-        border-t
-        border-black/20
-        pt-5
-      "
+      // className="
+      //   border-t
+      //   border-black/20
+      //   pt-5
+      // "
     >
       <div
         className="
@@ -1792,7 +1791,7 @@ function NextButton({ onClick, className = "" }) {
         items-center
         justify-center
         gap-3
-        rounded-[6px]
+        
         bg-[#080b0b]
         px-6
         text-[19px]
