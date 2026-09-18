@@ -85,6 +85,7 @@ function getDefaultValues(initialValues) {
 ========================================================= */
 
 function LeadForm({
+  func,
   initialValues,
   title = "",
   subtitle = "",
@@ -228,7 +229,11 @@ function LeadForm({
   /* =======================================================
      INITIAL VALUES CHANGE
   ======================================================== */
-
+  useEffect(() => {
+    if (typeof func === "function") {
+      func(step);
+    }
+  }, [step]);
   useEffect(() => {
     const values = getDefaultValues(initialValues);
 

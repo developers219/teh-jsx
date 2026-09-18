@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
@@ -47,6 +47,7 @@ function isLikelyPhoneNumber(value) {
   return digits.length >= 7 && digits.length <= 15;
 }
 function LeadCapturePopup() {
+  const leadFormRef = useRef(null);
   const [isOpen, setIsOpen] = useState(true);
   const [isSuppressed, setIsSuppressed] = useState(() => {
     if (typeof window === "undefined") {
@@ -148,14 +149,17 @@ function LeadCapturePopup() {
   if (isSuppressed && !isOpen) {
     return null;
   }
-  console.log(images[step - 1]);
+  const handleStepChange = (step) => {
+    setStep(step);
+  };
+
   return (
-    <div className="bg-black/50 backdrop-blur-xs h-screen fixed inset-0 z-50 flex justify-center items-center">
-      <div className="h-auto bg- p-6 w-[90%] lg:w-[70%] relative rounded-2xl overflow-hidden">
-        <img
-          className="absolute h-full w-full inset-0 object-cover"
-          src={ContactBg}
-        />
+    <div className="bg-black/50 backdrop-blur-xs h-auto fixed inset-0 z-50 flex justify-center items-center">
+      <div
+        className="h-[90vh] overflow-scroll p-6 w-[90%] lg:w-[70%] relative rounded-2xl"
+        style={{ background: `url(${ContactBg})`, backgroundSize: "cover" }}
+      >
+        {/* <img className="absolute inset-0 object-contain" src={ContactBg} /> */}
         <div
           className="relative flex mb-8 justify-end cursor-pointer"
           onClick={suppressPopup}
@@ -166,8 +170,8 @@ function LeadCapturePopup() {
           <div className="flex-1 flex items-center justify-center">
             <img src={images[step - 1]} alt="steps" className="w-[70%]" />
           </div>
-          <div className="flex-1" onClick={() => setStep((prev) => prev + 1)}>
-            <LeadForm />
+          <div className="flex-1">
+            <LeadForm func={setStep} />
           </div>
         </div>
       </div>
