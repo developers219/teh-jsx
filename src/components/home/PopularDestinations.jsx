@@ -123,10 +123,10 @@ function PopularDestinations() {
             COUNTER
         ===================================================== */}
 
-        <DestinationCounter
+        {/* <DestinationCounter
           activeIndex={activeIndex}
           total={destinations.length}
-        />
+        /> */}
 
         {/* =====================================================
             CONTENT

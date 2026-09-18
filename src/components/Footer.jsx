@@ -188,7 +188,7 @@ function Footer() {
             FOOTER
         ================================================== */}
 
-      <footer className="rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
+      <footer className="font-mont rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto max-w-7xl">
           {/* =================================================
             BRANDING SECTION
