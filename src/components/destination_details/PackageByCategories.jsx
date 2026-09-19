@@ -203,13 +203,13 @@ export default function PackageByCategories({
   destinationSlug,
 }) {
   const [packages, setPackages] = useState(null);
-  console.log(themeId, packages);
+
   useEffect(() => {
     async function fetchPackagesByTheme() {
       const res = await api.get(
-        `/destinations/${destinationSlug}/themes/${themeId}`
+        `/destinations/${destinationSlug}/themes/${themeId}`,
       );
-      console.log(res);
+
       setPackages(res.data.data);
     }
     fetchPackagesByTheme();

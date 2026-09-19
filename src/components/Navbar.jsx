@@ -75,7 +75,7 @@ function Navbar() {
 
               {/* DESKTOP MENU */}
               <div
-                className="hidden p-4 px-12 md:block"
+                className="hidden p-4 px-12 lg:block"
                 onClick={() => setIsMenuOpen(true)}
               >
                 Menu
@@ -168,7 +168,7 @@ function Navbar() {
               </Link>
 
               {/* RIGHT SIDE — DESKTOP */}
-              <div className="ml-auto hidden h-full items-center md:flex font-mont">
+              <div className="ml-auto hidden h-full items-center lg:flex font-mont">
                 {/* DOMESTIC */}
                 <Link
                   to="/destinations/dom"
@@ -199,7 +199,7 @@ function Navbar() {
               {/* MOBILE PHONE */}
               <a
                 href={`tel:${CONTACT_PHONE_TEL}`}
-                className="ml-auto rounded-full border border-neutral-900/20 px-4 py-2 text-xs font-medium sm:px-5 sm:text-sm md:hidden"
+                className="ml-auto rounded-full border border-neutral-900/20 px-4 py-2 text-xs font-medium sm:px-5 sm:text-sm lg:hidden"
               >
                 <span className="hidden xs:inline">
                   {CONTACT_PHONE_DISPLAY}
@@ -211,7 +211,7 @@ function Navbar() {
                 type="button"
                 onClick={() => setIsMenuOpen(true)}
                 aria-label="Open menu"
-                className="flex items-center justify-center p-2 md:hidden"
+                className="flex items-center justify-center p-2 lg:hidden"
               >
                 <Menu size={24} strokeWidth={1.5} />
               </button>

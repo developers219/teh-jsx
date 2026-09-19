@@ -587,9 +587,8 @@ export const FilteredPackages = () => {
         const endpoint = queryString
           ? `/packages/slug/${slug}?${queryString}`
           : `/packages/${slug}`;
-        console.log("meow");
+
         const res = await api(endpoint);
-        console.log(res);
         setPackages(res?.data?.data?.packages || []);
       } catch (error) {
         console.error("Failed to fetch packages:", error);

@@ -289,7 +289,7 @@ function DestinationContent({ destination, index, slidePosition }) {
           {/* TITLE */}
 
           <h2
-            className="text-6xl font-thin leading-[0.88] tracking-[-0.045em] text-white sm:text-7xl lg:text-[7.5rem]"
+            className="text-[clamp(2.8rem,5vw,3.75rem)] font-thin leading-[0.88] tracking-[-0.045em] text-white"
             style={{ fontFamily: "Cormorant Garamond" }}
           >
             {destination.name}

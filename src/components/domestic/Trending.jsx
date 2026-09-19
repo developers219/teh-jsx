@@ -20,13 +20,9 @@ export default function Trending() {
 
         const res = await api.get("/destinations/featured");
 
-        console.log("Featured destinations:", res.data.data);
-
         const filtered = res.data.data.filter(
-          (destination) => Number(destination.categoryId) === 1
+          (destination) => Number(destination.categoryId) === 1,
         );
-
-        console.log("Trending destinations:", filtered);
 
         setTrendingDestinations(filtered);
       } catch (error) {

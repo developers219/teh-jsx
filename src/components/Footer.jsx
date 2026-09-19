@@ -197,12 +197,12 @@ function Footer() {
 
           <section className="overflow-hidden pb-8">
             <div className="mb-8 text-center">
-              <Typography
+              <p
                 component="h3"
-                className="text-base font-medium text-white sm:text-lg"
+                className="text-base font-mont uppercase text-white tracking-wider"
               >
                 Partnered with the best in the industry
-              </Typography>
+              </p>
             </div>
 
             <div className="relative w-full overflow-hidden">
@@ -369,17 +369,18 @@ function Footer() {
 
               {/* DESCRIPTION */}
 
-              <Typography
+              <p
                 className="
                   max-w-[310px]
                   text-sm
                   leading-6
+                  font-mont
                   text-slate-400
                 "
               >
                 Thoughtfully planned journeys that turn travel into
                 unforgettable experiences.
-              </Typography>
+              </p>
 
               {/* SOCIAL LINKS */}
 
@@ -770,10 +771,10 @@ function Footer() {
           >
             {/* COPYRIGHT */}
 
-            <Typography className="text-xs text-slate-500">
+            <p className="text-xs text-slate-500 font-mont">
               © {new Date().getFullYear()} Travel Empire Holidays. All rights
               reserved.
-            </Typography>
+            </p>
 
             {/* LEGAL LINKS */}
 

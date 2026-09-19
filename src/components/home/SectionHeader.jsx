@@ -30,11 +30,11 @@ function SectionHeader({
         variant="h2"
         className={
           dark
-            ? "text-3xl font-black text-white sm:text-4xl font-cg"
-            : "text-3xl font-black text-slate-950 sm:text-4xl font-cg"
+            ? "font-black text-white font-cg"
+            : "font-black text-slate-950 font-cg"
         }
         style={{ fontFamily: '"Cormorant Garamond", serif' }}
-        sx={{ lineHeight: 1.12 }}
+        sx={{ lineHeight: 1.12, fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
       >
         {title}
       </Typography>

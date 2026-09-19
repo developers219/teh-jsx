@@ -71,8 +71,7 @@ function TrustCenter() {
       const viewportHeight = window.innerHeight;
       const currentScrollY = window.scrollY;
 
-      const scrollDirection =
-        currentScrollY >= lastScrollY.current ? 1 : -1;
+      const scrollDirection = currentScrollY >= lastScrollY.current ? 1 : -1;
 
       lastScrollY.current = currentScrollY;
 
@@ -84,10 +83,7 @@ function TrustCenter() {
        * ==========================================================
        */
 
-      const sectionEntered = Math.max(
-        viewportHeight - rect.top,
-        0
-      );
+      const sectionEntered = Math.max(viewportHeight - rect.top, 0);
 
       /*
        * ==========================================================
@@ -97,7 +93,7 @@ function TrustCenter() {
 
       const normalStoryIndex = Math.min(
         stories.length - 1,
-        Math.floor(sectionEntered / viewportHeight)
+        Math.floor(sectionEntered / viewportHeight),
       );
 
       setActiveIndex(normalStoryIndex);
@@ -109,17 +105,14 @@ function TrustCenter() {
        */
 
       const finalExitStart = stories.length * viewportHeight;
+      const finalExitStart = stories.length * viewportHeight;
 
-      const finalExitDistance =
-        sectionEntered - finalExitStart;
+      const finalExitDistance = sectionEntered - finalExitStart;
 
       if (normalStoryIndex === stories.length - 1) {
         const progress = Math.max(
           0,
-          Math.min(
-            1,
-            finalExitDistance / viewportHeight
-          )
+          Math.min(1, finalExitDistance / viewportHeight),
         );
 
         setFinalExitProgress(progress);
@@ -137,15 +130,9 @@ function TrustCenter() {
     handleScroll();
 
     return () => {
-      window.removeEventListener(
-        "scroll",
-        handleScroll
-      );
+      window.removeEventListener("scroll", handleScroll);
 
-      window.removeEventListener(
-        "resize",
-        handleScroll
-      );
+      window.removeEventListener("resize", handleScroll);
     };
   }, []);
 
@@ -270,8 +257,7 @@ function TrustCenter() {
                   transition={{
                     delay: 0.9,
                     opacity: {
-                      duration:
-                        IMAGE_TRANSITION_DURATION,
+                      duration: IMAGE_TRANSITION_DURATION,
                       ease: TEXT_EASE,
                     },
                   }}
@@ -288,45 +274,35 @@ function TrustCenter() {
 
             {/* TEXT */}
 
-            <AnimatePresence
-              mode="wait"
-              custom={direction}
-            >
+            <AnimatePresence mode="wait" custom={direction}>
               <motion.div
                 key={activeIndex}
                 custom={direction}
                 variants={textVariants}
                 initial="enter"
                 animate={
-                  activeIndex === stories.length - 1 &&
-                  finalExitProgress > 0
+                  activeIndex === stories.length - 1 && finalExitProgress > 0
                     ? {
                         y: `${-finalExitProgress * 100}vh`,
-                        opacity:
-                          1 - finalExitProgress,
-                        filter: `blur(${
-                          finalExitProgress * 12
-                        }px)`,
+                        opacity: 1 - finalExitProgress,
+                        filter: `blur(${finalExitProgress * 12}px)`,
                       }
                     : "center"
                 }
                 exit="exit"
                 transition={{
                   y: {
-                    duration:
-                      TEXT_TRANSITION_DURATION,
+                    duration: TEXT_TRANSITION_DURATION,
                     ease: TEXT_EASE,
                   },
 
                   opacity: {
-                    duration:
-                      TEXT_TRANSITION_DURATION,
+                    duration: TEXT_TRANSITION_DURATION,
                     ease: TEXT_EASE,
                   },
 
                   filter: {
-                    duration:
-                      TEXT_TRANSITION_DURATION,
+                    duration: TEXT_TRANSITION_DURATION,
                     ease: TEXT_EASE,
                   },
                 }}
@@ -343,13 +319,13 @@ function TrustCenter() {
                   lg:absolute
                   lg:top-1/2
                   lg:mt-0
-                  lg:w-[320px]
-  lg:max-w-[320px]
-  lg:-translate-y-1/2
-  ${
-    activeStory.side === "left"
-      ? "lg:left-[5%] xl:left-[7%]"
-      : "lg:right-[0%] xl:right-[5%]"
+                  lg:w-[calc(50%_-_30px)]
+                  lg:max-w-[440px]
+                  lg:-translate-y-1/2
+                  ${
+                    activeStory.side === "left"
+                      ? "lg:left-[5%] xl:left-[7%]"
+                      : "lg:right-[0%] xl:right-[5%]"
                   }
                 `}
               >
@@ -426,11 +402,10 @@ function TrustCenter() {
                       lg:gap-y-5
                     "
                   >
-                    {activeStory.logos.map(
-                      (logo) => (
-                        <div
-                          key={logo}
-                          className="
+                    {activeStory.logos.map((logo) => (
+                      <div
+                        key={logo}
+                        className="
                             flex
                             h-[24px]
                             items-center
@@ -442,11 +417,10 @@ function TrustCenter() {
                             sm:text-[11px]
                             lg:text-[12px]
                           "
-                        >
-                          {logo}
-                        </div>
-                      )
-                    )}
+                      >
+                        {logo}
+                      </div>
+                    ))}
                   </div>
                 )}
               </motion.div>
@@ -479,15 +453,9 @@ function TrustCenter() {
                     duration-500
                   "
                   style={{
-                    width:
-                      activeIndex === index
-                        ? "28px"
-                        : "8px",
+                    width: activeIndex === index ? "28px" : "8px",
 
-                    opacity:
-                      activeIndex === index
-                        ? 1
-                        : 0.2,
+                    opacity: activeIndex === index ? 1 : 0.2,
                   }}
                 />
               ))}
@@ -536,11 +504,7 @@ function TrustCenter() {
               key={story.image}
               className={`
                 w-full
-                ${
-                  index !== 0
-                    ? "mt-16 sm:mt-20"
-                    : ""
-                }
+                ${index !== 0 ? "mt-16 sm:mt-20" : ""}
               `}
             >
               {/* IMAGE */}
@@ -601,20 +565,19 @@ function TrustCenter() {
 
                 {/* TITLE */}
 
-                <h2
+                <h1
                   className="
                     w-full
-                    text-[31px]
                     font-normal
                     leading-[1.06]
                     tracking-[-0.045em]
                     text-[#25272b]
-                    sm:text-[40px]
+                    text-[clamp(2rem,4vw,2.5rem)]
                     sm:leading-[1.05]
                   "
                 >
                   {story.title}
-                </h2>
+                </h1>
 
                 {/* DESCRIPTION */}
 

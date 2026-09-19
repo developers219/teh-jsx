@@ -25,22 +25,22 @@ export async function getAdminDestinationById(id) {
 }
 export async function getDestinationsByTheme(categoryId, themeId) {
   const response = await api.get(
-    `/destinations/${categoryId}/theme/${themeId}`
+    `/destinations/${categoryId}/theme/${themeId}`,
   );
-  console.log(response.data.data);
+
   return response.data.data;
 }
 export async function createAdminDestination(values) {
   const response = await api.post(
     "/destinations/admin",
-    toDestinationPayload(values)
+    toDestinationPayload(values),
   );
   return response.data.data;
 }
 export async function updateAdminDestination(id, values) {
   const response = await api.put(
     `/destinations/admin/${id}`,
-    toDestinationPayload(values)
+    toDestinationPayload(values),
   );
   return response.data.data;
 }

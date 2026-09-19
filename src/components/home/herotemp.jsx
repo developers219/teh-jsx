@@ -1,6 +1,7 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+// import heroVideo from "../../assets/images/hero.mp4";
 
 const destinations = [
   "Bali",
@@ -24,6 +25,18 @@ export default function HeroSection() {
         relative
         w-full
         h-[110vh]
+        px-5
+
+          sm:px-6
+          sm:py-20
+
+          md:px-8
+          md:py-20
+
+          lg:px-10
+          lg:py-0
+
+          xl:px-12
       "
     >
       {/* =========================================================
@@ -79,7 +92,7 @@ export default function HeroSection() {
         className="
           absolute
           inset-0
-          bg-linear-to-b from-black/60 via-black/60 to-transparent
+          bg-linear-to-b from-black/50 via-black/30 to-transparent
         
         "
       />
@@ -98,24 +111,6 @@ export default function HeroSection() {
           max-w-7xl
           items-end
           justify-center
-
-          px-5
-          py-16
-
-          sm:min-h-[600px]
-          sm:px-6
-          sm:py-20
-
-          md:min-h-[640px]
-          md:px-8
-          md:py-20
-
-          lg:min-h-[680px]
-          lg:px-10
-          lg:py-48
-
-          xl:min-h-[720px]
-          xl:px-12
         "
       >
         <div
@@ -162,10 +157,7 @@ text-center
           >
             {"Your next great escape starts here"}
           </Typography> */}
-          <h2
-            style={{ fontFamily: '"Cormorant Garamond", serif' }}
-            className="text-white/80 text-6xl font-cg font-thin"
-          >
+          <h2 className="text-white/80 text-[clamp(2.8rem,5vw,3.75rem)] text-6xl font-cg font-thin">
             Your next great escape starts here
           </h2>
 
@@ -175,17 +167,9 @@ text-center
           <p
             className="
               mt-5
-              
               text-xs
-              text-white/80 uppercase tracking-[8px]
-text-center
-              sm:mt-6
-            
-
-              lg:mt-5
-              
+              text-white/80 font-mont uppercase tracking-[8px] text-center sm:mt-6 lg:mt-5
             "
-            style={{ fontFamily: "Montserrat" }}
           >
             Discover handpicked destinations, thoughtfully crafted holidays
           </p>
@@ -198,7 +182,7 @@ text-center
               mt-7
               w-full
               max-w-[800px]
-              absolute -bottom-16
+              absolute -bottom-48
               left-1/2 -translate-x-1/2
               font-mont
             "
@@ -300,7 +284,8 @@ text-center
                   hover:bg-beigeD
                   active:scale-95
                   cursor-pointer
-                  p-4
+                  p-2
+                  lg:p-4
                 "
               >
                 <ArrowForwardIcon

@@ -10,7 +10,7 @@ function PackageCard({ travelPackage }) {
   //     travelPackage.image?.url ??
   //         "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85",
   // ];
-  console.log(travelPackage);
+
   const images = travelPackage?.images || [
     "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85",
   ];

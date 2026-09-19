@@ -339,10 +339,10 @@ export default function Themes() {
   };
 
   const handleCategoryClick = async (id) => {
-    console.log(id);
+    
     setActiveCategory(id);
     const res = await getDestinationsByTheme(1, id);
-    console.log(res);
+    
     setDestinations(res);
   };
 

@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { MessageCircle, Phone, X } from "lucide-react";
+import LeadCapturePopup from "../forms/LeadCapturePopup";
 
 const WHATSAPP_NUMBER = "919000000000";
 const CALLBACK_PHONE_NUMBER = "+919000000000";
 
 function FloatingContactWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   function handleToggle() {
     setIsOpen((prev) => !prev);
@@ -31,13 +33,13 @@ function FloatingContactWidget() {
           </div>
 
           <div className="flex flex-col gap-1 p-2">
-            <a
-              href={`tel:${CALLBACK_PHONE_NUMBER}`}
-              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            <p
+              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
+              onClick={() => setIsPopUpOpen(true)}
             >
               <Phone size={18} className="text-beige" />
               Plan a Trip
-            </a>
+            </p>
 
             <a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
@@ -51,6 +53,11 @@ function FloatingContactWidget() {
           </div>
         </div>
       ) : null}
+      <div>
+        {isPopUpOpen ? (
+          <LeadCapturePopup isOpen={isPopUpOpen} setIsOpen={setIsPopUpOpen} />
+        ) : null}
+      </div>
 
       <button
         type="button"

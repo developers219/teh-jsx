@@ -14,7 +14,7 @@ export default function TravelReviews() {
    * Therefore there are 9 possible carousel positions
    * for 10 reviews.
    */
-  console.log(reviews);
+
   const maxIndex = reviews?.length - 2;
   const nextReview = () => {
     setActiveIndex((current) => (current >= maxIndex ? 0 : current + 1));
@@ -26,7 +26,7 @@ export default function TravelReviews() {
   useEffect(() => {
     const fetchReviews = async () => {
       const res = await api.get("/reviews");
-      console.log(res.data.data);
+
       setReviews(res.data.data);
     };
     fetchReviews();

@@ -535,10 +535,6 @@ function LeadForm({
         exploringDestinations: Boolean(finalValues.exploringDestinations),
       };
 
-      console.log("FINAL FORM STATE:", finalValues);
-
-      console.log("FORMATTED LEAD DATA:", leadData);
-
       /* ===============================================
          SEND TO BACKEND
       ================================================ */
@@ -727,7 +723,11 @@ function LeadForm({
         </div>
       )}
 
-      <form onSubmit={handleSubmit(submitLead)} noValidate>
+      <form
+        onSubmit={handleSubmit(submitLead)}
+        noValidate
+        className="font-mont"
+      >
         {/* =================================================
             PAGE 1
         ================================================== */}
@@ -1181,11 +1181,11 @@ function PageThree({
         {/* TRAVELLERS */}
 
         <div
-          // className="
-          //   border-t
-          //   border-black/20
-          //   pt-5
-          // "
+        // className="
+        //   border-t
+        //   border-black/20
+        //   pt-5
+        // "
         >
           <div
             className="
@@ -1623,11 +1623,11 @@ function StepTitle({ title }) {
 function ChoiceSection({ title, smallText, children }) {
   return (
     <div
-      // className="
-      //   border-t
-      //   border-black/20
-      //   pt-5
-      // "
+    // className="
+    //   border-t
+    //   border-black/20
+    //   pt-5
+    // "
     >
       <div
         className="

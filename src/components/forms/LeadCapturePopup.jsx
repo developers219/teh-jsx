@@ -46,9 +46,7 @@ function isLikelyPhoneNumber(value) {
   const digits = value.replace(/\D/g, "");
   return digits.length >= 7 && digits.length <= 15;
 }
-function LeadCapturePopup() {
-  const leadFormRef = useRef(null);
-  const [isOpen, setIsOpen] = useState(true);
+function LeadCapturePopup({ isOpen, setIsOpen }) {
   const [isSuppressed, setIsSuppressed] = useState(() => {
     if (typeof window === "undefined") {
       return true;
@@ -156,7 +154,7 @@ function LeadCapturePopup() {
   return (
     <div className="bg-black/50 backdrop-blur-xs h-auto fixed inset-0 z-50 flex justify-center items-center">
       <div
-        className="h-[90vh] overflow-scroll p-6 w-[90%] lg:w-[70%] relative rounded-2xl"
+        className="h-[90vh] overflow-scroll p-6 w-[90%] lg:w-[55%] relative rounded-2xl"
         style={{ background: `url(${ContactBg})`, backgroundSize: "cover" }}
       >
         {/* <img className="absolute inset-0 object-contain" src={ContactBg} /> */}
@@ -166,9 +164,9 @@ function LeadCapturePopup() {
         >
           <CloseIcon />
         </div>
-        <div className="relative flex">
+        <div className="relative flex lg:flex-row flex-col lg:gap-0 gap-8">
           <div className="flex-1 flex items-center justify-center">
-            <img src={images[step - 1]} alt="steps" className="w-[70%]" />
+            <img src={images[step - 1]} alt="steps" className="w-full" />
           </div>
           <div className="flex-1">
             <LeadForm func={setStep} />

@@ -314,7 +314,7 @@ export default function Themes() {
       const res = await getThemes();
       setCategories(res.data);
       const res2 = await getDestinationsByTheme(2, 7);
-      console.log(res2)
+
       setDestinations(res2);
     }
     fetchThemes();
@@ -340,10 +340,9 @@ export default function Themes() {
   };
 
   const handleCategoryClick = async (id) => {
-    console.log(id);
     setActiveCategory(id);
     const res = await getDestinationsByTheme(2, id);
-    console.log(res);
+
     setDestinations(res);
   };
 

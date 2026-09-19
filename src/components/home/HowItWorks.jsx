@@ -1,35 +1,45 @@
 import { useEffect, useRef, useState } from "react";
+import Hiw1 from "../../assets/images/hiw1.mp4";
+import Hiw2 from "../../assets/images/hiw2.mp4";
+import Hiw3 from "../../assets/images/hiw3.mp4";
+import Hiw4 from "../../assets/images/hiw4.mp4";
 
 const steps = [
   {
     number: "01",
-    eyebrow: "START WITH YOUR IDEA",
-    title: "Share your travel idea",
+    eyebrow: "START WITH A CONVERSATION",
+    title: "Tell us what you have in mind",
     description:
-      "Tell us where you want to go, when you want to travel, who you’re travelling with, and what kind of experience you have in mind.",
-    image:
-      "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1800&q=90",
-    imageAlt: "Traveller planning a holiday",
+      "Share your destination, occasion, pace, or simply the kind of journey you’re looking for. We listen, ask the right questions, and understand what matters to you.",
+    image: Hiw1,
+    imageAlt: "Traveller planning a personalised journey",
   },
   {
     number: "02",
-    eyebrow: "MADE FOR YOU",
-    title: "Get a curated plan",
+    eyebrow: "WE CURATE",
+    title: "Every detail, thoughtfully chosen",
     description:
-      "Our travel experts turn your ideas into a thoughtfully planned journey with handpicked stays, experiences, routes, and the right pace.",
-    image:
-      "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=1800&q=90",
-    imageAlt: "Traveller exploring a destination",
+      "Our travel experts personally research and handpick exceptional stays, experiences, routes, restaurants, guides, and local discoveries — nothing chosen simply because it’s part of a package.",
+    image: Hiw2,
+    imageAlt: "Traveller exploring a curated destination",
   },
   {
     number: "03",
-    eyebrow: "READY TO GO",
-    title: "Confirm and travel",
+    eyebrow: "YOUR ITINERARY TAKES SHAPE",
+    title: "A journey designed around you",
     description:
-      "Once everything feels right, we take care of the arrangements and stay with you through the journey so you can simply enjoy the trip.",
-    image:
-      "https://images.unsplash.com/photo-1521292270410-a8c4d716d518?auto=format&fit=crop&w=1800&q=90",
-    imageAlt: "Couple enjoying a holiday",
+      "We create a 100% customised itinerary around your pace, preferences, and the experiences you want to remember. We refine every detail with you until it feels unmistakably yours.",
+    image: Hiw3,
+    imageAlt: "Couple enjoying a personalised travel experience",
+  },
+  {
+    number: "04",
+    eyebrow: "YOU SIMPLY TRAVEL",
+    title: "Everything is taken care of",
+    description:
+      "From reservations and transfers to experiences and on-trip arrangements, everything is taken care of. Your journey is ready — all that remains is to experience it.",
+    image: Hiw4,
+    imageAlt: "Traveller enjoying a relaxing holiday",
   },
 ];
 
@@ -54,17 +64,19 @@ function HowItWorks() {
       const sectionTop = window.scrollY + rect.top;
 
       /*
-        Desktop animation:
-        2 transitions × 100vh
+        There are 2 transitions:
+
+        IMAGE 1 → IMAGE 2
+        IMAGE 2 → IMAGE 3
+
+        Each transition gets 100vh.
       */
-      const transitionDistance = window.innerHeight * 2;
+      // const transitionDistance = window.innerHeight * 2;
+      const transitionDistance = window.innerHeight * (steps.length - 1);
 
       const scrolled = window.scrollY - sectionTop;
 
-      const progress = Math.max(
-        0,
-        Math.min(scrolled / transitionDistance, 1)
-      );
+      const progress = Math.max(0, Math.min(scrolled / transitionDistance, 1));
 
       setScrollProgress(progress);
 
@@ -98,30 +110,21 @@ function HowItWorks() {
 
   const storyProgress = scrollProgress * (steps.length - 1);
 
-  const currentIndex = Math.min(
-    Math.floor(storyProgress),
-    steps.length - 1
-  );
+  /*
+    Which image is currently on top.
+  */
+  const currentIndex = Math.min(Math.floor(storyProgress), steps.length - 1);
 
   const localProgress =
-    currentIndex >= steps.length - 1
-      ? 0
-      : storyProgress - currentIndex;
+    currentIndex >= steps.length - 1 ? 0 : storyProgress - currentIndex;
 
   return (
     <section
       ref={sectionRef}
-      className="
-        relative
-        w-full
-        bg-white
-
-        /* MOBILE */
-        h-auto
-
-        /* DESKTOP */
-        lg:h-[300vh]
-      "
+      className="relative w-full bg-white"
+      style={{
+        height: `${steps.length * 100}vh`,
+      }}
     >
       {/* ========================================================
           DESKTOP
@@ -231,27 +234,43 @@ function HowItWorks() {
                     TEXT STACK
                 ================================================== */}
 
-                <div
-                  className="
-                    relative
-                    min-h-[430px]
-                    overflow-hidden
-                  "
-                >
+                {/* =================================================
+    TEXT STACK
+================================================== */}
+
+                <div className="relative h-[520px] overflow-hidden">
                   {steps.map((step, index) => {
-                    let translateY = 80;
+                    let translateY = 100;
                     let opacity = 0;
 
-                    if (index === currentIndex) {
-                      translateY = -localProgress * 80;
+                    /*
+      CURRENT STEP
+      Moves upward and disappears.
+    */
+                    if (
+                      index === currentIndex &&
+                      currentIndex < steps.length - 1
+                    ) {
+                      translateY = -localProgress * 100;
                       opacity = 1 - localProgress;
                     }
 
-                    if (index === currentIndex + 1) {
-                      translateY = 80 - localProgress * 80;
+                    /*
+      NEXT STEP
+      Enters from below.
+    */
+                    if (
+                      index === currentIndex + 1 &&
+                      currentIndex < steps.length - 1
+                    ) {
+                      translateY = 100 - localProgress * 100;
                       opacity = localProgress;
                     }
 
+                    /*
+      FINAL STEP
+      Once reached, keep it completely visible.
+    */
                     if (
                       index === steps.length - 1 &&
                       currentIndex === steps.length - 1
@@ -264,61 +283,59 @@ function HowItWorks() {
                       <div
                         key={step.number}
                         className="
-                          absolute
-                          right-0
-                          top-0
-                          w-full
-                          text-right
-                          will-change-transform
-                        "
+          absolute
+          inset-x-0
+          top-1/8
+          w-full
+          text-right
+          will-change-transform
+        "
                         style={{
-                          transform: `translateY(${translateY}px)`,
+                          transform: `translate3d(0, ${translateY}%, 0)`,
                           opacity,
-                          zIndex:
-                            index === currentIndex + 1
-                              ? 20
-                              : 10,
+                          pointerEvents: opacity > 0.5 ? "auto" : "none",
+                          zIndex: index === currentIndex + 1 ? 20 : 10,
                         }}
                       >
                         {/* STEP INFO */}
 
                         <div
                           className="
-                            mb-7
-                            flex
-                            items-center
-                            justify-end
-                            gap-4
-                            font-mont
-                          "
+            mb-7
+            flex
+            items-center
+            justify-end
+            gap-4
+            font-mont
+          "
                         >
                           <span
                             className="
-                              text-[11px]
-                              font-normal
-                              tracking-[0.22em]
-                              text-[#607080]
-                            "
+              text-[11px]
+              font-normal
+              tracking-[0.22em]
+              text-[#607080]
+            "
                           >
                             {step.number}
                           </span>
 
                           <span
                             className="
-                              h-px
-                              w-10
-                              bg-[#aeb5bc]
-                            "
+              h-px
+              w-10
+              bg-[#aeb5bc]
+            "
                           />
 
                           <span
                             className="
-                              text-[10px]
-                              font-medium
-                              uppercase
-                              tracking-[0.22em]
-                              text-[#526171]
-                            "
+              text-[10px]
+              font-medium
+              uppercase
+              tracking-[0.22em]
+              text-[#526171]
+            "
                           >
                             {step.eyebrow}
                           </span>
@@ -328,19 +345,18 @@ function HowItWorks() {
 
                         <h2
                           className="
-                            ml-auto
-                            max-w-[620px]
-                            text-[40px]
-                            font-normal
-                            leading-[1.08]
-                            tracking-[-0.025em]
-                            text-[#171b22]
-
-                            sm:text-[46px]
-                            md:text-[50px]
-                            lg:text-[48px]
-                            xl:text-[56px]
-                          "
+            ml-auto
+            max-w-[620px]
+            text-[40px]
+            font-normal
+            leading-[1.08]
+            tracking-[-0.025em]
+            text-[#171b22]
+            sm:text-[46px]
+            md:text-[50px]
+            lg:text-[48px]
+            xl:text-[56px]
+          "
                         >
                           {step.title}
                         </h2>
@@ -349,17 +365,16 @@ function HowItWorks() {
 
                         <p
                           className="
-                            ml-auto
-                            mt-7
-                            max-w-[520px]
-                            text-[15px]
-                            font-normal
-                            leading-[1.85]
-                            text-[#66717d]
-
-                            sm:text-[16px]
-                            font-mont
-                          "
+            ml-auto
+            mt-7
+            max-w-[520px]
+            text-[15px]
+            font-normal
+            leading-[1.85]
+            text-[#66717d]
+            sm:text-[16px]
+            font-mont
+          "
                         >
                           {step.description}
                         </p>
@@ -388,12 +403,95 @@ function HowItWorks() {
               let blur = 0;
               let scale = 1;
 
-              /* IMAGE 1 */
+              /*
+    ==================================================
+    CURRENT STEP
+    ==================================================
 
-              if (index === 0) {
-                if (currentIndex === 0) {
-                  y = -localProgress * 100;
+    The current video behaves like a page.
+
+    It moves UP and reveals the next video underneath.
+  */
+
+              if (index === currentIndex) {
+                y = -localProgress * 100;
+
+                blur = 0;
+                scale = 1;
+              }
+
+              /*
+    ==================================================
+    NEXT STEP
+    ==================================================
+
+    The next video is already underneath the
+    current video.
+
+    It stays in place while the current video
+    moves away.
+
+    It starts blurred/smaller and becomes clear
+    as it is revealed.
+  */
+
+              if (index === currentIndex + 1) {
+                y = 0;
+
+                blur = 14 - localProgress * 14;
+
+                scale = 1.035 - localProgress * 0.035;
+              }
+
+              /*
+    ==================================================
+    FUTURE STEPS
+    ==================================================
+
+    Anything beyond the immediate next step
+    remains underneath, blurred and slightly scaled.
+  */
+
+              if (index > currentIndex + 1) {
+                y = 0;
+
+                blur = 14;
+
+                scale = 1.035;
+              }
+
+              /*
+    ==================================================
+    PREVIOUS STEPS
+    ==================================================
+
+    Videos that have already been revealed
+    have moved completely out of the viewport.
+  */
+
+              if (index < currentIndex) {
+                y = -100;
+
+                blur = 0;
+
+                scale = 1;
+              }
+
+              /*
+    ==================================================
+    FINAL STEP
+    ==================================================
+
+    Once the last video is reached, keep it fixed
+    and completely visible.
+  */
+
+              if (currentIndex === steps.length - 1) {
+                if (index === currentIndex) {
+                  y = 0;
+
                   blur = 0;
+
                   scale = 1;
                 } else {
                   y = -100;
@@ -402,65 +500,47 @@ function HowItWorks() {
                 }
               }
 
-              /* IMAGE 2 */
+              /*
+    ==================================================
+    STACK ORDER
+    ==================================================
 
-              if (index === 1) {
-                if (currentIndex === 0) {
-                  y = 0;
-                  blur = 14 - localProgress * 14;
-                  scale = 1.035 - localProgress * 0.035;
-                }
+    Current video:
+      highest
 
-                if (currentIndex === 1) {
-                  y = -localProgress * 100;
-                  blur = 0;
-                  scale = 1;
-                }
+    Next video:
+      underneath current
 
-                if (currentIndex >= 2) {
-                  y = -100;
-                  blur = 0;
-                  scale = 1;
-                }
-              }
+    Everything else:
+      underneath
+  */
 
-              /* IMAGE 3 */
-
-              if (index === 2) {
-                if (currentIndex === 0) {
-                  y = 0;
-                  blur = 14;
-                  scale = 1.035;
-                }
-
-                if (currentIndex === 1) {
-                  y = 0;
-                  blur = 14 - localProgress * 14;
-                  scale = 1.035 - localProgress * 0.035;
-                }
-
-                if (currentIndex >= 2) {
-                  y = 0;
-                  blur = 0;
-                  scale = 1;
-                }
-              }
+              const zIndex =
+                index === currentIndex
+                  ? 30
+                  : index === currentIndex + 1
+                    ? 20
+                    : 10;
 
               return (
-                <img
+                <video
                   key={step.number}
                   src={step.image}
-                  alt={step.imageAlt}
                   className="
-                    absolute
-                    inset-0
-                    h-full
-                    w-full
-                    object-cover
-                    will-change-transform
-                  "
+        absolute
+        inset-0
+        h-full
+        w-full
+        aspect-square
+        object-cover
+        will-change-transform
+      "
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
                   style={{
-                    zIndex: steps.length - index,
+                    zIndex,
                     opacity: 1,
                     transform: `translate3d(0, ${y}%, 0) scale(${scale})`,
                     filter: `blur(${blur}px)`,
@@ -490,9 +570,7 @@ function HowItWorks() {
           <article
             key={step.number}
             className="
-              flex
-              w-full
-              flex-col
+              
               bg-white
             "
           >
@@ -503,14 +581,12 @@ function HowItWorks() {
             <div
               className="
                 relative
-                h-[58vh]
-                min-h-[360px]
-                max-h-[620px]
+                h-[50vh]
                 w-full
                 overflow-hidden
               "
             >
-              <img
+              {/* <img
                 src={step.image}
                 alt={step.imageAlt}
                 className="
@@ -519,6 +595,22 @@ function HowItWorks() {
                   w-full
                   object-cover
                 "
+              /> */}
+              <video
+                src={step.image}
+                className="
+    absolute
+    inset-0
+    h-full
+    w-full
+    aspect-square
+    object-cover
+    will-change-transform
+  "
+                autoPlay
+                loop
+                muted
+                playsInline
               />
             </div>
 
