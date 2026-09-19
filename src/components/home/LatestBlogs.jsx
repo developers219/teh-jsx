@@ -153,201 +153,127 @@ function BlogCard({ blog }) {
   return (
     <article
       className="
-                relative
-                h-[520px]
-                w-full
-                shrink-0
-                overflow-hidden
-                bg-slate-200
-                md:h-[570px]
-                lg:h-[620px]
-            "
+        relative
+        h-[520px]
+        w-full
+        shrink-0
+        overflow-hidden
+        bg-slate-200
+        md:h-[570px]
+        lg:h-[620px]
+      "
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* =================================================
-                IMAGE
-            ================================================== */}
+      {/* IMAGE */}
 
       <img
         src={blog.image}
         alt={blog.title}
         draggable="false"
         className="
-                    absolute
-                    inset-0
-                    h-full
-                    w-full
-                    object-cover
-                    transition-transform
-                    duration-[1800ms]
-                    ease-out
-                    hover:scale-[1.04]
-                "
+          absolute
+          inset-0
+          h-full
+          w-full
+          object-cover
+          transition-transform
+          duration-[1800ms]
+          ease-out
+          hover:scale-[1.04]
+        "
       />
 
-      {/* =================================================
-                IMAGE OVERLAY
-            ================================================== */}
+      {/* IMAGE OVERLAY */}
 
       <div
         className="
-                    pointer-events-none
-                    absolute
-                    inset-0
-                    bg-gradient-to-t
-                    from-black/75
-                    via-black/10
-                    to-transparent
-                "
+          pointer-events-none
+          absolute
+          inset-0
+          bg-gradient-to-t
+          from-black/75
+          via-black/10
+          to-transparent
+        "
       />
 
-      {/* =================================================
-                TOP CATEGORY BADGE
-            ================================================== */}
-
-      {/* <div
-                className="
-                    absolute
-                    left-6
-                    top-6
-                    z-20
-                    rounded-full
-                    border
-                    border-white/40
-                    bg-black/20
-                    px-4
-                    py-2
-                    text-[10px]
-                    font-semibold
-                    uppercase
-                    tracking-[0.14em]
-                    text-white
-                    backdrop-blur-md
-                "
-            >
-                {blog.category}
-            </div> */}
-
-      {/* =================================================
-                NORMAL BOTTOM CONTENT
-            ================================================== */}
+      {/* NORMAL BOTTOM CONTENT */}
 
       <div
         className={`
-                    absolute
-                    bottom-0
-                    left-0
-                    right-0
-                    z-10
-                    p-6
-                    transition-all
-                    duration-500
-                    ease-out
-                    ${
-                      hovered
-                        ? "translate-y-3 opacity-0"
-                        : "translate-y-0 opacity-100"
-                    }
-                `}
+          absolute
+          bottom-0
+          left-0
+          right-0
+          z-10
+          p-6
+          transition-all
+          duration-500
+          ease-out
+          ${
+            hovered
+              ? "translate-y-3 opacity-0"
+              : "translate-y-0 opacity-100"
+          }
+        `}
       >
-        {/* DATE */}
-
-        {/* <div
-                    className="
-                        mb-3
-                        flex
-                        items-center
-                        gap-2
-                        text-[11px]
-                        font-medium
-                        text-white/75
-                    "
-                >
-                    <CalendarIcon />
-
-                    <span>{blog.date}</span>
-                </div> */}
-
         {/* TITLE */}
 
         <div className="flex items-end justify-between gap-4">
           <h3
             className="
-                            max-w-[90%]
-                            text-[21px]
-                            font-semibold
-                            leading-[1.18]
-                            tracking-[-0.025em]
-                            text-white
-                            md:text-[23px]
-                        "
+              max-w-[90%]
+              text-[21px]
+              font-semibold
+              leading-[1.18]
+              tracking-[-0.025em]
+              text-white
+              md:text-[23px]
+            "
           >
             {blog.title}
           </h3>
-
-          {/* ARROW */}
-
-          {/* <span
-                        className="
-                            flex
-                            h-10
-                            w-10
-                            shrink-0
-                            items-center
-                            justify-center
-                            rounded-full
-                            border
-                            border-white/40
-                            bg-white/10
-                            text-white
-                            backdrop-blur-md
-                        "
-                    >
-                        <ArrowIcon />
-                    </span> */}
         </div>
       </div>
 
-      {/* =================================================
-                HOVER GLASSMORPHISM DESCRIPTION
-            ================================================== */}
+      {/* HOVER GLASSMORPHISM DESCRIPTION */}
 
       <div
         className={`
-                    absolute
-                    bottom-0
-                    
-                   
-                   
-                    border
-                    border-white/30
-                    bg-white/[0.14]
-                    p-5
-                    text-white
-                    shadow-2xl
-                    backdrop-blur-xl
-                    transition-all
-                    duration-700
-                    ease-[cubic-bezier(0.22,1,0.36,1)]
-                    ${
-                      hovered
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-[110%] opacity-0"
-                    }
-                `}
+          absolute
+          bottom-0
+          left-0
+          right-0
+          z-20
+          border
+          border-white/30
+          bg-white/[0.14]
+          p-5
+          text-white
+          shadow-2xl
+          backdrop-blur-xl
+          transition-all
+          duration-700
+          ease-[cubic-bezier(0.22,1,0.36,1)]
+          ${
+            hovered
+              ? "translate-y-0 opacity-100"
+              : "translate-y-[110%] opacity-0"
+          }
+        `}
       >
         {/* CATEGORY */}
 
         <div
           className="
-                        text-[10px]
-                        font-mont
-                        font-semibold
-                        uppercase
-                        tracking-[0.15em]
-                        text-white/70
-                    "
+            text-[10px]
+            font-mont
+            font-semibold
+            uppercase
+            tracking-[0.15em]
+            text-white/70
+          "
         >
           {blog.category}
         </div>
@@ -356,13 +282,13 @@ function BlogCard({ blog }) {
 
         <h3
           className="
-                        mt-2
-                        text-[21px]
-                        font-semibold
-                        leading-[1.2]
-                        tracking-[-0.02em]
-                        text-white
-                    "
+            mt-2
+            text-[21px]
+            font-semibold
+            leading-[1.2]
+            tracking-[-0.02em]
+            text-white
+          "
         >
           {blog.title}
         </h3>
@@ -371,12 +297,12 @@ function BlogCard({ blog }) {
 
         <p
           className="
-                        mt-3
-                        text-[13px]
-                        font-mont
-                        leading-[1.55]
-                        text-white/80
-                    "
+            mt-3
+            text-[13px]
+            font-mont
+            leading-[1.55]
+            text-white/80
+          "
         >
           {blog.description}
         </p>
@@ -385,24 +311,24 @@ function BlogCard({ blog }) {
 
         <div
           className="
-                        mt-4
-                        flex
-                        items-center
-                        justify-between
-                        border-t
-                        border-white/20
-                        pt-4
-                    "
+            mt-4
+            flex
+            items-center
+            justify-between
+            border-t
+            border-white/20
+            pt-4
+          "
         >
           <div
             className="
-                            flex
-                            items-center
-                            gap-2
-                            text-[11px]
-                            font-mont
-                            text-white/70
-                        "
+              flex
+              items-center
+              gap-2
+              text-[11px]
+              font-mont
+              text-white/70
+            "
           >
             <CalendarIcon />
 
@@ -411,16 +337,17 @@ function BlogCard({ blog }) {
 
           <span
             className="
-                            flex
-                            items-center
-                            gap-1.5
-                            text-[12px]
-                            font-semibold
-                            text-white
-                            font-mont
-                        "
+              flex
+              items-center
+              gap-1.5
+              text-[12px]
+              font-semibold
+              text-white
+              font-mont
+            "
           >
             Read More
+
             <ArrowIcon />
           </span>
         </div>
@@ -445,6 +372,16 @@ function LatestBlogs() {
   const lastTime = useRef(null);
 
   /*
+   * -------------------------------------------------------
+   * MOBILE / IPAD THUMB DRAG
+   * -------------------------------------------------------
+   */
+
+  const isDragging = useRef(false);
+  const startX = useRef(0);
+  const startPosition = useRef(0);
+
+  /*
    * Speed of movement.
    *
    * Lower number = slower.
@@ -452,11 +389,12 @@ function LatestBlogs() {
    * 0.035 gives a very slow premium
    * travel-site style movement.
    */
+
   const SPEED = 0.035;
 
   /* =======================================================
-       CONTINUOUS MOVEMENT
-    ======================================================= */
+     CONTINUOUS MOVEMENT
+  ======================================================= */
 
   useEffect(() => {
     const move = (time) => {
@@ -500,31 +438,109 @@ function LatestBlogs() {
   }, [isPaused]);
 
   /* =======================================================
-       RESET TIMER WHEN PAUSED / RESUMED
-    ======================================================= */
+     RESET TIMER WHEN PAUSED / RESUMED
+  ======================================================= */
 
   useEffect(() => {
     lastTime.current = null;
   }, [isPaused]);
 
   /* =======================================================
-       DUPLICATE CARDS
-    ======================================================= */
+     MOBILE / IPAD THUMB SCROLL
+     
+     Desktop is completely untouched.
+     
+     Only devices below lg (1024px) get this behavior.
+  ======================================================= */
+
+  const handlePointerDown = (e) => {
+    if (window.innerWidth >= 1024) return;
+
+    if (!trackRef.current) return;
+
+    isDragging.current = true;
+
+    startX.current = e.clientX;
+
+    startPosition.current = position.current;
+
+    setIsPaused(true);
+
+    /*
+     * Keeps the pointer attached to the carousel
+     * even if the finger moves slightly outside it.
+     */
+
+    if (trackRef.current.setPointerCapture) {
+      try {
+        trackRef.current.setPointerCapture(e.pointerId);
+      } catch {
+        // Ignore pointer capture errors
+      }
+    }
+
+    trackRef.current.style.cursor = "grabbing";
+  };
+
+  const handlePointerMove = (e) => {
+    if (!isDragging.current) return;
+
+    if (!trackRef.current) return;
+
+    const distance = e.clientX - startX.current;
+
+    position.current = startPosition.current + distance;
+
+    trackRef.current.style.transform = `translate3d(${position.current}px, 0, 0)`;
+  };
+
+  const handlePointerUp = (e) => {
+    if (!isDragging.current) return;
+
+    isDragging.current = false;
+
+    if (trackRef.current) {
+      if (
+        e?.pointerId !== undefined &&
+        trackRef.current.releasePointerCapture
+      ) {
+        try {
+          if (trackRef.current.hasPointerCapture?.(e.pointerId)) {
+            trackRef.current.releasePointerCapture(e.pointerId);
+          }
+        } catch {
+          // Ignore pointer capture errors
+        }
+      }
+
+      trackRef.current.style.cursor = "grab";
+    }
+
+    /*
+     * Resume the original automatic movement.
+     */
+
+    setIsPaused(false);
+  };
+
+  /* =======================================================
+     DUPLICATE CARDS
+  ======================================================= */
 
   const duplicatedBlogs = [...blogs, ...blogs];
 
   return (
     <section
       className="
-                overflow-hidden
-                bg-slate-50
-                py-20
-                lg:py-24
-            "
+        overflow-hidden
+        bg-white
+        py-20
+        lg:py-24
+      "
     >
       {/* =================================================
-                HEADER
-            ================================================== */}
+          HEADER
+      ================================================== */}
 
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <SectionHeader
@@ -534,47 +550,54 @@ function LatestBlogs() {
       </div>
 
       {/* =================================================
-                SPACE
-            ================================================== */}
+          SPACE
+      ================================================== */}
 
       <div className="h-12" />
 
       {/* =================================================
-                CAROUSEL VIEWPORT
-            ================================================== */}
+          CAROUSEL VIEWPORT
+      ================================================== */}
 
       <div
         className="
-                    relative
-                    w-full
-                    overflow-hidden
-                "
+          relative
+          w-full
+          overflow-hidden
+          touch-pan-y
+        "
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
       >
         {/* =================================================
-                    MOVING TRACK
-                ================================================== */}
+            MOVING TRACK
+        ================================================== */}
 
         <div
           ref={trackRef}
           className="
-                        flex
-                        w-max
-                        will-change-transform
-                    "
+            flex
+            w-max
+            will-change-transform
+            cursor-grab
+            select-none
+          "
         >
           {duplicatedBlogs.map((blog, index) => (
             <div
               key={`${blog.id}-${index}`}
               className="
-                                w-[88vw]
-                                shrink-0
-                                sm:w-[65vw]
-                                md:w-[50vw]
-                                lg:w-[25vw]
-                                xl:w-[25vw]
-                            "
+                w-[88vw]
+                shrink-0
+                sm:w-[65vw]
+                md:w-[50vw]
+                lg:w-[25vw]
+                xl:w-[25vw]
+              "
             >
               <BlogCard blog={blog} />
             </div>
@@ -583,40 +606,42 @@ function LatestBlogs() {
       </div>
 
       {/* =================================================
-                BOTTOM INDICATOR
-            ================================================== */}
+          BOTTOM INDICATOR
+      ================================================== */}
 
-      {/* <div
-                className="
-                    mx-auto
-                    mt-8
-                    flex
-                    items-center
-                    justify-center
-                    gap-3
-                "
-            >
-                <span
-                    className="
-                        h-1.5
-                        w-8
-                        rounded-full
-                        bg-slate-900
-                    "
-                />
+      {/*
+      <div
+        className="
+          mx-auto
+          mt-8
+          flex
+          items-center
+          justify-center
+          gap-3
+        "
+      >
+        <span
+          className="
+            h-1.5
+            w-8
+            rounded-full
+            bg-slate-900
+          "
+        />
 
-                <span
-                    className="
-                        text-[10px]
-                        font-medium
-                        uppercase
-                        tracking-[0.18em]
-                        text-slate-400
-                    "
-                >
-                    Explore Stories
-                </span>
-            </div> */}
+        <span
+          className="
+            text-[10px]
+            font-medium
+            uppercase
+            tracking-[0.18em]
+            text-slate-400
+          "
+        >
+          Explore Stories
+        </span>
+      </div>
+      */}
     </section>
   );
 }

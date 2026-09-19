@@ -148,7 +148,7 @@ export default function WhyChooseUs() {
             </div>
 
             {/* Mobile scroll hint */}
-            <div className="mt-1 flex justify-center gap-1.5">
+            {/* <div className="mt-1 flex justify-center gap-1.5">
               {reasons.map((reason, index) => (
                 <span
                   key={reason.title}
@@ -157,7 +157,7 @@ export default function WhyChooseUs() {
                   }`}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

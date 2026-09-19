@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import StarIcon from "@mui/icons-material/Star";
@@ -35,7 +36,7 @@ export default function TravelReviews() {
     return () => clearInterval(timer);
   }, []);
   return (
-    <section className="relative py-10 sm:py-14 lg:py-32">
+    <section className="relative bg-white py-10 sm:py-14 lg:py-32">
       {/* =====================================================
             BACKGROUND
         ====================================================== */}
@@ -279,3 +280,4 @@ export default function TravelReviews() {
     </section>
   );
 }
+

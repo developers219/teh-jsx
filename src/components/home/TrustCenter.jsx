@@ -86,7 +86,7 @@ function TrustCenter() {
 
       const sectionEntered = Math.max(
         viewportHeight - rect.top,
-        0,
+        0
       );
 
       /*
@@ -97,7 +97,7 @@ function TrustCenter() {
 
       const normalStoryIndex = Math.min(
         stories.length - 1,
-        Math.floor(sectionEntered / viewportHeight),
+        Math.floor(sectionEntered / viewportHeight)
       );
 
       setActiveIndex(normalStoryIndex);
@@ -108,8 +108,7 @@ function TrustCenter() {
        * ==========================================================
        */
 
-      const finalExitStart =
-        stories.length * viewportHeight;
+      const finalExitStart = stories.length * viewportHeight;
 
       const finalExitDistance =
         sectionEntered - finalExitStart;
@@ -119,8 +118,8 @@ function TrustCenter() {
           0,
           Math.min(
             1,
-            finalExitDistance / viewportHeight,
-          ),
+            finalExitDistance / viewportHeight
+          )
         );
 
         setFinalExitProgress(progress);
@@ -140,12 +139,12 @@ function TrustCenter() {
     return () => {
       window.removeEventListener(
         "scroll",
-        handleScroll,
+        handleScroll
       );
 
       window.removeEventListener(
         "resize",
-        handleScroll,
+        handleScroll
       );
     };
   }, []);
@@ -202,12 +201,12 @@ function TrustCenter() {
     <>
       {/* =========================================================
           DESKTOP VERSION
-          Hidden below lg
-      ========================================================== */}
+          Hidden below XL
+      ========================================================= */}
 
       <section
         ref={sectionRef}
-        className="relative hidden bg-white lg:block"
+        className="relative hidden bg-white xl:block"
         style={{
           height: `${(stories.length + 1) * 100}vh`,
         }}
@@ -344,13 +343,13 @@ function TrustCenter() {
                   lg:absolute
                   lg:top-1/2
                   lg:mt-0
-                  lg:w-[calc(50%_-_30px)]
-                  lg:max-w-[440px]
-                  lg:-translate-y-1/2
-                  ${
-                    activeStory.side === "left"
-                      ? "lg:left-[5%] xl:left-[7%]"
-                      : "lg:right-[0%] xl:right-[5%]"
+                  lg:w-[320px]
+  lg:max-w-[320px]
+  lg:-translate-y-1/2
+  ${
+    activeStory.side === "left"
+      ? "lg:left-[5%] xl:left-[7%]"
+      : "lg:right-[0%] xl:right-[5%]"
                   }
                 `}
               >
@@ -446,7 +445,7 @@ function TrustCenter() {
                         >
                           {logo}
                         </div>
-                      ),
+                      )
                     )}
                   </div>
                 )}
@@ -455,7 +454,7 @@ function TrustCenter() {
 
             {/* STORY INDICATOR */}
 
-            <div
+            {/* <div
               className="
                 absolute
                 bottom-5
@@ -492,30 +491,32 @@ function TrustCenter() {
                   }}
                 />
               ))}
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
 
       {/* =========================================================
           MOBILE / TABLET VERSION
-          
-          Completely separate from desktop animation.
 
-          Order:
           IMAGE 1
           TEXT 1
+
           IMAGE 2
           TEXT 2
+
           IMAGE 3
           TEXT 3
+
           IMAGE 4
           TEXT 4
-          
+
           No sticky
           No AnimatePresence
           No scroll-controlled animation
-      ========================================================== */}
+
+          Visible below XL
+      ========================================================= */}
 
       <section
         className="
@@ -526,7 +527,7 @@ function TrustCenter() {
           py-12
           sm:px-6
           sm:py-16
-          lg:hidden
+          xl:hidden
         "
       >
         <div className="mx-auto w-full max-w-none">
