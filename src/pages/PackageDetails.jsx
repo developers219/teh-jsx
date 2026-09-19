@@ -16,6 +16,7 @@ import {
   Users,
   X,
   Phone,
+  ChevronDown,
 } from "lucide-react";
 
 import api from "../services/api";
@@ -77,13 +78,13 @@ function PackageGallery({ images = [], title = "Package" }) {
 
   const goToPrevious = () => {
     setModalIndex((prev) =>
-      prev === 0 ? normalizedImages.length - 1 : prev - 1
+      prev === 0 ? normalizedImages.length - 1 : prev - 1,
     );
   };
 
   const goToNext = () => {
     setModalIndex((prev) =>
-      prev === normalizedImages.length - 1 ? 0 : prev + 1
+      prev === normalizedImages.length - 1 ? 0 : prev + 1,
     );
   };
 
@@ -151,18 +152,20 @@ function PackageGallery({ images = [], title = "Package" }) {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${isActive
-                    ? "border-black ring-2 ring-black ring-offset-2"
-                    : "border-black/10 hover:border-black/40"
-                    }`}
+                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${
+                    isActive
+                      ? "border-black ring-2 ring-black ring-offset-2"
+                      : "border-black/10 hover:border-black/40"
+                  }`}
                 >
                   <img
                     src={image}
                     alt={`${title} ${index + 1}`}
-                    className={`h-full w-full object-cover transition duration-500 ${isActive
-                      ? "scale-105"
-                      : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
-                      }`}
+                    className={`h-full w-full object-cover transition duration-500 ${
+                      isActive
+                        ? "scale-105"
+                        : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
+                    }`}
                   />
 
                   {isActive && <div className="absolute inset-0 bg-black/10" />}
@@ -253,7 +256,7 @@ function PackageGallery({ images = [], title = "Package" }) {
                     setActiveIndex(
                       activeIndex === 0
                         ? normalizedImages.length - 1
-                        : activeIndex - 1
+                        : activeIndex - 1,
                     )
                   }
                   aria-label="Previous image"
@@ -268,7 +271,7 @@ function PackageGallery({ images = [], title = "Package" }) {
                     setActiveIndex(
                       activeIndex === normalizedImages.length - 1
                         ? 0
-                        : activeIndex + 1
+                        : activeIndex + 1,
                     )
                   }
                   aria-label="Next image"
@@ -367,10 +370,11 @@ function PackageGallery({ images = [], title = "Package" }) {
                     key={`${image}-modal-${index}`}
                     type="button"
                     onClick={() => setModalIndex(index)}
-                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${isActive
-                      ? "border-white ring-2 ring-white/30"
-                      : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
-                      }`}
+                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${
+                      isActive
+                        ? "border-white ring-2 ring-white/30"
+                        : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
+                    }`}
                   >
                     <img
                       src={image}
@@ -413,14 +417,12 @@ function PackageDetails() {
 
         const response = await api.get(`/packages/slug/${slug}`);
 
-
-
         setTravelPackage(response.data.data[0]);
       } catch (error) {
         console.error(error);
 
         setErrorMessage(
-          "We could not load this package right now. Please try again later."
+          "We could not load this package right now. Please try again later.",
         );
       } finally {
         setIsLoading(false);
@@ -637,7 +639,7 @@ function PackageDetails() {
 
               <motion.h1
                 variants={reveal}
-                className="mt-7 max-w-5xl text-[clamp(2.8rem,7vw,6.8rem)] font-black leading-[0.9] tracking-[-0.06em]"
+                className="mt-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
               >
                 {title}
               </motion.h1>
@@ -655,7 +657,7 @@ function PackageDetails() {
 
               {/* Quick stats */}
 
-              <motion.div
+              {/* <motion.div
                 variants={reveal}
                 className="mt-10 grid grid-cols-2 border-y border-black/10 sm:grid-cols-3"
               >
@@ -676,21 +678,21 @@ function PackageDetails() {
                   label="Destinations"
                   value={`${destinations.length} places`}
                 />
-              </motion.div>
+              </motion.div> */}
             </motion.div>
 
             {/* =================================================
                 BOOKING CARD
             ================================================== */}
 
-            <motion.aside
+            {/* <motion.aside
               initial={{ opacity: 0, y: 35 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.7,
                 delay: 0.15,
               }}
-              className="lg:sticky lg:top-8 lg:self-start"
+              className="fixed lg:top-8 right-80"
             >
               <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
                 <div className="bg-black/90 px-7 py-6 text-white">
@@ -753,14 +755,9 @@ function PackageDetails() {
                       <Phone size={17} />
                     </span>
                   </Link>
-
-                  {/* <div className="mt-5 flex items-center justify-center gap-2 text-center text-[11px] text-black/40">
-                    <Phone size={13} />
-                    Talk to our travel experts
-                  </div> */}
                 </div>
               </div>
-            </motion.aside>
+            </motion.aside> */}
           </div>
 
           {/* =====================================================
@@ -773,7 +770,7 @@ function PackageDetails() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.15 }}
               variants={stagger}
-              className="mt-24 border-t border-black/10 pt-14"
+              className="mt-5 border-t border-black/10 pt-5"
             >
               <SectionHeading
                 eyebrow="Where you'll go"
@@ -838,7 +835,7 @@ function PackageDetails() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
               variants={stagger}
-              className="mt-24 border-t border-black/10 pt-14"
+              className="mt-5 border-t border-black/10 pt-5"
             >
               <SectionHeading
                 eyebrow="Your journey"
@@ -848,85 +845,104 @@ function PackageDetails() {
 
               <div className="relative mt-12">
                 {/* Timeline line */}
-
                 <div className="absolute left-[23px] top-0 hidden h-full w-px bg-black/10 md:block" />
 
-                <div className="space-y-5">
-                  {itineraries.map((day, index) => (
+                <div className="space-y-4">
+                  {itineraries.map((day) => (
                     <motion.div
                       key={day.id}
                       variants={reveal}
                       className="relative grid gap-5 md:grid-cols-[48px_1fr]"
                     >
+                      {/* Day number */}
                       <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black text-xs font-black text-white">
                         {String(day.dayNumber).padStart(2, "0")}
                       </div>
 
-                      <div className="rounded-[26px] border border-black/10 p-6 transition hover:border-black/30 hover:shadow-lg sm:p-7">
-                        <div className="flex flex-col justify-between gap-4 sm:flex-row">
+                      {/* Day card */}
+                      <details className="group rounded-[26px] border border-black/10 transition hover:border-black/30">
+                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 sm:p-7">
                           <div>
                             <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
                               Day {day.dayNumber}
                             </p>
 
-                            <h3 className="mt-1 text-2xl font-black tracking-tight">
+                            <h3 className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
                               {day.title}
                             </h3>
                           </div>
 
                           {day.overnightLocation && (
-                            <div className="flex h-fit items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold">
+                            <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
                               <MapPin size={13} />
                               {day.overnightLocation}
                             </div>
                           )}
-                        </div>
 
-                        {day.description && (
-                          <p className="mt-5 max-w-3xl text-sm leading-7 text-black/55">
-                            {day.description}
-                          </p>
-                        )}
+                          {/* Chevron */}
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
+                            <ChevronDown size={16} />
+                          </div>
+                        </summary>
 
-                        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                          {day.hotelName && (
-                            <InfoPill
-                              icon={<Hotel size={15} />}
-                              label="Stay"
-                              value={day.hotelName}
-                            />
-                          )}
-
-                          {day.meals && (
-                            <InfoPill
-                              icon={<Check size={15} />}
-                              label="Meals"
-                              value={day.meals}
-                            />
-                          )}
-                        </div>
-
-                        {day.activities?.length > 0 && (
-                          <div className="mt-6 border-t border-black/10 pt-5">
-                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                              Activities
-                            </p>
-
-                            <div className="mt-3 flex flex-wrap gap-2">
-                              {day.activities.map((activity) => (
-                                <span
-                                  key={activity.id}
-                                  className="rounded-full border border-black/10 px-3 py-2 text-xs font-semibold"
-                                >
-                                  {activity.title ||
-                                    activity.name ||
-                                    "Activity"}
-                                </span>
-                              ))}
-                            </div>
+                        {/* Mobile location */}
+                        {day.overnightLocation && (
+                          <div className="flex items-center gap-2 px-6 pb-2 text-xs font-bold text-black/55 sm:hidden">
+                            <MapPin size={13} />
+                            {day.overnightLocation}
                           </div>
                         )}
-                      </div>
+
+                        {/* Collapsible content */}
+                        <div className="border-t border-black/10 px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
+                          {day.description && (
+                            <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
+                              {day.description}
+                            </p>
+                          )}
+
+                          {/* Itinerary points */}
+                          {day.activities?.length > 0 && (
+                            <ul className="space-y-3">
+                              {day.activities.map((activity) => (
+                                <li
+                                  key={activity.id}
+                                  className="flex items-start gap-3 text-sm leading-6 text-black/70"
+                                >
+                                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+
+                                  <span>
+                                    {activity.title ||
+                                      activity.name ||
+                                      "Activity"}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+
+                          {/* Optional stay + meals */}
+                          {(day.hotelName || day.meals) && (
+                            <div className="mt-6 grid gap-3 border-t border-black/10 pt-5 sm:grid-cols-2">
+                              {day.hotelName && (
+                                <InfoPill
+                                  icon={<Hotel size={15} />}
+                                  label="Stay"
+                                  value={day.hotelName}
+                                />
+                              )}
+
+                              {day.meals && (
+                                <InfoPill
+                                  icon={<Check size={15} />}
+                                  label="Meals"
+                                  value={day.meals}
+                                />
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </details>
                     </motion.div>
                   ))}
                 </div>
@@ -938,172 +954,6 @@ function PackageDetails() {
               HOTELS + FLIGHTS
           ====================================================== */}
 
-          {(hotels.length > 0 || flights.length > 0) && (
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={stagger}
-              className="mt-24 border-t border-black/10 pt-14"
-            >
-              <SectionHeading
-                eyebrow="Travel essentials"
-                title="Stay & travel"
-                description="Everything arranged as part of your journey."
-              />
-
-              <div className="mt-10 grid gap-16 lg:grid-cols-2">
-                {/* HOTELS */}
-
-                {hotels.length > 0 && (
-                  <motion.div
-                    variants={reveal}
-                    className="rounded-[28px] border border-black/10 p-6 sm:p-8"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
-                        <Hotel size={20} />
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                          Accommodation
-                        </p>
-
-                        <h3 className="mt-1 text-2xl font-black">Hotels</h3>
-                      </div>
-                    </div>
-
-                    <div className="mt-7 space-y-3">
-                      {hotels.map((hotel) => (
-                        <div
-                          key={hotel.id}
-                          className="rounded-2xl bg-black/[0.035] p-5"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <h4 className="font-black">{hotel.hotelName}</h4>
-
-                              <p className="mt-1 flex items-center gap-1.5 text-xs text-black/45">
-                                <MapPin size={12} />
-                                {hotel.city}
-                              </p>
-                            </div>
-
-                            {hotel.starRating && (
-                              <div className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow-sm">
-                                <Star size={12} fill="currentColor" />
-                                {hotel.starRating}
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="mt-5 grid grid-cols-2 gap-3">
-                            <DateBox
-                              label="Check in"
-                              value={formatDate(hotel.checkIn)}
-                            />
-
-                            <DateBox
-                              label="Check out"
-                              value={formatDate(hotel.checkOut)}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* FLIGHTS */}
-
-                {flights.length > 0 && (
-                  <motion.div
-                    variants={reveal}
-                    className="rounded-[28px] border border-black/10 p-6 sm:p-8"
-                  >
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
-                        <Plane size={20} />
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                          Transportation
-                        </p>
-
-                        <h3 className="mt-1 text-2xl font-black">Flights</h3>
-                      </div>
-                    </div>
-
-                    <div className="mt-7 space-y-3">
-                      {flights.map((flight) => (
-                        <div
-                          key={flight.id}
-                          className="rounded-2xl bg-black/[0.035] p-5"
-                        >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs font-black">
-                                {flight.airline}
-                              </p>
-
-                              <p className="mt-1 text-[11px] text-black/40">
-                                {flight.flightNumber}
-                              </p>
-                            </div>
-
-                            <Plane size={17} />
-                          </div>
-
-                          <div className="mt-6 flex items-center gap-4">
-                            <div>
-                              <p className="text-lg font-black">
-                                {flight.fromLocation}
-                              </p>
-
-                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
-                                Departure
-                              </p>
-
-                              <p className="mt-1 text-xs font-semibold text-black/55">
-                                {formatDateTime(flight.departureTime)}
-                              </p>
-                            </div>
-
-                            <div className="flex flex-1 items-center">
-                              <div className="h-px flex-1 bg-black/15" />
-
-                              <div className="mx-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white">
-                                <ArrowRight size={13} />
-                              </div>
-
-                              <div className="h-px flex-1 bg-black/15" />
-                            </div>
-
-                            <div className="text-right">
-                              <p className="text-lg font-black">
-                                {flight.toLocation}
-                              </p>
-
-                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
-                                Arrival
-                              </p>
-
-                              <p className="mt-1 text-xs font-semibold text-black/55">
-                                {formatDateTime(flight.arrivalTime)}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </motion.section>
-          )}
-
           {/* =====================================================
               INCLUSIONS / EXCLUSIONS
           ====================================================== */}
@@ -1114,7 +964,7 @@ function PackageDetails() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
               variants={stagger}
-              className="mt-24 border-t border-black/10 pt-14"
+              className="mt-5 border-t border-black/10 pt-5"
             >
               <SectionHeading
                 eyebrow="Good to know"
@@ -1179,10 +1029,7 @@ function PackageDetails() {
                           key={item.id}
                           className="flex gap-3 border-b border-black/10 pb-4 last:border-0"
                         >
-                          <X
-                            size={16}
-                            className="mt-0.5 shrink-0 text-black"
-                          />
+                          <X size={16} className="mt-0.5 shrink-0 text-black" />
 
                           <p className="text-sm leading-6 text-black">
                             {item.description}
@@ -1208,7 +1055,7 @@ function PackageDetails() {
             }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
-            className="relative mt-24 overflow-hidden rounded-[34px] bg-black px-7 py-14 text-white sm:px-12 sm:py-20"
+            className="relative mt-5 overflow-hidden rounded-[34px] bg-black px-7 py-14 text-white sm:px-12 sm:py-20"
           >
             <div className="relative z-10 max-w-2xl">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">

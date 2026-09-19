@@ -157,7 +157,7 @@ text-center
           >
             {"Your next great escape starts here"}
           </Typography> */}
-          <h2 className="text-white/80 text-[clamp(2.8rem,5vw,3.75rem)] text-6xl font-cg font-thin">
+          <h2 className="text-white/80 text-[clamp(2.8rem,5vw,3.75rem)] font-cg font-thin">
             Your next great escape starts here
           </h2>
 
