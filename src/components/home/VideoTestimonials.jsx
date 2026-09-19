@@ -995,7 +995,7 @@ function VideoTestimonials() {
                         overflow-hidden
                         rounded-xl
                         bg-black
-                        shadow-[0_18px_40px_rgba(0,0,0,0.18)]
+                        shadow-white
                       "
                       style={{
                         /*
