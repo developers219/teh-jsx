@@ -163,10 +163,10 @@ function CategoryChip({ label, Icon = null, active, onClick }) {
       onClick={onClick}
       className={[
         "relative shrink-0 inline-flex items-center gap-1.5 pl-3.5 pr-4 py-2.5 rounded-full",
-        "text-[13.5px] font-medium whitespace-nowrap border transition-colors duration-200",
+        "text-[13.5px] font-medium whitespace-nowrap border transition-colors duration-200 ",
         active
-          ? "bg-[#141414] text-white border-[#141414]"
-          : "bg-white text-[#141414] border-[#E3E1DC] hover:border-[#141414]/40",
+          ? "bg-beigeD text-text border-beigeD"
+          : "bg-white text-[#141414] border-beige ",
       ].join(" ")}
     >
       {Icon && (
@@ -396,7 +396,7 @@ export default function Themes() {
         </div>
 
         {/* Destinations header */}
-        <div className="mt-8 lg:mt-10 flex items-end justify-between border-b border-[#E3E1DC] pb-5">
+        <div className="mt-8 lg:mt-10 flex items-end justify-between border-b border-[#E3E1DC] pb-2">
           <span className="text-[11px] font-semibold tracking-[0.18em] uppercase text-[#8A877F]">
             {/* Top Destinations */}
           </span>
