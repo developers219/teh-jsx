@@ -39,7 +39,7 @@ function HowItWorks() {
   const [scrollProgress, setScrollProgress] = useState(0);
 
   /* ============================================================
-     SCROLL
+     DESKTOP SCROLL
   ============================================================ */
 
   useEffect(() => {
@@ -49,27 +49,22 @@ function HowItWorks() {
       if (!sectionRef.current) return;
 
       const section = sectionRef.current;
-
       const rect = section.getBoundingClientRect();
 
-      /*
-        Exact position where this section begins.
-      */
       const sectionTop = window.scrollY + rect.top;
 
       /*
-        There are 2 transitions:
-
-        IMAGE 1 → IMAGE 2
-        IMAGE 2 → IMAGE 3
-
-        Each transition gets 100vh.
+        Desktop animation:
+        2 transitions × 100vh
       */
       const transitionDistance = window.innerHeight * 2;
 
       const scrolled = window.scrollY - sectionTop;
 
-      const progress = Math.max(0, Math.min(scrolled / transitionDistance, 1));
+      const progress = Math.max(
+        0,
+        Math.min(scrolled / transitionDistance, 1)
+      );
 
       setScrollProgress(progress);
 
@@ -79,57 +74,54 @@ function HowItWorks() {
     const handleScroll = () => {
       if (!ticking) {
         window.requestAnimationFrame(updateScroll);
-
         ticking = true;
       }
     };
 
     updateScroll();
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
 
     window.addEventListener("resize", updateScroll);
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-
       window.removeEventListener("resize", updateScroll);
     };
   }, []);
 
   /* ============================================================
      TRANSITION
-
-     0 → 1 = IMAGE 1 → IMAGE 2
-     1 → 2 = IMAGE 2 → IMAGE 3
   ============================================================ */
 
   const storyProgress = scrollProgress * (steps.length - 1);
 
-  /*
-    Which image is currently on top.
-  */
-  const currentIndex = Math.min(Math.floor(storyProgress), steps.length - 1);
+  const currentIndex = Math.min(
+    Math.floor(storyProgress),
+    steps.length - 1
+  );
 
-  /*
-    Progress of the current transition.
-
-    IMAGE 1 → IMAGE 2
-      0 → 1
-
-    IMAGE 2 → IMAGE 3
-      0 → 1
-  */
   const localProgress =
-    currentIndex >= steps.length - 1 ? 0 : storyProgress - currentIndex;
+    currentIndex >= steps.length - 1
+      ? 0
+      : storyProgress - currentIndex;
 
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-white"
-      style={{
-        height: "300vh",
-      }}
+      className="
+        relative
+        w-full
+        bg-white
+
+        /* MOBILE */
+        h-auto
+
+        /* DESKTOP */
+        lg:h-[300vh]
+      "
     >
       {/* ========================================================
           DESKTOP
@@ -248,41 +240,23 @@ function HowItWorks() {
                 >
                   {steps.map((step, index) => {
                     let translateY = 80;
-
                     let opacity = 0;
 
-                    /*
-                      CURRENT TEXT
-
-                      Moves upward as the current image
-                      moves upward.
-                    */
                     if (index === currentIndex) {
                       translateY = -localProgress * 80;
-
                       opacity = 1 - localProgress;
                     }
 
-                    /*
-                      NEXT TEXT
-
-                      Comes from below.
-                    */
                     if (index === currentIndex + 1) {
                       translateY = 80 - localProgress * 80;
-
                       opacity = localProgress;
                     }
 
-                    /*
-                      FINAL TEXT
-                    */
                     if (
                       index === steps.length - 1 &&
                       currentIndex === steps.length - 1
                     ) {
                       translateY = 0;
-
                       opacity = 1;
                     }
 
@@ -299,10 +273,11 @@ function HowItWorks() {
                         "
                         style={{
                           transform: `translateY(${translateY}px)`,
-
                           opacity,
-
-                          zIndex: index === currentIndex + 1 ? 20 : 10,
+                          zIndex:
+                            index === currentIndex + 1
+                              ? 20
+                              : 10,
                         }}
                       >
                         {/* STEP INFO */}
@@ -360,6 +335,7 @@ function HowItWorks() {
                             leading-[1.08]
                             tracking-[-0.025em]
                             text-[#171b22]
+
                             sm:text-[46px]
                             md:text-[50px]
                             lg:text-[48px]
@@ -380,6 +356,7 @@ function HowItWorks() {
                             font-normal
                             leading-[1.85]
                             text-[#66717d]
+
                             sm:text-[16px]
                             font-mont
                           "
@@ -395,7 +372,7 @@ function HowItWorks() {
           </div>
 
           {/* ======================================================
-              RIGHT SIDE — EXACT OVERLAY
+              RIGHT SIDE — IMAGE
           ====================================================== */}
 
           <div
@@ -407,168 +384,64 @@ function HowItWorks() {
             "
           >
             {steps.map((step, index) => {
-              /*
-                ==================================================
-                EVERY IMAGE HAS THE SAME POSITION
-                ==================================================
-
-                Image 1
-                    ↓
-                Image 2
-                    ↓
-                Image 3
-
-                They are stacked exactly on top
-                of each other.
-              */
-
               let y = 0;
-
               let blur = 0;
-
               let scale = 1;
 
-              /*
-                ==================================================
-                IMAGE 1
-                ==================================================
-              */
+              /* IMAGE 1 */
 
               if (index === 0) {
                 if (currentIndex === 0) {
-                  /*
-                    Image 1 acts like a page.
-
-                    It moves completely UP.
-                  */
-
                   y = -localProgress * 100;
-
                   blur = 0;
-
                   scale = 1;
                 } else {
-                  /*
-                    Image 1 has already left.
-                  */
-
                   y = -100;
-
                   blur = 0;
-
                   scale = 1;
                 }
               }
 
-              /*
-                ==================================================
-                IMAGE 2
-                ==================================================
-              */
+              /* IMAGE 2 */
 
               if (index === 1) {
-                /*
-                  FIRST TRANSITION
-
-                  Image 1 is moving away.
-
-                  Image 2 does NOT move.
-
-                  It is already sitting behind Image 1.
-                */
-
                 if (currentIndex === 0) {
                   y = 0;
-
-                  /*
-                    This is the important blur effect.
-
-                    At the beginning:
-
-                      blur = 14px
-
-                    As Image 1 moves away:
-
-                      blur = 0px
-                  */
-
                   blur = 14 - localProgress * 14;
-
                   scale = 1.035 - localProgress * 0.035;
                 }
 
-                /*
-                  SECOND TRANSITION
-
-                  Image 2 is now the top page.
-
-                  It moves UP exactly like Image 1.
-                */
-
                 if (currentIndex === 1) {
                   y = -localProgress * 100;
-
                   blur = 0;
-
                   scale = 1;
                 }
 
-                /*
-                  Image 2 has finished.
-                */
-
                 if (currentIndex >= 2) {
                   y = -100;
-
                   blur = 0;
-
                   scale = 1;
                 }
               }
 
-              /*
-                ==================================================
-                IMAGE 3
-                ==================================================
-              */
+              /* IMAGE 3 */
 
               if (index === 2) {
-                /*
-                  Image 3 is completely hidden
-                  underneath Images 1 and 2.
-                */
-
                 if (currentIndex === 0) {
                   y = 0;
-
                   blur = 14;
-
                   scale = 1.035;
                 }
 
-                /*
-                  IMAGE 2 MOVES UP
-
-                  Image 3 is revealed underneath.
-                */
-
                 if (currentIndex === 1) {
                   y = 0;
-
                   blur = 14 - localProgress * 14;
-
                   scale = 1.035 - localProgress * 0.035;
                 }
 
-                /*
-                  Final state.
-                */
-
                 if (currentIndex >= 2) {
                   y = 0;
-
                   blur = 0;
-
                   scale = 1;
                 }
               }
@@ -587,37 +460,10 @@ function HowItWorks() {
                     will-change-transform
                   "
                   style={{
-                    /*
-                      =================================================
-                      STACK ORDER
-                      =================================================
-
-                      01 = TOP
-                      02 = MIDDLE
-                      03 = BOTTOM
-                    */
-
                     zIndex: steps.length - index,
-
-                    /*
-                      IMPORTANT:
-
-                      No opacity.
-
-                      No fade.
-
-                      No crossfade.
-
-                      The top image physically moves away
-                      and reveals the image underneath.
-                    */
-
                     opacity: 1,
-
                     transform: `translate3d(0, ${y}%, 0) scale(${scale})`,
-
                     filter: `blur(${blur}px)`,
-
                     transition: "filter 40ms linear",
                   }}
                 />
@@ -631,22 +477,35 @@ function HowItWorks() {
           MOBILE
       ========================================================= */}
 
-      <div className="lg:hidden">
+      <div
+        className="
+          block
+          w-full
+          overflow-visible
+
+          lg:hidden
+        "
+      >
         {steps.map((step) => (
-          <div
+          <article
             key={step.number}
             className="
-              min-h-screen
+              flex
+              w-full
+              flex-col
               bg-white
-              flex flex-col flex-col-reverse
             "
           >
-            {/* IMAGE */}
+            {/* =================================================
+                IMAGE
+            ================================================== */}
 
             <div
               className="
                 relative
-                h-[70vh]
+                h-[58vh]
+                min-h-[360px]
+                max-h-[620px]
                 w-full
                 overflow-hidden
               "
@@ -655,6 +514,7 @@ function HowItWorks() {
                 src={step.image}
                 alt={step.imageAlt}
                 className="
+                  block
                   h-full
                   w-full
                   object-cover
@@ -662,14 +522,19 @@ function HowItWorks() {
               />
             </div>
 
-            {/* TEXT */}
+            {/* =================================================
+                TEXT
+            ================================================== */}
 
             <div
               className="
+                w-full
                 bg-white
-                px-7
-                py-14
+                px-5
+                py-12
+
                 sm:px-10
+                sm:py-14
               "
             >
               <div
@@ -677,12 +542,12 @@ function HowItWorks() {
                   flex
                   items-center
                   justify-end
-                  gap-4
+                  gap-3
                 "
               >
                 <span
                   className="
-                    text-[11px]
+                    text-[10px]
                     tracking-[0.2em]
                     text-[#607080]
                   "
@@ -693,16 +558,16 @@ function HowItWorks() {
                 <span
                   className="
                     h-px
-                    w-8
+                    w-7
                     bg-[#aeb5bc]
                   "
                 />
 
                 <span
                   className="
-                    text-[10px]
+                    text-[9px]
                     uppercase
-                    tracking-[0.2em]
+                    tracking-[0.18em]
                     text-[#526171]
                   "
                 >
@@ -712,14 +577,17 @@ function HowItWorks() {
 
               <h2
                 className="
-                  mt-8
+                  mt-7
                   text-right
                   font-serif
-                  text-[38px]
+                  text-[34px]
                   font-normal
                   leading-[1.1]
                   tracking-[-0.02em]
                   text-[#171b22]
+
+                  min-[360px]:text-[37px]
+                  sm:text-[42px]
                 "
               >
                 {step.title}
@@ -727,20 +595,24 @@ function HowItWorks() {
 
               <p
                 className="
-                  mt-6
+                  mt-5
                   ml-auto
-                  max-w-[520px]
+                  max-w-[560px]
                   text-right
                   font-mont
-                  text-[15px]
-                  leading-[1.85]
+                  text-[14px]
+                  leading-[1.75]
                   text-[#66717d]
+
+                  min-[360px]:text-[15px]
+                  sm:mt-6
+                  sm:text-[16px]
                 "
               >
                 {step.description}
               </p>
             </div>
-          </div>
+          </article>
         ))}
       </div>
     </section>
