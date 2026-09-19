@@ -105,7 +105,6 @@ function TrustCenter() {
        */
 
       const finalExitStart = stories.length * viewportHeight;
-      const finalExitStart = stories.length * viewportHeight;
 
       const finalExitDistance = sectionEntered - finalExitStart;
 
