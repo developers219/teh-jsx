@@ -280,6 +280,7 @@ const AllDestinations = () => {
     const fetchDestinations = async () => {
       const res = await api.get("/destinations/category/1");
       setDestinations(res.data.data);
+      console.log(res);
     };
     fetchDestinations();
   }, []);
