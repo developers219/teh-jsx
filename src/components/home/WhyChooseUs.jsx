@@ -1,25 +1,33 @@
 import SectionHeader from "./SectionHeader";
+import wcu1 from "../../assets/images/wcu1.png";
+import wcu2 from "../../assets/images/wcu2.png";
+import wcu3 from "../../assets/images/wcu3.png";
+import wcu4 from "../../assets/images/wcu4.png";
 
 const reasons = [
   {
-    title: "Expert-planned itineraries",
+    title: "Expertise That Makes Travel Easier",
+    img: wcu1,
     description:
-      "Every trip is shaped by destination specialists who understand timing, local routes, trusted stays, and realistic travel flow.",
+      "20+ years of collective travel experience helps us plan smarter, recommend better, and anticipate the details that can make a journey smoother.",
   },
   {
-    title: "Transparent pricing",
+    title: "Designed Around You",
+    img: wcu2,
     description:
-      "Clear package details help travelers understand what is included before they book, with no confusing last-minute surprises.",
+      "Your holiday is built around your preferences, pace, comfort, and budget — giving you a journey that feels personal rather than pre-packaged.",
   },
   {
-    title: "Reliable travel support",
+    title: "Support Beyond the Booking",
+    img: wcu3,
     description:
-      "From planning questions to on-trip assistance, our team stays reachable so customers feel supported at every stage.",
+      "From planning to your return home, our team stays connected to help you navigate changes, questions, and unexpected situations with confidence.",
   },
   {
-    title: "Curated local experiences",
+    title: "Experiences Worth Coming Home With",
+    img: wcu4,
     description:
-      "We combine famous landmarks with meaningful local activities so every journey feels personal, balanced, and memorable.",
+      "We go beyond the standard sightseeing checklist to help you discover memorable places, meaningful experiences, and moments you’ll want to remember.",
   },
 ];
 
@@ -27,7 +35,6 @@ export default function WhyChooseUs() {
   return (
     <section className=" bg-white px-4 py-16 sm:px-6 md:mt-0 lg:px-8 lg:py-20">
       <div className="mx-auto max-w-7xl">
-
         {/* =========================
             SECTION HEADER
         ========================== */}
@@ -42,7 +49,6 @@ export default function WhyChooseUs() {
             CARDS
         ========================== */}
         <div className="mx-auto mt-10 max-w-6xl sm:mt-12">
-
           {/* =========================
               DESKTOP
           ========================== */}
@@ -54,13 +60,14 @@ export default function WhyChooseUs() {
                   rounded-2xl
                   border
                   border-black/10
-                  bg-beige
+                  flex flex-col
+                  justify-around
                   p-8
                   shadow-xl
                   transition-all
                   duration-300
                   hover:-translate-y-1
-                  hover:bg-beigeD
+                  
                 "
               >
                 <h3 className="text-lg font-bold leading-5 text-black">
@@ -70,6 +77,7 @@ export default function WhyChooseUs() {
                 <p className="mt-3 font-mont text-sm leading-5 text-black/85">
                   {reason.description}
                 </p>
+                <img src={reason.img} alt={reason.title} />
               </div>
             ))}
           </div>
@@ -82,6 +90,7 @@ export default function WhyChooseUs() {
               <div
                 key={reason.title}
                 className="
+                flex flex-col
                   rounded-2xl
                   border
                   border-black/10
@@ -101,6 +110,9 @@ export default function WhyChooseUs() {
                 <p className="mt-2 font-mont text-sm leading-5 text-black/80">
                   {reason.description}
                 </p>
+                <div className="flex-1">
+                  <img src={reason.img} />
+                </div>
               </div>
             ))}
           </div>

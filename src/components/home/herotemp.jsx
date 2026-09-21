@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-// import heroVideo from "../../assets/images/hero.mp4";
+import heroVideo from "../../assets/images/hero.mp4";
 
 const destinations = [
   "Bali",
@@ -42,7 +42,7 @@ export default function HeroSection() {
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      {/* <video
+      <video
         autoPlay
         muted
         loop
@@ -55,8 +55,8 @@ export default function HeroSection() {
           w-full
           object-cover
         "
-      /> */}
-      <video
+      />
+      {/* <video
         autoplay=""
         loop
         muted
@@ -77,7 +77,7 @@ export default function HeroSection() {
           src="https://maryculterhouse.com/wp-content/uploads/2020/10/Home-short-loop-1.mp4"
           type="video/mp4"
         />
-      </video>
+      </video> */}
 
       {/* =========================================================
             GENERAL DARK OVERLAY
