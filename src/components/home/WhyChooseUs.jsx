@@ -94,13 +94,14 @@ export default function WhyChooseUs() {
                   rounded-2xl
                   border
                   border-black/10
-                  bg-beige
+                  flex flex-col
+                  justify-around
                   p-6
                   shadow-lg
                   transition-all
                   duration-300
                   hover:-translate-y-1
-                  hover:bg-beigeD
+                  
                 "
               >
                 <h3 className="text-base font-bold leading-5 text-black">
@@ -143,7 +144,8 @@ export default function WhyChooseUs() {
                     rounded-2xl
                     border
                     border-black/10
-                    bg-beige
+                   flex flex-col
+                  justify-around
                     p-5
                     shadow-lg
                   "

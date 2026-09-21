@@ -33,8 +33,11 @@ function SectionHeader({
             ? "font-black text-white font-cg"
             : "font-black text-slate-950 font-cg"
         }
-        style={{ fontFamily: '"Cormorant Garamond", serif' }}
-        sx={{ lineHeight: 1.12, fontSize: "clamp(2rem, 4vw, 2.5rem)" }}
+        style={{
+          fontFamily: '"Cormorant Garamond", serif',
+          fontSize: "clamp(2rem, 4vw, 3rem)",
+        }}
+        sx={{ lineHeight: 1.12 }}
       >
         {title}
       </Typography>

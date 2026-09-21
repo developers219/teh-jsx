@@ -45,7 +45,6 @@ const steps = [
 
 function HowItWorks() {
   const sectionRef = useRef(null);
-
   const [scrollProgress, setScrollProgress] = useState(0);
 
   /* ============================================================
@@ -347,15 +346,11 @@ function HowItWorks() {
                           className="
             ml-auto
             max-w-[620px]
-            text-[40px]
             font-normal
             leading-[1.08]
             tracking-[-0.025em]
             text-[#171b22]
-            sm:text-[46px]
-            md:text-[50px]
-            lg:text-[48px]
-            xl:text-[56px]
+            text-[clamp(2rem,4vw,3rem)]
           "
                         >
                           {step.title}
@@ -672,14 +667,11 @@ function HowItWorks() {
                   mt-7
                   text-right
                   font-serif
-                  text-[34px]
+                  text-[clamp(2rem,4vw,3rem)]
                   font-normal
                   leading-[1.1]
                   tracking-[-0.02em]
                   text-[#171b22]
-
-                  min-[360px]:text-[37px]
-                  sm:text-[42px]
                 "
               >
                 {step.title}

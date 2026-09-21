@@ -228,7 +228,6 @@ function DestinationCircle({ destination }) {
 function DestinationScrollRow({ title, destinations }) {
   return (
     <div className="w-full">
-
       {/* ROW TITLE */}
 
       <div className="mb-3 flex items-center justify-between">
@@ -325,9 +324,7 @@ function TravelCategories() {
           setCategories(travelCategories);
         }
       } catch (error) {
-        setErrorMessage(
-          "Travel categories could not be loaded right now."
-        );
+        setErrorMessage("Travel categories could not be loaded right now.");
 
         console.log(error);
       } finally {
@@ -340,17 +337,13 @@ function TravelCategories() {
         const res = await api.get("/destinations/category/1");
 
         setDomesticDestinations(
-          res?.data?.data?.length
-            ? res.data.data
-            : domesticDestinations
+          res?.data?.data?.length ? res.data.data : domesticDestinations,
         );
 
         const res2 = await api.get("/destinations/category/2");
 
         setInternationalDestinations(
-          res2?.data?.data?.length
-            ? res2.data.data
-            : internationalDestinations
+          res2?.data?.data?.length ? res2.data.data : internationalDestinations,
         );
       } catch (error) {
         console.log("Destination API error:", error);
@@ -381,7 +374,6 @@ function TravelCategories() {
       "
     >
       <div className="mx-auto max-w-7xl">
-
         {/* =================================================
             LOADING
         ================================================== */}
@@ -391,17 +383,11 @@ function TravelCategories() {
             {/* MOBILE / TABLET */}
 
             <div className="lg:hidden">
-
-              <Skeleton
-                variant="rounded"
-                height={40}
-                className="mb-7"
-              />
+              <Skeleton variant="rounded" height={40} className="mb-7" />
 
               {/* Domestic skeleton */}
 
               <div className="mb-8">
-
                 <Skeleton
                   variant="text"
                   width={100}
@@ -415,27 +401,17 @@ function TravelCategories() {
                       key={index}
                       className="flex flex-none flex-col items-center"
                     >
-                      <Skeleton
-                        variant="circular"
-                        width={66}
-                        height={66}
-                      />
+                      <Skeleton variant="circular" width={66} height={66} />
 
-                      <Skeleton
-                        variant="text"
-                        width={55}
-                        height={18}
-                      />
+                      <Skeleton variant="text" width={55} height={18} />
                     </div>
                   ))}
                 </div>
-
               </div>
 
               {/* International skeleton */}
 
               <div>
-
                 <Skeleton
                   variant="text"
                   width={120}
@@ -449,65 +425,37 @@ function TravelCategories() {
                       key={index}
                       className="flex flex-none flex-col items-center"
                     >
-                      <Skeleton
-                        variant="circular"
-                        width={66}
-                        height={66}
-                      />
+                      <Skeleton variant="circular" width={66} height={66} />
 
-                      <Skeleton
-                        variant="text"
-                        width={55}
-                        height={18}
-                      />
+                      <Skeleton variant="text" width={55} height={18} />
                     </div>
                   ))}
                 </div>
-
               </div>
-
             </div>
 
             {/* DESKTOP */}
 
             <div className="hidden space-y-16 lg:block">
-
               <div>
-                <Skeleton
-                  variant="rounded"
-                  height={45}
-                  className="mb-7"
-                />
+                <Skeleton variant="rounded" height={45} className="mb-7" />
 
                 <div className="grid grid-cols-5 gap-5">
                   {Array.from({ length: 5 }).map((_, index) => (
-                    <Skeleton
-                      key={index}
-                      variant="rounded"
-                      height={300}
-                    />
+                    <Skeleton key={index} variant="rounded" height={300} />
                   ))}
                 </div>
               </div>
 
               <div>
-                <Skeleton
-                  variant="rounded"
-                  height={45}
-                  className="mb-7"
-                />
+                <Skeleton variant="rounded" height={45} className="mb-7" />
 
                 <div className="grid grid-cols-5 gap-5">
                   {Array.from({ length: 5 }).map((_, index) => (
-                    <Skeleton
-                      key={index}
-                      variant="rounded"
-                      height={300}
-                    />
+                    <Skeleton key={index} variant="rounded" height={300} />
                   ))}
                 </div>
               </div>
-
             </div>
           </>
         ) : null}
@@ -536,7 +484,6 @@ function TravelCategories() {
             ================================================== */}
 
             <section className="lg:hidden">
-
               {/* MAIN HEADING */}
 
               <div className="mb-7">
@@ -544,6 +491,7 @@ function TravelCategories() {
                   title="Destinations"
                   description="Explore our most-loved destinations"
                   align="center"
+                  style={{ fontSize: "text-[clamp(2rem, 4vw, 3rem)]" }}
                 />
               </div>
 
@@ -564,11 +512,8 @@ function TravelCategories() {
 
               <DestinationScrollRow
                 title="International"
-                destinations={
-                  internationalDestinations ?? []
-                }
+                destinations={internationalDestinations ?? []}
               />
-
             </section>
 
             {/* =================================================
@@ -578,21 +523,17 @@ function TravelCategories() {
             ================================================== */}
 
             <div className="hidden space-y-16 lg:block">
-
               {/* ===============================
                   DOMESTIC
               ================================ */}
 
               <section>
-
                 <div className="mb-0 flex items-center justify-between gap-4">
-
                   <SectionHeader
                     title="Domestic Destinations"
                     description="Choose from destinations across India"
                     align="center"
                   />
-
                 </div>
 
                 <Carousel
@@ -603,12 +544,9 @@ function TravelCategories() {
                   gap={20}
                   showArrows={true}
                   renderItem={(destination) => (
-                    <DestinationCard
-                      destination={destination}
-                    />
+                    <DestinationCard destination={destination} />
                   )}
                 />
-
               </section>
 
               {/* ===============================
@@ -616,15 +554,12 @@ function TravelCategories() {
               ================================ */}
 
               <section>
-
                 <div className="mb-0 flex items-center justify-between gap-4">
-
                   <SectionHeader
                     title="International Destinations"
                     description="Explore destinations around the world"
                     align="center"
                   />
-
                 </div>
 
                 <Carousel
@@ -635,14 +570,10 @@ function TravelCategories() {
                   gap={20}
                   showArrows={true}
                   renderItem={(destination) => (
-                    <DestinationCard
-                      destination={destination}
-                    />
+                    <DestinationCard destination={destination} />
                   )}
                 />
-
               </section>
-
             </div>
           </>
         )}
