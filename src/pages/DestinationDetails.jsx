@@ -38,7 +38,7 @@ export default function DestinationDetails() {
   if (isLoading) {
     return (
       <main className="bg-slate-50 px-6 py-10 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-6">
+        <div className="mx-auto  max-w-7xl space-y-6">
           <Skeleton variant="rounded" height={420} sx={{ borderRadius: 4 }} />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (

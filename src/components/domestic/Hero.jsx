@@ -145,7 +145,7 @@ export default function Hero() {
                 href="/destinations"
                 className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
               >
-                Explore Destinations
+                Request a callback
                 <span className="text-lg leading-none">→</span>
               </a>
             </div>

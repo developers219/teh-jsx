@@ -47,7 +47,7 @@ export default function Hero({ slides, name, desc }) {
   };
 
   return (
-    <section className="relative h-[520px] w-full overflow-hidden sm:h-[570px] md:h-[620px] lg:h-[680px] xl:h-[700px]">
+    <section className="relative h-screen w-full overflow-hidden ">
       {/* =====================================================
             BACKGROUND SLIDES
         ====================================================== */}
@@ -99,9 +99,9 @@ export default function Hero({ slides, name, desc }) {
             Only the background image changes.
         ====================================================== */}
 
-      <div className="absolute inset-0 z-20">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-5 sm:px-8 lg:px-12 xl:px-16">
-          <div className="max-w-3xl">
+      <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16">
+  <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-16">
+    <div className="max-w-3xl">
             {/* SMALL LABEL */}
 
             {/* <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md">

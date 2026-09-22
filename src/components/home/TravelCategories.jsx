@@ -9,6 +9,7 @@ import api from "../../services/api";
 import Carousel from "../ui/Carousel";
 import DestinationCard from "../ui/DestinationCard";
 import SectionHeader from "./SectionHeader";
+import {Link} from "react-router-dom"
 
 /* =========================================================
    FALLBACK CATEGORIES
@@ -154,10 +155,11 @@ function DestinationCircle({ destination }) {
   const image = getDestinationImage(destination);
 
   return (
-    <div
-      className="
-        flex
-        w-[72px]
+    <Link to={`/destinations/${destination.categoryName === "Domestic"? "dom": "intl"}/${destination.slug}`}>
+      <div
+        className="
+      flex
+      w-[72px]
         flex-none
         snap-start
         flex-col
@@ -166,11 +168,11 @@ function DestinationCircle({ destination }) {
         sm:w-[82px]
         md:w-[90px]
       "
-    >
-      {/* IMAGE */}
+      >
+        {/* IMAGE */}
 
-      <div
-        className="
+        <div
+          className="
           h-[58px]
           w-[58px]
           overflow-hidden
@@ -187,23 +189,23 @@ function DestinationCircle({ destination }) {
           md:h-[72px]
           md:w-[72px]
         "
-      >
-        {image ? (
-          <img
-            src={image}
-            alt={name}
-            loading="lazy"
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="h-full w-full bg-gray-200" />
-        )}
-      </div>
+        >
+          {image ? (
+            <img
+              src={image}
+              alt={name}
+              loading="lazy"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="h-full w-full bg-gray-200" />
+          )}
+        </div>
 
-      {/* NAME */}
+        {/* NAME */}
 
-      <p
-        className="
+        <p
+          className="
           mt-2
           w-full
           truncate
@@ -213,11 +215,12 @@ function DestinationCircle({ destination }) {
           text-gray-800
           sm:text-[11px]
           md:text-xs
-        "
-      >
-        {name}
-      </p>
-    </div>
+          "
+        >
+          {name}
+        </p>
+      </div>
+    </Link>
   );
 }
 
