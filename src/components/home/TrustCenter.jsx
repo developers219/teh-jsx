@@ -1,38 +1,72 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import tc1 from "../../assets/images/tc1.png";
+import tc2 from "../../assets/images/tc2.png";
+import tc3 from "../../assets/images/tc3.png";
+import tc4 from "../../assets/images/tc4.png";
+
+// const stories = [
+//   {
+//     label: "PREFERRED HOTEL PARTNERS",
+//     title: "VIP Perks and Upgrades Await",
+//     description:
+//       "Indulge in exclusive VIP upgrades at our preferred hotel partners. Enjoy complimentary room upgrades, late check-outs, welcome amenities, and more — all designed to enhance your stay and ensure unforgettable moments.",
+//     image: tc1,
+//   },
+//   {
+//     label: "CRUISE PARTNERS",
+//     title: "Ultra-Small Luxury Cruises And More",
+//     description:
+//       "Experience the intimacy and exclusivity of boutique ships, offering personalized service, gourmet dining, and access to hidden ports that larger vessels can't reach.",
+//     image: tc2,
+//   },
+//   {
+//     label: "EXPERIENCE PARTNERS",
+//     title: "Early Access To The Newest Tours",
+//     description:
+//       "From private guided tours of iconic landmarks to behind-the-scenes cultural experiences, our privileged connections grant you unparalleled opportunities to explore in style.",
+//     image: tc3,
+//   },
+//   {
+//     label: "HYPER-PERSONALIZATION",
+//     title: "Bespoke Travel Tailored To You",
+//     description:
+//       "Your journey should be as unique as you are. That's why we craft bespoke travel experiences tailored to your style, interests, and personality.",
+//     image: tc4,
+//   },
+// ];
 
 const stories = [
   {
-    label: "PREFERRED HOTEL PARTNERS",
-    title: "VIP Perks and Upgrades Await",
+    label: "TRUSTED PARTNERSHIPS",
+    title: "Trusted Travel Network",
     description:
-      "Indulge in exclusive VIP upgrades at our preferred hotel partners. Enjoy complimentary room upgrades, late check-outs, welcome amenities, and more — all designed to enhance your stay and ensure unforgettable moments.",
-    image:
-      "https://cdn.prod.website-files.com/6773e7b69a04c1b58ee88b3f/67798caae2ec11c30e82d106_hotels.webp",
+      "We work with established travel partners and trusted service providers, using long-standing relationships to secure dependable experiences and competitive value from booking to return.",
+    image: tc1,
   },
+
   {
-    label: "CRUISE PARTNERS",
-    title: "Ultra-Small Luxury Cruises And More",
+    label: "PERSONAL SUPPORT",
+    title: "Someone Always Has Your Back",
     description:
-      "Experience the intimacy and exclusivity of boutique ships, offering personalized service, gourmet dining, and access to hidden ports that larger vessels can't reach.",
-    image:
-      "https://cdn.prod.website-files.com/6773e7b69a04c1b58ee88b3f/677990325176730ce8a42e43_ponant.jpg",
+      "When plans change or the unexpected happens, our team stays connected to assist, guide, and help you find the right way forward.",
+    image: tc2,
   },
+
   {
-    label: "EXPERIENCE PARTNERS",
-    title: "Early Access To The Newest Tours",
+    label: "RELATIONSHIPS THAT LAST",
+    title: "Relationships That Speak for Us",
     description:
-      "From private guided tours of iconic landmarks to behind-the-scenes cultural experiences, our privileged connections grant you unparalleled opportunities to explore in style.",
-    image:
-      "https://cdn.prod.website-files.com/6773e7b69a04c1b58ee88b3f/67758c25a8f9e53f7e824113_Trade_Trade_SGL%20Show-069%20copy.jpg",
+      "Trust is earned over time. Returning travellers, referrals, and families who continue to travel with us are the relationships we value most.",
+    image: tc3,
   },
+
   {
-    label: "HYPER-PERSONALIZATION",
-    title: "Bespoke Travel Tailored To You",
+    label: "TRAVEL WITH PURPOSE",
+    title: "Memories Over Transactions",
     description:
-      "Your journey should be as unique as you are. That's why we craft bespoke travel experiences tailored to your style, interests, and personality.",
-    image:
-      "https://cdn.prod.website-files.com/6773e7b69a04c1b58ee88b3f/67784ec0519e1de131e9f727_pexels-mikegiugliano-2940654.jpg",
+      "We’re not focused on simply selling a holiday. We care about creating journeys people remember, talk about, and come back to experience again.",
+    image: tc4,
   },
 ];
 
@@ -74,10 +108,7 @@ function TrustCenter() {
     /*
      * Clamp the animation area between 0 and 0.5.
      */
-    const storyProgress = Math.min(
-      Math.max(latest, 0),
-      0.5
-    );
+    const storyProgress = Math.min(Math.max(latest, 0), 0.5);
 
     /*
      * Convert 0 -> 0.5 into 0 -> 1.
@@ -94,7 +125,7 @@ function TrustCenter() {
      */
     const index = Math.min(
       stories.length - 1,
-      Math.floor(normalizedProgress * stories.length)
+      Math.floor(normalizedProgress * stories.length),
     );
 
     setActiveIndex(index);
@@ -232,12 +263,9 @@ function TrustCenter() {
                       index === activeIndex
                         ? 0
                         : index < activeIndex
-                        ? -70
-                        : 70,
-                    filter:
-                      index === activeIndex
-                        ? "blur(0px)"
-                        : "blur(12px)",
+                          ? -70
+                          : 70,
+                    filter: index === activeIndex ? "blur(0px)" : "blur(12px)",
                   }}
                   transition={{
                     duration: 0.65,
@@ -327,10 +355,7 @@ function TrustCenter() {
                 className="h-[2px] bg-neutral-300"
                 animate={{
                   width: index === activeIndex ? 40 : 16,
-                  backgroundColor:
-                    index === activeIndex
-                      ? "white"
-                      : "white",
+                  backgroundColor: index === activeIndex ? "white" : "white",
                 }}
                 transition={{
                   duration: 0.35,
