@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { MessageCircle, Phone, X } from "lucide-react";
+import { ChevronUp, MessageCircle, Phone, X } from "lucide-react";
 import LeadCapturePopup from "../forms/LeadCapturePopup";
 
 const WHATSAPP_NUMBER = "919000000000";
@@ -18,7 +18,13 @@ function FloatingContactWidget() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3">
+    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+      <div
+        className="bg-beige text-white mr-3 rounded-full p-2 cursor-pointer"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <ChevronUp />
+      </div>
       {isOpen ? (
         <div className="w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <div className="flex items-center justify-end border-b border-slate-100 px-3 py-2">
