@@ -2,8 +2,8 @@ import axios from "axios";
 import { clearAuthSession, getAccessToken, getRefreshToken, storeAuthSession, } from "./auth-token.storage";
 // const API_BASE_URL =
 //   import.meta.env.VITE_API_BASE_URL ?? "http://localhost:5000/api";
-const API_BASE_URL = 'https://wildcat-mammogram-curvy.ngrok-free.dev/api/public';
-// const API_BASE_URL = 'https://cms.trvldeals.com/api/public'
+// const API_BASE_URL = 'https://wildcat-mammogram-curvy.ngrok-free.dev/api/public';
+const API_BASE_URL = 'https://cms.trvldeals.com/api/public'
 
 const AUTH_SESSION_EXPIRED_EVENT = "trailvista:auth-session-expired";
 // A single Axios instance keeps API settings consistent across the frontend.
