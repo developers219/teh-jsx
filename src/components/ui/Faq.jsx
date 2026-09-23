@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react";
 import { useState } from "react";
 
 const faqData = [
@@ -7,7 +8,8 @@ const faqData = [
       "We offer honeymoon getaways, family vacations, group trips, solo adventures, and budget-friendly holidays across destinations like Manali, Goa, Kerala, Rajasthan, Kashmir, and Meghalaya.",
   },
   {
-    question: "What are the most popular destinations included in India trip packages?",
+    question:
+      "What are the most popular destinations included in India trip packages?",
     answer:
       "Some of our popular destinations include Goa, Kerala, Rajasthan, Kashmir, Himachal Pradesh, Uttarakhand, Meghalaya, Andaman, and the Northeast.",
   },
@@ -42,8 +44,7 @@ export default function FAQ() {
 
   return (
     <section className="font-mont w-full bg-white py-16 md:py-20">
-      <div className="mx-auto w-full max-w-5xl px-5 sm:px-8">
-
+      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         {/* Header */}
         <div className="mb-10 text-center md:mb-12">
           <h2 className="text-4xl font-cg tracking-tight text-black sm:text-5xl">
@@ -65,17 +66,17 @@ export default function FAQ() {
             return (
               <div
                 key={index}
-                className={`overflow-hidden rounded-[35px] border bg-white transition-all duration-300 ${
-                  isOpen
-                    ? "border-[#c5bd96]"
-                    : "border-black/20"
+                className={`overflow-hidden hover:shadow-lg rounded-3xl border bg-white transition-all duration-300 ${
+                  isOpen ? "border-beige" : "border-black/20"
                 }`}
               >
                 {/* Question */}
                 <button
                   type="button"
                   onClick={() => handleToggle(index)}
-                  className="flex w-full items-center justify-between gap-5 px-4 py-4 text-left sm:px-5 sm:py-[17px]"
+                  className={`flex w-full items-center justify-between gap-5 px-4 py-4 text-left sm:px-5 sm:py-[17px] ${
+                    isOpen ? " border-b border-gray-200 " : ""
+                  }`}
                   aria-expanded={isOpen}
                 >
                   <div className="flex min-w-0 items-start gap-2.5">
@@ -96,29 +97,17 @@ export default function FAQ() {
 
                   {/* Arrow */}
                   <span
-                    className={`flex h-5 w-5 shrink-0 items-center justify-center text-[#c5bd96] transition-transform duration-300 ${
+                    className={`flex size-10 cursor-pointer shrink-0 items-center justify-center bg-beige rounded-full hover:bg-beigeD transition-transform duration-300 ${
                       isOpen ? "rotate-90" : "rotate-0"
                     }`}
                   >
-                    <svg
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      className="h-4 w-4"
-                    >
-                      <path
-                        d="M7 4L13 10L7 16"
-                        stroke="currentColor"
-                        strokeWidth="1.8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
+                    <ChevronRight size={16} className="text-black" />
                   </span>
                 </button>
 
                 {/* Answer */}
                 <div
-                  className={`grid transition-all duration-300 ease-in-out ${
+                  className={`grid transition-all duration-300 mt-5 ease-in-out ${
                     isOpen
                       ? "grid-rows-[1fr] opacity-100"
                       : "grid-rows-[0fr] opacity-0"
