@@ -5,24 +5,24 @@ import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 function DestinationCard({ destination }) {
   const imageUrl =
-    destination.images[0].imageUrl ??
-    destination.image ??
+    destination?.images[0]?.imageUrl ??
+    destination?.image ??
     "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=90";
   /*
    * Smaller font automatically for longer destination names.
    * This keeps names such as SWITZERLAND completely visible.
    */
-  const destinationName = destination.name ?? "";
+  const destinationName = destination?.name ?? "";
   const nameFontSize =
     destinationName.length >= 12
       ? "22px"
       : destinationName.length >= 10
-      ? "24px"
-      : "27px";
+        ? "24px"
+        : "27px";
   return (
     <Link
       to={`/destinations/${
-        destination.categoryName === "International" ? "intl" : "dom"
+        destination?.categoryName === "International" ? "intl" : "dom"
       }/${destination?.slug}`}
     >
       <Card
@@ -61,7 +61,7 @@ function DestinationCard({ destination }) {
           className="destination-card-image"
           component="img"
           src={imageUrl}
-          alt={`${destination.name}, ${destination.tagline}`}
+          alt={`${destination?.name}, ${destination?.tagline}`}
           sx={{
             position: "absolute",
             inset: 0,
@@ -126,7 +126,7 @@ function DestinationCard({ destination }) {
               textShadow: "0 1px 5px rgba(0,0,0,0.7)",
             }}
           >
-            {destination.tagline}
+            {destination?.tagline}
           </Typography>
 
           {/* =======================================
