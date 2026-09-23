@@ -156,126 +156,126 @@ export default function TravelReviews() {
                         <div className="relative h-[170px] overflow-hidden">
                           <img
                             src={
-                              // review.images ??
-                              "https://i.pravatar.cc/400?img=12" 
-                            } 
-                            alt={review.userName} 
-                            className="h-full w-full object-cover" 
-                          /> 
- 
-                          {/* Image gradient */} 
-                          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" /> 
-                        </div> 
- 
+                              review?.images[0]?.imageUrl ??
+                              "https://i.pravatar.cc/400?img=12"
+                            }
+                            alt={review.userName}
+                            className="h-full w-full object-cover"
+                          />
+
+                          {/* Image gradient */}
+                          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" />
+                        </div>
+
                         {/* ================================================= 
                 CARD CONTENT 
-            ================================================= */} 
- 
-                        <div className="relative px-5 pb-5 pt-7"> 
-                          {/* Curved white overlap */} 
-                          {/* Straight white transition */} 
-                          <div className="absolute left-0 right-0 top-0 h-5 bg-white" /> 
- 
-                          {/* Quote */} 
-                          <FormatQuoteIcon 
-                            className="absolute right-4 top-3" 
-                            sx={{ 
-                              fontSize: 44, 
-                              color: "#17694d", 
-                              opacity: 0.1, 
-                            }} 
-                          /> 
- 
-                          {/* Review title */} 
+            ================================================= */}
+
+                        <div className="relative px-5 pb-5 pt-7">
+                          {/* Curved white overlap */}
+                          {/* Straight white transition */}
+                          <div className="absolute left-0 right-0 top-0 h-5 bg-white" />
+
+                          {/* Quote */}
+                          <FormatQuoteIcon
+                            className="absolute right-4 top-3"
+                            sx={{
+                              fontSize: 44,
+                              color: "#17694d",
+                              opacity: 0.1,
+                            }}
+                          />
+
+                          {/* Review title */}
                           {/* <h3 className="relative pr-8 text-[14px] font-bold leading-5 text-slate-900"> 
                             {review.title} 
-                          </h3> */} 
- 
-                          {/* Review */} 
-                          <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600"> 
-                            {review.description} 
-                          </p> 
- 
-                          {/* Bottom */} 
-                          <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4"> 
-                            {/* Customer */} 
-                            <div> 
-                              <h4 className="text-sm font-bold text-slate-900"> 
-                                {review.userName} 
-                              </h4> 
- 
-                              <p className="mt-0.5 text-[11px] text-slate-500"> 
-                                {review.location ?? "Bali"} 
-                              </p> 
-                            </div> 
- 
-                            {/* Stars */} 
-                            <div className="flex shrink-0"> 
-                              {[...new Array(review.rating)].map((star) => ( 
-                                <StarIcon 
-                                  key={star} 
-                                  sx={{ 
-                                    fontSize: 16, 
-                                    color: "#f59e0b", 
-                                  }} 
-                                /> 
-                              ))} 
-                            </div> 
-                          </div> 
-                        </div> 
-                      </article> 
-                    </div> 
-                  ))} 
-                </div> 
-              </div> 
- 
+                          </h3> */}
+
+                          {/* Review */}
+                          <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
+                            {review.description}
+                          </p>
+
+                          {/* Bottom */}
+                          <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4">
+                            {/* Customer */}
+                            <div>
+                              <h4 className="text-sm font-bold text-slate-900">
+                                {review.userName}
+                              </h4>
+
+                              <p className="mt-0.5 text-[11px] text-slate-500">
+                                {review.location ?? "Bali"}
+                              </p>
+                            </div>
+
+                            {/* Stars */}
+                            <div className="flex shrink-0">
+                              {[...new Array(review.rating)].map((star) => (
+                                <StarIcon
+                                  key={star}
+                                  sx={{
+                                    fontSize: 16,
+                                    color: "#f59e0b",
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* ================================================= 
             CONTROLS 
-        ================================================= */} 
- 
-              <div className="mt-5 flex items-center justify-between px-2"> 
-                {/* Arrow buttons */} 
-                <div className="flex gap-2"> 
-                  <button 
-                    type="button" 
-                    onClick={previousReview} 
-                    aria-label="Previous review" 
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer" 
-                  > 
-                    <ArrowBackIosNewIcon sx={{ fontSize: 13 }} /> 
-                  </button> 
- 
-                  <button 
-                    type="button" 
-                    onClick={nextReview} 
-                    aria-label="Next review" 
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer" 
-                  > 
-                    <ArrowForwardIosIcon sx={{ fontSize: 13 }} /> 
-                  </button> 
-                </div> 
- 
-                {/* Pagination */} 
-                <div className="flex items-center gap-2"> 
-                  {Array.from({ length: maxIndex / 2 + 1 }).map((_, index) => ( 
-                    <button 
-                      key={index} 
-                      type="button" 
-                      onClick={() => setActiveIndex(index)} 
-                      aria-label={`Show reviews ${index + 1}`} 
-                      className={`h-2 rounded-full transition-all duration-300 ${ 
-                        activeIndex === index 
-                          ? "w-6 bg-white" 
-                          : "w-2 bg-white/40 hover:bg-white/70" 
-                      }`} 
-                    /> 
-                  ))} 
-                </div> 
-              </div> 
-            </div> 
-          </div> 
-        </div> 
-      </div> 
-    </section> 
-  ); 
-} 
+        ================================================= */}
+
+              <div className="mt-5 flex items-center justify-between px-2">
+                {/* Arrow buttons */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={previousReview}
+                    aria-label="Previous review"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
+                  >
+                    <ArrowBackIosNewIcon sx={{ fontSize: 13 }} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={nextReview}
+                    aria-label="Next review"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
+                  >
+                    <ArrowForwardIosIcon sx={{ fontSize: 13 }} />
+                  </button>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: maxIndex / 2 + 1 }).map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      aria-label={`Show reviews ${index + 1}`}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        activeIndex === index
+                          ? "w-6 bg-white"
+                          : "w-2 bg-white/40 hover:bg-white/70"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
