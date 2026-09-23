@@ -602,10 +602,6 @@ function PackageDetails() {
               GALLERY
           ================================================== */}
 
-          <motion.div initial="hidden" animate="visible" variants={reveal}>
-            <PackageGallery images={images} title={title} />
-          </motion.div>
-
           {/* =================================================
               INTRO + BOOKING
           ================================================== */}
@@ -646,10 +642,18 @@ function PackageDetails() {
 
                 <motion.h1
                   variants={reveal}
-                  className="mt-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
+                  className="my-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
                 >
                   {title}
                 </motion.h1>
+
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={reveal}
+                >
+                  <PackageGallery images={images} title={title} />
+                </motion.div>
 
                 {/* Overview */}
 
