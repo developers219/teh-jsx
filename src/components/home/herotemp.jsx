@@ -180,7 +180,7 @@ text-center
             className="
               mt-5
               text-xs
-              text-white/80 font-mont uppercase tracking-[8px] text-center sm:mt-6 lg:mt-5
+              text-white/80 font-bold font-mont uppercase tracking-[8px] text-center sm:mt-6 lg:mt-5
             "
           >
             Discover handpicked destinations, thoughtfully crafted holidays

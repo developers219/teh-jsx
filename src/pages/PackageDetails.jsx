@@ -24,6 +24,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import LeadCapturePopup from "../components/forms/LeadCapturePopup";
 
 import Skeleton from "@mui/material/Skeleton";
 
@@ -231,7 +232,7 @@ function PackageGallery({ images = [], title = "Package" }) {
 
             {/* Image counter */}
 
-            <div className="absolute bottom-5 left-5 rounded-full bg-black/70 px-4 py-2 text-xs font-bold text-white backdrop-blur-md">
+            <div className="font-mont absolute bottom-5 left-5 rounded-full bg-black/70 px-4 py-2 text-xs  text-white backdrop-blur-md">
               {activeIndex + 1} / {normalizedImages.length}
             </div>
 
@@ -402,6 +403,7 @@ function PackageDetails() {
   const [travelPackage, setTravelPackage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     async function fetchPackageDetails() {
@@ -569,16 +571,17 @@ function PackageDetails() {
   };
 
   return (
-    <main className="min-h-screen mt-16 bg-white text-black">
+    <main className="min-h-screen bg-white text-black">
+      {isOpen && <LeadCapturePopup isOpen={isOpen} setIsOpen={setIsOpen} />}
       {/* =====================================================
           HERO / BREADCRUMB
       ====================================================== */}
-
+      <section className="bg-black h-40"></section>
       <section className="border-b border-black/10">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
           <Link
             to="/packages"
-            className="group inline-flex items-center gap-2 text-sm font-bold text-black/60 transition hover:text-black"
+            className="group inline-flex items-center gap-2 text-sm font-bold text-black/60 font-mont transition hover:text-black"
           >
             <ArrowLeft
               size={17}
@@ -609,55 +612,59 @@ function PackageDetails() {
 
           <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
             {/* LEFT */}
-            <motion.div initial="hidden" animate="visible" variants={stagger}>
-              {/* Tags */}
+            <div>
+              <motion.div initial="hidden" animate="visible" variants={stagger}>
+                {/* Tags */}
 
-              <motion.div variants={reveal} className="flex flex-wrap gap-2">
-                {themeName && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-white">
-                    <Sparkles size={12} />
-                    {themeName}
-                  </span>
-                )}
-
-                {travellerTypeName && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em]">
-                    <Users size={12} />
-                    {travellerTypeName}
-                  </span>
-                )}
-
-                {durationName && (
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] font-black uppercase tracking-[0.16em] text-black/60">
-                    <Clock3 size={12} />
-                    {durationName}
-                  </span>
-                )}
-              </motion.div>
-
-              {/* Title */}
-
-              <motion.h1
-                variants={reveal}
-                className="mt-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
-              >
-                {title}
-              </motion.h1>
-
-              {/* Overview */}
-
-              {overview && (
-                <motion.p
+                <motion.div
                   variants={reveal}
-                  className="mt-7 max-w-3xl text-base leading-8 text-black/55 sm:text-lg"
+                  className="flex flex-wrap gap-2 font-mont font-medium"
                 >
-                  {overview}
-                </motion.p>
-              )}
+                  {themeName && (
+                    <span className="flex items-center gap-1.5 rounded-full bg-beige px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
+                      <Sparkles size={12} />
+                      {themeName}
+                    </span>
+                  )}
 
-              {/* Quick stats */}
+                  {travellerTypeName && (
+                    <span className="flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] uppercase tracking-[0.16em]">
+                      <Users size={12} />
+                      {travellerTypeName}
+                    </span>
+                  )}
 
-              {/* <motion.div
+                  {durationName && (
+                    <span className="flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-black">
+                      <Clock3 size={12} />
+                      {durationName}
+                    </span>
+                  )}
+                </motion.div>
+
+                {/* Title */}
+
+                <motion.h1
+                  variants={reveal}
+                  className="mt-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
+                >
+                  {title}
+                </motion.h1>
+
+                {/* Overview */}
+
+                {overview && (
+                  <motion.p
+                    variants={reveal}
+                    className="font-mont mt-7 max-w-3xl text-base leading-8 text-black/55 sm:text-lg"
+                  >
+                    {overview}
+                  </motion.p>
+                )}
+
+                {/* Quick stats */}
+
+                {/* <motion.div
                 variants={reveal}
                 className="mt-10 grid grid-cols-2 border-y border-black/10 sm:grid-cols-3"
               >
@@ -679,92 +686,311 @@ function PackageDetails() {
                   value={`${destinations.length} places`}
                 />
               </motion.div> */}
-            </motion.div>
+              </motion.div>
+              {itineraries.length > 0 && (
+                <motion.section
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.1 }}
+                  variants={stagger}
+                  className="mt-5 border-t border-black/10 pt-5"
+                >
+                  <SectionHeading
+                    eyebrow="Your journey"
+                    title="Day by day"
+                    description="A closer look at how your trip unfolds."
+                  />
+
+                  <div className="relative mt-12 font-mont">
+                    {/* Timeline line */}
+                    <div className="absolute left-[23px] top-0 hidden h-full w-px bg-black/10 md:block" />
+
+                    <div className="space-y-4">
+                      {itineraries.map((day) => (
+                        <motion.div
+                          key={day.id}
+                          variants={reveal}
+                          className="relative grid gap-5 md:grid-cols-[48px_1fr]"
+                        >
+                          {/* Day number */}
+                          <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
+                            {String(day.dayNumber).padStart(2, "0")}
+                          </div>
+
+                          {/* Day card */}
+                          <details className="group rounded-[26px] border border-black/10 transition hover:border-black/30">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 sm:p-7">
+                              <div>
+                                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
+                                  Day {day.dayNumber}
+                                </p>
+
+                                <h3 className="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
+                                  {day.title}
+                                </h3>
+                              </div>
+
+                              {day.overnightLocation && (
+                                <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
+                                  <MapPin size={13} />
+                                  {day.overnightLocation}
+                                </div>
+                              )}
+
+                              {/* Chevron */}
+                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
+                                <ChevronDown size={16} />
+                              </div>
+                            </summary>
+
+                            {/* Mobile location */}
+                            {day.overnightLocation && (
+                              <div className="flex items-center gap-2 px-6 pb-2 text-xs font-bold text-black/55 sm:hidden">
+                                <MapPin size={13} />
+                                {day.overnightLocation}
+                              </div>
+                            )}
+
+                            {/* Collapsible content */}
+                            <div className="border-t border-black/10 px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
+                              {day.description && (
+                                <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
+                                  {day.description}
+                                </p>
+                              )}
+
+                              {/* Itinerary points */}
+                              {day.activities?.length > 0 && (
+                                <ul className="space-y-3">
+                                  {day.activities.map((activity) => (
+                                    <li
+                                      key={activity.id}
+                                      className="flex items-start gap-3 text-sm leading-6 text-black/70"
+                                    >
+                                      <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+
+                                      <span>
+                                        {activity.title ||
+                                          activity.name ||
+                                          "Activity"}
+                                      </span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+
+                              {/* Optional stay + meals */}
+                              {/* {(day.hotelName || day.meals) && (
+                            <div className="mt-6 grid gap-3 border-t border-black/10 pt-5 sm:grid-cols-2">
+                              {day.hotelName && (
+                                <InfoPill
+                                  icon={<Hotel size={15} />}
+                                  label="Stay"
+                                  value={day.hotelName}
+                                />
+                              )}
+
+                              {day.meals && (
+                                <InfoPill
+                                  icon={<Check size={15} />}
+                                  label="Meals"
+                                  value={day.meals}
+                                />
+                              )}
+                            </div>
+                          )} */}
+                            </div>
+                          </details>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </motion.section>
+              )}
+
+              {/* =====================================================
+              HOTELS + FLIGHTS
+          ====================================================== */}
+
+              {/* =====================================================
+              INCLUSIONS / EXCLUSIONS
+          ====================================================== */}
+
+              {(inclusions.length > 0 || exclusions.length > 0) && (
+                <motion.section
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.1 }}
+                  variants={stagger}
+                  className="mt-5 border-t border-black/10 pt-5"
+                >
+                  <SectionHeading
+                    eyebrow="Good to know"
+                    title="What's included"
+                    description="Know exactly what is and isn't covered in your package."
+                  />
+
+                  <div className="mt-10 grid gap-16 md:grid-cols-2">
+                    {/* INCLUSIONS */}
+
+                    {inclusions.length > 0 && (
+                      <motion.div
+                        variants={reveal}
+                        className="rounded-[28px] bg-black p-7 text-white sm:p-9"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
+                            <Check size={18} />
+                          </div>
+
+                          <h3 className="text-xl font-semibold">Included</h3>
+                        </div>
+
+                        <div className="mt-7 space-y-4 font-mont">
+                          {inclusions.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex gap-3 border-b border-white/10 pb-4 last:border-0"
+                            >
+                              <Check
+                                size={16}
+                                className="mt-0.5 shrink-0 text-green-500"
+                              />
+
+                              <p className="text-sm leading-6 text-white">
+                                {item.description}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {/* EXCLUSIONS */}
+
+                    {exclusions.length > 0 && (
+                      <motion.div
+                        variants={reveal}
+                        className="rounded-[28px] border border-black/10 p-7 sm:p-9"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-beige text-white">
+                            <X size={18} />
+                          </div>
+
+                          <h3 className="text-xl font-semibold">
+                            Not included
+                          </h3>
+                        </div>
+
+                        <div className="mt-7 space-y-4 font-mont">
+                          {exclusions.map((item) => (
+                            <div
+                              key={item.id}
+                              className="flex gap-3 border-b border-black/10 pb-4 last:border-0"
+                            >
+                              <X
+                                size={16}
+                                className="mt-0.5 shrink-0 text-red-500"
+                              />
+
+                              <p className="text-sm leading-6 text-black">
+                                {item.description}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </div>
+                </motion.section>
+              )}
+            </div>
+            <div>
+              <motion.aside
+                initial={{ opacity: 0, y: 35 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.7,
+                  delay: 0.15,
+                }}
+                className="sticky lg:top-8 right-80 font-mont"
+              >
+                <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+                  <div className="bg-beige/90 px-7 py-6 text-white">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
+                          Package price
+                        </p>
+
+                        <p className="mt-1 text-sm font-semibold text-white/75">
+                          Per traveller
+                        </p>
+                      </div>
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                        <Plane size={17} />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="p-7">
+                    <div className="flex items-end gap-3">
+                      <span className="text-4xl font-semibold tracking-[-0.04em]">
+                        ₹{finalPrice.toLocaleString("en-IN")}
+                      </span>
+
+                      {hasDiscount && (
+                        <span className="mb-1 text-sm font-bold text-black/30 line-through">
+                          ₹{starting.toLocaleString("en-IN")}
+                        </span>
+                      )}
+                    </div>
+
+                    {hasDiscount && (
+                      <div className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
+                        Save {discountPercentage}%
+                      </div>
+                    )}
+
+                    <div className="my-7 h-px bg-black/10" />
+
+                    <div className="space-y-4">
+                      <BookingRow label="Duration" value={durationName} />
+
+                      <BookingRow label="Traveller" value={travellerTypeName} />
+
+                      <BookingRow
+                        label="Destinations"
+                        value={`${destinations.length} places`}
+                      />
+                    </div>
+
+                    <Link
+                      onClick={() => setIsOpen(true)}
+                      className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-beige px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:shadow-xl"
+                    >
+                      <span className="flex items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:translate-x-1">
+                        <Phone size={17} />
+                      </span>
+                      <span>Plan this trip</span>
+                    </Link>
+                  </div>
+                </div>
+              </motion.aside>
+            </div>
 
             {/* =================================================
                 BOOKING CARD
             ================================================== */}
-
-            {/* <motion.aside
-              initial={{ opacity: 0, y: 35 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.7,
-                delay: 0.15,
-              }}
-              className="fixed lg:top-8 right-80"
-            >
-              <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                <div className="bg-black/90 px-7 py-6 text-white">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
-                        Package price
-                      </p>
-
-                      <p className="mt-1 text-sm font-semibold text-white/75">
-                        Per traveller
-                      </p>
-                    </div>
-
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                      <Plane size={17} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="p-7">
-                  <div className="flex items-end gap-3">
-                    <span className="text-4xl font-black tracking-[-0.04em]">
-                      ₹{finalPrice.toLocaleString("en-IN")}
-                    </span>
-
-                    {hasDiscount && (
-                      <span className="mb-1 text-sm font-bold text-black/30 line-through">
-                        ₹{starting.toLocaleString("en-IN")}
-                      </span>
-                    )}
-                  </div>
-
-                  {hasDiscount && (
-                    <div className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
-                      Save {discountPercentage}%
-                    </div>
-                  )}
-
-                  <div className="my-7 h-px bg-black/10" />
-
-                  <div className="space-y-4">
-                    <BookingRow label="Duration" value={durationName} />
-
-                    <BookingRow label="Traveller" value={travellerTypeName} />
-
-                    <BookingRow
-                      label="Destinations"
-                      value={`${destinations.length} places`}
-                    />
-                  </div>
-
-                  <Link
-                    to={`/booking/${travelPackage.id}`}
-                    className="group mt-7 flex w-full items-center justify-between rounded-full bg-gray-100 px-6 py-4 text-sm font-black text-white transition-all duration-300 hover:shadow-xl"
-                  >
-                    <span>Plan this trip</span>
-
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 group-hover:translate-x-1">
-                      <Phone size={17} />
-                    </span>
-                  </Link>
-                </div>
-              </div>
-            </motion.aside> */}
           </div>
 
           {/* =====================================================
               DESTINATIONS
           ====================================================== */}
 
-          {destinations.length > 0 && (
+          {/* {destinations.length > 0 && (
             <motion.section
               initial="hidden"
               whileInView="visible"
@@ -823,225 +1049,11 @@ function PackageDetails() {
                 ))}
               </div>
             </motion.section>
-          )}
+          )} */}
 
           {/* =====================================================
               ITINERARY
           ====================================================== */}
-
-          {itineraries.length > 0 && (
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={stagger}
-              className="mt-5 border-t border-black/10 pt-5"
-            >
-              <SectionHeading
-                eyebrow="Your journey"
-                title="Day by day"
-                description="A closer look at how your trip unfolds."
-              />
-
-              <div className="relative mt-12">
-                {/* Timeline line */}
-                <div className="absolute left-[23px] top-0 hidden h-full w-px bg-black/10 md:block" />
-
-                <div className="space-y-4">
-                  {itineraries.map((day) => (
-                    <motion.div
-                      key={day.id}
-                      variants={reveal}
-                      className="relative grid gap-5 md:grid-cols-[48px_1fr]"
-                    >
-                      {/* Day number */}
-                      <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-black text-xs font-black text-white">
-                        {String(day.dayNumber).padStart(2, "0")}
-                      </div>
-
-                      {/* Day card */}
-                      <details className="group rounded-[26px] border border-black/10 transition hover:border-black/30">
-                        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 sm:p-7">
-                          <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                              Day {day.dayNumber}
-                            </p>
-
-                            <h3 className="mt-1 text-xl font-black tracking-tight sm:text-2xl">
-                              {day.title}
-                            </h3>
-                          </div>
-
-                          {day.overnightLocation && (
-                            <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
-                              <MapPin size={13} />
-                              {day.overnightLocation}
-                            </div>
-                          )}
-
-                          {/* Chevron */}
-                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
-                            <ChevronDown size={16} />
-                          </div>
-                        </summary>
-
-                        {/* Mobile location */}
-                        {day.overnightLocation && (
-                          <div className="flex items-center gap-2 px-6 pb-2 text-xs font-bold text-black/55 sm:hidden">
-                            <MapPin size={13} />
-                            {day.overnightLocation}
-                          </div>
-                        )}
-
-                        {/* Collapsible content */}
-                        <div className="border-t border-black/10 px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
-                          {day.description && (
-                            <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
-                              {day.description}
-                            </p>
-                          )}
-
-                          {/* Itinerary points */}
-                          {day.activities?.length > 0 && (
-                            <ul className="space-y-3">
-                              {day.activities.map((activity) => (
-                                <li
-                                  key={activity.id}
-                                  className="flex items-start gap-3 text-sm leading-6 text-black/70"
-                                >
-                                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
-
-                                  <span>
-                                    {activity.title ||
-                                      activity.name ||
-                                      "Activity"}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-
-                          {/* Optional stay + meals */}
-                          {(day.hotelName || day.meals) && (
-                            <div className="mt-6 grid gap-3 border-t border-black/10 pt-5 sm:grid-cols-2">
-                              {day.hotelName && (
-                                <InfoPill
-                                  icon={<Hotel size={15} />}
-                                  label="Stay"
-                                  value={day.hotelName}
-                                />
-                              )}
-
-                              {day.meals && (
-                                <InfoPill
-                                  icon={<Check size={15} />}
-                                  label="Meals"
-                                  value={day.meals}
-                                />
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </details>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
-            </motion.section>
-          )}
-
-          {/* =====================================================
-              HOTELS + FLIGHTS
-          ====================================================== */}
-
-          {/* =====================================================
-              INCLUSIONS / EXCLUSIONS
-          ====================================================== */}
-
-          {(inclusions.length > 0 || exclusions.length > 0) && (
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.1 }}
-              variants={stagger}
-              className="mt-5 border-t border-black/10 pt-5"
-            >
-              <SectionHeading
-                eyebrow="Good to know"
-                title="What's included"
-                description="Know exactly what is and isn't covered in your package."
-              />
-
-              <div className="mt-10 grid gap-16 md:grid-cols-2">
-                {/* INCLUSIONS */}
-
-                {inclusions.length > 0 && (
-                  <motion.div
-                    variants={reveal}
-                    className="rounded-[28px] bg-black p-7 text-white sm:p-9"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
-                        <Check size={18} />
-                      </div>
-
-                      <h3 className="text-xl font-black">Included</h3>
-                    </div>
-
-                    <div className="mt-7 space-y-4">
-                      {inclusions.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex gap-3 border-b border-white/10 pb-4 last:border-0"
-                        >
-                          <Check
-                            size={16}
-                            className="mt-0.5 shrink-0 text-white"
-                          />
-
-                          <p className="text-sm leading-6 text-white">
-                            {item.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-
-                {/* EXCLUSIONS */}
-
-                {exclusions.length > 0 && (
-                  <motion.div
-                    variants={reveal}
-                    className="rounded-[28px] border border-black/10 p-7 sm:p-9"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black text-white">
-                        <X size={18} />
-                      </div>
-
-                      <h3 className="text-xl font-black">Not included</h3>
-                    </div>
-
-                    <div className="mt-7 space-y-4">
-                      {exclusions.map((item) => (
-                        <div
-                          key={item.id}
-                          className="flex gap-3 border-b border-black/10 pb-4 last:border-0"
-                        >
-                          <X size={16} className="mt-0.5 shrink-0 text-black" />
-
-                          <p className="text-sm leading-6 text-black">
-                            {item.description}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </div>
-            </motion.section>
-          )}
 
           {/* =====================================================
               FINAL CTA
@@ -1055,7 +1067,7 @@ function PackageDetails() {
             }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.7 }}
-            className="relative mt-5 overflow-hidden rounded-[34px] bg-black px-7 py-14 text-white sm:px-12 sm:py-20"
+            className="relative mt-5 overflow-hidden rounded-[34px] bg-black font-mont px-7 py-14 text-white sm:px-12 sm:py-20"
           >
             <div className="relative z-10 max-w-2xl">
               <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
@@ -1158,7 +1170,7 @@ function DateBox({ label, value }) {
 function SectionHeading({ eyebrow, title, description }) {
   return (
     <div className="max-w-2xl">
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-black/35">
+      <p className="text-[10px] font-mont font-medium uppercase tracking-[0.4em] mt-5 text-black/35">
         {eyebrow}
       </p>
 
@@ -1167,7 +1179,7 @@ function SectionHeading({ eyebrow, title, description }) {
       </h2>
 
       {description && (
-        <p className="mt-4 text-sm leading-7 text-black/50 sm:text-base">
+        <p className="mt-4 font-mont text-sm leading-7 text-black/50 sm:text-base">
           {description}
         </p>
       )}
