@@ -110,6 +110,7 @@ export default function WhyChooseUs() {
                   
                 "
               >
+                <img src={reason.img} alt={reason.title} className="size-32" />
                 <h3 className="text-base font-bold leading-5 text-black">
                   {reason.title}
                 </h3>
@@ -117,9 +118,6 @@ export default function WhyChooseUs() {
                 <p className="mt-2 font-mont text-sm leading-5 text-black/80">
                   {reason.description}
                 </p>
-                <div className="flex-1">
-                  <img src={reason.img} />
-                </div>
               </div>
             ))}
           </div>
@@ -156,6 +154,11 @@ export default function WhyChooseUs() {
                     shadow-lg
                   "
                 >
+                  <img
+                    src={reason.img}
+                    alt={reason.title}
+                    className="size-16"
+                  />
                   <h3 className="text-base font-bold leading-5 text-black">
                     {reason.title}
                   </h3>

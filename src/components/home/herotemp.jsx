@@ -42,12 +42,12 @@ export default function HeroSection() {
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      <video
+      {/* <video
         autoPlay
         muted
         loop
         playsInline
-        src={heroVideo}
+        src="https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
         className="
           absolute
           inset-0
@@ -55,7 +55,19 @@ export default function HeroSection() {
           w-full
           object-cover
         "
-      />
+      /> */}
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover object-center"
+      >
+        <source
+          src="https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
+          type="video/mp4"
+        />
+      </video>
       {/* <video
         autoplay=""
         loop
@@ -82,7 +94,7 @@ export default function HeroSection() {
       {/* =========================================================
             GENERAL DARK OVERLAY
         ========================================================== */}
-      {/* <div className="absolute inset-0 " /> */}
+      <div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent via-50% to-black" />
 
       {/* =========================================================
             LEFT GRADIENT
