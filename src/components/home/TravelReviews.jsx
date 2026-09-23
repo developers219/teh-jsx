@@ -150,6 +150,102 @@ export default function TravelReviews() {
                       key={index}
                       className="w-full sm:w-1/2 shrink-0 px-2 h-full"
                     >
+                      {isOpen && (
+                        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                          <div>
+                            {/* Image carousel */}
+                            <div className="relative aspect-[16/10] overflow-hidden">
+                              <img
+                                src={review?.images[currentImage].imageUrl}
+                                alt={`${name}'s travel experience`}
+                                className="h-full w-full object-cover"
+                              />
+
+                              {/* Previous */}
+                              <button
+                                onClick={() =>
+                                  setCurrentImage((prev) =>
+                                    prev === 0
+                                      ? review?.images?.length - 1
+                                      : prev - 1,
+                                  )
+                                }
+                                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                              >
+                                ←
+                              </button>
+
+                              {/* Next */}
+                              <button
+                                onClick={() =>
+                                  setCurrentImage(
+                                    (prev) =>
+                                      (prev + 1) % review?.images?.length,
+                                  )
+                                }
+                                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                              >
+                                →
+                              </button>
+
+                              {/* Dots */}
+                              <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+                                {review?.images?.map((_, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => setCurrentImage(index)}
+                                    className={`h-1.5 rounded-full transition-all ${
+                                      index === currentImage
+                                        ? "w-6 bg-white"
+                                        : "w-1.5 bg-white/50"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* User information */}
+                            <div className="p-6">
+                              <div className="flex items-start justify-between gap-4">
+                                <div>
+                                  <h3 className="text-xl font-medium text-gray-900">
+                                    {review?.userName}
+                                  </h3>
+
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    {review?.destination ?? "Bali"}
+                                  </p>
+                                </div>
+
+                                {/* Rating */}
+                                <div className="flex items-center gap-1">
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {review.rating}
+                                  </span>
+
+                                  <span className="text-amber-500">★</span>
+                                </div>
+                              </div>
+
+                              {/* Destination */}
+                              <p className="mt-4 text-sm text-gray-500">
+                                Travelled to{" "}
+                                <span className="font-medium text-gray-900">
+                                  {review?.destination ?? "Bali"}
+                                </span>
+                              </p>
+
+                              {/* Divider */}
+                              <div className="my-5 border-t border-gray-200" />
+
+                              {/* Description */}
+                              <p className="text-[15px] leading-7 text-gray-600">
+                                {review?.description}
+                              </p>
+                            </div>
+                          </div>
+                        </Modal>
+                      )}
                       {/* =================================================
                 LARGE REVIEW CARD
             ================================================= */}
@@ -193,102 +289,6 @@ export default function TravelReviews() {
                           {/* <h3 className="relative pr-8 text-[14px] font-bold leading-5 text-slate-900"> 
                             {review?.title} 
                           </h3> */}
-                          {isOpen && (
-                            <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-                              <div>
-                                {/* Image carousel */}
-                                <div className="relative aspect-[16/10] overflow-hidden">
-                                  <img
-                                    src={review?.images[currentImage].imageUrl}
-                                    alt={`${name}'s travel experience`}
-                                    className="h-full w-full object-cover"
-                                  />
-
-                                  {/* Previous */}
-                                  <button
-                                    onClick={() =>
-                                      setCurrentImage((prev) =>
-                                        prev === 0
-                                          ? review?.images?.length - 1
-                                          : prev - 1,
-                                      )
-                                    }
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
-                                  >
-                                    ←
-                                  </button>
-
-                                  {/* Next */}
-                                  <button
-                                    onClick={() =>
-                                      setCurrentImage(
-                                        (prev) =>
-                                          (prev + 1) % review?.images?.length,
-                                      )
-                                    }
-                                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
-                                  >
-                                    →
-                                  </button>
-
-                                  {/* Dots */}
-                                  <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-                                    {review?.images?.map((_, index) => (
-                                      <button
-                                        key={index}
-                                        onClick={() => setCurrentImage(index)}
-                                        className={`h-1.5 rounded-full transition-all ${
-                                          index === currentImage
-                                            ? "w-6 bg-white"
-                                            : "w-1.5 bg-white/50"
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
-                                </div>
-
-                                {/* User information */}
-                                <div className="p-6">
-                                  <div className="flex items-start justify-between gap-4">
-                                    <div>
-                                      <h3 className="text-xl font-medium text-gray-900">
-                                        {review?.userName}
-                                      </h3>
-
-                                      <p className="mt-1 text-sm text-gray-500">
-                                        {review?.destination ?? "Bali"}
-                                      </p>
-                                    </div>
-
-                                    {/* Rating */}
-                                    <div className="flex items-center gap-1">
-                                      <span className="text-sm font-medium text-gray-900">
-                                        {review.rating}
-                                      </span>
-
-                                      <span className="text-amber-500">★</span>
-                                    </div>
-                                  </div>
-
-                                  {/* Destination */}
-                                  <p className="mt-4 text-sm text-gray-500">
-                                    Travelled to{" "}
-                                    <span className="font-medium text-gray-900">
-                                      {review?.destination ?? "Bali"}
-                                    </span>
-                                  </p>
-
-                                  {/* Divider */}
-                                  <div className="my-5 border-t border-gray-200" />
-
-                                  {/* Description */}
-                                  <p className="text-[15px] leading-7 text-gray-600">
-                                    {review?.description}
-                                  </p>
-                                </div>
-                              </div>
-                            </Modal>
-                          )}
 
                           {/* Review */}
                           <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
