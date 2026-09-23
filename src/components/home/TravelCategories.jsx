@@ -9,7 +9,7 @@ import api from "../../services/api";
 import Carousel from "../ui/Carousel";
 import DestinationCard from "../ui/DestinationCard";
 import SectionHeader from "./SectionHeader";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 /* =========================================================
    FALLBACK CATEGORIES
@@ -155,7 +155,9 @@ function DestinationCircle({ destination }) {
   const image = getDestinationImage(destination);
 
   return (
-    <Link to={`/destinations/${destination.categoryName === "Domestic"? "dom": "intl"}/${destination.slug}`}>
+    <Link
+      to={`/destinations/${destination.categoryName === "Domestic" ? "dom" : "intl"}/${destination.slug}`}
+    >
       <div
         className="
       flex
