@@ -1,3 +1,4 @@
+import { Globe2, Headset, MapPinned, SlidersHorizontal } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 import wcu1 from "../../assets/images/wcu1.png";
 import wcu2 from "../../assets/images/wcu2.png";
@@ -61,6 +62,8 @@ export default function WhyChooseUs() {
                   border
                   border-black/10
                   flex flex-col
+                  items-center
+                  gap-3
                   justify-around
                   p-8
                   shadow-xl
@@ -70,6 +73,10 @@ export default function WhyChooseUs() {
                   
                 "
               >
+                {/* <div className="p-6 bg-beige text-white text-2xl rounded-full">
+                  <reason.icon size={32} />
+                </div> */}
+                <img src={reason.img} alt={reason.title} className="size-32" />
                 <h3 className="text-lg font-bold leading-5 text-black">
                   {reason.title}
                 </h3>
@@ -77,7 +84,6 @@ export default function WhyChooseUs() {
                 <p className="mt-3 font-mont text-sm leading-5 text-black/85">
                   {reason.description}
                 </p>
-                <img src={reason.img} alt={reason.title} />
               </div>
             ))}
           </div>
