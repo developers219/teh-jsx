@@ -24,6 +24,7 @@ export default function DestinationDetails() {
         setIsLoading(true);
         setErrorMessage("");
         const response = await api.get(`/destinations/${slug}`);
+        console.log(response);
         setDestination(response.data.data);
       } catch (error) {
         setErrorMessage(
