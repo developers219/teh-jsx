@@ -4,10 +4,13 @@ import StarIcon from "@mui/icons-material/Star";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import api from "../../services/api";
+import Modal from "../ui/Modal";
 
 export default function TravelReviews() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [reviews, setReviews] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState(0);
   /*
    * Two cards are visible on desktop.
    * Therefore there are 9 possible carousel positions
@@ -147,6 +150,102 @@ export default function TravelReviews() {
                       key={index}
                       className="w-full sm:w-1/2 shrink-0 px-2 h-full"
                     >
+                      {isOpen && (
+                        <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                          <div>
+                            {/* Image carousel */}
+                            <div className="relative aspect-[16/10] overflow-hidden">
+                              <img
+                                src={review?.images[currentImage].imageUrl}
+                                alt={`${name}'s travel experience`}
+                                className="h-full w-full object-cover"
+                              />
+
+                              {/* Previous */}
+                              <button
+                                onClick={() =>
+                                  setCurrentImage((prev) =>
+                                    prev === 0
+                                      ? review?.images?.length - 1
+                                      : prev - 1,
+                                  )
+                                }
+                                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                              >
+                                ←
+                              </button>
+
+                              {/* Next */}
+                              <button
+                                onClick={() =>
+                                  setCurrentImage(
+                                    (prev) =>
+                                      (prev + 1) % review?.images?.length,
+                                  )
+                                }
+                                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                              >
+                                →
+                              </button>
+
+                              {/* Dots */}
+                              <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+                                {review?.images?.map((_, index) => (
+                                  <button
+                                    key={index}
+                                    onClick={() => setCurrentImage(index)}
+                                    className={`h-1.5 rounded-full transition-all ${
+                                      index === currentImage
+                                        ? "w-6 bg-white"
+                                        : "w-1.5 bg-white/50"
+                                    }`}
+                                  />
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* User information */}
+                            <div className="p-6">
+                              <div className="flex items-start justify-between gap-4">
+                                <div>
+                                  <h3 className="text-xl font-medium text-gray-900">
+                                    {review?.userName}
+                                  </h3>
+
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    {review?.destination ?? "Bali"}
+                                  </p>
+                                </div>
+
+                                {/* Rating */}
+                                <div className="flex items-center gap-1">
+                                  <span className="text-sm font-medium text-gray-900">
+                                    {review.rating}
+                                  </span>
+
+                                  <span className="text-amber-500">★</span>
+                                </div>
+                              </div>
+
+                              {/* Destination */}
+                              <p className="mt-4 text-sm text-gray-500">
+                                Travelled to{" "}
+                                <span className="font-medium text-gray-900">
+                                  {review?.destination ?? "Bali"}
+                                </span>
+                              </p>
+
+                              {/* Divider */}
+                              <div className="my-5 border-t border-gray-200" />
+
+                              {/* Description */}
+                              <p className="text-[15px] leading-7 text-gray-600">
+                                {review?.description}
+                              </p>
+                            </div>
+                          </div>
+                        </Modal>
+                      )}
                       {/* =================================================
                 LARGE REVIEW CARD
             ================================================= */}
@@ -156,126 +255,138 @@ export default function TravelReviews() {
                         <div className="relative h-[170px] overflow-hidden">
                           <img
                             src={
-                              // review.images ??
-                              "https://i.pravatar.cc/400?img=12" 
-                            } 
-                            alt={review.userName} 
-                            className="h-full w-full object-cover" 
-                          /> 
- 
-                          {/* Image gradient */} 
-                          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" /> 
-                        </div> 
- 
+                              review?.images[0]?.imageUrl ??
+                              "https://i.pravatar.cc/400?img=12"
+                            }
+                            alt={review?.userName}
+                            className="h-full w-full object-cover"
+                          />
+
+                          {/* Image gradient */}
+                          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" />
+                        </div>
+
                         {/* ================================================= 
                 CARD CONTENT 
-            ================================================= */} 
- 
-                        <div className="relative px-5 pb-5 pt-7"> 
-                          {/* Curved white overlap */} 
-                          {/* Straight white transition */} 
-                          <div className="absolute left-0 right-0 top-0 h-5 bg-white" /> 
- 
-                          {/* Quote */} 
-                          <FormatQuoteIcon 
-                            className="absolute right-4 top-3" 
-                            sx={{ 
-                              fontSize: 44, 
-                              color: "#17694d", 
-                              opacity: 0.1, 
-                            }} 
-                          /> 
- 
-                          {/* Review title */} 
+            ================================================= */}
+
+                        <div className="relative px-5 pb-5 pt-7">
+                          {/* Curved white overlap */}
+                          {/* Straight white transition */}
+                          <div className="absolute left-0 right-0 top-0 h-5 bg-white" />
+
+                          {/* Quote */}
+                          <FormatQuoteIcon
+                            className="absolute right-4 top-3"
+                            sx={{
+                              fontSize: 44,
+                              color: "#17694d",
+                              opacity: 0.1,
+                            }}
+                          />
+
+                          {/* Review title */}
                           {/* <h3 className="relative pr-8 text-[14px] font-bold leading-5 text-slate-900"> 
-                            {review.title} 
-                          </h3> */} 
- 
-                          {/* Review */} 
-                          <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600"> 
-                            {review.description} 
-                          </p> 
- 
-                          {/* Bottom */} 
-                          <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4"> 
-                            {/* Customer */} 
-                            <div> 
-                              <h4 className="text-sm font-bold text-slate-900"> 
-                                {review.userName} 
-                              </h4> 
- 
-                              <p className="mt-0.5 text-[11px] text-slate-500"> 
-                                {review.location ?? "Bali"} 
-                              </p> 
-                            </div> 
- 
-                            {/* Stars */} 
-                            <div className="flex shrink-0"> 
-                              {[...new Array(review.rating)].map((star) => ( 
-                                <StarIcon 
-                                  key={star} 
-                                  sx={{ 
-                                    fontSize: 16, 
-                                    color: "#f59e0b", 
-                                  }} 
-                                /> 
-                              ))} 
-                            </div> 
-                          </div> 
-                        </div> 
-                      </article> 
-                    </div> 
-                  ))} 
-                </div> 
-              </div> 
- 
+                            {review?.title} 
+                          </h3> */}
+
+                          {/* Review */}
+                          <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
+                            {review?.description?.slice(0, 200)}
+                            <span
+                              className="text-blue-400"
+                              onClick={() => setIsOpen(true)}
+                            >
+                              {review?.description?.length >= 300 ? (
+                                <a className="text-blue-400 cursor-pointer font-bold">
+                                  ... Read More
+                                </a>
+                              ) : (
+                                ""
+                              )}
+                            </span>
+                          </p>
+
+                          {/* Bottom */}
+                          <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4">
+                            {/* Customer */}
+                            <div>
+                              <h4 className="text-sm font-bold text-slate-900">
+                                {review?.userName}
+                              </h4>
+
+                              <p className="mt-0.5 text-[11px] text-slate-500">
+                                {review?.location ?? "Bali"}
+                              </p>
+                            </div>
+
+                            {/* Stars */}
+                            <div className="flex shrink-0">
+                              {[...new Array(review?.rating)].map((star) => (
+                                <StarIcon
+                                  key={star}
+                                  sx={{
+                                    fontSize: 16,
+                                    color: "#f59e0b",
+                                  }}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               {/* ================================================= 
             CONTROLS 
-        ================================================= */} 
- 
-              <div className="mt-5 flex items-center justify-between px-2"> 
-                {/* Arrow buttons */} 
-                <div className="flex gap-2"> 
-                  <button 
-                    type="button" 
-                    onClick={previousReview} 
-                    aria-label="Previous review" 
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer" 
-                  > 
-                    <ArrowBackIosNewIcon sx={{ fontSize: 13 }} /> 
-                  </button> 
- 
-                  <button 
-                    type="button" 
-                    onClick={nextReview} 
-                    aria-label="Next review" 
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer" 
-                  > 
-                    <ArrowForwardIosIcon sx={{ fontSize: 13 }} /> 
-                  </button> 
-                </div> 
- 
-                {/* Pagination */} 
-                <div className="flex items-center gap-2"> 
-                  {Array.from({ length: maxIndex / 2 + 1 }).map((_, index) => ( 
-                    <button 
-                      key={index} 
-                      type="button" 
-                      onClick={() => setActiveIndex(index)} 
-                      aria-label={`Show reviews ${index + 1}`} 
-                      className={`h-2 rounded-full transition-all duration-300 ${ 
-                        activeIndex === index 
-                          ? "w-6 bg-white" 
-                          : "w-2 bg-white/40 hover:bg-white/70" 
-                      }`} 
-                    /> 
-                  ))} 
-                </div> 
-              </div> 
-            </div> 
-          </div> 
-        </div> 
-      </div> 
-    </section> 
-  ); 
-} 
+        ================================================= */}
+
+              <div className="mt-5 flex items-center justify-between px-2">
+                {/* Arrow buttons */}
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={previousReview}
+                    aria-label="Previous review"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
+                  >
+                    <ArrowBackIosNewIcon sx={{ fontSize: 13 }} />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={nextReview}
+                    aria-label="Next review"
+                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
+                  >
+                    <ArrowForwardIosIcon sx={{ fontSize: 13 }} />
+                  </button>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex items-center gap-2">
+                  {Array.from({ length: maxIndex / 2 + 1 }).map((_, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => setActiveIndex(index)}
+                      aria-label={`Show reviews ${index + 1}`}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        activeIndex === index
+                          ? "w-6 bg-white"
+                          : "w-2 bg-white/40 hover:bg-white/70"
+                      }`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
