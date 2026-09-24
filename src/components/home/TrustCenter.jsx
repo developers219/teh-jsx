@@ -457,7 +457,7 @@ function TrustCenter() {
                     leading-[1.06]
                     tracking-[-0.045em]
                     text-[#25272b]
-                    text-[clamp(2rem,4vw,2.5rem)]
+                    text-[clamp(2rem,4vw,3rem)]
                     sm:leading-[1.05]
                   "
                 >

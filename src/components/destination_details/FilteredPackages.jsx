@@ -381,12 +381,7 @@ const initialFilters = {
   sortOrder: "",
 };
 
-const PackageFilters = ({
-  filters,
-  setFilters,
-  themes,
-  durations,
-}) => {
+const PackageFilters = ({ filters, setFilters, themes, durations }) => {
   const filterTrackRef = useRef(null);
 
   const [filterProgress, setFilterProgress] = useState(0);
@@ -443,9 +438,7 @@ const PackageFilters = ({
 
     const progress = el.scrollLeft / maxScroll;
 
-    setFilterProgress(
-      Math.min(1, Math.max(0, progress))
-    );
+    setFilterProgress(Math.min(1, Math.max(0, progress)));
   };
 
   /*
@@ -461,15 +454,12 @@ const PackageFilters = ({
     window.addEventListener("resize", handleResize);
 
     return () => {
-      window.removeEventListener(
-        "resize",
-        handleResize
-      );
+      window.removeEventListener("resize", handleResize);
     };
   }, [themes, durations]);
 
   return (
-    <div className="my-8 w-full">
+    <div className="my-8 w-full font-mont">
       {/* =====================================================
           FILTER CHIPS
       ===================================================== */}
@@ -499,12 +489,7 @@ const PackageFilters = ({
         {/* Minimum Price */}
         <select
           value={filters.minPrice}
-          onChange={(e) =>
-            updateFilter(
-              "minPrice",
-              e.target.value
-            )
-          }
+          onChange={(e) => updateFilter("minPrice", e.target.value)}
           className="
             shrink-0
             rounded-full
@@ -520,36 +505,21 @@ const PackageFilters = ({
         >
           <option value="">Min Budget</option>
 
-          <option value="5000">
-            ₹5,000
-          </option>
+          <option value="5000">₹5,000</option>
 
-          <option value="10000">
-            ₹10,000
-          </option>
+          <option value="10000">₹10,000</option>
 
-          <option value="15000">
-            ₹15,000
-          </option>
+          <option value="15000">₹15,000</option>
 
-          <option value="25000">
-            ₹25,000
-          </option>
+          <option value="25000">₹25,000</option>
 
-          <option value="50000">
-            ₹50,000
-          </option>
+          <option value="50000">₹50,000</option>
         </select>
 
         {/* Maximum Price */}
         <select
           value={filters.maxPrice}
-          onChange={(e) =>
-            updateFilter(
-              "maxPrice",
-              e.target.value
-            )
-          }
+          onChange={(e) => updateFilter("maxPrice", e.target.value)}
           className="
             shrink-0
             rounded-full
@@ -565,36 +535,21 @@ const PackageFilters = ({
         >
           <option value="">Max Budget</option>
 
-          <option value="10000">
-            ₹10,000
-          </option>
+          <option value="10000">₹10,000</option>
 
-          <option value="25000">
-            ₹25,000
-          </option>
+          <option value="25000">₹25,000</option>
 
-          <option value="50000">
-            ₹50,000
-          </option>
+          <option value="50000">₹50,000</option>
 
-          <option value="75000">
-            ₹75,000
-          </option>
+          <option value="75000">₹75,000</option>
 
-          <option value="100000">
-            ₹1,00,000
-          </option>
+          <option value="100000">₹1,00,000</option>
         </select>
 
         {/* Theme */}
         <select
           value={filters.themeId}
-          onChange={(e) =>
-            updateFilter(
-              "themeId",
-              e.target.value
-            )
-          }
+          onChange={(e) => updateFilter("themeId", e.target.value)}
           className="
             shrink-0
             rounded-full
@@ -611,10 +566,7 @@ const PackageFilters = ({
           <option value="">Theme</option>
 
           {themes?.map((theme) => (
-            <option
-              key={theme.id}
-              value={theme.id}
-            >
+            <option key={theme.id} value={theme.id}>
               {theme.name}
             </option>
           ))}
@@ -623,12 +575,7 @@ const PackageFilters = ({
         {/* Duration */}
         <select
           value={filters.durationId}
-          onChange={(e) =>
-            updateFilter(
-              "durationId",
-              e.target.value
-            )
-          }
+          onChange={(e) => updateFilter("durationId", e.target.value)}
           className="
             shrink-0
             rounded-full
@@ -645,10 +592,7 @@ const PackageFilters = ({
           <option value="">Duration</option>
 
           {durations.map((duration) => (
-            <option
-              key={duration.id}
-              value={duration.id}
-            >
+            <option key={duration.id} value={duration.id}>
               {duration.name}
             </option>
           ))}
@@ -657,11 +601,7 @@ const PackageFilters = ({
         {/* Sort */}
         <select
           value={sortValue}
-          onChange={(e) =>
-            handleSortChange(
-              e.target.value
-            )
-          }
+          onChange={(e) => handleSortChange(e.target.value)}
           className="
             shrink-0
             rounded-full
@@ -677,21 +617,13 @@ const PackageFilters = ({
         >
           <option value="">Sort</option>
 
-          <option value="price-asc">
-            Price: Low to High
-          </option>
+          <option value="price-asc">Price: Low to High</option>
 
-          <option value="price-desc">
-            Price: High to Low
-          </option>
+          <option value="price-desc">Price: High to Low</option>
 
-          <option value="duration-asc">
-            Duration: Shortest
-          </option>
+          <option value="duration-asc">Duration: Shortest</option>
 
-          <option value="duration-desc">
-            Duration: Longest
-          </option>
+          <option value="duration-desc">Duration: Longest</option>
         </select>
 
         {/* Reset */}
@@ -757,19 +689,15 @@ const PackageFilters = ({
 export const FilteredPackages = () => {
   const { slug } = useParams();
 
-  const [filters, setFilters] =
-    useState(initialFilters);
+  const [filters, setFilters] = useState(initialFilters);
 
   const [packages, setPackages] = useState([]);
   const [themes, setThemes] = useState([]);
-  const [durations, setDurations] =
-    useState([]);
+  const [durations, setDurations] = useState([]);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const [error, setError] =
-    useState("");
+  const [error, setError] = useState("");
 
   /*
    * Fetch themes and durations
@@ -778,31 +706,20 @@ export const FilteredPackages = () => {
    * to be fetched when the page loads.
    */
   useEffect(() => {
-    const fetchFilterOptions =
-      async () => {
-        try {
-          const [
-            themesRes,
-            durationsRes,
-          ] = await Promise.all([
-            api("/themes"),
-            api("/durations"),
-          ]);
+    const fetchFilterOptions = async () => {
+      try {
+        const [themesRes, durationsRes] = await Promise.all([
+          api("/themes"),
+          api("/durations"),
+        ]);
 
-          setThemes(
-            themesRes?.data?.data || []
-          );
+        setThemes(themesRes?.data?.data || []);
 
-          setDurations(
-            durationsRes?.data?.data || []
-          );
-        } catch (error) {
-          console.error(
-            "Failed to fetch filter options:",
-            error
-          );
-        }
-      };
+        setDurations(durationsRes?.data?.data || []);
+      } catch (error) {
+        console.error("Failed to fetch filter options:", error);
+      }
+    };
 
     fetchFilterOptions();
   }, []);
@@ -817,86 +734,58 @@ export const FilteredPackages = () => {
    * - sorting changes
    */
   useEffect(() => {
-    const fetchPackages =
-      async () => {
-        if (!slug) return;
+    const fetchPackages = async () => {
+      if (!slug) return;
 
-        try {
-          setLoading(true);
-          setError("");
+      try {
+        setLoading(true);
+        setError("");
 
-          const params =
-            new URLSearchParams();
+        const params = new URLSearchParams();
 
-          if (filters.minPrice) {
-            params.set(
-              "minPrice",
-              filters.minPrice
-            );
-          }
-
-          if (filters.maxPrice) {
-            params.set(
-              "maxPrice",
-              filters.maxPrice
-            );
-          }
-
-          if (filters.themeId) {
-            params.set(
-              "themeId",
-              filters.themeId
-            );
-          }
-
-          if (filters.durationId) {
-            params.set(
-              "durationId",
-              filters.durationId
-            );
-          }
-
-          // if (filters.sortBy) {
-          //   params.set("sortBy", filters.sortBy);
-          // }
-
-          if (filters.sortOrder) {
-            params.set(
-              "sortOrder",
-              filters.sortOrder
-            );
-          }
-
-          const queryString =
-            params.toString();
-
-          const endpoint =
-            queryString
-              ? `/packages/slug/${slug}?${queryString}`
-              : `/packages/${slug}`;
-
-          const res =
-            await api(endpoint);
-
-          setPackages(
-            res?.data?.data?.packages ||
-              []
-          );
-        } catch (error) {
-          console.error(
-            "Failed to fetch packages:",
-            error
-          );
-
-          setError(
-            "Failed to load packages."
-          );
-
-          setPackages([]);
-        } finally {
-          setLoading(false);
+        if (filters.minPrice) {
+          params.set("minPrice", filters.minPrice);
         }
-      };
+
+        if (filters.maxPrice) {
+          params.set("maxPrice", filters.maxPrice);
+        }
+
+        if (filters.themeId) {
+          params.set("themeId", filters.themeId);
+        }
+
+        if (filters.durationId) {
+          params.set("durationId", filters.durationId);
+        }
+
+        // if (filters.sortBy) {
+        //   params.set("sortBy", filters.sortBy);
+        // }
+
+        if (filters.sortOrder) {
+          params.set("sortOrder", filters.sortOrder);
+        }
+
+        const queryString = params.toString();
+
+        const endpoint = queryString
+          ? `/packages/slug/${slug}?${queryString}`
+          : `/packages/${slug}`;
+
+        const res = await api(endpoint);
+
+        setPackages(res?.data?.data?.packages || []);
+      } catch (error) {
+        console.error("Failed to fetch packages:", error);
+
+        setError("Failed to load packages.");
+
+        setPackages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchPackages();
   }, [
@@ -926,39 +815,27 @@ export const FilteredPackages = () => {
 
         {loading ? (
           <div className="py-16 text-center">
-            <p className="text-gray-500">
-              Loading packages...
-            </p>
+            <p className="text-gray-500">Loading packages...</p>
           </div>
         ) : error ? (
           <div className="py-16 text-center">
-            <h3 className="text-xl font-semibold">
-              Something went wrong
-            </h3>
+            <h3 className="text-xl font-semibold">Something went wrong</h3>
 
-            <p className="text-gray-500 mt-2">
-              {error}
-            </p>
+            <p className="text-gray-500 mt-2">{error}</p>
           </div>
         ) : packages.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
             {packages.map((pkg) => (
               <div key={pkg.id}>
-                <PackageCard
-                  travelPackage={pkg}
-                />
+                <PackageCard travelPackage={pkg} />
               </div>
             ))}
           </div>
         ) : (
           <div className="py-16 text-center">
-            <h3 className="text-xl font-semibold">
-              No packages found
-            </h3>
+            <h3 className="text-xl font-semibold">No packages found</h3>
 
-            <p className="text-gray-500 mt-2">
-              Try changing your filters.
-            </p>
+            <p className="text-gray-500 mt-2">Try changing your filters.</p>
           </div>
         )}
       </div>

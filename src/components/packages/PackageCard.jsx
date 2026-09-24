@@ -80,20 +80,20 @@ function PackageCard({ travelPackage }) {
         {/* BADGES - LEFT / RIGHT */}
         <div className="flex items-center justify-between gap-3">
           {/* RATING */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-2 text-sm font-medium text-emerald-500">
-            <span className="text-base">★</span>
+          <div className="inline-flex items-center gap-1.5 rounded-full text-xs font-medium">
+            <span className="text-base text-yellow-400">★</span>
             <span>{travelPackage.rating?.toFixed(1) ?? "4.8"} Rated</span>
           </div>
 
           {/* DURATION */}
-          <div className="inline-flex items-center gap-2 rounded-full bg-beige/50 px-3.5 py-2 text-sm font-medium text-black">
+          <div className="inline-flex items-center gap-1.5 rounded-full text-xs bg-beige font-medium px-2 py-1 text-black">
             <Calendar size={12} />
             {travelPackage.durationName}
           </div>
         </div>
 
         {/* PACKAGE NAME */}
-        <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-950">
+        <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
           {travelPackage.title}
         </h3>
 
@@ -130,7 +130,7 @@ function PackageCard({ travelPackage }) {
         </p>
 
         {/* ================= PRICE + CTA ================= */}
-        <div className="mt-5 flex items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4">
+        <div className="mt-2 flex items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4">
           {/* PRICE */}
           <div>
             <p className="text-xs font-medium text-slate-500">Starting from</p>
@@ -145,9 +145,9 @@ function PackageCard({ travelPackage }) {
           {/* CTA */}
           <Link
             to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
-            className="inline-flex items-center gap-5 rounded-xl bg-black/90 px-6 py-3.5 text-sm font-semibold !text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg"
+            className="inline-flex items-center gap-5 rounded-xl bg-black/90 px-6 py-3.5 text-sm font-semibold text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg"
           >
-            Book Now
+            View Details
             <span className="text-lg">→</span>
           </Link>
         </div>

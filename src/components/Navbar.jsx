@@ -50,7 +50,7 @@ function Navbar() {
           ===================================================== */
           <motion.nav
             key="top-navbar"
-            className="fixed inset-x-0 top-0 z-40 font-medium text-white/80"
+            className="fixed inset-x-0 top-0 z-40 font-mont font-medium text-white/80"
             initial={{ y: 0, opacity: 1 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{
@@ -153,7 +153,7 @@ function Navbar() {
               duration: 0.5,
               ease: [0.22, 1, 0.36, 1],
             }}
-            className="fixed inset-x-0 top-0 z-30 bg-white text-neutral-900 shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
+            className="fixed font-mont inset-x-0 top-0 z-30 bg-white text-neutral-900 shadow-[0_8px_30px_rgba(0,0,0,0.06)]"
           >
             <div className="mx-auto flex h-[68px] max-w-7xl items-center px-4 sm:h-[76px] sm:px-6 lg:px-8">
               {/* MOBILE MENU */}

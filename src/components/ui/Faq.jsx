@@ -55,7 +55,7 @@ export default function FAQ() {
             Your right to Know!
           </p>
 
-          <div className="mx-auto mt-5 h-[3px] w-20 bg-[#c5bd96]" />
+          <div className="mx-auto  h-[3px] w-20 bg-[#c5bd96]" />
         </div>
 
         {/* FAQ List */}
@@ -66,7 +66,7 @@ export default function FAQ() {
             return (
               <div
                 key={index}
-                className={`overflow-hidden hover:shadow-lg rounded-3xl border bg-white transition-all duration-300 ${
+                className={`overflow-hidden hover:shadow-lg rounded-2xl border bg-white transition-all duration-300 ${
                   isOpen ? "border-beige" : "border-black/20"
                 }`}
               >
@@ -74,12 +74,12 @@ export default function FAQ() {
                 <button
                   type="button"
                   onClick={() => handleToggle(index)}
-                  className={`flex w-full items-center justify-between gap-5 px-4 py-4 text-left sm:px-5 sm:py-[17px] ${
+                  className={`flex w-full items-center justify-between gap-5 px-4 py-2 text-left ${
                     isOpen ? " border-b border-gray-200 " : ""
                   }`}
                   aria-expanded={isOpen}
                 >
-                  <div className="flex min-w-0 items-start gap-2.5">
+                  <div className="flex min-w-0 items-start gap-2">
                     <span className="shrink-0 text-sm font-medium sm:text-[19px] text-black">
                       Q:
                     </span>
@@ -107,9 +107,9 @@ export default function FAQ() {
 
                 {/* Answer */}
                 <div
-                  className={`grid transition-all duration-300 mt-5 ease-in-out ${
+                  className={`grid transition-all duration-300 ease-in-out ${
                     isOpen
-                      ? "grid-rows-[1fr] opacity-100"
+                      ? "grid-rows-[1fr] opacity-100 mt-4"
                       : "grid-rows-[0fr] opacity-0"
                   }`}
                 >
