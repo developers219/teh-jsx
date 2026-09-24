@@ -11,51 +11,51 @@ import { ArrowUpRight } from "lucide-react";
 const destinations = [
   {
     id: 1,
-    name: "Faroe Islands",
+    name: "Turkey",
     description:
       "Dramatic cliffs, quiet villages and endless Atlantic horizons. Discover one of Europe's most untouched destinations, where nature takes center stage.",
     imageUrl:
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1665470298997-86b6e79799db?q=80&w=1333&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 2,
-    name: "Santorini",
+    name: "Kerala",
     description:
       "Whitewashed villages carved into volcanic cliffs, deep blue waters and sunsets that turn the Aegean into a painting.",
     imageUrl:
-      "https://images.unsplash.com/photo-1580502304784-8985b7eb7260?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1650730005180-2c849af5d6cc?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 3,
-    name: "Kyoto",
+    name: "Japan",
     description:
       "Ancient temples, lantern-lit streets and gardens shaped by centuries of Japanese tradition.",
     imageUrl:
-      "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 4,
-    name: "Patagonia",
+    name: "Andaman and Nicobar Islands",
     description:
       "Wild mountains, turquoise lakes and enormous open landscapes. Patagonia is an invitation to disappear into the wilderness.",
     imageUrl:
-      "https://images.unsplash.com/photo-1516690561799-46d8f74f9abf?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1642498232612-a837df233825?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 5,
-    name: "Amalfi Coast",
+    name: "Leh Ladakh",
     description:
       "Cliffside towns, winding coastal roads and Mediterranean waters. Experience the timeless charm of Italy's coastline.",
     imageUrl:
-      "https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1600242466690-c1c04f081762?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 6,
-    name: "Iceland",
+    name: "spiti valley",
     description:
       "Glaciers, black sand beaches, waterfalls and volcanic landscapes create a world that feels beautifully otherworldly.",
     imageUrl:
-      "https://images.unsplash.com/photo-1504829857797-ddff29c27927?auto=format&fit=crop&w=2200&q=90",
+      "https://images.unsplash.com/photo-1637314995939-7560a94b1495?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
   },
 ];
 
@@ -289,7 +289,7 @@ function DestinationContent({ destination, index, slidePosition }) {
           {/* TITLE */}
 
           <h2
-            className="text-[clamp(2.8rem,5vw,3.75rem)] font-thin leading-[0.88] tracking-[-0.045em] text-white"
+            className="text-[clamp(2.8rem,5vw,3.75rem)] capitalize font-thin leading-[0.88] tracking-[-0.045em] text-white"
             style={{ fontFamily: "Cormorant Garamond" }}
           >
             {destination.name}

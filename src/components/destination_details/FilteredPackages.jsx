@@ -370,6 +370,7 @@ import { useParams } from "react-router-dom";
 import SectionHeader from "../home/SectionHeader";
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
+import Carousel from "../ui/Carousel";
 import api from "../../services/api";
 
 const initialFilters = {
@@ -389,7 +390,8 @@ const PackageFilters = ({
 }) => {
   const filterTrackRef = useRef(null);
 
-  const [filterProgress, setFilterProgress] = useState(0);
+  const [filterProgress, setFilterProgress] =
+    useState(0);
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -405,10 +407,12 @@ const PackageFilters = ({
         sortBy: "",
         sortOrder: "",
       }));
+
       return;
     }
 
-    const [sortBy, sortOrder] = value.split("-");
+    const [sortBy, sortOrder] =
+      value.split("-");
 
     setFilters((prev) => ({
       ...prev,
@@ -426,31 +430,27 @@ const PackageFilters = ({
     setFilters(initialFilters);
   };
 
-  /*
-   * Update horizontal scroll thumb
-   */
   const updateFilterProgress = () => {
     const el = filterTrackRef.current;
 
     if (!el) return;
 
-    const maxScroll = el.scrollWidth - el.clientWidth;
+    const maxScroll =
+      el.scrollWidth - el.clientWidth;
 
     if (maxScroll <= 0) {
       setFilterProgress(0);
       return;
     }
 
-    const progress = el.scrollLeft / maxScroll;
+    const progress =
+      el.scrollLeft / maxScroll;
 
     setFilterProgress(
       Math.min(1, Math.max(0, progress))
     );
   };
 
-  /*
-   * Update thumb when screen size changes
-   */
   useEffect(() => {
     updateFilterProgress();
 
@@ -458,7 +458,10 @@ const PackageFilters = ({
       updateFilterProgress();
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener(
+      "resize",
+      handleResize
+    );
 
     return () => {
       window.removeEventListener(
@@ -470,9 +473,6 @@ const PackageFilters = ({
 
   return (
     <div className="my-8 w-full">
-      {/* =====================================================
-          FILTER CHIPS
-      ===================================================== */}
       <div
         ref={filterTrackRef}
         onScroll={updateFilterProgress}
@@ -487,16 +487,13 @@ const PackageFilters = ({
           whitespace-nowrap
           px-1
           py-1
-
           touch-pan-x
           overscroll-x-contain
-
           [scrollbar-width:none]
           [-ms-overflow-style:none]
           [&::-webkit-scrollbar]:hidden
         "
       >
-        {/* Minimum Price */}
         <select
           value={filters.minPrice}
           onChange={(e) =>
@@ -518,7 +515,9 @@ const PackageFilters = ({
             whitespace-nowrap
           "
         >
-          <option value="">Min Budget</option>
+          <option value="">
+            Min Budget
+          </option>
 
           <option value="5000">
             ₹5,000
@@ -541,7 +540,6 @@ const PackageFilters = ({
           </option>
         </select>
 
-        {/* Maximum Price */}
         <select
           value={filters.maxPrice}
           onChange={(e) =>
@@ -563,7 +561,9 @@ const PackageFilters = ({
             whitespace-nowrap
           "
         >
-          <option value="">Max Budget</option>
+          <option value="">
+            Max Budget
+          </option>
 
           <option value="10000">
             ₹10,000
@@ -586,7 +586,6 @@ const PackageFilters = ({
           </option>
         </select>
 
-        {/* Theme */}
         <select
           value={filters.themeId}
           onChange={(e) =>
@@ -608,7 +607,9 @@ const PackageFilters = ({
             whitespace-nowrap
           "
         >
-          <option value="">Theme</option>
+          <option value="">
+            Theme
+          </option>
 
           {themes?.map((theme) => (
             <option
@@ -620,7 +621,6 @@ const PackageFilters = ({
           ))}
         </select>
 
-        {/* Duration */}
         <select
           value={filters.durationId}
           onChange={(e) =>
@@ -642,7 +642,9 @@ const PackageFilters = ({
             whitespace-nowrap
           "
         >
-          <option value="">Duration</option>
+          <option value="">
+            Duration
+          </option>
 
           {durations.map((duration) => (
             <option
@@ -654,7 +656,6 @@ const PackageFilters = ({
           ))}
         </select>
 
-        {/* Sort */}
         <select
           value={sortValue}
           onChange={(e) =>
@@ -675,7 +676,9 @@ const PackageFilters = ({
             whitespace-nowrap
           "
         >
-          <option value="">Sort</option>
+          <option value="">
+            Sort
+          </option>
 
           <option value="price-asc">
             Price: Low to High
@@ -694,7 +697,6 @@ const PackageFilters = ({
           </option>
         </select>
 
-        {/* Reset */}
         <button
           type="button"
           onClick={resetFilters}
@@ -713,43 +715,6 @@ const PackageFilters = ({
           Reset
         </button>
       </div>
-
-      {/* =====================================================
-          FILTER SCROLL THUMB
-          Mobile / Tablet / iPad only
-      ===================================================== */}
-      {/* <div className="mt-4 flex justify-center lg:hidden">
-        <div
-          className="
-            relative
-            h-[3px]
-            w-[80px]
-            overflow-hidden
-            rounded-full
-            bg-gray-200
-            sm:w-[110px]
-          "
-        >
-          <div
-            className="
-              absolute
-              left-0
-              top-0
-              h-full
-              w-[25%]
-              rounded-full
-              bg-black
-              transition-transform
-              duration-100
-            "
-            style={{
-              transform: `translateX(${
-                filterProgress * 300
-              }%)`,
-            }}
-          />
-        </div>
-      </div> */}
     </div>
   );
 };
@@ -760,8 +725,12 @@ export const FilteredPackages = () => {
   const [filters, setFilters] =
     useState(initialFilters);
 
-  const [packages, setPackages] = useState([]);
-  const [themes, setThemes] = useState([]);
+  const [packages, setPackages] =
+    useState([]);
+
+  const [themes, setThemes] =
+    useState([]);
+
   const [durations, setDurations] =
     useState([]);
 
@@ -771,12 +740,6 @@ export const FilteredPackages = () => {
   const [error, setError] =
     useState("");
 
-  /*
-   * Fetch themes and durations
-   *
-   * These are filter options, so they only need
-   * to be fetched when the page loads.
-   */
   useEffect(() => {
     const fetchFilterOptions =
       async () => {
@@ -807,15 +770,6 @@ export const FilteredPackages = () => {
     fetchFilterOptions();
   }, []);
 
-  /*
-   * Fetch packages whenever:
-   *
-   * - destination changes
-   * - price changes
-   * - theme changes
-   * - duration changes
-   * - sorting changes
-   */
   useEffect(() => {
     const fetchPackages =
       async () => {
@@ -856,10 +810,6 @@ export const FilteredPackages = () => {
             );
           }
 
-          // if (filters.sortBy) {
-          //   params.set("sortBy", filters.sortBy);
-          // }
-
           if (filters.sortOrder) {
             params.set(
               "sortOrder",
@@ -870,17 +820,15 @@ export const FilteredPackages = () => {
           const queryString =
             params.toString();
 
-          const endpoint =
-            queryString
-              ? `/packages/slug/${slug}?${queryString}`
-              : `/packages/${slug}`;
+          const endpoint = queryString
+            ? `/packages/slug/${slug}?${queryString}`
+            : `/packages/${slug}`;
 
           const res =
             await api(endpoint);
 
           setPackages(
-            res?.data?.data?.packages ||
-              []
+            res?.data?.data?.packages || []
           );
         } catch (error) {
           console.error(
@@ -911,7 +859,7 @@ export const FilteredPackages = () => {
 
   return (
     <section className="bg-white">
-      <div className="max-w-7xl mx-auto py-16 px-4">
+      <div className="mx-auto max-w-7xl px-4 py-16">
         <SectionHeader
           title="Explore Packages"
           description="Choose what suits your needs."
@@ -936,19 +884,25 @@ export const FilteredPackages = () => {
               Something went wrong
             </h3>
 
-            <p className="text-gray-500 mt-2">
+            <p className="mt-2 text-gray-500">
               {error}
             </p>
           </div>
         ) : packages.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-            {packages.map((pkg) => (
-              <div key={pkg.id}>
+          <div className="mt-8">
+            <Carousel
+              items={packages}
+              gap={20}
+              showArrows={true}
+              desktopItems={3}
+              tabletItems={2}
+              mobileItems={1}
+              renderItem={(pkg) => (
                 <PackageCard
                   travelPackage={pkg}
                 />
-              </div>
-            ))}
+              )}
+            />
           </div>
         ) : (
           <div className="py-16 text-center">
@@ -956,7 +910,7 @@ export const FilteredPackages = () => {
               No packages found
             </h3>
 
-            <p className="text-gray-500 mt-2">
+            <p className="mt-2 text-gray-500">
               Try changing your filters.
             </p>
           </div>
