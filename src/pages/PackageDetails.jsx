@@ -153,20 +153,18 @@ function PackageGallery({ images = [], title = "Package" }) {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${
-                    isActive
+                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${isActive
                       ? "border-black ring-2 ring-black ring-offset-2"
                       : "border-black/10 hover:border-black/40"
-                  }`}
+                    }`}
                 >
                   <img
                     src={image}
                     alt={`${title} ${index + 1}`}
-                    className={`h-full w-full object-cover transition duration-500 ${
-                      isActive
+                    className={`h-full w-full object-cover transition duration-500 ${isActive
                         ? "scale-105"
                         : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
-                    }`}
+                      }`}
                   />
 
                   {isActive && <div className="absolute inset-0 bg-black/10" />}
@@ -371,11 +369,10 @@ function PackageGallery({ images = [], title = "Package" }) {
                     key={`${image}-modal-${index}`}
                     type="button"
                     onClick={() => setModalIndex(index)}
-                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${
-                      isActive
+                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${isActive
                         ? "border-white ring-2 ring-white/30"
                         : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
-                    }`}
+                      }`}
                   >
                     <img
                       src={image}
@@ -409,6 +406,7 @@ function PackageDetails() {
     overview: true,
     itinerary: false,
     included: false,
+    tandc: false,
   });
 
   const toggleSection = (key) =>
@@ -683,7 +681,7 @@ function PackageDetails() {
 
               {itineraries.length > 0 && (
                 <CollapsibleSection
-                  title="Day by day"
+                  title="Itinerary"
                   description="A closer look at how your trip unfolds."
                   isOpen={openSections.itinerary}
                   onToggle={() => toggleSection("itinerary")}
@@ -850,6 +848,11 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
+              <CollapsibleSection title="Terms and Conditions"
+                description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."
+                isOpen={openSections.tandc}
+                onToggle={() => toggleSection("tandc")}
+                className="my-5"><p className="h-10"><Link to="terms-condition"  className="px-6 py-2 bg-black text-beige rounded-lg font-mont max-w-3xl text-sm sm:text-base">Terms and Conditions</Link></p></CollapsibleSection>
             </div>
 
             {/* RIGHT — BOOKING CARD */}
@@ -968,9 +971,8 @@ function CollapsibleSection({
         </div>
 
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
+            }`}
         >
           <ChevronDown size={16} />
         </span>
