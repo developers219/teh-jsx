@@ -48,21 +48,15 @@ function PersonalizedHolidayPlan() {
           >
             <h2
               className="
-                max-w-[500px]
-                font-serif
-                text-[46px]
+                font-cg
+                text-[clamp(2rem,4vw,3rem)]
                 font-medium
                 leading-[0.96]
                 tracking-[-2.5px]
                 text-[#080b0b]
-                sm:text-[52px]
-                md:text-[57px]
-                lg:text-[56px]
-                xl:text-[60px]
               "
             >
-              Let’s plan your
-              <span className="block">next journey.</span>
+              Let’s plan your next journey.
             </h2>
             <div className="size-80 self-center mt-8">
               <img src={Contact} alt="contact" className="" />
