@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
   ArrowRight,
@@ -405,6 +405,15 @@ function PackageDetails() {
   const [errorMessage, setErrorMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
+  const [openSections, setOpenSections] = useState({
+    overview: true,
+    itinerary: false,
+    included: false,
+  });
+
+  const toggleSection = (key) =>
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+
   useEffect(() => {
     async function fetchPackageDetails() {
       if (!slug) {
@@ -573,9 +582,11 @@ function PackageDetails() {
   return (
     <main className="min-h-screen bg-white text-black">
       {isOpen && <LeadCapturePopup isOpen={isOpen} setIsOpen={setIsOpen} />}
+
       {/* =====================================================
           HERO / BREADCRUMB
       ====================================================== */}
+
       <section className="bg-black h-40"></section>
       <section className="border-b border-black/10">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
@@ -596,17 +607,13 @@ function PackageDetails() {
           MAIN
       ====================================================== */}
 
-      <section className="px-5 py-7 sm:px-8 sm:py-10 lg:px-12 lg:py-14">
+      <section className="px-5 sm:px-8 lg:px-12">
         <div className="mx-auto max-w-7xl">
-          {/* =================================================
-              GALLERY
-          ================================================== */}
-
           {/* =================================================
               INTRO + BOOKING
           ================================================== */}
 
-          <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
+          <div className="mt-6 grid gap-12 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-20">
             {/* LEFT */}
             <div>
               <motion.div initial="hidden" animate="visible" variants={stagger}>
@@ -617,21 +624,21 @@ function PackageDetails() {
                   className="flex flex-wrap gap-2 font-mont font-medium"
                 >
                   {themeName && (
-                    <span className="flex items-center gap-1.5 rounded-full bg-beige px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
+                    <span className="flex items-center gap-1.5 rounded-full bg-black px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
                       <Sparkles size={12} />
                       {themeName}
                     </span>
                   )}
 
                   {travellerTypeName && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] uppercase tracking-[0.16em]">
+                    <span className="flex items-center gap-1.5 rounded-full border bg-black px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
                       <Users size={12} />
                       {travellerTypeName}
                     </span>
                   )}
 
                   {durationName && (
-                    <span className="flex items-center gap-1.5 rounded-full border border-black/15 px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-black">
+                    <span className="flex items-center gap-1.5 rounded-full bg-black border px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
                       <Clock3 size={12} />
                       {durationName}
                     </span>
@@ -642,7 +649,7 @@ function PackageDetails() {
 
                 <motion.h1
                   variants={reveal}
-                  className="my-7 max-w-5xl text-[clamp(2.8rem,5vw,3.75rem)] font-black leading-[0.9] tracking-[-0.06em]"
+                  className="my-7 max-w-5xl text-[clamp(2rem,5vw,2.8rem)] font-black leading-[0.9] tracking-[-0.06em]"
                 >
                   {title}
                 </motion.h1>
@@ -658,92 +665,65 @@ function PackageDetails() {
                 {/* Overview */}
 
                 {overview && (
-                  <motion.p
-                    variants={reveal}
-                    className="font-mont mt-7 max-w-3xl text-base leading-8 text-black/55 sm:text-lg"
-                  >
-                    {overview}
-                  </motion.p>
+                  <motion.div variants={reveal} className="mt-7">
+                    <CollapsibleSection
+                      title="Overview"
+                      isOpen={openSections.overview}
+                      onToggle={() => toggleSection("overview")}
+                    >
+                      <p className="font-mont max-w-3xl text-sm text-black/55 sm:text-base">
+                        {overview}
+                      </p>
+                    </CollapsibleSection>
+                  </motion.div>
                 )}
-
-                {/* Quick stats */}
-
-                {/* <motion.div
-                variants={reveal}
-                className="mt-10 grid grid-cols-2 border-y border-black/10 sm:grid-cols-3"
-              >
-                <QuickStat
-                  icon={<CalendarDays size={18} />}
-                  label="Duration"
-                  value={durationName || `${durationDaysCount} Days`}
-                />
-
-                <QuickStat
-                  icon={<Users size={18} />}
-                  label="Designed for"
-                  value={travellerTypeName || "Travellers"}
-                />
-
-                <QuickStat
-                  icon={<Compass size={18} />}
-                  label="Destinations"
-                  value={`${destinations.length} places`}
-                />
-              </motion.div> */}
               </motion.div>
-              {itineraries.length > 0 && (
-                <motion.section
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
-                  variants={stagger}
-                  className="mt-5 border-t border-black/10 pt-5"
-                >
-                  <SectionHeading
-                    eyebrow="Your journey"
-                    title="Day by day"
-                    description="A closer look at how your trip unfolds."
-                  />
 
-                  <div className="relative mt-12 font-mont">
+              {/* Itinerary */}
+
+              {itineraries.length > 0 && (
+                <CollapsibleSection
+                  title="Day by day"
+                  description="A closer look at how your trip unfolds."
+                  isOpen={openSections.itinerary}
+                  onToggle={() => toggleSection("itinerary")}
+                  className="mt-5"
+                >
+                  <div className="relative font-mont">
                     {/* Timeline line */}
-                    <div className="absolute left-[23px] top-0 hidden h-full w-px bg-black/10 md:block" />
+                    <div className="absolute left-[11px] top-0 hidden h-full w-px bg-black/10 md:block" />
 
                     <div className="space-y-4">
                       {itineraries.map((day) => (
-                        <motion.div
+                        <div
                           key={day.id}
-                          variants={reveal}
-                          className="relative grid gap-5 md:grid-cols-[48px_1fr]"
+                          className="relative grid md:grid-cols-[48px_1fr]"
                         >
                           {/* Day number */}
-                          <div className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
-                            {String(day.dayNumber).padStart(2, "0")}
+                          <div className="relative z-10 flex size-6 top-4 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
+                            {String(day.dayNumber)}
                           </div>
 
                           {/* Day card */}
-                          <details className="group rounded-[26px] border border-black/10 transition hover:border-black/30">
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-6 sm:p-7">
+                          <details className="group rounded-lg border border-black/10 transition hover:border-black/30">
+                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-2">
                               <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                                  Day {day.dayNumber}
-                                </p>
-
-                                <h3 className="mt-1 text-xl font-semibold tracking-tight sm:text-2xl">
+                                <h3 className="text-sm font-semibold tracking-tight sm:text-base">
                                   {day.title}
                                 </h3>
                               </div>
+                              <div className="flex gap-2">
+                                {day.overnightLocation && (
+                                  <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
+                                    <MapPin size={13} />
+                                    {day.overnightLocation}
+                                  </div>
+                                )}
 
-                              {day.overnightLocation && (
-                                <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
-                                  <MapPin size={13} />
-                                  {day.overnightLocation}
+                                {/* Chevron */}
+                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
+                                  <ChevronDown size={16} />
                                 </div>
-                              )}
-
-                              {/* Chevron */}
-                              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
-                                <ChevronDown size={16} />
                               </div>
                             </summary>
 
@@ -782,66 +762,30 @@ function PackageDetails() {
                                   ))}
                                 </ul>
                               )}
-
-                              {/* Optional stay + meals */}
-                              {/* {(day.hotelName || day.meals) && (
-                            <div className="mt-6 grid gap-3 border-t border-black/10 pt-5 sm:grid-cols-2">
-                              {day.hotelName && (
-                                <InfoPill
-                                  icon={<Hotel size={15} />}
-                                  label="Stay"
-                                  value={day.hotelName}
-                                />
-                              )}
-
-                              {day.meals && (
-                                <InfoPill
-                                  icon={<Check size={15} />}
-                                  label="Meals"
-                                  value={day.meals}
-                                />
-                              )}
-                            </div>
-                          )} */}
                             </div>
                           </details>
-                        </motion.div>
+                        </div>
                       ))}
                     </div>
                   </div>
-                </motion.section>
+                </CollapsibleSection>
               )}
 
-              {/* =====================================================
-              HOTELS + FLIGHTS
-          ====================================================== */}
-
-              {/* =====================================================
-              INCLUSIONS / EXCLUSIONS
-          ====================================================== */}
+              {/* Inclusions / Exclusions */}
 
               {(inclusions.length > 0 || exclusions.length > 0) && (
-                <motion.section
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, amount: 0.1 }}
-                  variants={stagger}
-                  className="mt-5 border-t border-black/10 pt-5"
+                <CollapsibleSection
+                  title="What's included"
+                  description="Know exactly what is and isn't covered in your package."
+                  isOpen={openSections.included}
+                  onToggle={() => toggleSection("included")}
+                  className="my-5"
                 >
-                  <SectionHeading
-                    eyebrow="Good to know"
-                    title="What's included"
-                    description="Know exactly what is and isn't covered in your package."
-                  />
-
-                  <div className="mt-10 grid gap-16 md:grid-cols-2">
+                  <div className="grid gap-16 md:grid-cols-2">
                     {/* INCLUSIONS */}
 
                     {inclusions.length > 0 && (
-                      <motion.div
-                        variants={reveal}
-                        className="rounded-[28px] bg-black p-7 text-white sm:p-9"
-                      >
+                      <div className="rounded-[28px] bg-black p-7 text-white sm:p-9">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
                             <Check size={18} />
@@ -867,16 +811,13 @@ function PackageDetails() {
                             </div>
                           ))}
                         </div>
-                      </motion.div>
+                      </div>
                     )}
 
                     {/* EXCLUSIONS */}
 
                     {exclusions.length > 0 && (
-                      <motion.div
-                        variants={reveal}
-                        className="rounded-[28px] border border-black/10 p-7 sm:p-9"
-                      >
+                      <div className="rounded-[28px] border border-black/10 p-7 sm:p-9">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-beige text-white">
                             <X size={18} />
@@ -904,12 +845,14 @@ function PackageDetails() {
                             </div>
                           ))}
                         </div>
-                      </motion.div>
+                      </div>
                     )}
                   </div>
-                </motion.section>
+                </CollapsibleSection>
               )}
             </div>
+
+            {/* RIGHT — BOOKING CARD */}
             <div>
               <motion.aside
                 initial={{ opacity: 0, y: 35 }}
@@ -918,10 +861,10 @@ function PackageDetails() {
                   duration: 0.7,
                   delay: 0.15,
                 }}
-                className="sticky lg:top-8 right-80 font-mont"
+                className="mb-5 sticky lg:top-8 right-80 font-mont"
               >
                 <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                  <div className="bg-beige/90 px-7 py-6 text-white">
+                  <div className="bg-black/90 px-7 py-6 text-white">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
@@ -971,140 +914,21 @@ function PackageDetails() {
                       />
                     </div>
 
-                    <Link
+                    <button
+                      type="button"
                       onClick={() => setIsOpen(true)}
-                      className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-beige px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:shadow-xl"
+                      className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-4 text-sm font-semibold text-beige transition-all duration-300 hover:shadow-xl"
                     >
-                      <span className="flex items-center justify-center rounded-full text-white transition-transform duration-300 group-hover:translate-x-1">
+                      <span className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
                         <Phone size={17} />
                       </span>
                       <span>Plan this trip</span>
-                    </Link>
+                    </button>
                   </div>
                 </div>
               </motion.aside>
             </div>
-
-            {/* =================================================
-                BOOKING CARD
-            ================================================== */}
           </div>
-
-          {/* =====================================================
-              DESTINATIONS
-          ====================================================== */}
-
-          {/* {destinations.length > 0 && (
-            <motion.section
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              variants={stagger}
-              className="mt-5 border-t border-black/10 pt-5"
-            >
-              <SectionHeading
-                eyebrow="Where you'll go"
-                title="Destinations"
-                description="Explore the places that make this journey special."
-              />
-
-              <div className="mt-10 grid gap-4 md:grid-cols-2">
-                {destinations.map((destination, index) => (
-                  <motion.div
-                    key={`${destination.destinationId}-${index}`}
-                    variants={reveal}
-                    className="group relative overflow-hidden rounded-[26px] border border-black/10 p-6 transition-all duration-500 hover:border-black hover:shadow-xl"
-                  >
-                    <div className="flex items-start justify-between gap-5">
-                      <div className="flex gap-4">
-                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-black text-white">
-                          <MapPin size={19} />
-                        </div>
-
-                        <div>
-                          <p className="text-xs font-black uppercase tracking-[0.15em] text-black/35">
-                            {destination.categoryName}
-                          </p>
-
-                          <h3 className="mt-1 text-xl font-black">
-                            {destination.destinationName}
-                          </h3>
-                        </div>
-                      </div>
-
-                      {destination.isPrimary === 1 && (
-                        <span className="rounded-full bg-black px-3 py-1 text-[9px] font-black uppercase tracking-wider text-white">
-                          Featured
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="mt-6 flex items-center justify-between border-t border-black/10 pt-4">
-                      <span className="text-xs text-black/40">
-                        {destination.destinationSlug}
-                      </span>
-
-                      <ArrowRight
-                        size={16}
-                        className="transition-transform duration-300 group-hover:translate-x-1"
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.section>
-          )} */}
-
-          {/* =====================================================
-              ITINERARY
-          ====================================================== */}
-
-          {/* =====================================================
-              FINAL CTA
-          ====================================================== */}
-
-          <motion.section
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{ once: true, amount: 0.2 }}
-            transition={{ duration: 0.7 }}
-            className="relative mt-5 overflow-hidden rounded-[34px] bg-black font-mont px-7 py-14 text-white sm:px-12 sm:py-20"
-          >
-            <div className="relative z-10 max-w-2xl">
-              <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/40">
-                <Sparkles size={13} />
-                Make it yours
-              </div>
-
-              <h2 className="mt-4 text-4xl font-black leading-[0.95] tracking-[-0.04em] sm:text-2xl">
-                Ready to experience{" "}
-                <span className="text-white/35">{title}?</span>
-              </h2>
-
-              <p className="mt-6 max-w-xl text-sm leading-7 text-white/55 sm:text-base">
-                Tell us your preferred dates and requirements. Our travel
-                experts can customise this journey around the way you want to
-                travel.
-              </p>
-
-              <Link
-                to={`/booking/${travelPackage.id}`}
-                className="group mt-8 inline-flex items-center gap-4 rounded-full bg-white/20 px-7 py-4 text-sm font-black text-black transition hover:shadow-2xl"
-              >
-                Start planning
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-white transition-transform duration-300 group-hover:translate-x-1">
-                  <ArrowRight size={15} />
-                </span>
-              </Link>
-            </div>
-            {/* 
-            <div className="pointer-events-none absolute -bottom-24 -right-10 select-none text-[170px] font-black leading-none tracking-[-0.08em] text-white/[0.035] sm:text-[240px]">
-              GO
-            </div> */}
-          </motion.section>
         </div>
       </section>
     </main>
@@ -1115,21 +939,58 @@ function PackageDetails() {
    SMALL COMPONENTS
 ============================================================ */
 
-function QuickStat({ icon, label, value }) {
+function CollapsibleSection({
+  title,
+  description,
+  isOpen,
+  onToggle,
+  children,
+  className = "",
+}) {
   return (
-    <div className="flex items-center gap-3 border-r border-black/10 px-1 py-6 first:pl-0 last:border-r-0 sm:px-6">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white">
-        {icon}
-      </div>
+    <section className={`border-t border-black/10 pt-5 ${className}`}>
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={isOpen}
+        className="flex w-full items-center justify-between gap-4 text-left"
+      >
+        <div className="max-w-2xl">
+          <h2 className="text-base font-black tracking-[-0.04em] sm:text-2xl">
+            {title}
+          </h2>
 
-      <div className="min-w-0">
-        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-black/35">
-          {label}
-        </p>
+          {description && (
+            <p className="mt-1 font-mont text-sm leading-7 text-black/50 sm:text-base">
+              {description}
+            </p>
+          )}
+        </div>
 
-        <p className="mt-1 truncate text-xs font-bold sm:text-sm">{value}</p>
-      </div>
-    </div>
+        <span
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 ${
+            isOpen ? "rotate-180" : ""
+          }`}
+        >
+          <ChevronDown size={16} />
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            key="content"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="pt-4">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </section>
   );
 }
 
@@ -1141,79 +1002,6 @@ function BookingRow({ label, value }) {
       <span className="text-right text-sm font-bold">{value || "—"}</span>
     </div>
   );
-}
-
-function InfoPill({ icon, label, value }) {
-  return (
-    <div className="flex items-center gap-3 rounded-xl border border-black/10 bg-white px-4 py-3">
-      <div className="text-black/50">{icon}</div>
-
-      <div className="min-w-0">
-        <p className="text-[9px] font-black uppercase tracking-[0.15em] text-black/35">
-          {label}
-        </p>
-
-        <p className="truncate text-xs font-bold">{value}</p>
-      </div>
-    </div>
-  );
-}
-
-function DateBox({ label, value }) {
-  return (
-    <div className="rounded-xl border border-black/10 bg-white p-3">
-      <p className="text-[9px] font-black uppercase tracking-[0.14em] text-black/35">
-        {label}
-      </p>
-
-      <p className="mt-1 text-xs font-bold">{value}</p>
-    </div>
-  );
-}
-
-function SectionHeading({ eyebrow, title, description }) {
-  return (
-    <div className="max-w-2xl">
-      <p className="text-[10px] font-mont font-medium uppercase tracking-[0.4em] mt-5 text-black/35">
-        {eyebrow}
-      </p>
-
-      <h2 className="mt-3 text-4xl font-black tracking-[-0.04em] sm:text-5xl">
-        {title}
-      </h2>
-
-      {description && (
-        <p className="mt-4 font-mont text-sm leading-7 text-black/50 sm:text-base">
-          {description}
-        </p>
-      )}
-    </div>
-  );
-}
-
-/* ============================================================
-   DATE HELPERS
-============================================================ */
-
-function formatDate(date) {
-  if (!date) return "—";
-
-  return new Date(date).toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-}
-
-function formatDateTime(date) {
-  if (!date) return "—";
-
-  return new Date(date).toLocaleString("en-IN", {
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-  });
 }
 
 export default PackageDetails;
