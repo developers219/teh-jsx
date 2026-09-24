@@ -698,107 +698,70 @@ export const FilteredPackages = () => {
 
         const params = new URLSearchParams();
 
-          if (filters.minPrice) {
-            params.set(
-              "minPrice",
-              filters.minPrice
-            );
-          }
-
-          if (filters.maxPrice) {
-            params.set(
-              "maxPrice",
-              filters.maxPrice
-            );
-          }
-
-          if (filters.themeId) {
-            params.set(
-              "themeId",
-              filters.themeId
-            );
-          }
-
-          if (filters.durationId) {
-            params.set(
-              "durationId",
-              filters.durationId
-            );
-          }
-
-          if (filters.sortOrder) {
-            params.set(
-              "sortOrder",
-              filters.sortOrder
-            );
-          }
-
-          const queryString =
-            params.toString();
-
-          const endpoint = queryString
-            ? `/packages/slug/${slug}?${queryString}`
-            : `/packages/${slug}`;
-
-          const res =
-            await api(endpoint);
-
-          setPackages(
-            res?.data?.data?.packages || []
+        if (filters.minPrice) {
+          params.set(
+            "minPrice",
+            filters.minPrice
           );
-        } catch (error) {
-          console.error(
-            "Failed to fetch packages:",
-            error
-          );
-
-          setError(
-            "Failed to load packages."
-          );
-
-          setPackages([]);
-        } finally {
-          setLoading(false);
         }
 
         if (filters.maxPrice) {
-          params.set("maxPrice", filters.maxPrice);
+          params.set(
+            "maxPrice",
+            filters.maxPrice
+          );
         }
 
         if (filters.themeId) {
-          params.set("themeId", filters.themeId);
+          params.set(
+            "themeId",
+            filters.themeId
+          );
         }
 
         if (filters.durationId) {
-          params.set("durationId", filters.durationId);
+          params.set(
+            "durationId",
+            filters.durationId
+          );
         }
-
-        // if (filters.sortBy) {
-        //   params.set("sortBy", filters.sortBy);
-        // }
 
         if (filters.sortOrder) {
-          params.set("sortOrder", filters.sortOrder);
+          params.set(
+            "sortOrder",
+            filters.sortOrder
+          );
         }
 
-        const queryString = params.toString();
+        const queryString =
+          params.toString();
 
         const endpoint = queryString
           ? `/packages/slug/${slug}?${queryString}`
           : `/packages/${slug}`;
 
-        const res = await api(endpoint);
+        const res =
+          await api(endpoint);
 
-        setPackages(res?.data?.data?.packages || []);
+        setPackages(
+          res?.data?.data?.packages || []
+        );
       } catch (error) {
-        console.error("Failed to fetch packages:", error);
+        console.error(
+          "Failed to fetch packages:",
+          error
+        );
 
-        setError("Failed to load packages.");
+        setError(
+          "Failed to load packages."
+        );
 
         setPackages([]);
       } finally {
         setLoading(false);
       }
+
+
     };
 
     fetchPackages();
