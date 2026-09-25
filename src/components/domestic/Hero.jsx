@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import RequestCallback from "../ui/RequestCallback";
+import { MessageCircle, Phone } from "lucide-react";
 
 const slides = [
   {
@@ -20,6 +22,7 @@ const slides = [
 ];
 
 export default function Hero() {
+   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [direction, setDirection] = useState("right");
 
@@ -140,15 +143,28 @@ export default function Hero() {
 
             {/* CTA */}
 
-            <div className="mt-7">
-              <a
-                href="/destinations"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
-              >
-                Request a callback
-                <span className="text-lg leading-none">→</span>
-              </a>
-            </div>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+  {/* REQUEST CALLBACK */}
+  <button
+    type="button"
+    onClick={() => setIsCallbackOpen(true)}
+    className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-mont font-semibold text-sm text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
+  >
+    <Phone size={17} strokeWidth={2} />
+    Request a callback
+  </button>
+
+  {/* WHATSAPP */}
+  <a
+    href="https://wa.me/919000000000"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-flex items-center gap-2 rounded-full bg-beige px-7 py-3.5 font-mont font-semibold text-sm text-black shadow-xl transition-all duration-300 hover:-translate-y-1 "
+  >
+    <MessageCircle size={18} strokeWidth={2} />
+    Chat With Us
+  </a>
+</div>
           </div>
         </div>
       </div>
@@ -175,6 +191,14 @@ export default function Hero() {
           />
         ))}
       </div>
+       {/* =====================================================
+            REQUEST CALLBACK POPUP
+        ====================================================== */}
+
+      <RequestCallback
+        isOpen={isCallbackOpen}
+        setIsOpen={setIsCallbackOpen}
+      />
     </section>
   );
 }
