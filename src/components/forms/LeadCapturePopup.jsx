@@ -26,7 +26,7 @@ import Image4 from "../../assets/images/Image4.png";
 const images = [Image1, Image2, Image3, Image4];
 const POPUP_DISMISSED_KEY = "trailvista_lead_capture_popup_dismissed";
 const POPUP_SUBMITTED_KEY = "trailvista_lead_capture_popup_submitted";
-const POPUP_DELAY_MS = 0;
+const POPUP_DELAY_MS = 15000;
 const popupDefaults = {
   name: "",
   email: "",
