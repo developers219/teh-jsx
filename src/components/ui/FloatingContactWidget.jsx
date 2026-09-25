@@ -1,12 +1,12 @@
-import { useState } from "react";
-import { ChevronUp, MessageCircle, Phone, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronUp, MessageCircle, Pen, Phone, X } from "lucide-react";
 import LeadCapturePopup from "../forms/LeadCapturePopup";
 
 const WHATSAPP_NUMBER = "919000000000";
 const CALLBACK_PHONE_NUMBER = "+919000000000";
 
-function FloatingContactWidget() {
-  const [isOpen, setIsOpen] = useState(false);
+function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
+  // const [] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
 
   function handleToggle() {
@@ -17,6 +17,8 @@ function FloatingContactWidget() {
     setIsOpen(false);
   }
 
+  useEffect(() => {}, []);
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
       <div
@@ -25,7 +27,7 @@ function FloatingContactWidget() {
       >
         <ChevronUp />
       </div>
-      {isOpen ? (
+      {!isMenuOpen && isOpen ? (
         <div className="w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <div className="flex items-center justify-end border-b border-slate-100 px-3 py-2">
             <button
@@ -39,12 +41,19 @@ function FloatingContactWidget() {
           </div>
 
           <div className="flex flex-col gap-1 p-2">
+            <a
+              href={``}
+              className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+            >
+              <Phone size={18} className="text-beige" />
+              Call Now
+            </a>
             <p
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
               onClick={() => setIsPopUpOpen(true)}
             >
-              <Phone size={18} className="text-beige" />
-              Plan a Trip
+              <Pen size={18} className="text-beige" />
+              Submit an enquiry
             </p>
 
             <a
