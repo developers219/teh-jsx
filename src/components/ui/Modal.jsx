@@ -10,7 +10,7 @@ const Modal = ({ children, isOpen, setIsOpen }) => {
       onClick={() => setIsOpen(false)}
     >
       <div
-        className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white shadow-2xl"
+        className="relative max-h-[90vh] w-fit overflow-y-auto rounded-2xl shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -22,7 +22,7 @@ const Modal = ({ children, isOpen, setIsOpen }) => {
           <X size={20} />
         </button>
 
-        {children}
+        <div>{children}</div>
       </div>
     </div>,
     document.body,

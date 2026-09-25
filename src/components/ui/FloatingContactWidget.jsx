@@ -20,12 +20,12 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
   useEffect(() => {}, []);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-2">
+    <div className="fixed bottom-6 font-mont right-6 z-50 flex flex-col items-end gap-1">
       <div
-        className="bg-beige text-white mr-3 rounded-full p-2 cursor-pointer"
+        className="bg-white text-black mix-blend-difference mr-4 rounded-full p-1 cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
-        <ChevronUp />
+        <ChevronUp size={20} />
       </div>
       {!isMenuOpen && isOpen ? (
         <div className="w-64 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">

@@ -22,6 +22,7 @@ import Image1 from "../../assets/images/Image1.png";
 import Image2 from "../../assets/images/Image2.png";
 import Image3 from "../../assets/images/Image3.png";
 import Image4 from "../../assets/images/Image4.png";
+import Modal from "../ui/Modal";
 
 const images = [Image1, Image2, Image3, Image4];
 const POPUP_DISMISSED_KEY = "trailvista_lead_capture_popup_dismissed";
@@ -152,28 +153,33 @@ function LeadCapturePopup({ isOpen, setIsOpen }) {
   };
 
   return (
-    <div className="bg-black/50 backdrop-blur-xs h-auto fixed inset-0 z-50 flex justify-center items-center">
-      <div
-        className="h-[90vh] overflow-scroll p-6 w-[90%] lg:w-[55%] relative rounded-2xl"
-        style={{ background: `url(${ContactBg})`, backgroundSize: "cover" }}
-      >
-        {/* <img className="absolute inset-0 object-contain" src={ContactBg} /> */}
-        <div
-          className="relative flex mb-8 justify-end cursor-pointer"
-          onClick={suppressPopup}
-        >
-          <CloseIcon />
-        </div>
-        <div className="relative flex lg:flex-row flex-col lg:gap-0 gap-8">
-          <div className="flex-1 flex items-center justify-center">
-            <img src={images[step - 1]} alt="steps" className="w-full" />
-          </div>
-          <div className="flex-1">
-            <LeadForm func={setStep} />
-          </div>
-        </div>
+    // <div className="bg-black/50 backdrop-blur-xs h-auto fixed inset-0 z-50 flex justify-center items-center">
+    //   <div
+    //     className="h-[90vh] overflow-scroll p-6 w-[90%] lg:w-[55%] relative rounded-2xl"
+    //     style={{ background: `url(${ContactBg})`, backgroundSize: "cover" }}
+    //   >
+    //     {/* <img className="absolute inset-0 object-contain" src={ContactBg} /> */}
+    //     <div
+    //       className="relative flex mb-8 justify-end cursor-pointer"
+    //       onClick={suppressPopup}
+    //     >
+    //       <CloseIcon />
+    //     </div>
+    //     <div className="relative flex lg:flex-row flex-col lg:gap-0 gap-8">
+    //       <div className="flex-1 flex items-center justify-center">
+    //         <img src={images[step - 1]} alt="steps" className="w-full" />
+    //       </div>
+    //       <div className="flex-1">
+    //         <LeadForm func={setStep} />
+    //       </div>
+    //     </div>
+    //   </div>
+    // </div>
+    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+      <div className="p-8 bg-white">
+        <LeadForm func={setStep} />
       </div>
-    </div>
+    </Modal>
   );
 }
 export default LeadCapturePopup;
