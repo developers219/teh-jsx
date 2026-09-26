@@ -102,7 +102,7 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
           hover:shadow-[0_10px_35px_rgba(0,0,0,0.08)]
           cursor-pointer
         "
-                  onClick={() => setIsCallbackOpen(true)}
+                  onClick={handleRequestCallback}
                 >
                   <span
                     className={`
