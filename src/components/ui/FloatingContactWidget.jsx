@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronUp, MessageCircle, Pen, Phone, X } from "lucide-react";
 import LeadCapturePopup from "../forms/LeadCapturePopup";
 
@@ -6,8 +6,13 @@ const WHATSAPP_NUMBER = "919000000000";
 const CALLBACK_PHONE_NUMBER = "+919000000000";
 
 function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
-  // const [] = useState(false);
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
+  const autoOpenCount = useRef(0);
+  const isMenuOpenRef = useRef(isMenuOpen);
+  const isOpenRef = useRef(isOpen);
+  const menuIntervalRef = useRef(null);
+  const widgetIntervalRef = useRef(null);
+  const initialTimeoutRef = useRef(null);
 
   function handleToggle() {
     setIsOpen((prev) => !prev);
@@ -17,7 +22,48 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
     setIsOpen(false);
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    isMenuOpenRef.current = isMenuOpen;
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useEffect(() => {
+    initialTimeoutRef.current = setTimeout(() => {
+      menuIntervalRef.current = setInterval(() => {
+        if (isMenuOpenRef.current) {
+          return;
+        }
+
+        clearInterval(menuIntervalRef.current);
+        menuIntervalRef.current = null;
+
+        widgetIntervalRef.current = setInterval(() => {
+          if (isOpenRef.current) {
+            return;
+          }
+
+          if (autoOpenCount.current < 3) {
+            setIsOpen(true);
+            autoOpenCount.current += 1;
+          }
+
+          if (autoOpenCount.current >= 3) {
+            clearInterval(widgetIntervalRef.current);
+            widgetIntervalRef.current = null;
+          }
+        }, 2000);
+      }, 2000);
+    }, 15000);
+
+    return () => {
+      clearTimeout(initialTimeoutRef.current);
+      clearInterval(menuIntervalRef.current);
+      clearInterval(widgetIntervalRef.current);
+    };
+  }, []);
 
   return (
     <div className="fixed bottom-6 font-mont right-6 z-50 flex flex-col items-end gap-1">

@@ -7,7 +7,7 @@ import LeadGenerationLinks from "../components/ui/LeadGenerationLinks";
 import { useEffect, useState } from "react";
 function MainLayout() {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
-  const [isWidgetOpen, setIsWidgetOpen] = useState(true);
+  const [isWidgetOpen, setIsWidgetOpen] = useState(false);
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsPopUpOpen(true);

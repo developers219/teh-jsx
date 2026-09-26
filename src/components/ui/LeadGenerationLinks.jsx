@@ -3,29 +3,18 @@ import { Phone, PhoneCall, Mail, ArrowRight, Clock3 } from "lucide-react";
 
 import Modal from "./Modal";
 import RequestCallback from "./RequestCallback";
+import LeadCapturePopUp from "../forms/LeadCapturePopup";
 import Woman from "../../assets/images/woman.png";
-
-const contactOptions = [
-  {
-    title: "Call Now",
-    description: "Speak directly with our travel experts",
-    icon: Phone,
-  },
-  {
-    title: "Request a Callback",
-    description: "We'll call you at your preferred time",
-    icon: Clock3,
-  },
-  {
-    title: "Submit Enquiry",
-    description: "Tell us your travel plans & we'll get back",
-    icon: Mail,
-  },
-];
 
 const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
   // State for the second popup
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
+  const [isLeadOpen, setIsLeadOpen] = useState(false);
+
+  const handleCall = () => {
+    setIsOpen(false);
+    window.open("tel:+919876543210", "_self");
+  };
 
   const handleRequestCallback = () => {
     // Close the first popup
@@ -34,6 +23,35 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
     // Open the callback popup
     setIsCallbackOpen(true);
   };
+
+  const handleLeadPopUp = () => {
+    // Close the first popup
+    setIsOpen(false);
+
+    // Open the callback popup
+    setIsLeadOpen(true);
+  };
+
+  const contactOptions = [
+    {
+      title: "Call Now",
+      description: "Speak directly with our travel experts",
+      icon: Phone,
+      func: handleCall,
+    },
+    {
+      title: "Request a Callback",
+      description: "We'll call you at your preferred time",
+      icon: Clock3,
+      func: handleRequestCallback,
+    },
+    {
+      title: "Submit Enquiry",
+      description: "Tell us your travel plans & we'll get back",
+      icon: Mail,
+      func: handleLeadPopUp,
+    },
+  ];
 
   return (
     <>
@@ -87,11 +105,12 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
             </div>
 
             <div className="space-y-4">
-              {contactOptions.map(({ title, description, icon: Icon }) => (
-                <button
-                  key={title}
-                  type="button"
-                  className="
+              {contactOptions.map(
+                ({ title, description, icon: Icon, func }) => (
+                  <button
+                    key={title}
+                    type="button"
+                    className="
           group flex w-full items-center gap-5
           rounded-[22px] border border-black/[0.08]
           bg-white p-5 text-left
@@ -102,30 +121,31 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
           hover:shadow-[0_10px_35px_rgba(0,0,0,0.08)]
           cursor-pointer
         "
-                  onClick={handleRequestCallback}
-                >
-                  <span
-                    className={`
+                    onClick={func}
+                  >
+                    <span
+                      className={`
             flex h-14 w-14 shrink-0 items-center justify-center
             rounded-full bg-black/5 text-black
             transition-all duration-300
             group-hover:bg-black group-hover:text-white
           `}
-                  >
-                    <Icon size={22} strokeWidth={1.8} />
-                  </span>
-
-                  <span className="min-w-0 flex-1">
-                    <span className="block text-[18px] font-semibold text-black">
-                      {title}
+                    >
+                      <Icon size={22} strokeWidth={1.8} />
                     </span>
 
-                    <span className="mt-1 block text-sm text-black/50">
-                      {description}
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[18px] font-semibold text-black">
+                        {title}
+                      </span>
+
+                      <span className="mt-1 block text-sm text-black/50">
+                        {description}
+                      </span>
                     </span>
-                  </span>
-                </button>
-              ))}
+                  </button>
+                ),
+              )}
             </div>
 
             {/* Bottom reassurance */}
@@ -142,6 +162,7 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
           This MUST be outside the first Modal
       ========================================================= */}
       <RequestCallback isOpen={isCallbackOpen} setIsOpen={setIsCallbackOpen} />
+      <LeadCapturePopUp isOpen={isLeadOpen} setIsOpen={setIsLeadOpen} />
     </>
   );
 };

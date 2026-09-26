@@ -145,9 +145,10 @@ export default function TravelReviews() {
                   // }}
                 >
                   {/* <h1 className="relative text-white">{reviews[0].userName}</h1> */}
+                  {console.log(reviews)}
                   {reviews?.map((review, index) => (
                     <div
-                      key={index}
+                      key={review.id}
                       className="w-full sm:w-1/2 shrink-0 px-2 h-full"
                     >
                       {isOpen && (
