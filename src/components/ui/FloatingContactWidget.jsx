@@ -54,7 +54,7 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
             clearInterval(widgetIntervalRef.current);
             widgetIntervalRef.current = null;
           }
-        }, 2000);
+        }, 60000);
       }, 2000);
     }, 15000);
 
