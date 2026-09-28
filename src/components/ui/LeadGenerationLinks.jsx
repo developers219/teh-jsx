@@ -52,7 +52,7 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
         <div
           className="
             w-[92vw]
-            max-w-[1100px]
+            max-w-4xl
             overflow-hidden
             bg-white
 
