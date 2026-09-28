@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { ChevronUp, MessageCircle, Pen, Phone, X } from "lucide-react";
 import LeadCapturePopup from "../forms/LeadCapturePopup";
 
-const WHATSAPP_NUMBER = "919000000000";
-const CALLBACK_PHONE_NUMBER = "+919000000000";
+const WHATSAPP_NUMBER = "919211215500";
+const CALLBACK_PHONE_NUMBER = "+919211215500";
 
 function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -88,7 +88,7 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
 
           <div className="flex flex-col gap-1 p-2">
             <a
-              href={``}
+              href={"tel:+919211215500"}
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
               <Phone size={18} className="text-beige" />

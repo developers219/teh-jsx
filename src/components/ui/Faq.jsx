@@ -1,5 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
+import SectionHeader from "../home/SectionHeader";
 
 const faqData = [
   {
@@ -47,7 +48,11 @@ export default function FAQ() {
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         {/* Header */}
         <div className="mb-10 text-center md:mb-12">
-          <h2 className="text-4xl font-cg tracking-tight text-black sm:text-5xl">
+          <SectionHeader
+            title={"Frequently Asked Questions"}
+            description={"Your right to Know!"}
+          />
+          {/* <h2 className="text-4xl font-cg tracking-tight text-black sm:text-5xl">
             Frequently Asked Questions
           </h2>
 
@@ -55,7 +60,7 @@ export default function FAQ() {
             Your right to Know!
           </p>
 
-          <div className="mx-auto  h-[3px] w-20 bg-[#c5bd96]" />
+          <div className="mx-auto  h-[3px] w-20 bg-[#c5bd96]" /> */}
         </div>
 
         {/* FAQ List */}

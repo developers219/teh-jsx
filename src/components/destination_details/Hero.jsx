@@ -28,7 +28,7 @@ export default function Hero({ slides, name, desc }) {
   useEffect(() => {
     const interval = setInterval(() => {
       setDirection((prevDirection) =>
-        prevDirection === "right" ? "left" : "right"
+        prevDirection === "right" ? "left" : "right",
       );
 
       setActiveSlide((prev) => (prev + 1) % slides.length);
@@ -64,8 +64,8 @@ export default function Hero({ slides, name, desc }) {
               isActive
                 ? "z-10 translate-x-0"
                 : direction === "right"
-                ? "z-0 -translate-x-full"
-                : "z-0 translate-x-full"
+                  ? "z-0 -translate-x-full"
+                  : "z-0 translate-x-full"
             }`}
           >
             {/* IMAGE */}
@@ -102,8 +102,8 @@ export default function Hero({ slides, name, desc }) {
         ====================================================== */}
 
       <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16">
-  <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-16">
-    <div className="max-w-3xl">
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-16">
+          <div className="max-w-3xl">
             {/* SMALL LABEL */}
 
             {/* <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md">
@@ -130,28 +130,28 @@ export default function Hero({ slides, name, desc }) {
 
             {/* CTA */}
 
-           <div className="mt-7 flex flex-wrap items-center gap-3">
-  {/* REQUEST CALLBACK */}
-  <button
-    type="button"
-    onClick={() => setIsCallbackOpen(true)}
-    className="inline-flex items-center gap-2  rounded-full bg-white px-7 py-3.5 font-mont font-semibold text-sm text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
-  >
-    <Phone size={17} strokeWidth={2} />
-    Request a callback
-  </button>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              {/* REQUEST CALLBACK */}
+              <button
+                type="button"
+                onClick={() => setIsCallbackOpen(true)}
+                className="inline-flex items-center gap-2  rounded-full bg-white px-7 py-3.5 font-mont font-semibold text-sm text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
+              >
+                <Phone size={17} strokeWidth={2} />
+                Request a callback
+              </button>
 
-  {/* WHATSAPP */}
-  <a
-    href="https://wa.me/919000000000"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-flex items-center gap-2  rounded-full bg-beige px-7 py-3.5 font-mont font-semibold text-sm text-black shadow-xl transition-all duration-300 hover:-translate-y-1 "
-  >
-    <MessageCircle size={18} strokeWidth={2} />
-    Chat With Us
-  </a>
-</div>
+              {/* WHATSAPP */}
+              <a
+                href="https://wa.me/919211215500"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2  rounded-full bg-beige px-7 py-3.5 font-mont font-semibold text-sm text-black shadow-xl transition-all duration-300 hover:-translate-y-1 "
+              >
+                <MessageCircle size={18} strokeWidth={2} />
+                Chat With Us
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -181,11 +181,8 @@ export default function Hero({ slides, name, desc }) {
       {/* =====================================================
                     REQUEST CALLBACK POPUP
                 ====================================================== */}
-        
-              <RequestCallback
-                isOpen={isCallbackOpen}
-                setIsOpen={setIsCallbackOpen}
-              />
+
+      <RequestCallback isOpen={isCallbackOpen} setIsOpen={setIsCallbackOpen} />
     </section>
   );
 }
