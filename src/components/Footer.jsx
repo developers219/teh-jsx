@@ -209,11 +209,7 @@ function Footer() {
       href: "/blogs",
       category: "explore",
     },
-    {
-      name: "Destinations",
-      href: "/destinations",
-      category: "explore",
-    },
+    
     {
       name: "Careers",
       href: "/careers",
