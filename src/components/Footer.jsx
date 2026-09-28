@@ -506,7 +506,7 @@ function Footer() {
 
           <div
             className="
-              flex justify-between
+              flex flex-col lg:flex-row justify-between
             "
           >
             {/* =================================================
@@ -715,14 +715,16 @@ function Footer() {
       tracking-wide
       text-white
       self-end
+      hidden lg:block
     "
               >
                 Quick Links
               </Typography>
 
-              <div className="mt-8 flex flex-col flex-wrap w-[500px] items-end gap-5">
+              <div className="mt-8 flex flex-col flex-wrap h-[250px] w-full lg:w-[500px] items-start lg:items-end gap-5">
                 {links.map((link, index) => (
                   <Link
+                    key={index}
                     to={link.href}
                     className="
         text-sm
@@ -782,7 +784,7 @@ function Footer() {
               Contact Us
             </Typography> */}
 
-            <div className="flex items-center justify-center w-full gap-7">
+            <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-7">
               {/* EMAIL */}
 
               <div className="flex items-start gap-3">
@@ -929,61 +931,12 @@ function Footer() {
           >
             {/* COPYRIGHT */}
 
-            <p className="text-xs text-slate-500 font-mont">
+            <p className="text-xs w-full text-slate-500 text-center font-mont">
               © {new Date().getFullYear()} Travel Empire Holidays. All rights
               reserved.
             </p>
 
             {/* LEGAL LINKS */}
-
-            <div
-              className="
-                flex
-                flex-wrap
-                items-center
-                gap-x-7
-                gap-y-3
-              "
-            >
-              {/* <Link
-                to="/terms"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Terms & Conditions
-              </Link> */}
-
-              <Link
-                to="/privacy"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                to="/cookies"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Cookies
-              </Link>
-            </div>
           </div>
         </div>
       </footer>
