@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -10,7 +11,46 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import Escapeora from "../assets/images/logo.png";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Link } from "react-router-dom";
+
 function Footer() {
+  const [activeDestination, setActiveDestination] = useState("international");
+
+  const internationalDestinations = [
+    "Dubai",
+    "Bali",
+    "Thailand",
+    "Vietnam",
+    "Singapore",
+    "Malaysia",
+    "Maldives",
+    "Mauritius",
+    "Sri Lanka",
+    "Japan",
+    "Azerbaijan",
+    "Turkey",
+    "Switzerland",
+    "Australia",
+    "New Zealand",
+  ];
+
+  const domesticDestinations = [
+    "Goa",
+    "Kerala",
+    "Rajasthan",
+    "Himachal Pradesh",
+    "Uttarakhand",
+    "Kashmir",
+    "Andaman",
+    "Sikkim",
+    "Meghalaya",
+    "Tamil Nadu",
+    "Karnataka",
+    "Maharashtra",
+    "Gujarat",
+    "Uttar Pradesh",
+    "Odisha",
+  ];
+
   const brands = [
     {
       id: 1,
@@ -25,8 +65,9 @@ function Footer() {
       content: (
         <div className="flex flex-col items-center whitespace-nowrap">
           <span className="text-[8px] leading-none">Member of</span>
-
-          <span className="text-[22px] font-semibold tracking-wide">OTAI</span>
+          <span className="text-[22px] font-semibold tracking-wide">
+            OTAI
+          </span>
         </div>
       ),
     },
@@ -150,6 +191,8 @@ function Footer() {
       ),
     },
   ];
+  
+
   return (
     <>
       {/* =================================================
@@ -190,6 +233,7 @@ function Footer() {
 
       <footer className="font-mont rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto max-w-7xl">
+
           {/* =================================================
             BRANDING SECTION
             DO NOT CHANGE
@@ -206,6 +250,7 @@ function Footer() {
             </div>
 
             <div className="relative w-full overflow-hidden">
+
               {/* LEFT FADE */}
 
               <div
@@ -243,6 +288,7 @@ function Footer() {
               {/* MOVING TRACK */}
 
               <div className="footer-brand-track flex w-max">
+
                 {/* FIRST BRAND SET */}
 
                 <div
@@ -293,12 +339,127 @@ function Footer() {
                     </div>
                   ))}
                 </div>
+
               </div>
             </div>
           </section>
+          {/* =================================================
+            DIVIDER AFTER DESTINATIONS
+        ================================================== */}
+
+          <Divider
+            sx={{
+              mb: 6,
+              borderColor: "rgba(255,255,255,0.15)",
+            }}
+          />
 
           {/* =================================================
-            DIVIDER AFTER BRANDING
+            DESTINATION SELECTOR
+        ================================================== */}
+
+          <section className="pb-8">
+
+            {/* DESTINATION OPTIONS */}
+
+            <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
+
+              {/* INTERNATIONAL DESTINATIONS */}
+
+              <button
+                type="button"
+                onClick={() => setActiveDestination("international")}
+                className="group relative cursor-pointer border-0 bg-transparent px-1 pb-2 text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-white"
+              >
+                International Destinations
+
+                <span
+                  className={`
+                    absolute
+                    bottom-0
+                    left-0
+                    h-[2px]
+                    rounded-full
+                    bg-[#c5bd96]
+                    transition-all
+                    duration-300
+                    ${
+                      activeDestination === "international"
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }
+                  `}
+                />
+              </button>
+
+              {/* DOMESTIC DESTINATIONS */}
+
+              <button
+                type="button"
+                onClick={() => setActiveDestination("domestic")}
+                className="group relative cursor-pointer border-0 bg-transparent px-1 pb-2 text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-white"
+              >
+                Domestic Destinations
+
+                <span
+                  className={`
+                    absolute
+                    bottom-0
+                    left-0
+                    h-[2px]
+                    rounded-full
+                    bg-[#c5bd96]
+                    transition-all
+                    duration-300
+                    ${
+                      activeDestination === "domestic"
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }
+                  `}
+                />
+              </button>
+
+            </div>
+
+            {/* DESTINATION CHIPS */}
+
+            {activeDestination && (
+              <div className="mx-auto mt-6 flex max-w-5xl flex-wrap justify-center gap-2.5">
+
+                {(activeDestination === "international"
+                  ? internationalDestinations
+                  : domesticDestinations
+                ).map((destination) => (
+                  <span
+                    key={destination}
+                    className="
+                      rounded-full
+                      border
+                      border-grey
+                      bg-grey
+                      px-4
+                      py-2
+                      text-xs
+                      font-medium
+                      text-slate-300
+                      transition-colors
+                      duration-200
+                      hover:bg-[#c5bd96]
+                      hover:text-black
+                    "
+                  >
+                    {destination}
+                  </span>
+                ))}
+
+              </div>
+            )}
+
+          </section>
+
+          {/* =================================================
+            DIVIDER AFTER DESTINATIONS
         ================================================== */}
 
           <Divider
@@ -324,11 +485,13 @@ function Footer() {
               xl:gap-16
             "
           >
+
             {/* =================================================
             COMPANY INFO
         ================================================== */}
 
             <div className="max-w-sm">
+
               {/* LOGO */}
 
               <Link
@@ -341,6 +504,7 @@ function Footer() {
                   no-underline
                 "
               >
+
                 {/* <TravelExploreIcon
                   sx={{
                     fontSize: 34,
@@ -360,11 +524,13 @@ function Footer() {
                 >
                   Travel Empire Holidays
                 </Typography> */}
+
                 <img
                   src={Escapeora}
                   alt="Escapeora"
                   className="w-48 h-auto object-contain"
                 />
+
               </Link>
 
               {/* DESCRIPTION */}
@@ -385,6 +551,7 @@ function Footer() {
               {/* SOCIAL LINKS */}
 
               <div className="mt-7 flex items-center gap-2">
+
                 {/* LINKEDIN */}
 
                 <IconButton
@@ -464,6 +631,7 @@ function Footer() {
                 >
                   <YouTubeIcon sx={{ fontSize: 32 }} />
                 </IconButton>
+
               </div>
             </div>
 
@@ -472,29 +640,31 @@ function Footer() {
         ================================================== */}
 
             <div className="flex flex-col">
+
               <Typography
                 component="h3"
                 className="
-      text-sm
-      font-bold
-      uppercase
-      tracking-wide
-      text-white
-    "
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-wide
+                  text-white
+                "
               >
                 All Destinations
               </Typography>
 
               <div className="mt-8 flex flex-col items-start gap-5">
+
                 <Link
                   to="/destinations/dom"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   Domestic Destinations
                 </Link>
@@ -502,16 +672,16 @@ function Footer() {
                 <Link
                   to="/destinations/intl"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   International Destinations
                 </Link>
-                
+
               </div>
             </div>
 
@@ -520,29 +690,31 @@ function Footer() {
         ================================================== */}
 
             <div className="flex flex-col">
+
               <Typography
                 component="h3"
                 className="
-      text-sm
-      font-bold
-      uppercase
-      tracking-wide
-      text-white
-    "
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-wide
+                  text-white
+                "
               >
                 Quick Links
               </Typography>
 
               <div className="mt-8 flex flex-col items-start gap-5">
+
                 <Link
                   to="/destinations"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   Destinations
                 </Link>
@@ -550,12 +722,12 @@ function Footer() {
                 <Link
                   to="/packages"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   Holiday Packages
                 </Link>
@@ -563,12 +735,12 @@ function Footer() {
                 <Link
                   to="/how-it-works"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   How It Works
                 </Link>
@@ -576,12 +748,12 @@ function Footer() {
                 <Link
                   to="/reviews"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   Testimonials
                 </Link>
@@ -589,15 +761,16 @@ function Footer() {
                 <Link
                   to="/contact"
                   className="
-        text-sm
-        text-slate-400
-        no-underline
-        transition-colors
-        hover:text-white
-      "
+                    text-sm
+                    text-slate-400
+                    no-underline
+                    transition-colors
+                    hover:text-white
+                  "
                 >
                   Contact Us
                 </Link>
+
               </div>
             </div>
 
@@ -606,36 +779,39 @@ function Footer() {
         ================================================== */}
 
             <div className="flex flex-col">
+
               <Typography
                 component="h3"
                 className="
-      text-sm
-      font-bold
-      uppercase
-      tracking-wide
-      text-white
-    "
+                  text-sm
+                  font-bold
+                  uppercase
+                  tracking-wide
+                  text-white
+                "
               >
                 Contact Us
               </Typography>
 
               <div className="mt-8 flex flex-col gap-7">
+
                 {/* EMAIL */}
 
                 <div className="flex items-start gap-3">
+
                   <div
                     className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-lg
+                      border
+                      border-white/10
+                      bg-white/5
+                    "
                   >
                     <MailIcon
                       sx={{
@@ -650,32 +826,31 @@ function Footer() {
                   </div>
 
                   <div className="pt-0.5">
-                    {/* <span className="block text-xs text-slate-500">
-          Email
-        </span> */}
 
                     <span className="mt-1.5 block text-sm text-slate-400">
                       hello@travelempireholidays.com
                     </span>
+
                   </div>
                 </div>
 
                 {/* PHONE */}
 
                 <div className="flex items-start gap-3">
+
                   <div
                     className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-lg
+                      border
+                      border-white/10
+                      bg-white/5
+                    "
                   >
                     <PhoneIcon
                       sx={{
@@ -690,32 +865,31 @@ function Footer() {
                   </div>
 
                   <div className="pt-0.5">
-                    {/* <span className="block text-xs text-slate-500">
-          Phone
-        </span> */}
 
                     <span className="mt-1.5 block text-sm text-slate-400">
                       +91 92112 15500
                     </span>
+
                   </div>
                 </div>
 
                 {/* LOCATION */}
 
                 <div className="flex items-start gap-3">
+
                   <div
                     className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-lg
+                      border
+                      border-white/10
+                      bg-white/5
+                    "
                   >
                     <LocationOnIcon
                       sx={{
@@ -730,17 +904,17 @@ function Footer() {
                   </div>
 
                   <div className="pt-0.5">
-                    {/* <span className="block text-xs text-slate-500">
-          Location
-        </span> */}
 
                     <span className="mt-1.5 block text-sm text-slate-400">
                       Mumbai, India
                     </span>
+
                   </div>
                 </div>
+
               </div>
             </div>
+
           </div>
 
           {/* =================================================
@@ -770,6 +944,7 @@ function Footer() {
               sm:justify-between
             "
           >
+
             {/* COPYRIGHT */}
 
             <p className="text-xs text-slate-500 font-mont">
@@ -788,6 +963,7 @@ function Footer() {
                 gap-y-3
               "
             >
+
               <Link
                 to="/terms"
                 className="
@@ -826,11 +1002,14 @@ function Footer() {
               >
                 Cookies
               </Link>
+
             </div>
           </div>
+
         </div>
       </footer>
     </>
   );
 }
+
 export default Footer;
