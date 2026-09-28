@@ -482,12 +482,12 @@ function Footer() {
       text-white
     "
               >
-                All Packages
+                All Destinations
               </Typography>
 
               <div className="mt-8 flex flex-col items-start gap-5">
                 <Link
-                  to="/packages"
+                  to="/destinations/dom"
                   className="
         text-sm
         text-slate-400
@@ -496,11 +496,11 @@ function Footer() {
         hover:text-white
       "
                 >
-                  Domestic Packages
+                  Domestic Destinations
                 </Link>
 
                 <Link
-                  to="/packages"
+                  to="/destinations/intl"
                   className="
         text-sm
         text-slate-400
@@ -509,8 +509,9 @@ function Footer() {
         hover:text-white
       "
                 >
-                  International Packages
+                  International Destinations
                 </Link>
+                
               </div>
             </div>
 
