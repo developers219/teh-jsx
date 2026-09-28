@@ -129,13 +129,13 @@ export default function Hero() {
 
             {/* MAIN HEADING */}
 
-            <h1 className=" text-4xl font-thin leading-[1.00] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="font-thin leading-[1.00] tracking-tight text-white text-[clamp(2rem,4vw,3rem)]">
               Domestic Destinations
             </h1>
 
             {/* SUBHEADING */}
 
-            <p className="mt-5 text-base leading-7 text-white/90 sm:text-lg md:text-xl">
+            <p className="mt-5 text-base leading-7 text-white/90 font-mont">
               Discover the incredible beauty of India — from peaceful mountains
               and tropical beaches to royal cities, cultural escapes and
               unforgettable journeys.

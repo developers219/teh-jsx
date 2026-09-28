@@ -13,8 +13,7 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Link } from "react-router-dom";
 
 function Footer() {
-  const [activeDestination, setActiveDestination] =
-    useState("international");
+  const [activeDestination, setActiveDestination] = useState("international");
 
   const internationalDestinations = [
     "Dubai",
@@ -98,9 +97,7 @@ function Footer() {
       id: 6,
       content: (
         <div className="flex flex-col items-center whitespace-nowrap">
-          <span className="text-[20px] font-bold tracking-[2px]">
-            ✈ IATA
-          </span>
+          <span className="text-[20px] font-bold tracking-[2px]">✈ IATA</span>
 
           <span className="mt-0.5 text-[6px] tracking-[1px]">
             ACCREDITED AGENT
@@ -209,7 +206,7 @@ function Footer() {
       href: "/blogs",
       category: "explore",
     },
-    
+
     {
       name: "Careers",
       href: "/careers",
@@ -536,7 +533,7 @@ function Footer() {
 
           <Divider
             sx={{
-              mb: 6,
+              mb: 4,
               borderColor: "rgba(255,255,255,0.15)",
             }}
           />
@@ -546,16 +543,15 @@ function Footer() {
         ================================================== */}
 
           <div
-  className="
+            className="
     flex
     flex-col
-    gap-12
+    gap-2
     lg:flex-row
     lg:items-start
     lg:justify-between
   "
->
-
+          >
             {/* =================================================
             COMPANY INFO
         ================================================== */}
@@ -566,14 +562,13 @@ function Footer() {
               <Link
                 to="/"
                 className="
-                  mb-6
+                  mb-2
                   flex
                   items-center
                   gap-2
                   no-underline
                 "
               >
-
                 <img
                   src={Escapeora}
                   alt="Escapeora"
@@ -598,7 +593,7 @@ function Footer() {
 
               {/* SOCIAL LINKS */}
 
-              <div className="mt-7 flex items-center gap-2">
+              <div className="mt-2 flex items-center gap-2">
                 {/* LINKEDIN */}
 
                 <IconButton
@@ -740,9 +735,9 @@ function Footer() {
     FOOTER LINKS — RESPONSIVE 3 COLUMNS
 ================================================== */}
 
-<div className="w-full lg:max-w-[650px]">
-  <div
-    className="
+            <div className="w-full lg:max-w-[650px]">
+              <div
+                className="
       flex
       flex-col
       gap-10
@@ -752,11 +747,11 @@ function Footer() {
       lg:flex-nowrap
       lg:gap-8
     "
-  >
-    {footerColumns.map((column) => (
-      <div
-        key={column.category}
-        className="
+              >
+                {footerColumns.map((column) => (
+                  <div
+                    key={column.category}
+                    className="
           flex
           min-w-0
           flex-1
@@ -764,11 +759,11 @@ function Footer() {
           items-start
           gap-5
         "
-      >
-        {/* HEADING */}
-        <Typography
-          component="h3"
-          className="
+                  >
+                    {/* HEADING */}
+                    <Typography
+                      component="h3"
+                      className="
             whitespace-nowrap
             text-sm
             font-bold
@@ -776,21 +771,19 @@ function Footer() {
             tracking-wide
             text-white
           "
-        >
-          {column.title}
-        </Typography>
+                    >
+                      {column.title}
+                    </Typography>
 
-        {/* LINKS */}
-        <div className="flex flex-col items-start gap-4">
-          {footerLinks
-            .filter(
-              (link) => link.category === column.category
-            )
-            .map((link) => (
-              <Link
-                key={link.name}
-                to={link.href}
-                className="
+                    {/* LINKS */}
+                    <div className="flex flex-col items-start gap-4">
+                      {footerLinks
+                        .filter((link) => link.category === column.category)
+                        .map((link) => (
+                          <Link
+                            key={link.name}
+                            to={link.href}
+                            className="
                   whitespace-nowrap
                   text-sm
                   text-slate-400
@@ -799,16 +792,15 @@ function Footer() {
                   duration-200
                   hover:text-white
                 "
-              >
-                {link.name}
-              </Link>
-            ))}
-        </div>
-      </div>
-    ))}
-  </div>
-</div>
-
+                          >
+                            {link.name}
+                          </Link>
+                        ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
           {/* =================================================
@@ -827,13 +819,10 @@ function Footer() {
         ================================================== */}
 
           <div className="flex items-center">
-
             <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-7">
-
               {/* EMAIL */}
 
               <div className="flex items-start gap-3">
-
                 <div
                   className="
                     flex
@@ -861,18 +850,15 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-
                   <span className="mt-1.5 block text-sm text-slate-400">
                     hello@travelempireholidays.com
                   </span>
-
                 </div>
               </div>
 
               {/* PHONE */}
 
               <div className="flex items-start gap-3">
-
                 <div
                   className="
                     flex
@@ -900,18 +886,15 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-
                   <span className="mt-1.5 block text-sm text-slate-400">
                     +91 92112 15500
                   </span>
-
                 </div>
               </div>
 
               {/* LOCATION */}
 
               <div className="flex items-start gap-3">
-
                 <div
                   className="
                     flex
@@ -939,16 +922,12 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-
                   <span className="mt-1.5 block text-sm text-slate-400">
                     Mumbai, India
                   </span>
-
                 </div>
               </div>
-
             </div>
-
           </div>
 
           <Divider

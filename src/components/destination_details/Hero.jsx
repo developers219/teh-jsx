@@ -118,13 +118,13 @@ export default function Hero({ slides, name, desc }) {
 
             {/* MAIN HEADING */}
 
-            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="max-w-3xl font-thin leading-[1.05] tracking-tight text-white text-[clamp(2rem,4vw,3rem)]">
               {name}
             </h1>
 
             {/* SUBHEADING */}
 
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 sm:text-lg md:text-xl">
+            <p className="mt-5 max-w-2xl text-base font-mont leading-7 text-white/90 sm:text-base">
               {desc}
             </p>
 
