@@ -13,7 +13,8 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Link } from "react-router-dom";
 
 function Footer() {
-  const [activeDestination, setActiveDestination] = useState("international");
+  const [activeDestination, setActiveDestination] =
+    useState("international");
 
   const internationalDestinations = [
     "Dubai",
@@ -99,7 +100,9 @@ function Footer() {
       id: 6,
       content: (
         <div className="flex flex-col items-center whitespace-nowrap">
-          <span className="text-[20px] font-bold tracking-[2px]">✈ IATA</span>
+          <span className="text-[20px] font-bold tracking-[2px]">
+            ✈ IATA
+          </span>
 
           <span className="mt-0.5 text-[6px] tracking-[1px]">
             ACCREDITED AGENT
@@ -191,52 +194,93 @@ function Footer() {
       ),
     },
   ];
+
+  // =================================================
+  // FOOTER LINKS
+  // =================================================
+
   const footerLinks = [
-  {
-    name: "About Us",
-    href: "/about",
-  },
-  {
-    name: "Contact Us",
-    href: "/contact",
-  },
-  {
-    name: "Blogs",
-    href: "/blogs",
-  },
-  {
-    name: "Sitemap",
-    href: "/sitemap",
-  },
-  {
-    name: "Disclaimer",
-    href: "/disclaimer",
-  },
-  {
-    name: "Cookies",
-    href: "/cookies",
-  },
-  {
-    name: "Privacy Policy",
-    href: "/privacy",
-  },
-  {
-    name: "Corporate Bookings",
-    href: "/corporate-bookings",
-  },
-  {
-    name: "Customer Support",
-    href: "/customer-support",
-  },
-  {
-    name: "Terms & Conditions",
-    href: "/terms",
-  },
-  {
-    name: "Careers",
-    href: "/careers",
-  },
-];
+    // Explore
+    {
+      name: "About Us",
+      href: "/about",
+      category: "explore",
+    },
+    {
+      name: "Blogs",
+      href: "/blogs",
+      category: "explore",
+    },
+    {
+      name: "Destinations",
+      href: "/destinations",
+      category: "explore",
+    },
+    {
+      name: "Careers",
+      href: "/careers",
+      category: "explore",
+    },
+
+    // Services
+    {
+      name: "Corporate Bookings",
+      href: "/corporate-bookings",
+      category: "services",
+    },
+    {
+      name: "Customer Support",
+      href: "/customer-support",
+      category: "services",
+    },
+    {
+      name: "Contact Us",
+      href: "/contact",
+      category: "services",
+    },
+    {
+      name: "Sitemap",
+      href: "/sitemap",
+      category: "services",
+    },
+
+    // Legal
+    {
+      name: "Terms & Conditions",
+      href: "/terms-conditions",
+      category: "legal",
+    },
+    {
+      name: "Privacy Policy",
+      href: "/privacy",
+      category: "legal",
+    },
+    {
+      name: "Cookies",
+      href: "/cookies",
+      category: "legal",
+    },
+    {
+      name: "Disclaimer",
+      href: "/disclaimer",
+      category: "legal",
+    },
+  ];
+
+  const footerColumns = [
+    {
+      title: "Explore",
+      category: "explore",
+    },
+    {
+      title: "Services",
+      category: "services",
+    },
+    {
+      title: "Legal",
+      category: "legal",
+    },
+  ];
 
   return (
     <>
@@ -388,8 +432,9 @@ function Footer() {
               </div>
             </div>
           </section>
+
           {/* =================================================
-            DIVIDER AFTER DESTINATIONS
+            DIVIDER AFTER BRANDING
         ================================================== */}
 
           <Divider
@@ -519,10 +564,15 @@ function Footer() {
         ================================================== */}
 
           <div
-            className="
-              flex justify-between
-            "
-          >
+  className="
+    flex
+    flex-col
+    gap-12
+    lg:flex-row
+    lg:items-start
+    lg:justify-between
+  "
+>
 
             {/* =================================================
             COMPANY INFO
@@ -542,26 +592,6 @@ function Footer() {
                   no-underline
                 "
               >
-
-                {/* <TravelExploreIcon
-                  sx={{
-                    fontSize: 34,
-                    color: "#ffffff",
-                  }}
-                /> */}
-
-                {/* <Typography
-                  component="span"
-                  className="
-                    text-xl
-                    font-extrabold
-                    tracking-tight
-                    text-white
-                    sm:text-2xl
-                  "
-                >
-                  Travel Empire Holidays
-                </Typography> */}
 
                 <img
                   src={Escapeora}
@@ -674,111 +704,137 @@ function Footer() {
             </div>
 
             {/* =================================================
-            ALL PACKAGES
+            FOOTER LINKS — 3 COLUMNS
         ================================================== */}
 
             {/* <div className="flex flex-col">
-              <Typography
-                component="h3"
+
+              <div className="grid grid-cols-3 gap-x-16">
+
+                {footerColumns.map((column) => (
+                  <div
+                    key={column.category}
+                    className="flex flex-col items-end gap-5"
+                  >
+
+                    <Typography
+                      component="h3"
+                      className="
+                        text-sm
+                        font-bold
+                        uppercase
+                        tracking-wide
+                        text-white
+                        whitespace-nowrap
+                      "
+                    >
+                      {column.title}
+                    </Typography>
+
+                    {footerLinks
+                      .filter(
+                        (link) => link.category === column.category
+                      )
+                      .map((link) => (
+                        <Link
+                          key={link.name}
+                          to={link.href}
+                          className="
+                            whitespace-nowrap
+                            text-sm
+                            text-slate-400
+                            no-underline
+                            transition-colors
+                            hover:text-white
+                          "
+                        >
+                          {link.name}
+                        </Link>
+                      ))}
+
+                  </div>
+                ))}
+
+              </div>
+
+            </div> */}
+            {/* =================================================
+    FOOTER LINKS — RESPONSIVE 3 COLUMNS
+================================================== */}
+
+<div className="w-full lg:max-w-[650px]">
+  <div
+    className="
+      flex
+      flex-col
+      gap-10
+      sm:flex-row
+      sm:flex-wrap
+      sm:justify-between
+      lg:flex-nowrap
+      lg:gap-8
+    "
+  >
+    {footerColumns.map((column) => (
+      <div
+        key={column.category}
+        className="
+          flex
+          min-w-0
+          flex-1
+          flex-col
+          items-start
+          gap-5
+        "
+      >
+        {/* HEADING */}
+        <Typography
+          component="h3"
+          className="
+            whitespace-nowrap
+            text-sm
+            font-bold
+            uppercase
+            tracking-wide
+            text-white
+          "
+        >
+          {column.title}
+        </Typography>
+
+        {/* LINKS */}
+        <div className="flex flex-col items-start gap-4">
+          {footerLinks
+            .filter(
+              (link) => link.category === column.category
+            )
+            .map((link) => (
+              <Link
+                key={link.name}
+                to={link.href}
                 className="
+                  whitespace-nowrap
                   text-sm
-                  font-bold
-                  uppercase
-                  tracking-wide
-                  text-white
+                  text-slate-400
+                  no-underline
+                  transition-colors
+                  duration-200
+                  hover:text-white
                 "
               >
-                All Destinations
-              </Typography>
+                {link.name}
+              </Link>
+            ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
-              <div className="mt-8 flex flex-col items-start gap-5">
-
-                <Link
-                  to="/destinations/dom"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  Domestic Destinations
-                </Link>
-
-                <Link
-                  to="/destinations/intl"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  International Destinations
-                </Link>
-              </div>
-            </div> */}
-
-            {/* =================================================
-            QUICK LINKS
-        ================================================== */}
-
-            <div className="flex flex-col">
-
-              <Typography
-                component="h3"
-                className="
-      text-sm
-      font-bold
-      uppercase
-      tracking-wide
-      text-white
-      self-end
-    "
-              >
-                Quick Links
-              </Typography>
-
-              <div className="mt-8 flex flex-col items-end gap-5">
-                <Link
-                  to="/terms-conditions"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  Terms & Conditions
-                </Link>
-
-                <Link
-                  to="/careers"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  Careers
-                </Link>
-
-              </div>
-            </div>
-
-            {/* =================================================
-            CONTACT
-        ================================================== */}
           </div>
 
           {/* =================================================
             BOTTOM DIVIDER
-            SAME
         ================================================== */}
 
           <Divider
@@ -788,37 +844,31 @@ function Footer() {
             }}
           />
 
-          <div className="flex items-center">
-            {/* <Typography
-              component="h3"
-              className="
-      text-sm
-      font-bold
-      uppercase
-      tracking-wide
-      text-white
-    "
-            >
-              Contact Us
-            </Typography> */}
+          {/* =================================================
+            CONTACT ROW
+        ================================================== */}
 
-            <div className="flex items-center justify-center w-full gap-7">
+          <div className="flex items-center">
+
+            <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-7">
+
               {/* EMAIL */}
 
               <div className="flex items-start gap-3">
+
                 <div
                   className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-white/10
+                    bg-white/5
+                  "
                 >
                   <MailIcon
                     sx={{
@@ -833,32 +883,31 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-                  {/* <span className="block text-xs text-slate-500">
-          Email
-        </span> */}
 
                   <span className="mt-1.5 block text-sm text-slate-400">
                     hello@travelempireholidays.com
                   </span>
+
                 </div>
               </div>
 
               {/* PHONE */}
 
               <div className="flex items-start gap-3">
+
                 <div
                   className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-white/10
+                    bg-white/5
+                  "
                 >
                   <PhoneIcon
                     sx={{
@@ -873,32 +922,31 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-                  {/* <span className="block text-xs text-slate-500">
-          Phone
-        </span> */}
 
                   <span className="mt-1.5 block text-sm text-slate-400">
                     +91 92112 15500
                   </span>
+
                 </div>
               </div>
 
               {/* LOCATION */}
 
               <div className="flex items-start gap-3">
+
                 <div
                   className="
-          flex
-          h-9
-          w-9
-          shrink-0
-          items-center
-          justify-center
-          rounded-lg
-          border
-          border-white/10
-          bg-white/5
-        "
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-white/10
+                    bg-white/5
+                  "
                 >
                   <LocationOnIcon
                     sx={{
@@ -913,16 +961,16 @@ function Footer() {
                 </div>
 
                 <div className="pt-0.5">
-                  {/* <span className="block text-xs text-slate-500">
-          Location
-        </span> */}
 
                   <span className="mt-1.5 block text-sm text-slate-400">
                     Mumbai, India
                   </span>
+
                 </div>
               </div>
+
             </div>
+
           </div>
 
           <Divider
@@ -934,7 +982,6 @@ function Footer() {
 
           {/* =================================================
             BOTTOM ROW
-            SAME
         ================================================== */}
 
           <div
@@ -950,14 +997,14 @@ function Footer() {
 
             {/* COPYRIGHT */}
 
-            <p className="text-xs text-slate-500 font-mont">
+            <p className="text-xs text-slate-500 font-mont w-full text-center">
               © {new Date().getFullYear()} Travel Empire Holidays. All rights
               reserved.
             </p>
 
             {/* LEGAL LINKS */}
 
-            <div
+            {/* <div
               className="
                 flex
                 flex-wrap
@@ -966,18 +1013,6 @@ function Footer() {
                 gap-y-3
               "
             >
-              {/* <Link
-                to="/terms"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Terms & Conditions
-              </Link> */}
 
               <Link
                 to="/privacy"
@@ -1005,7 +1040,8 @@ function Footer() {
                 Cookies
               </Link>
 
-            </div>
+            </div> */}
+
           </div>
 
         </div>
