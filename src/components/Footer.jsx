@@ -191,7 +191,52 @@ function Footer() {
       ),
     },
   ];
-  
+  const footerLinks = [
+  {
+    name: "About Us",
+    href: "/about",
+  },
+  {
+    name: "Contact Us",
+    href: "/contact",
+  },
+  {
+    name: "Blogs",
+    href: "/blogs",
+  },
+  {
+    name: "Sitemap",
+    href: "/sitemap",
+  },
+  {
+    name: "Disclaimer",
+    href: "/disclaimer",
+  },
+  {
+    name: "Cookies",
+    href: "/cookies",
+  },
+  {
+    name: "Privacy Policy",
+    href: "/privacy",
+  },
+  {
+    name: "Corporate Bookings",
+    href: "/corporate-bookings",
+  },
+  {
+    name: "Customer Support",
+    href: "/customer-support",
+  },
+  {
+    name: "Terms & Conditions",
+    href: "/terms",
+  },
+  {
+    name: "Careers",
+    href: "/careers",
+  },
+];
 
   return (
     <>
