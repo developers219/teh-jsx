@@ -33,16 +33,16 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
       <div className="bg-white px-6 py-8 sm:px-10 sm:py-10 md:px-12 md:py-12">
         
         {/* Header */}
-        <div className="max-w-xl pr-10">
-          <p className="mb-3 text-[11px] text-center font-semibold uppercase tracking-[0.22em] text-black/40">
+        <div className="max-w-xl lg:pr-10">
+          <p className="mb-3 text-[11px] text-center font-cg font-semibold uppercase tracking-[0.22em] text-black/40">
             GET IN TOUCH
           </p>
 
-          <h2 className="text-3xl text-center font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+          <h2 className="text-3xl text-center font-cg font-semibold tracking-[-0.04em] text-black sm:text-4xl">
             Request a Callback
           </h2>
 
-          <p className="mx-auto mt-3 max-w-md text-center text-sm leading-6 text-black/50 sm:text-[15px]">
+          <p className="mx-auto mt-3 max-w-md text-center font-mont text-sm leading-5 text-black/50 sm:text-[15px]">
     Share your details and one of our travel experts will get in
     touch with you shortly.
   </p>
