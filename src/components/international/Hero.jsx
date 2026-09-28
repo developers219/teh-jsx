@@ -165,7 +165,7 @@ export default function Hero() {
 
   {/* WHATSAPP */}
   <a
-    href="https://wa.me/919000000000"
+    href="https://wa.me/919211215500"
     target="_blank"
     rel="noopener noreferrer"
     className="inline-flex items-center gap-2 rounded-full bg-beige px-7 py-3.5 font-mont font-semibold text-sm text-black shadow-xl transition-all duration-300 hover:-translate-y-1 "

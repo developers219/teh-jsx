@@ -5,8 +5,8 @@ import { Menu, X } from "lucide-react";
 import Escapeora from "../assets/images/logo.png";
 import DarkEscapeora from "../assets/images/logo-dark.png";
 
-const CONTACT_PHONE_DISPLAY = "+91 90000 00000";
-const CONTACT_PHONE_TEL = "+919000000000";
+const CONTACT_PHONE_DISPLAY = "+91 92112 15500";
+const CONTACT_PHONE_TEL = "+919211215500";
 
 function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);

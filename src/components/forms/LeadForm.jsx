@@ -1442,7 +1442,7 @@ function MinimalField({
         className="
           mb-2
           block
-          text-[23px]
+          text-lg
           font-medium
           text-[#080b0b]
         "

@@ -12,7 +12,7 @@ const LeadGenerationLinks = ({ isOpen, setIsOpen }) => {
 
   const handleCall = () => {
     setIsOpen(false);
-    window.open("tel:+919876543210", "_self");
+    window.open("tel:+919211215500", "_self");
   };
 
   const handleRequestCallback = () => {

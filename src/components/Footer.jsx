@@ -695,7 +695,7 @@ function Footer() {
         </span> */}
 
                     <span className="mt-1.5 block text-sm text-slate-400">
-                      +91 90000 00000
+                      +91 92112 15500
                     </span>
                   </div>
                 </div>
