@@ -66,9 +66,7 @@ function Footer() {
       content: (
         <div className="flex flex-col items-center whitespace-nowrap">
           <span className="text-[8px] leading-none">Member of</span>
-          <span className="text-[22px] font-semibold tracking-wide">
-            OTAI
-          </span>
+          <span className="text-[22px] font-semibold tracking-wide">OTAI</span>
         </div>
       ),
     },
@@ -322,7 +320,6 @@ function Footer() {
 
       <footer className="font-mont rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto max-w-7xl">
-
           {/* =================================================
             BRANDING SECTION
             DO NOT CHANGE
@@ -339,7 +336,6 @@ function Footer() {
             </div>
 
             <div className="relative w-full overflow-hidden">
-
               {/* LEFT FADE */}
 
               <div
@@ -377,7 +373,6 @@ function Footer() {
               {/* MOVING TRACK */}
 
               <div className="footer-brand-track flex w-max">
-
                 {/* FIRST BRAND SET */}
 
                 <div
@@ -428,7 +423,6 @@ function Footer() {
                     </div>
                   ))}
                 </div>
-
               </div>
             </div>
           </section>
@@ -449,11 +443,9 @@ function Footer() {
         ================================================== */}
 
           <section className="pb-8">
-
             {/* DESTINATION OPTIONS */}
 
             <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
-
               {/* INTERNATIONAL DESTINATIONS */}
 
               <button
@@ -462,7 +454,6 @@ function Footer() {
                 className="group relative cursor-pointer border-0 bg-transparent px-1 pb-2 text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-white"
               >
                 International Destinations
-
                 <span
                   className={`
                     absolute
@@ -490,7 +481,6 @@ function Footer() {
                 className="group relative cursor-pointer border-0 bg-transparent px-1 pb-2 text-sm font-medium text-slate-300 transition-colors duration-300 hover:text-white"
               >
                 Domestic Destinations
-
                 <span
                   className={`
                     absolute
@@ -509,14 +499,12 @@ function Footer() {
                   `}
                 />
               </button>
-
             </div>
 
             {/* DESTINATION CHIPS */}
 
             {activeDestination && (
               <div className="mx-auto mt-6 flex max-w-5xl flex-wrap justify-center gap-2.5">
-
                 {(activeDestination === "international"
                   ? internationalDestinations
                   : domesticDestinations
@@ -542,10 +530,8 @@ function Footer() {
                     {destination}
                   </span>
                 ))}
-
               </div>
             )}
-
           </section>
 
           {/* =================================================
@@ -579,7 +565,6 @@ function Footer() {
         ================================================== */}
 
             <div className="max-w-sm">
-
               {/* LOGO */}
 
               <Link
@@ -598,7 +583,6 @@ function Footer() {
                   alt="Escapeora"
                   className="w-48 h-auto object-contain"
                 />
-
               </Link>
 
               {/* DESCRIPTION */}
@@ -619,7 +603,6 @@ function Footer() {
               {/* SOCIAL LINKS */}
 
               <div className="mt-7 flex items-center gap-2">
-
                 {/* LINKEDIN */}
 
                 <IconButton
@@ -699,7 +682,6 @@ function Footer() {
                 >
                   <YouTubeIcon sx={{ fontSize: 32 }} />
                 </IconButton>
-
               </div>
             </div>
 
@@ -994,56 +976,15 @@ function Footer() {
               sm:justify-between
             "
           >
-
             {/* COPYRIGHT */}
 
-            <p className="text-xs text-slate-500 font-mont w-full text-center">
+            <p className="text-xs w-full text-slate-500 text-center font-mont">
               © {new Date().getFullYear()} Travel Empire Holidays. All rights
               reserved.
             </p>
 
             {/* LEGAL LINKS */}
-
-            {/* <div
-              className="
-                flex
-                flex-wrap
-                items-center
-                gap-x-7
-                gap-y-3
-              "
-            >
-
-              <Link
-                to="/privacy"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Privacy Policy
-              </Link>
-
-              <Link
-                to="/cookies"
-                className="
-                  text-xs
-                  text-slate-500
-                  no-underline
-                  transition-colors
-                  hover:text-white
-                "
-              >
-                Cookies
-              </Link>
-
-            </div> */}
-
           </div>
-
         </div>
       </footer>
     </>
