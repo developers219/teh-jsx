@@ -112,9 +112,9 @@ export default function Hero() {
             Only the background image changes.
         ====================================================== */}
 
-      <div className="absolute inset-x-0 right-99 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-center px-5 sm:px-8 lg:px-12 xl:px-16">
-          <div className="max-w-3xl">
+      <div className="absolute inset-x-0 right-99 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16 w-full">
+        <div className="mx-auto flex h-full w-full items-center px-5 sm:px-8 lg:px-12 xl:px-16">
+          <div className="w-full lg:max-w-3xl">
             {/* SMALL LABEL */}
 
             {/* <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md">
@@ -129,13 +129,13 @@ export default function Hero() {
 
             {/* MAIN HEADING */}
 
-            <h1 className="max-w-3xl text-4xl font-extrabold leading-[1.00] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className=" text-4xl font-thin leading-[1.00] tracking-tight text-white sm:text-5xl md:text-6xl lg:text-7xl">
               Domestic Destinations
             </h1>
 
             {/* SUBHEADING */}
 
-            <p className="mt-5 max-w-2xl text-base leading-7 text-white/90 sm:text-lg md:text-xl">
+            <p className="mt-5 text-base leading-7 text-white/90 sm:text-lg md:text-xl">
               Discover the incredible beauty of India — from peaceful mountains
               and tropical beaches to royal cities, cultural escapes and
               unforgettable journeys.
