@@ -189,7 +189,7 @@ function Footer() {
       ),
     },
   ];
-  const footerLinks = [
+  const links = [
     {
       name: "About Us",
       href: "/about",
