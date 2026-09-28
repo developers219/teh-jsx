@@ -153,18 +153,20 @@ function PackageGallery({ images = [], title = "Package" }) {
                   key={`${image}-${index}`}
                   type="button"
                   onClick={() => setActiveIndex(index)}
-                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${isActive
+                  className={`group relative h-[76px] min-w-[92px] overflow-hidden rounded-2xl border transition-all duration-300 md:h-[88px] md:min-w-0 ${
+                    isActive
                       ? "border-black ring-2 ring-black ring-offset-2"
                       : "border-black/10 hover:border-black/40"
-                    }`}
+                  }`}
                 >
                   <img
                     src={image}
                     alt={`${title} ${index + 1}`}
-                    className={`h-full w-full object-cover transition duration-500 ${isActive
+                    className={`h-full w-full object-cover transition duration-500 ${
+                      isActive
                         ? "scale-105"
                         : "opacity-70 group-hover:scale-105 group-hover:opacity-100"
-                      }`}
+                    }`}
                   />
 
                   {isActive && <div className="absolute inset-0 bg-black/10" />}
@@ -369,10 +371,11 @@ function PackageGallery({ images = [], title = "Package" }) {
                     key={`${image}-modal-${index}`}
                     type="button"
                     onClick={() => setModalIndex(index)}
-                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${isActive
+                    className={`relative h-16 w-24 flex-shrink-0 overflow-hidden rounded-xl border transition duration-300 ${
+                      isActive
                         ? "border-white ring-2 ring-white/30"
                         : "border-white/10 opacity-50 hover:border-white/40 hover:opacity-100"
-                      }`}
+                    }`}
                   >
                     <img
                       src={image}
@@ -585,7 +588,7 @@ function PackageDetails() {
           HERO / BREADCRUMB
       ====================================================== */}
 
-      <section className="bg-black h-40"></section>
+      <section className="bg-black h-18 lg:h-40"></section>
       <section className="border-b border-black/10">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
           <Link
@@ -848,11 +851,22 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
-              <CollapsibleSection title="Terms and Conditions"
+              <CollapsibleSection
+                title="Terms and Conditions"
                 description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."
                 isOpen={openSections.tandc}
                 onToggle={() => toggleSection("tandc")}
-                className="my-5"><p className="h-10"><Link to="terms-condition"  className="px-6 py-2 bg-black text-beige rounded-lg font-mont max-w-3xl text-sm sm:text-base">Terms and Conditions</Link></p></CollapsibleSection>
+                className="my-5"
+              >
+                <p className="h-10">
+                  <Link
+                    to="terms-condition"
+                    className="px-6 py-2 bg-black text-beige rounded-lg font-mont max-w-3xl text-sm sm:text-base"
+                  >
+                    Terms and Conditions
+                  </Link>
+                </p>
+              </CollapsibleSection>
             </div>
 
             {/* RIGHT — BOOKING CARD */}
@@ -864,69 +878,126 @@ function PackageDetails() {
                   duration: 0.7,
                   delay: 0.15,
                 }}
-                className="mb-5 sticky lg:top-8 right-80 font-mont"
+                className="
+      font-mont
+
+      fixed bottom-0 left-0 right-0 z-20
+      lg:sticky lg:top-8 lg:right-80 lg:mb-5
+    "
               >
-                <div className="overflow-hidden rounded-[30px]  bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
-                  <div className="bg-black/90 px-7 py-6 text-white">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
-                          Package price
-                        </p>
+                <div
+                  className="
+        overflow-hidden bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.12)]
+        lg:rounded-[30px] lg:shadow-[0_20px_60px_rgba(0,0,0,0.08)]
+      "
+                >
+                  {/* MOBILE / TABLET */}
+                  <div className="flex items-center gap-4 px-5 py-4 lg:hidden">
+                    <div>
+                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-black/40">
+                        Starting from
+                      </p>
 
-                        <p className="mt-1 text-sm font-semibold text-white/75">
-                          Per traveller
-                        </p>
-                      </div>
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                        <Plane size={17} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="p-7">
-                    <div className="flex items-end gap-3">
-                      <span className="text-4xl font-semibold tracking-[-0.04em]">
-                        ₹{finalPrice.toLocaleString("en-IN")}
-                      </span>
-
-                      {hasDiscount && (
-                        <span className="mb-1 text-sm font-bold text-black/30 line-through">
+                      <div className="mt-0.5 flex items-baseline gap-2">
+                        <span className="text-2xl font-semibold tracking-[-0.04em]">
                           ₹{starting.toLocaleString("en-IN")}
                         </span>
-                      )}
-                    </div>
 
-                    {hasDiscount && (
-                      <div className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
-                        Save {discountPercentage}%
+                        {hasDiscount && (
+                          <span className="text-xs font-bold text-black/30 line-through">
+                            ₹{finalPrice.toLocaleString("en-IN")}
+                          </span>
+                        )}
                       </div>
-                    )}
-
-                    <div className="my-7 h-px bg-black/10" />
-
-                    <div className="space-y-4">
-                      <BookingRow label="Duration" value={durationName} />
-
-                      <BookingRow label="Traveller" value={travellerTypeName} />
-
-                      <BookingRow
-                        label="Destinations"
-                        value={`${destinations.length} places`}
-                      />
                     </div>
 
                     <button
                       type="button"
                       onClick={() => setIsOpen(true)}
-                      className="group mt-7 flex w-full items-center justify-center gap-2 rounded-full bg-black px-6 py-4 text-sm font-semibold text-beige transition-all duration-300 hover:shadow-xl"
+                      className="
+            flex shrink-0 items-center gap-2 rounded-full
+            bg-black px-5 py-3 text-xs font-semibold
+            text-beige transition-all duration-300
+            hover:shadow-xl
+          "
                     >
-                      <span className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
-                        <Phone size={17} />
-                      </span>
-                      <span>Plan this trip</span>
+                      <Phone size={15} />
+                      <span>Book Now</span>
                     </button>
+                  </div>
+
+                  {/* DESKTOP */}
+                  <div className="hidden lg:block">
+                    <div className="bg-black/90 px-7 py-6 text-white">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
+                            Package price
+                          </p>
+
+                          <p className="mt-1 text-sm font-semibold text-white/75">
+                            Per traveller
+                          </p>
+                        </div>
+
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
+                          <Plane size={17} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-7">
+                      <div className="flex items-end gap-3">
+                        <span className="text-4xl font-semibold tracking-[-0.04em]">
+                          ₹{finalPrice.toLocaleString("en-IN")}
+                        </span>
+
+                        {hasDiscount && (
+                          <span className="mb-1 text-sm font-bold text-black/30 line-through">
+                            ₹{starting.toLocaleString("en-IN")}
+                          </span>
+                        )}
+                      </div>
+
+                      {hasDiscount && (
+                        <div className="mt-3 inline-flex rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-emerald-700">
+                          Save {discountPercentage}%
+                        </div>
+                      )}
+
+                      <div className="my-7 h-px bg-black/10" />
+
+                      <div className="space-y-4">
+                        <BookingRow label="Duration" value={durationName} />
+
+                        <BookingRow
+                          label="Traveller"
+                          value={travellerTypeName}
+                        />
+
+                        <BookingRow
+                          label="Destinations"
+                          value={`${destinations.length} places`}
+                        />
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => setIsOpen(true)}
+                        className="
+              group mt-7 flex w-full items-center justify-center
+              gap-2 rounded-full bg-black px-6 py-4
+              text-sm font-semibold text-beige
+              transition-all duration-300 hover:shadow-xl
+            "
+                      >
+                        <span className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
+                          <Phone size={17} />
+                        </span>
+
+                        <span>Plan this trip</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </motion.aside>
@@ -971,8 +1042,9 @@ function CollapsibleSection({
         </div>
 
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 ${isOpen ? "rotate-180" : ""
-            }`}
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform duration-300 ${
+            isOpen ? "rotate-180" : ""
+          }`}
         >
           <ChevronDown size={16} />
         </span>
