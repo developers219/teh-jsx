@@ -475,14 +475,7 @@ function Footer() {
 
           <div
             className="
-              grid
-              grid-cols-1
-              gap-12
-              sm:grid-cols-2
-              lg:grid-cols-[1.5fr_1fr_1fr_1.25fr]
-              lg:gap-12
-              xl:grid-cols-[1.55fr_1fr_1fr_1.25fr]
-              xl:gap-16
+              flex justify-between
             "
           >
 
@@ -639,8 +632,7 @@ function Footer() {
             ALL PACKAGES
         ================================================== */}
 
-            <div className="flex flex-col">
-
+            {/* <div className="flex flex-col">
               <Typography
                 component="h3"
                 className="
@@ -681,9 +673,8 @@ function Footer() {
                 >
                   International Destinations
                 </Link>
-
               </div>
-            </div>
+            </div> */}
 
             {/* =================================================
             QUICK LINKS
@@ -694,20 +685,20 @@ function Footer() {
               <Typography
                 component="h3"
                 className="
-                  text-sm
-                  font-bold
-                  uppercase
-                  tracking-wide
-                  text-white
-                "
+      text-sm
+      font-bold
+      uppercase
+      tracking-wide
+      text-white
+      self-end
+    "
               >
                 Quick Links
               </Typography>
 
-              <div className="mt-8 flex flex-col items-start gap-5">
-
+              <div className="mt-8 flex flex-col items-end gap-5">
                 <Link
-                  to="/destinations"
+                  to="/terms-conditions"
                   className="
                     text-sm
                     text-slate-400
@@ -716,11 +707,11 @@ function Footer() {
                     hover:text-white
                   "
                 >
-                  Destinations
+                  Terms & Conditions
                 </Link>
 
                 <Link
-                  to="/packages"
+                  to="/careers"
                   className="
                     text-sm
                     text-slate-400
@@ -729,46 +720,7 @@ function Footer() {
                     hover:text-white
                   "
                 >
-                  Holiday Packages
-                </Link>
-
-                <Link
-                  to="/how-it-works"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  How It Works
-                </Link>
-
-                <Link
-                  to="/reviews"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  Testimonials
-                </Link>
-
-                <Link
-                  to="/contact"
-                  className="
-                    text-sm
-                    text-slate-400
-                    no-underline
-                    transition-colors
-                    hover:text-white
-                  "
-                >
-                  Contact Us
+                  Careers
                 </Link>
 
               </div>
@@ -777,150 +729,156 @@ function Footer() {
             {/* =================================================
             CONTACT
         ================================================== */}
-
-            <div className="flex flex-col">
-
-              <Typography
-                component="h3"
-                className="
-                  text-sm
-                  font-bold
-                  uppercase
-                  tracking-wide
-                  text-white
-                "
-              >
-                Contact Us
-              </Typography>
-
-              <div className="mt-8 flex flex-col gap-7">
-
-                {/* EMAIL */}
-
-                <div className="flex items-start gap-3">
-
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-lg
-                      border
-                      border-white/10
-                      bg-white/5
-                    "
-                  >
-                    <MailIcon
-                      sx={{
-                        fontSize: 18,
-                        color: "white",
-                        "&:hover": {
-                          color: "#c5bd96",
-                        },
-                        cursor: "pointer",
-                      }}
-                    />
-                  </div>
-
-                  <div className="pt-0.5">
-
-                    <span className="mt-1.5 block text-sm text-slate-400">
-                      hello@travelempireholidays.com
-                    </span>
-
-                  </div>
-                </div>
-
-                {/* PHONE */}
-
-                <div className="flex items-start gap-3">
-
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-lg
-                      border
-                      border-white/10
-                      bg-white/5
-                    "
-                  >
-                    <PhoneIcon
-                      sx={{
-                        fontSize: 18,
-                        color: "white",
-                        "&:hover": {
-                          color: "#c5bd96",
-                        },
-                        cursor: "pointer",
-                      }}
-                    />
-                  </div>
-
-                  <div className="pt-0.5">
-
-                    <span className="mt-1.5 block text-sm text-slate-400">
-                      +91 92112 15500
-                    </span>
-
-                  </div>
-                </div>
-
-                {/* LOCATION */}
-
-                <div className="flex items-start gap-3">
-
-                  <div
-                    className="
-                      flex
-                      h-9
-                      w-9
-                      shrink-0
-                      items-center
-                      justify-center
-                      rounded-lg
-                      border
-                      border-white/10
-                      bg-white/5
-                    "
-                  >
-                    <LocationOnIcon
-                      sx={{
-                        fontSize: 18,
-                        color: "white",
-                        "&:hover": {
-                          color: "#c5bd96",
-                        },
-                        cursor: "pointer",
-                      }}
-                    />
-                  </div>
-
-                  <div className="pt-0.5">
-
-                    <span className="mt-1.5 block text-sm text-slate-400">
-                      Mumbai, India
-                    </span>
-
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
           </div>
 
           {/* =================================================
             BOTTOM DIVIDER
             SAME
         ================================================== */}
+
+          <Divider
+            sx={{
+              my: 2,
+              borderColor: "rgba(255,255,255,0.15)",
+            }}
+          />
+
+          <div className="flex items-center">
+            {/* <Typography
+              component="h3"
+              className="
+      text-sm
+      font-bold
+      uppercase
+      tracking-wide
+      text-white
+    "
+            >
+              Contact Us
+            </Typography> */}
+
+            <div className="flex items-center justify-center w-full gap-7">
+              {/* EMAIL */}
+
+              <div className="flex items-start gap-3">
+                <div
+                  className="
+          flex
+          h-9
+          w-9
+          shrink-0
+          items-center
+          justify-center
+          rounded-lg
+          border
+          border-white/10
+          bg-white/5
+        "
+                >
+                  <MailIcon
+                    sx={{
+                      fontSize: 18,
+                      color: "white",
+                      "&:hover": {
+                        color: "#c5bd96",
+                      },
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+
+                <div className="pt-0.5">
+                  {/* <span className="block text-xs text-slate-500">
+          Email
+        </span> */}
+
+                  <span className="mt-1.5 block text-sm text-slate-400">
+                    hello@travelempireholidays.com
+                  </span>
+                </div>
+              </div>
+
+              {/* PHONE */}
+
+              <div className="flex items-start gap-3">
+                <div
+                  className="
+          flex
+          h-9
+          w-9
+          shrink-0
+          items-center
+          justify-center
+          rounded-lg
+          border
+          border-white/10
+          bg-white/5
+        "
+                >
+                  <PhoneIcon
+                    sx={{
+                      fontSize: 18,
+                      color: "white",
+                      "&:hover": {
+                        color: "#c5bd96",
+                      },
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+
+                <div className="pt-0.5">
+                  {/* <span className="block text-xs text-slate-500">
+          Phone
+        </span> */}
+
+                  <span className="mt-1.5 block text-sm text-slate-400">
+                    +91 92112 15500
+                  </span>
+                </div>
+              </div>
+
+              {/* LOCATION */}
+
+              <div className="flex items-start gap-3">
+                <div
+                  className="
+          flex
+          h-9
+          w-9
+          shrink-0
+          items-center
+          justify-center
+          rounded-lg
+          border
+          border-white/10
+          bg-white/5
+        "
+                >
+                  <LocationOnIcon
+                    sx={{
+                      fontSize: 18,
+                      color: "white",
+                      "&:hover": {
+                        color: "#c5bd96",
+                      },
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+
+                <div className="pt-0.5">
+                  {/* <span className="block text-xs text-slate-500">
+          Location
+        </span> */}
+
+                  <span className="mt-1.5 block text-sm text-slate-400">
+                    Mumbai, India
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <Divider
             sx={{
@@ -963,8 +921,7 @@ function Footer() {
                 gap-y-3
               "
             >
-
-              <Link
+              {/* <Link
                 to="/terms"
                 className="
                   text-xs
@@ -975,7 +932,7 @@ function Footer() {
                 "
               >
                 Terms & Conditions
-              </Link>
+              </Link> */}
 
               <Link
                 to="/privacy"

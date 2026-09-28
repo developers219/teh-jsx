@@ -42,21 +42,14 @@ export default function TravelReviews() {
    * 1 -> Review 2 + 3
    * 2 -> Review 3 + 4
    */
-  const maxIndex = Math.max(
-    0,
-    reviews.length - visibleCards
-  );
+  const maxIndex = Math.max(0, reviews.length - visibleCards);
 
   const nextReview = () => {
-    setActiveIndex((current) =>
-      current >= maxIndex ? 0 : current + 1
-    );
+    setActiveIndex((current) => (current >= maxIndex ? 0 : current + 1));
   };
 
   const previousReview = () => {
-    setActiveIndex((current) =>
-      current <= 0 ? maxIndex : current - 1
-    );
+    setActiveIndex((current) => (current <= 0 ? maxIndex : current - 1));
   };
 
   /* =====================================================
@@ -209,128 +202,115 @@ export default function TravelReviews() {
                 className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-beige p-3 px-6 rounded-full cursor-pointer transition-colors font-mont text-white hover:bg-beigeD"
               >
                 Read More
-
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[#063b72]">
                   <ArrowForwardIosIcon sx={{ fontSize: 8 }} />
                 </span>
               </button>
             </div>
             {isOpen && selectedReview && (
-                      
-                        <Modal
-                          isOpen={isOpen}
-                          setIsOpen={setIsOpen}
-                        >
-                          <div className="bg-white w-[50vw]">
-                            {/* Image carousel */}
+              <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+                <div className="bg-white w-[50vw]">
+                  {/* Image carousel */}
 
-                            <div className="relative aspect-[16/10] overflow-hidden">
-                              <img
-                                src={
-                                  selectedReview?.images?.[currentImage]?.imageUrl
-                                }
-                                alt={`${selectedReview.userName}'s travel experience`}
-                                className="h-full w-full object-cover"
-                              />
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <img
+                      src={selectedReview?.images?.[currentImage]?.imageUrl}
+                      alt={`${selectedReview.userName}'s travel experience`}
+                      className="h-full w-full object-cover"
+                    />
 
-                              {/* Previous */}
+                    {/* Previous */}
 
-                              <button
-                                onClick={() =>
-                                  setCurrentImage((prev) =>
-                                    prev === 0
-                                      ? selectedReview?.images?.length - 1
-                                      : prev - 1
-                                  )
-                                }
-                                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
-                              >
-                                ←
-                              </button>
+                    <button
+                      onClick={() =>
+                        setCurrentImage((prev) =>
+                          prev === 0
+                            ? selectedReview?.images?.length - 1
+                            : prev - 1,
+                        )
+                      }
+                      className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                    >
+                      ←
+                    </button>
 
-                              {/* Next */}
+                    {/* Next */}
 
-                              <button
-                                onClick={() =>
-                                  setCurrentImage(
-                                    (prev) =>
-                                      (prev + 1) %
-                                      selectedReview?.images?.length
-                                  )
-                                }
-                                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
-                              >
-                                →
-                              </button>
+                    <button
+                      onClick={() =>
+                        setCurrentImage(
+                          (prev) => (prev + 1) % selectedReview?.images?.length,
+                        )
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-white backdrop-blur-sm"
+                    >
+                      →
+                    </button>
 
-                              {/* Dots */}
+                    {/* Dots */}
 
-                              <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
-                                {selectedReview?.images?.map((_, index) => (
-                                  <button
-                                    key={index}
-                                    onClick={() =>
-                                      setCurrentImage(index)
-                                    }
-                                    className={`h-1.5 rounded-full transition-all ${
-                                      index === currentImage
-                                        ? "w-6 bg-white"
-                                        : "w-1.5 bg-white/50"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
+                    <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
+                      {selectedReview?.images?.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentImage(index)}
+                          className={`h-1.5 rounded-full transition-all ${
+                            index === currentImage
+                              ? "w-6 bg-white"
+                              : "w-1.5 bg-white/50"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
 
-                            {/* User information */}
+                  {/* User information */}
 
-                            <div className="p-6">
-                              <div className="flex items-start justify-between gap-4">
-                                <div>
-                                  <h3 className="text-xl font-medium text-gray-900">
-                                    {selectedReview?.userName}
-                                  </h3>
+                  <div className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 className="text-xl font-medium text-gray-900">
+                          {selectedReview?.userName}
+                        </h3>
 
-                                  <p className="mt-1 text-sm text-gray-500">
-                                    {selectedReview?.destination ?? "Bali"}
-                                  </p>
-                                </div>
+                        <p className="mt-1 text-sm text-gray-500">
+                          {selectedReview?.destination ?? "Bali"}
+                        </p>
+                      </div>
 
-                                {/* Rating */}
+                      {/* Rating */}
 
-                                <div className="flex items-center gap-1">
-                                  <span className="text-sm font-medium text-gray-900">
-                                    {selectedReview.rating}
-                                  </span>
+                      <div className="flex items-center gap-1">
+                        <span className="text-sm font-medium text-gray-900">
+                          {selectedReview.rating}
+                        </span>
 
-                                  <span className="text-amber-500">
-                                    ★
-                                  </span>
-                                </div>
-                              </div>
+                        <span className="text-amber-500">★</span>
+                      </div>
+                    </div>
 
-                              {/* Destination */}
+                    {/* Destination */}
 
-                              <p className="mt-4 text-sm text-gray-500">
-                                Travelled to{" "}
-                                <span className="font-medium text-gray-900">
-                                  {selectedReview?.destination ?? "Bali"}
-                                </span>
-                              </p>
+                    <p className="mt-4 text-sm text-gray-500">
+                      Travelled to{" "}
+                      <span className="font-medium text-gray-900">
+                        {selectedReview?.destination ?? "Bali"}
+                      </span>
+                    </p>
 
-                              {/* Divider */}
+                    {/* Divider */}
 
-                              <div className="my-5 border-t border-gray-200" />
+                    <div className="my-5 border-t border-gray-200" />
 
-                              {/* Description */}
+                    {/* Description */}
 
-                              <p className="text-[15px] leading-7 text-gray-600">
-                                {selectedReview?.description}
-                              </p>
-                            </div>
-                          </div>
-                        </Modal>
-                      )}
+                    <p className="text-[15px] leading-7 text-gray-600">
+                      {selectedReview?.description}
+                    </p>
+                  </div>
+                </div>
+              </Modal>
+            )}
 
             {/* =================================================
                 RIGHT CAROUSEL
@@ -353,13 +333,11 @@ export default function TravelReviews() {
                       key={review.id}
                       className="w-full sm:w-1/2 shrink-0 px-2 h-full"
                     >
-                      
-
                       {/* =================================================
                             LARGE REVIEW CARD
                         ================================================= */}
 
-                      <article className="relative font-mont overflow-hidden rounded-[20px] bg-white">
+                      <article className="relative font-mont h-[420px] flex flex-col justify-between overflow-hidden rounded-[20px] bg-white">
                         {/* Customer Image */}
 
                         <div className="relative h-[170px] overflow-hidden">
@@ -404,7 +382,10 @@ export default function TravelReviews() {
 
                             <span
                               className="text-blue-400"
-                              onClick={() => {setSelectedReview(review); setIsOpen(true)}}
+                              onClick={() => {
+                                setSelectedReview(review);
+                                setIsOpen(true);
+                              }}
                             >
                               {review?.description?.length >= 300 ? (
                                 <a className="text-blue-400 cursor-pointer font-bold">
@@ -443,7 +424,7 @@ export default function TravelReviews() {
                                       color: "#f59e0b",
                                     }}
                                   />
-                                )
+                                ),
                               )}
                             </div>
                           </div>
