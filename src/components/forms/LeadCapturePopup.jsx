@@ -47,7 +47,7 @@ function isLikelyPhoneNumber(value) {
   const digits = value.replace(/\D/g, "");
   return digits.length >= 7 && digits.length <= 15;
 }
-function LeadCapturePopup({ isOpen, setIsOpen }) {
+function LeadCapturePopup({ isOpen, setIsOpen, showImages = false }) {
   const [isSuppressed, setIsSuppressed] = useState(() => {
     if (typeof window === "undefined") {
       return true;
@@ -176,8 +176,17 @@ function LeadCapturePopup({ isOpen, setIsOpen }) {
     //   </div>
     // </div>
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="p-8 bg-white">
-        <LeadForm func={setStep} />
+      <div
+        className={`p-8 ${showImages ? "w-full lg:w-[55vw] max-w-5xl" : "w-fit"} bg-white flex flex-col lg:flex-row`}
+      >
+        {showImages && (
+          <div className="flex-1 flex items-center justify-center">
+            <img src={images[step - 1]} alt="steps" className="w-full" />
+          </div>
+        )}
+        <div className="flex-1">
+          <LeadForm func={setStep} />
+        </div>
       </div>
     </Modal>
   );
