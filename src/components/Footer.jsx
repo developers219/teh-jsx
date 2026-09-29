@@ -819,43 +819,7 @@ function Footer() {
         ================================================== */}
 
           <div className="flex items-center">
-            <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-7">
-              {/* EMAIL */}
-
-              <div className="flex items-start gap-3">
-                <div
-                  className="
-                    flex
-                    h-9
-                    w-9
-                    shrink-0
-                    items-center
-                    justify-center
-                    rounded-lg
-                    border
-                    border-white/10
-                    bg-white/5
-                  "
-                >
-                  <MailIcon
-                    sx={{
-                      fontSize: 18,
-                      color: "white",
-                      "&:hover": {
-                        color: "#c5bd96",
-                      },
-                      cursor: "pointer",
-                    }}
-                  />
-                </div>
-
-                <div className="pt-0.5">
-                  <span className="mt-1.5 block text-sm text-slate-400">
-                    hello@travelempireholidays.com
-                  </span>
-                </div>
-              </div>
-
+            <div className="flex flex-col lg:flex-row items-center justify-center w-full gap-2 sm:gap-4 lg:gap-7">
               {/* PHONE */}
 
               <div className="flex items-start gap-3">
@@ -892,6 +856,42 @@ function Footer() {
                 </div>
               </div>
 
+              {/* EMAIL */}
+
+              <div className="flex items-start gap-3">
+                <div
+                  className="
+                    flex
+                    h-9
+                    w-9
+                    shrink-0
+                    items-center
+                    justify-center
+                    rounded-lg
+                    border
+                    border-white/10
+                    bg-white/5
+                  "
+                >
+                  <MailIcon
+                    sx={{
+                      fontSize: 18,
+                      color: "white",
+                      "&:hover": {
+                        color: "#c5bd96",
+                      },
+                      cursor: "pointer",
+                    }}
+                  />
+                </div>
+
+                <div className="pt-0.5">
+                  <span className="mt-1.5 block text-sm text-slate-400">
+                    hello@travelempireholidays.com
+                  </span>
+                </div>
+              </div>
+
               {/* LOCATION */}
 
               <div className="flex items-start gap-3">
@@ -923,7 +923,8 @@ function Footer() {
 
                 <div className="pt-0.5">
                   <span className="mt-1.5 block text-sm text-slate-400">
-                    Mumbai, India
+                    4th Floor, Ocus Quantum, 403, Building, Gurugram, Haryana
+                    122003
                   </span>
                 </div>
               </div>

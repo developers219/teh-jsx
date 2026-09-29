@@ -50,6 +50,7 @@ import TermsConditions from "../pages/TermsConditions";
 import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Disclaimer from "../pages/Disclaimer";
 import CookiesPolicy from "../pages/CookiesPolicy";
+import Careers from "../pages/Careers";
 function AppRoutes() {
   return (
     <Routes>
@@ -75,11 +76,12 @@ function AppRoutes() {
         <Route path="/blogs/:slug" element={<BlogDetails />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/about" element={<About />} />
+        <Route path="/careers" element={<Careers />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/booking/:packageId" element={<BookingForm />} />
-        <Route path="/TermsConditions" element={<TermsConditions />}/>
-        <Route path="/Privacy"element={< PrivacyPolicy/>}/>
-        <Route path="/disclaimer"element={<Disclaimer />} />
+        <Route path="/TermsConditions" element={<TermsConditions />} />
+        <Route path="/Privacy" element={<PrivacyPolicy />} />
+        <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
         <Route
           path="/booking-confirmation/:id"
@@ -251,7 +253,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      
+
       <Route
         path="/admin/package-subcategories/create"
         element={
