@@ -17,7 +17,7 @@ export default function About() {
   return (
     <section className="bg-white">
       {/* Hero */}
-      <div className="relative h-[55vh] min-h-[420px] max-h-[600px]">
+      <div className="relative h-[70vh] max-h-98">
         <img
           src="https://images.unsplash.com/photo-1589779255235-85dc2a054145?fm=jpg&ixlib=rb-4.0.3&q=80&w=2000"
           alt="Skyscrapers"

@@ -582,7 +582,13 @@ function PackageDetails() {
 
   return (
     <main className="min-h-screen bg-white text-black">
-      {isOpen && <LeadCapturePopup isOpen={isOpen} setIsOpen={setIsOpen} />}
+      {isOpen && (
+        <LeadCapturePopup
+          showImages={true}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      )}
 
       {/* =====================================================
           HERO / BREADCRUMB
