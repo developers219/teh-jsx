@@ -241,7 +241,7 @@ function Footer() {
     // Legal
     {
       name: "Terms & Conditions",
-      href: "/terms-conditions",
+      href: "/TermsConditions",
       category: "legal",
     },
     {

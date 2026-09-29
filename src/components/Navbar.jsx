@@ -75,7 +75,7 @@ function Navbar() {
 
               {/* DESKTOP MENU */}
               <div
-                className="hidden p-4 px-12 lg:block"
+                className="hidden p-4 px-12 md:block"
                 onClick={() => setIsMenuOpen(true)}
               >
                 Menu

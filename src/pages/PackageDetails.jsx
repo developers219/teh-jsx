@@ -588,7 +588,7 @@ function PackageDetails() {
           HERO / BREADCRUMB
       ====================================================== */}
 
-      <section className="bg-black h-18 lg:h-40"></section>
+      <section className="bg-black h-18 md:h-40 "></section>
       <section className="border-b border-black/10">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
           <Link

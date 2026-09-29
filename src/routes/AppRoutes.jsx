@@ -46,6 +46,10 @@ import Packages from "../pages/Packages";
 import PackageSubcategoryEditor from "../pages/PackageSubcategoryEditor";
 import TravelCategoryEditor from "../pages/TravelCategoryEditor";
 import Unauthorized from "../pages/Unauthorized";
+import TermsConditions from "../pages/TermsConditions";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import Disclaimer from "../pages/Disclaimer";
+import CookiesPolicy from "../pages/CookiesPolicy";
 function AppRoutes() {
   return (
     <Routes>
@@ -73,6 +77,10 @@ function AppRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/booking/:packageId" element={<BookingForm />} />
+        <Route path="/TermsConditions" element={<TermsConditions />}/>
+        <Route path="/Privacy"element={< PrivacyPolicy/>}/>
+        <Route path="/disclaimer"element={<Disclaimer />} />
+        <Route path="/cookies" element={<CookiesPolicy />} />
         <Route
           path="/booking-confirmation/:id"
           element={<BookingConfirmation />}
@@ -243,6 +251,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      
       <Route
         path="/admin/package-subcategories/create"
         element={

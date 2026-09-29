@@ -6,5 +6,6 @@ export const navigationItems = [
     // { label: "Gallery", path: "/gallery" },
     //{ label: "About", path: "/about" },
     { label: "International destinations", path: "/destinations/intl" },
+    { label: "Terms & Conditions", path: "/TermsConditions" },
     //{ label: "Admin", path: "/admin/login" },
 ];
