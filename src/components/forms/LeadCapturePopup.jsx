@@ -176,7 +176,9 @@ function LeadCapturePopup({ isOpen, setIsOpen, showImages = false }) {
     //   </div>
     // </div>
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="p-8 bg-white">
+      <div
+        className={`p-8 ${showImages ? "w-full lg:w-[55vw] max-w-5xl" : "w-fit"} bg-white flex flex-col lg:flex-row`}
+      >
         {showImages && (
           <div className="flex-1 flex items-center justify-center">
             <img src={images[step - 1]} alt="steps" className="w-full" />
