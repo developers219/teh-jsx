@@ -428,7 +428,7 @@ export default function Careers() {
                               setSelectedJob(job);
                               setIsApplicationOpen(true);
                             }}
-                            className="inline-flex items-center justify-center bg-black px-7 py-3 font-mont text-sm text-white transition hover:bg-black/80"
+                            className="inline-flex items-center justify-center bg-black px-7 py-3 font-mont text-sm text-white transition  cursor-pointer"
                           >
                             Apply for this role
                           </button>

@@ -102,7 +102,7 @@ const CareerApplication = ({ isOpen, setIsOpen, jobRole }) => {
       <div className="w-[calc(100vw-32px)] max-w-2xl bg-white p-6 font-mont sm:p-8">
         {/* Header */}
         <div className="mb-7 pr-8">
-          <h2 className="font-cg text-3xl text-center font-medium text-slate-900 sm:text-4xl">
+          <h2 className="font-cg  text-[clamp(2rem,4vw,3rem)] text-center font-medium text-slate-900 ">
             Apply for a Job
           </h2>
 

@@ -122,7 +122,7 @@ const CustomerSupport = () => {
               </p>
             </div>
 
-            <form className="rounded-xl border border-slate-200 p-5 sm:p-7 lg:p-8">
+            <form className="rounded-xl w-[900px] border border-slate-200 p-5 sm:p-7 lg:p-8">
               {/* Name + Phone */}
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Name */}
