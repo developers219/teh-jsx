@@ -51,6 +51,7 @@ import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Disclaimer from "../pages/Disclaimer";
 import CookiesPolicy from "../pages/CookiesPolicy";
 import Careers from "../pages/Careers";
+import CustomerSupport from "../pages/CustomerSupport";
 function AppRoutes() {
   return (
     <Routes>
@@ -83,6 +84,7 @@ function AppRoutes() {
         <Route path="/Privacy" element={<PrivacyPolicy />} />
         <Route path="/disclaimer" element={<Disclaimer />} />
         <Route path="/cookies" element={<CookiesPolicy />} />
+        <Route path="/customer-support" element={<CustomerSupport />}/>
         <Route
           path="/booking-confirmation/:id"
           element={<BookingConfirmation />}

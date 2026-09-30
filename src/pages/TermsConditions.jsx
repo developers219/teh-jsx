@@ -25,14 +25,14 @@ const TermsConditions = () => {
           duration: 0.7,
           ease: "easeOut",
         }}
-        className="w-full pt-3"
+        className="w-full "
       >
-        <div className="mx-auto w-full max-w-6xl px-5 py-12 sm:px-8 sm:py-16 lg:px-12 lg:py-20">
-          <div className="rounded-xl bg-white px-6 py-10 shadow-[0_4px_25px_rgba(0,0,0,0.04)] sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+        <div className="mx-auto w-full max-w-6xl  ">
+          <div className=" bg-white px-6 py-10  sm:px-8 sm:py-12 lg:px-12 lg:py-14">
 
             {/* Page Heading */}
             <div className="mb-12">
-              <h1 className="font-cg text-4xl text-center font-medium tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+              <h1 className="font-cg  text-center font-medium tracking-tight text-slate-900 text-[clamp(2rem,4vw,3rem)]">
                 Terms & Conditions
               </h1>
 

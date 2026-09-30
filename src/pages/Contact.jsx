@@ -55,25 +55,40 @@
 // }
 // export default Contact;
 
+import React, { useEffect } from "react";
+import { motion } from "motion/react";
 import PersonalizedHolidayPlan from "../components/home/PersonalizedHolidayPlan";
 import Navbar from "../components/Navbar";
 
 const Contact = () => {
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, []);
+
   return (
     <>
       <Navbar />
-           <div className=" bg-white text-slate-900">
-             <section className="bg-black h-18 lg:h-40"></section>
-      <div id="holiday-plan" className="bg-white ">
-        <div className="max-w-7xl mx-auto px-4">
-          
-            
 
+      <div className="bg-white text-slate-900 ">
+        <section className="h-18 bg-black lg:h-40"></section>
+
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.7,
+            ease: "easeOut",
+          }}
+          id="holiday-plan"
+          className="bg-white"
+        >
+          <div className="mx-auto max-w-7xl px-4">
             <PersonalizedHolidayPlan />
-
-        
-        </div>
-      </div>
+          </div>
+        </motion.div>
       </div>
     </>
   );

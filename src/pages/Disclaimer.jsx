@@ -26,14 +26,14 @@ const Disclaimer = () => {
           duration: 0.7,
           ease: "easeOut",
         }}
-        className="w-full pt-10 pb-16"
+        className="w-full "
       >
-        <div className="mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12">
-          <div className="rounded-xl bg-white px-6 py-10 shadow-[0_4px_25px_rgba(0,0,0,0.04)] sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+        <div className="mx-auto w-full max-w-6xl ">
+          <div className="rounded-xl bg-white px-6 py-10  sm:px-8 sm:py-12 lg:px-12 lg:py-14">
             
             {/* Heading */}
             <div className="mb-12">
-              <h1 className="font-cg text-4xl text-center font-medium tracking-tight text-slate-900 sm:text-5xl lg:text-6xl">
+              <h1 className="font-cg text-[clamp(2rem,4vw,3rem)] text-center font-medium tracking-tight text-slate-900 ">
                 Disclaimer
               </h1>
 

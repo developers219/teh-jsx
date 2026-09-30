@@ -11,6 +11,7 @@ import {
   BriefcaseBusiness,
 } from "lucide-react";
 import SectionHeader from "../components/home/SectionHeader";
+import CareerApplication from "../components/forms/CareerApplication";
 
 const values = [
   {
@@ -135,6 +136,10 @@ export default function Careers() {
   const [experience, setExperience] = useState("All Experience");
   const [openJob, setOpenJob] = useState(null);
 
+  // Added only for the application popup
+  const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
+
   const filteredJobs = useMemo(() => {
     return jobs.filter((job) => {
       const searchTerm = search.toLowerCase().trim();
@@ -155,6 +160,12 @@ export default function Careers() {
     });
   }, [search, department, experience]);
 
+  // Added only for opening the application popup
+  const handleApply = (job) => {
+    setSelectedJob(job);
+    setIsApplicationOpen(true);
+  };
+
   return (
     <section className="bg-white text-black">
       {/* Hero */}
@@ -164,7 +175,9 @@ export default function Careers() {
           alt="Person working on a MacBook"
           className="absolute inset-0 h-full w-full object-cover"
         />
+
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/80" />
+
         <div className="relative mx-auto h-full max-w-7xl overflow-hidden">
           <div className="absolute inset-0 z-10 flex items-end pb-10 text-white">
             <div className="px-5 lg:px-0">
@@ -335,7 +348,9 @@ export default function Careers() {
                           </span>
                         </div>
 
-                        <h3 className="text-xl md:text-2xl">{job.title}</h3>
+                        <h3 className="text-xl md:text-2xl">
+                          {job.title}
+                        </h3>
 
                         <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2 font-mont text-xs text-black/50">
                           <span className="flex items-center gap-1.5">
@@ -406,12 +421,17 @@ export default function Careers() {
                         </div>
 
                         <div className="md:col-span-2">
-                          <a
-                            href={`mailto:careers@travelempire.com?subject=Application for ${job.title} - ${job.id}`}
+                          {/* Application Popup Button */}
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedJob(job);
+                              setIsApplicationOpen(true);
+                            }}
                             className="inline-flex items-center justify-center bg-black px-7 py-3 font-mont text-sm text-white transition hover:bg-black/80"
                           >
                             Apply for this role
-                          </a>
+                          </button>
                         </div>
                       </div>
                     </motion.div>
@@ -421,6 +441,7 @@ export default function Careers() {
             ) : (
               <div className="py-20 text-center">
                 <p className="text-xl">No openings found.</p>
+
                 <p className="mt-2 font-mont text-sm text-black/50">
                   Try changing your search or filters.
                 </p>
@@ -429,6 +450,13 @@ export default function Careers() {
           </div>
         </div>
       </div>
+
+      {/* Career Application Popup */}
+      <CareerApplication
+        isOpen={isApplicationOpen}
+        setIsOpen={setIsApplicationOpen}
+        jobRole={selectedJob?.title || ""}
+      />
     </section>
   );
 }
