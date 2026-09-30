@@ -2040,7 +2040,7 @@ const blogs = [
     tags: ["Vietnam", "Culture", "Asia"],
     title: "Culture of Vietnam: Traditions, Food, Festivals & Everyday Life",
     thumbnail:
-      "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&h=900&q=80",
+      "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&h=900&q=80",
     short_desc:
       "From family traditions and festivals to street food and everyday customs, explore the cultural layers that shape Vietnam.",
     date_published: "22 Aug, 2026",
