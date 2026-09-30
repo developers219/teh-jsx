@@ -51,6 +51,7 @@ import PrivacyPolicy from "../pages/PrivacyPolicy";
 import Disclaimer from "../pages/Disclaimer";
 import CookiesPolicy from "../pages/CookiesPolicy";
 import Careers from "../pages/Careers";
+import CorporateBookings from "../pages/CorporateBookings";
 function AppRoutes() {
   return (
     <Routes>
@@ -77,6 +78,7 @@ function AppRoutes() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/about" element={<About />} />
         <Route path="/careers" element={<Careers />} />
+        <Route path="/corporate-bookings" element={<CorporateBookings />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/booking/:packageId" element={<BookingForm />} />
         <Route path="/TermsConditions" element={<TermsConditions />} />

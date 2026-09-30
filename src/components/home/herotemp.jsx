@@ -56,7 +56,7 @@ export default function HeroSection() {
           object-cover
         "
       /> */}
-      <video
+      {/* <video
         autoPlay
         muted
         loop
@@ -67,7 +67,7 @@ export default function HeroSection() {
           src="https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
           type="video/mp4"
         />
-      </video>
+      </video> */}
       {/* <video
         autoplay=""
         loop
