@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import cb1 from "../../assets/images/cb1.png";
 import cb2 from "../../assets/images/cb2.png";
 import cb3 from "../../assets/images/cb3.png";
-import cb4 from "../../assets/images/cb4.png";
+// import cb4 from "../../assets/images/cb4.png";
 import cb5 from "../../assets/images/cb5.png";
 import cb6 from "../../assets/images/cb6.png";
 
@@ -20,10 +20,10 @@ const slides = [
     title: "Team Retreats",
     img: cb3,
   },
-  {
-    title: "Incentive Trips",
-    img: cb4,
-  },
+  // {
+  //   title: "Incentive Trips",
+  //   img: cb4,
+  // },
   {
     title: "Conference Trips",
     img: cb5,

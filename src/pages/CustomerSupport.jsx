@@ -35,25 +35,24 @@ const CustomerSupport = () => {
         }}
         className="w-full pb-16 pt-10"
       >
-        <div className="mx-auto w-full max-w-6xl ">
+        <div className="mx-auto w-full max-w-6xl">
           {/* Heading */}
-          <div className="text-center">
-            <h1 className="font-cg text-[clamp(2rem,4vw,3rem)] font-medium tracking-tight text-slate-900  ">
+          <div className="px-5 text-center sm:px-8 lg:px-0">
+            <h1 className="font-cg text-[clamp(2rem,4vw,3rem)] font-medium tracking-tight text-slate-900">
               Customer Support
             </h1>
 
             <p className="mx-auto mt-3 max-w-3xl font-mont text-sm leading-7 text-slate-600 sm:text-base">
               Our customer support team is here to assist you with your travel
               plans, bookings, and any concerns related to your journey.
-              
             </p>
           </div>
 
           {/* Divider */}
-          <div className="my-3 h-[2px] w-full bg-slate-200 sm:my-10"></div>
+          {/* <div className="my-3 h-[2px] w-full bg-slate-200 sm:my-10"></div> */}
 
           {/* Customer Support Details */}
-          <section className="px-1 py-2 sm:px-4 lg:px-6">
+          <section className="px-5 py-2 sm:px-8 lg:px-6">
             <div className="font-mont text-sm leading-7 text-slate-700 sm:text-base">
               {/* Phone */}
               <p>
@@ -109,7 +108,7 @@ const CustomerSupport = () => {
           </section>
 
           {/* Support Form */}
-          <section className="mt-12">
+          <section className="mt-12 px-5 sm:px-8 lg:px-0">
             <div className="mb-7">
               <h2 className="font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
                 Contact Our Support Team
@@ -122,7 +121,7 @@ const CustomerSupport = () => {
               </p>
             </div>
 
-            <form className="rounded-xl w-[900px] border border-slate-200 p-5 sm:p-7 lg:p-8">
+            <form className="w-full rounded-xl border border-slate-200 p-5 sm:p-7 lg:w-[900px] lg:p-8">
               {/* Name + Phone */}
               <div className="grid gap-6 md:grid-cols-2">
                 {/* Name */}
@@ -224,7 +223,7 @@ const CustomerSupport = () => {
               <div className="mt-7">
                 <button
                   type="submit"
-                  className="rounded-lg bg-black px-8 py-3.5 cursor-pointer  font-mont text-sm font-medium text-white transition w-full "
+                  className="w-full cursor-pointer rounded-lg bg-black px-8 py-3.5 font-mont text-sm font-medium text-white transition"
                 >
                   Submit Request
                 </button>

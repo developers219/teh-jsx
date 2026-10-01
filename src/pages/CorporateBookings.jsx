@@ -31,7 +31,7 @@ export default function CorporateBookings() {
               onClick={() => setIsCorporateTourOpen(true)}
               className="flex cursor-pointer items-center gap-2 rounded-full bg-black px-6 py-3 font-mont text-sm text-white"
             >
-              Get Your Custom Itinerary
+              Enquire Now
               <ArrowUpRight size={16} strokeWidth={1.8} />
             </button>
 
