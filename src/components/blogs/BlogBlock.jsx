@@ -173,13 +173,13 @@ export default function BlogBlock({ block }) {
         <blockquote className="relative my-16 px-4 py-3 pl-0 md:-mx-6 md:pl-6">
           <span
             aria-hidden="true"
-            className="absolute -top-6 left-0 select-none font-cg text-8xl leading-none md:left-6"
+            className="absolute -top-6 left-0 select-none font-cg text-8xl px-4 py-3 leading-none md:left-6"
             style={{ color: BEIGE, opacity: 0.35 }}
           >
             “
           </span>
           <p
-            className="pt-8 font-cg text-[1.75rem] italic leading-[1.3] text-black md:text-[2.25rem]"
+            className="pt-8 font-cg text-[1.75rem] italic leading-[1.3] px-10 py-3 text-black "
             style={{ textWrap: "balance" }}
           >
             {block.text}
