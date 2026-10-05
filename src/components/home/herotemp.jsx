@@ -42,7 +42,7 @@ export default function HeroSection() {
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      {/* <video
+      <video
         autoPlay
         muted
         loop
@@ -55,7 +55,7 @@ export default function HeroSection() {
           w-full
           object-cover
         "
-      /> */}
+      />
       {/* <video
         autoPlay
         muted

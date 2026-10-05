@@ -419,7 +419,7 @@ function BlogCard({ blog, index }) {
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.7, ease: EASE, delay: (index % 2) * 0.08 }}
       whileHover="hover"
-      className={"w-[30%]"}
+      className={"sm:w-[47%] lg:w-[30%]"}
     >
       <Link
         to={`/blogs/${index % 6}`}
@@ -589,7 +589,7 @@ export default function Blogs() {
             </div>
 
             {filtered.length ? (
-              <div className="flex flex-wrap justify-between">
+              <div className="flex flex-wrap justify-between gap-5">
                 {filtered.map((blog, i) => (
                   <BlogCard key={getId(blog)} blog={blog} index={i} />
                 ))}

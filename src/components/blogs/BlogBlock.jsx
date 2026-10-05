@@ -37,7 +37,7 @@ export default function BlogBlock({ block }) {
   switch (block.type) {
     case "hero":
       return (
-        <figure className={`${WIDE} mb-14 mt-2`}>
+        <figure className={`${WIDE} mb-14  mt-2`}>
           <img
             src={block.src}
             alt={block.alt}
@@ -57,11 +57,11 @@ export default function BlogBlock({ block }) {
         block.className?.includes("md:text-lg");
 
       return isLead ? (
-        <p className="mb-7 font-mont leading-[1.45] tracking-[-0.005em] text-black/85 text-base">
+        <p className="mb-7 font-mont leading-[1.45] tracking-[-0.005em] px-4 py-3 text-black/85 text-base">
           {block.text}
         </p>
       ) : (
-        <p className="mb-6 font-mont text-[1.0625rem] leading-[1.85] text-black/75 md:text-[1.125rem]">
+        <p className="mb-6 font-mont text-[1.0625rem] leading-[1.85] px-4 py-3 text-black/75 md:text-[1.125rem]">
           {block.text}
         </p>
       );
@@ -73,7 +73,7 @@ export default function BlogBlock({ block }) {
         return (
           <h3
             id={id}
-            className="mb-3 mt-11 scroll-mt-24 font-cg text-2xl leading-snug text-black md:text-[1.75rem]"
+            className="mb-3 mt-11 scroll-mt-24 font-cg text-2xl px-4 py-3 leading-snug text-black md:text-[1.75rem]"
           >
             {block.text}
           </h3>
@@ -82,7 +82,7 @@ export default function BlogBlock({ block }) {
       return (
         <h2
           id={id}
-          className="mb-6 mt-20 scroll-mt-24 font-cg text-[2rem] leading-[1.1] tracking-tight text-black md:text-[2.75rem]"
+          className="mb-6 mt-20 scroll-mt-24 font-cg text-[2rem] px-4 py-3 leading-[1.1] tracking-tight text-black md:text-[2.75rem]"
           style={{ textWrap: "balance" }}
         >
           {block.text}
@@ -94,14 +94,14 @@ export default function BlogBlock({ block }) {
       return (
         <nav
           aria-label={block.title}
-          className="mb-16 rounded-2xl border border-black/10 p-6 md:p-8"
+          className="mb-16 rounded-2xl border px-4 py-3 border-black/10 p-6 md:p-8"
         >
-          <p className="mb-4 font-cg text-2xl text-black">{block.title}</p>
+          <p className="mb-4 font-cg text-2xl px-4 py-3 text-black">{block.title}</p>
           <ul className="gap-x-10 sm:columns-2">
             {block.items.map((item) => (
               <li
                 key={item}
-                className="break-inside-avoid border-t border-black/10 py-3 font-mont text-[0.95rem] leading-6 text-black/70"
+                className="break-inside-avoid border-t border-black/10 px-4 py-3 font-mont text-[0.95rem] leading-6 text-black/70"
               >
                 {item}
               </li>
@@ -121,7 +121,7 @@ export default function BlogBlock({ block }) {
             className="aspect-[16/10] w-full rounded-2xl object-cover"
           />
           {block.caption && (
-            <figcaption className="mx-auto mt-3 max-w-[42rem] font-mont text-sm leading-6 text-black/50">
+            <figcaption className="mx-auto mt-3 max-w-[42rem] font-mont text-sm px-4 py-3 leading-6 text-black/50">
               {block.caption}
             </figcaption>
           )}
@@ -134,7 +134,7 @@ export default function BlogBlock({ block }) {
           {block.items.map((item) => (
             <li
               key={item}
-              className="relative pl-7 font-mont text-[1.0625rem] leading-8 text-black/75 before:absolute before:left-1 before:top-[0.8rem] before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#556B2F] before:content-['']"
+              className="relative pl-7 font-mont text-[1.0625rem] leading-8 text-black/75 before:absolute before:left-4    before:top-[0.8rem] before:h-1.5 before:w-1.5 before:rounded-full before:bg-[#556B2F] before:content-['']"
             >
               {item}
             </li>
@@ -156,10 +156,10 @@ export default function BlogBlock({ block }) {
                 {index + 1}
               </span>
               <div>
-                <h3 className="mb-2 font-cg text-2xl md:text-[1.75rem]">
+                <h3 className="mb-2 font-cg px-4 py-3 text-2xl md:text-[1.75rem]">
                   {item.title}
                 </h3>
-                <p className="font-mont text-[1.0625rem] leading-8 text-black/70">
+                <p className="font-mont text-[1.0625rem] px-4 py-3 leading-8 text-black/70">
                   {item.text}
                 </p>
               </div>
@@ -170,7 +170,7 @@ export default function BlogBlock({ block }) {
 
     case "quote":
       return (
-        <blockquote className="relative my-16 pl-0 md:-mx-6 md:pl-6">
+        <blockquote className="relative my-16 px-4 py-3 pl-0 md:-mx-6 md:pl-6">
           <span
             aria-hidden="true"
             className="absolute -top-6 left-0 select-none font-cg text-8xl leading-none md:left-6"
@@ -194,12 +194,12 @@ export default function BlogBlock({ block }) {
         (block.tone === undefined && block.className?.includes("bg-black"));
 
       return (
-        <aside
-          className={`my-12 flex gap-4 rounded-2xl p-6 md:gap-5 md:p-8 ${
-            dark ? "text-[#F5F3EA]" : "text-black"
-          }`}
-          style={{ background: dark ? BEIGE_DEEP : PAPER }}
-        >
+       <aside
+  className={`my-12 mx-4 flex gap-4 rounded-2xl p-6 lg:mx-0 lg:gap-5 lg:p-8 ${
+    dark ? "text-[#F5F3EA]" : "text-black"
+  }`}
+  style={{ background: dark ? BEIGE_DEEP : PAPER }}
+>
           <span
             aria-hidden="true"
             className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full"
@@ -241,7 +241,7 @@ export default function BlogBlock({ block }) {
       // schema.org microdata makes the block eligible for FAQ rich results.
       return (
         <div
-          className="mb-14 border-b border-black/10"
+          className="mb-14 border-b px-4 py-3 border-black/10"
           itemScope
           itemType="https://schema.org/FAQPage"
         >
@@ -314,13 +314,13 @@ export function BlogContent({ blocks = [] }) {
  * ------------------------------------------------------------------ */
 export function BlogHeader({ blog }) {
   return (
-    <header className="mx-auto w-full max-w-[48rem] px-5 pb-10 pt-12 md:px-0 md:pb-14 md:pt-20">
+    <header className="mx-auto w-full max-w-[48rem] px-4 py-3 pb-10 pt-12 md:px-0 md:pb-14 md:pt-20">
       {blog.tags?.length > 0 && (
         <ul className="mb-6 flex flex-wrap gap-2" aria-label="Topics">
           {blog.tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full border border-black/15 px-3 py-1 font-mont text-xs text-black/65"
+              className="rounded-full border border-black/15 px-4 px-4 py-3 font-mont text-xs text-black/65"
             >
               {tag}
             </li>
