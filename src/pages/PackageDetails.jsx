@@ -411,6 +411,7 @@ function PackageDetails() {
     included: false,
     tandc: false,
   });
+  console.log(travelPackage);
 
   const toggleSection = (key) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -637,12 +638,12 @@ function PackageDetails() {
                     </span>
                   )}
 
-                  {travellerTypeName && (
+                  {/* {travellerTypeName && (
                     <span className="flex items-center gap-1.5 rounded-full border bg-black px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
                       <Users size={12} />
                       {travellerTypeName}
                     </span>
-                  )}
+                  )} */}
 
                   {durationName && (
                     <span className="flex items-center gap-1.5 rounded-full bg-black border px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
@@ -752,7 +753,7 @@ function PackageDetails() {
 
                               {/* Itinerary points */}
                               {day.activities?.length > 0 && (
-                                <ul className="space-y-3">
+                                <ul className="space-y-3 flex gap-2">
                                   {day.activities.map((activity) => (
                                     <li
                                       key={activity.id}
@@ -768,6 +769,14 @@ function PackageDetails() {
                                     </li>
                                   ))}
                                 </ul>
+                              )}
+
+                              {day.meals && (
+                                <p className="flex items-start gap-3 text-sm leading-6 text-black/70">
+                                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+
+                                  <span>{day.meals}</span>
+                                </p>
                               )}
                             </div>
                           </details>
@@ -866,7 +875,7 @@ function PackageDetails() {
               >
                 <p className="h-10">
                   <Link
-                    to="terms-condition"
+                    to="terms-conditions"
                     className="px-6 py-2 bg-black text-beige rounded-lg font-mont max-w-3xl text-sm sm:text-base"
                   >
                     Terms and Conditions
@@ -976,10 +985,10 @@ function PackageDetails() {
                       <div className="space-y-4">
                         <BookingRow label="Duration" value={durationName} />
 
-                        <BookingRow
+                        {/* <BookingRow
                           label="Traveller"
                           value={travellerTypeName}
-                        />
+                        /> */}
 
                         <BookingRow
                           label="Destinations"
