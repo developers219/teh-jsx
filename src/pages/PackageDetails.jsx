@@ -777,7 +777,178 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
+              {/* =================================================
+    HOTELS
+================================================== */}
 
+              {hotels.length > 0 && (
+                <CollapsibleSection
+                  title="Hotels"
+                  description="Accommodation arranged as part of your journey."
+                  isOpen={openSections.hotels}
+                  onToggle={() => toggleSection("hotels")}
+                  className="my-5"
+                >
+                  <div className="rounded-[28px] border border-black/10 p-6 sm:p-8">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
+                        <Hotel size={20} />
+                      </div>
+
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
+                          Accommodation
+                        </p>
+
+                        <h3 className="mt-1 text-2xl font-black">Hotels</h3>
+                      </div>
+                    </div>
+
+                    <div className="mt-7 space-y-3">
+                      {hotels.map((hotel) => (
+                        <div
+                          key={hotel.id}
+                          className="rounded-2xl bg-black/[0.035] p-5"
+                        >
+                          <div className="flex items-start justify-between gap-4">
+                            <div>
+                              <h4 className="font-black">{hotel.hotelName}</h4>
+
+                              <p className="mt-1 flex items-center gap-1.5 text-xs text-black/45">
+                                <MapPin size={12} />
+                                {hotel.city}
+                              </p>
+                            </div>
+
+                            {hotel.starRating && (
+                              <div className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow-sm">
+                                <Star size={12} fill="currentColor" />
+
+                                {hotel.starRating}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="mt-5 grid grid-cols-2 gap-3">
+                            <DateBox
+                              label="Check in"
+                              value={formatDate(hotel.checkIn)}
+                            />
+
+                            <DateBox
+                              label="Check out"
+                              value={formatDate(hotel.checkOut)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CollapsibleSection>
+              )}
+
+              {/* =================================================
+    FLIGHTS
+================================================== */}
+
+              {flights.length > 0 && (
+                <CollapsibleSection
+                  title="Flights"
+                  description="Flight details arranged as part of your journey."
+                  isOpen={openSections.flights}
+                  onToggle={() => toggleSection("flights")}
+                  className="my-5"
+                >
+                  <div className="rounded-[28px] border border-black/10 p-6 sm:p-8">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
+                        <Plane size={20} />
+                      </div>
+
+                      <div>
+                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
+                          Transportation
+                        </p>
+
+                        <h3 className="mt-1 text-2xl font-black">Flights</h3>
+                      </div>
+                    </div>
+
+                    <div className="mt-7 space-y-3">
+                      {flights.map((flight) => (
+                        <div
+                          key={flight.id}
+                          className="rounded-2xl bg-black/[0.035] p-5"
+                        >
+                          {/* Airline */}
+
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-xs font-black">
+                                {flight.airline}
+                              </p>
+
+                              <p className="mt-1 text-[11px] text-black/40">
+                                {flight.flightNumber}
+                              </p>
+                            </div>
+
+                            <Plane size={17} />
+                          </div>
+
+                          {/* Flight Route */}
+
+                          <div className="mt-6 flex items-center gap-4">
+                            {/* Departure */}
+
+                            <div>
+                              <p className="text-lg font-black">
+                                {flight.fromLocation}
+                              </p>
+
+                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
+                                Departure
+                              </p>
+
+                              <p className="mt-1 text-xs font-semibold text-black/55">
+                                {formatDateTime(flight.departureTime)}
+                              </p>
+                            </div>
+
+                            {/* Route Line */}
+
+                            <div className="flex flex-1 items-center">
+                              <div className="h-px flex-1 bg-black/15" />
+
+                              <div className="mx-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white">
+                                <ArrowRight size={13} />
+                              </div>
+
+                              <div className="h-px flex-1 bg-black/15" />
+                            </div>
+
+                            {/* Arrival */}
+
+                            <div className="text-right">
+                              <p className="text-lg font-black">
+                                {flight.toLocation}
+                              </p>
+
+                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
+                                Arrival
+                              </p>
+
+                              <p className="mt-1 text-xs font-semibold text-black/55">
+                                {formatDateTime(flight.arrivalTime)}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CollapsibleSection>
+              )}
               {/* Inclusions / Exclusions */}
 
               {(inclusions.length > 0 || exclusions.length > 0) && (
@@ -857,6 +1028,7 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
+
               <CollapsibleSection
                 title="Terms and Conditions"
                 description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."

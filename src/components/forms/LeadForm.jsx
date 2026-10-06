@@ -109,7 +109,7 @@ function LeadForm({
   ======================================================== */
 
   const [formData, setFormData] = useState(getDefaultValues(initialValues));
-
+  console.log(formData);
   /* =======================================================
      REACT HOOK FORM
   ======================================================== */
@@ -370,6 +370,7 @@ function LeadForm({
   ======================================================== */
 
   async function submitLead(values) {
+    console.log("meow");
     try {
       setFormError("");
       setFormSuccess("");
@@ -385,7 +386,7 @@ function LeadForm({
         ...formData,
         ...values,
       };
-
+      console.log(finalValues);
       const totalTravellers =
         Number(finalValues.adults || 0) +
         Number(finalValues.children || 0) +
