@@ -27,7 +27,7 @@ import Modal from "../ui/Modal";
 const images = [Image1, Image2, Image3, Image4];
 const POPUP_DISMISSED_KEY = "trailvista_lead_capture_popup_dismissed";
 const POPUP_SUBMITTED_KEY = "trailvista_lead_capture_popup_submitted";
-const POPUP_DELAY_MS = 15000;
+// const POPUP_DELAY_MS = 15000;
 const popupDefaults = {
   name: "",
   email: "",
@@ -79,32 +79,38 @@ function LeadCapturePopup({ isOpen, setIsOpen, showImages = false }) {
     },
     mode: "onBlur",
   });
+  // useEffect(() => {
+  //   if (isSuppressed) {
+  //     return;
+  //   }
+  //   let timeoutId;
+  //   let loadHandler;
+  //   const openPopup = () => {
+  //     timeoutId = window.setTimeout(() => {
+  //       setIsOpen(true);
+  //     }, POPUP_DELAY_MS);
+  //   };
+  //   if (document.readyState === "complete") {
+  //     openPopup();
+  //   } else {
+  //     loadHandler = () => openPopup();
+  //     window.addEventListener("load", loadHandler, { once: true });
+  //   }
+  //   return () => {
+  //     if (timeoutId) {
+  //       window.clearTimeout(timeoutId);
+  //     }
+  //     if (loadHandler) {
+  //       window.removeEventListener("load", loadHandler);
+  //     }
+  //   };
+  // }, [isSuppressed]);
+
   useEffect(() => {
-    if (isSuppressed) {
-      return;
-    }
-    let timeoutId;
-    let loadHandler;
-    const openPopup = () => {
-      timeoutId = window.setTimeout(() => {
-        setIsOpen(true);
-      }, POPUP_DELAY_MS);
-    };
-    if (document.readyState === "complete") {
-      openPopup();
-    } else {
-      loadHandler = () => openPopup();
-      window.addEventListener("load", loadHandler, { once: true });
-    }
-    return () => {
-      if (timeoutId) {
-        window.clearTimeout(timeoutId);
-      }
-      if (loadHandler) {
-        window.removeEventListener("load", loadHandler);
-      }
-    };
-  }, [isSuppressed]);
+    // Do not automatically open this popup.
+    // It should open only when the user clicks "Submit Enquiry"
+    // in LeadGenerationLinks.
+  }, []);
   function suppressPopup(permanent = false) {
     window.sessionStorage.setItem(POPUP_DISMISSED_KEY, "1");
     if (permanent) {

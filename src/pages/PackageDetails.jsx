@@ -28,6 +28,23 @@ import LeadCapturePopup from "../components/forms/LeadCapturePopup";
 
 import Skeleton from "@mui/material/Skeleton";
 
+const formatDateTime = (dateTime) => {
+  if (!dateTime) return "—";
+
+  const date = new Date(dateTime);
+
+  if (Number.isNaN(date.getTime())) return "—";
+
+  return date.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
 function PackageGallery({ images = [], title = "Package" }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -408,6 +425,8 @@ function PackageDetails() {
   const [openSections, setOpenSections] = useState({
     overview: true,
     itinerary: false,
+    hotels: false,
+    flights: false,
     included: false,
     tandc: false,
   });
@@ -596,7 +615,7 @@ function PackageDetails() {
       ====================================================== */}
 
       <section className="bg-black h-18 md:h-40 "></section>
-      <section className="border-b border-black/10">
+      {/* <section className="border-b border-black/10">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
           <Link
             to="/packages"
@@ -609,7 +628,7 @@ function PackageDetails() {
             All packages
           </Link>
         </div>
-      </section>
+      </section> */}
 
       {/* =====================================================
           MAIN
@@ -686,7 +705,6 @@ function PackageDetails() {
                   </motion.div>
                 )}
               </motion.div>
-
               {/* Itinerary */}
 
               {itineraries.length > 0 && (
@@ -702,95 +720,286 @@ function PackageDetails() {
                     <div className="absolute left-[11px] top-0 hidden h-full w-px bg-black/10 md:block" />
 
                     <div className="space-y-4">
-                      {itineraries.map((day) => (
-                        <div
-                          key={day.id}
-                          className="relative grid md:grid-cols-[48px_1fr]"
-                        >
-                          {/* Day number */}
-                          <div className="relative z-10 flex size-6 top-4 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
-                            {String(day.dayNumber)}
-                          </div>
+                      {itineraries.map((day) => {
+                        // Render backend values safely, including dates, arrays, and objects.
+                        const formatValue = (value) => {
+                          if (
+                            value === null ||
+                            value === undefined ||
+                            value === ""
+                          ) {
+                            return "—";
+                          }
 
-                          {/* Day card */}
-                          <details className="group rounded-lg border border-black/10 transition hover:border-black/30">
-                            <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-4 py-2">
-                              <div>
-                                <h3 className="text-sm font-semibold tracking-tight sm:text-base">
-                                  {day.title}
-                                </h3>
-                              </div>
-                              <div className="flex gap-2">
-                                {day.overnightLocation && (
-                                  <div className="hidden h-fit shrink-0 items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
-                                    <MapPin size={13} />
-                                    {day.overnightLocation}
+                          if (Array.isArray(value)) {
+                            return value.length
+                              ? value
+                                  .map((item) =>
+                                    typeof item === "object" && item !== null
+                                      ? Object.entries(item)
+                                          .map(
+                                            ([key, itemValue]) =>
+                                              `${key}: ${formatValue(itemValue)}`,
+                                          )
+                                          .join(", ")
+                                      : String(item),
+                                  )
+                                  .join("; ")
+                              : "—";
+                          }
+
+                          if (typeof value === "object") {
+                            return Object.entries(value)
+                              .map(
+                                ([key, itemValue]) =>
+                                  `${key}: ${formatValue(itemValue)}`,
+                              )
+                              .join(", ");
+                          }
+
+                          return String(value);
+                        };
+
+                        const formatLabel = (key) =>
+                          key
+                            .replace(/([A-Z])/g, " $1")
+                            .replace(/[_-]/g, " ")
+                            .replace(/^./, (letter) => letter.toUpperCase());
+
+                        const formatDate = (value) => {
+                          if (!value) return "—";
+                          const date = new Date(value);
+                          return Number.isNaN(date.getTime())
+                            ? String(value)
+                            : date.toLocaleString("en-IN");
+                        };
+
+                        return (
+                          <div
+                            key={day.id ?? `${day.dayNumber}-${day.title}`}
+                            className="relative grid md:grid-cols-[48px_1fr]"
+                          >
+                            {/* Day number */}
+                            <div className="relative z-10 top-4 flex size-6 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
+                              {String(day.dayNumber ?? "—")}
+                            </div>
+
+                            {/* Day card */}
+                            <details className="group rounded-lg border border-black/10 transition hover:border-black/30">
+                              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
+                                <div className="min-w-0">
+                                  <h3 className="text-sm font-semibold tracking-tight sm:text-base">
+                                    {day.title || "Itinerary Details"}
+                                  </h3>
+                                </div>
+
+                                <div className="flex shrink-0 items-center gap-2">
+                                  {day.overnightLocation && (
+                                    <div className="hidden h-fit items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
+                                      <MapPin size={13} />
+                                      {day.overnightLocation}
+                                    </div>
+                                  )}
+
+                                  <div className="flex size-8 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
+                                    <ChevronDown size={16} />
+                                  </div>
+                                </div>
+                              </summary>
+
+                              {/* Mobile location */}
+                              {day.overnightLocation && (
+                                <div className="flex items-center gap-2 px-6 pb-3 text-xs font-bold text-black/55 sm:hidden">
+                                  <MapPin size={13} />
+                                  {day.overnightLocation}
+                                </div>
+                              )}
+
+                              {/* Itinerary content */}
+                              <div className="border-t border-black/10 px-5 pb-6 pt-5 sm:px-7 sm:pb-7">
+                                {/* Description */}
+                                {day.description && (
+                                  <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
+                                    {day.description}
+                                  </p>
+                                )}
+
+                                {/* Hotel */}
+                                {day.hotelName && (
+                                  <div className="mb-5 flex items-start gap-3 rounded-lg bg-black/[0.035] p-4">
+                                    <Hotel
+                                      size={18}
+                                      className="mt-0.5 shrink-0 text-black/60"
+                                    />
+
+                                    <div>
+                                      <p className="text-xs text-black/45">
+                                        Accommodation
+                                      </p>
+                                      <p className="mt-1 text-sm font-semibold text-black/75">
+                                        {day.hotelName}
+                                      </p>
+                                    </div>
                                   </div>
                                 )}
 
-                                {/* Chevron */}
-                                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
-                                  <ChevronDown size={16} />
-                                </div>
+                                {/* Activities: show all fields returned for each activity */}
+                                {Array.isArray(day.activities) &&
+                                  day.activities.length > 0 && (
+                                    <div className="mb-5">
+                                      <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
+                                        Activities
+                                      </h4>
+
+                                      <div className="space-y-3">
+                                        {day.activities.map(
+                                          (activity, index) => {
+                                            const activityIsObject =
+                                              typeof activity === "object" &&
+                                              activity !== null;
+
+                                            return (
+                                              <div
+                                                key={activity?.id ?? index}
+                                                className="rounded-lg border border-black/10 bg-white p-4"
+                                              >
+                                                <div className="flex flex-wrap items-start justify-between gap-3">
+                                                  <h5 className="text-sm font-semibold text-black/80">
+                                                    {typeof activity ===
+                                                    "string"
+                                                      ? activity
+                                                      : activity.activity ||
+                                                        activity.title ||
+                                                        activity.name ||
+                                                        "Activity"}
+                                                  </h5>
+
+                                                  {activityIsObject &&
+                                                    activity.durationMinutes !=
+                                                      null && (
+                                                      <span className="rounded-full bg-black/[0.05] px-3 py-1 text-xs text-black/60">
+                                                        {
+                                                          activity.durationMinutes
+                                                        }{" "}
+                                                        minutes
+                                                      </span>
+                                                    )}
+                                                </div>
+
+                                                {activityIsObject &&
+                                                  activity.description && (
+                                                    <p className="mt-2 text-sm leading-6 text-black/55">
+                                                      {activity.description}
+                                                    </p>
+                                                  )}
+
+                                                {activityIsObject &&
+                                                  activity.startTime && (
+                                                    <p className="mt-3 text-sm text-black/60">
+                                                      <span className="font-semibold">
+                                                        Start time:{" "}
+                                                      </span>
+                                                      {activity.startTime}
+                                                    </p>
+                                                  )}
+
+                                                {/* Every activity field from the backend */}
+                                                {/* {activityIsObject && (
+                                                  <details className="mt-3 border-t border-black/10 pt-3">
+                                                    <summary className="cursor-pointer text-xs font-semibold text-black/50">
+                                                      View all activity details
+                                                    </summary>
+
+                                                    <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                                      {Object.entries(
+                                                        activity,
+                                                      ).map(([key, value]) => (
+                                                        <div
+                                                          key={key}
+                                                          className="min-w-0 rounded-md bg-black/[0.025] p-3"
+                                                        >
+                                                          <p className="text-xs text-black/45">
+                                                            {formatLabel(key)}
+                                                          </p>
+                                                          <p className="mt-1 break-words text-sm font-medium text-black/75">
+                                                            {key ===
+                                                              "createdAt" ||
+                                                            key === "updatedAt"
+                                                              ? formatDate(
+                                                                  value,
+                                                                )
+                                                              : formatValue(
+                                                                  value,
+                                                                )}
+                                                          </p>
+                                                        </div>
+                                                      ))}
+                                                    </div>
+                                                  </details>
+                                                )} */}
+                                              </div>
+                                            );
+                                          },
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+
+                                {/* Meals */}
+                                {day.meals && (
+                                  <div className="mb-5">
+                                    <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
+                                      Meals
+                                    </h4>
+
+                                    <p className="flex items-start gap-3 text-sm leading-6 text-black/70">
+                                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
+                                      <span>{day.meals}</span>
+                                    </p>
+                                  </div>
+                                )}
+
+                                {/* All itinerary fields from the backend */}
+                                {/* <div className="border-t border-black/10 pt-4">
+                                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-black/40">
+                                    Complete Itinerary Details
+                                  </h4>
+
+                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                                    {Object.entries(day)
+                                      .filter(([key]) => key !== "activities")
+                                      .map(([key, value]) => (
+                                        <div
+                                          key={key}
+                                          className="min-w-0 rounded-lg bg-black/[0.035] p-3"
+                                        >
+                                          <p className="text-xs text-black/45">
+                                            {formatLabel(key)}
+                                          </p>
+                                          <p className="mt-1 break-words text-sm font-medium text-black/75">
+                                            {key === "createdAt" ||
+                                            key === "updatedAt"
+                                              ? formatDate(value)
+                                              : formatValue(value)}
+                                          </p>
+                                        </div>
+                                      ))}
+                                  </div>
+                                </div> */}
                               </div>
-                            </summary>
-
-                            {/* Mobile location */}
-                            {day.overnightLocation && (
-                              <div className="flex items-center gap-2 px-6 pb-2 text-xs font-bold text-black/55 sm:hidden">
-                                <MapPin size={13} />
-                                {day.overnightLocation}
-                              </div>
-                            )}
-
-                            {/* Collapsible content */}
-                            <div className="border-t border-black/10 px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
-                              {day.description && (
-                                <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
-                                  {day.description}
-                                </p>
-                              )}
-
-                              {/* Itinerary points */}
-                              {day.activities?.length > 0 && (
-                                <ul className="space-y-3 flex gap-2">
-                                  {day.activities.map((activity) => (
-                                    <li
-                                      key={activity.id}
-                                      className="flex items-start gap-3 text-sm leading-6 text-black/70"
-                                    >
-                                      <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
-
-                                      <span>
-                                        {activity.title ||
-                                          activity.name ||
-                                          "Activity"}
-                                      </span>
-                                    </li>
-                                  ))}
-                                </ul>
-                              )}
-
-                              {day.meals && (
-                                <p className="flex items-start gap-3 text-sm leading-6 text-black/70">
-                                  <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
-
-                                  <span>{day.meals}</span>
-                                </p>
-                              )}
-                            </div>
-                          </details>
-                        </div>
-                      ))}
+                            </details>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </CollapsibleSection>
               )}
+
               {/* =================================================
     HOTELS
 ================================================== */}
-
-              {hotels.length > 0 && (
+              {/* {hotels.length > 0 && (
                 <CollapsibleSection
                   title="Hotels"
                   description="Accommodation arranged as part of your journey."
@@ -854,8 +1063,142 @@ function PackageDetails() {
                     </div>
                   </div>
                 </CollapsibleSection>
-              )}
+              )} */}
 
+              {hotels.length > 0 && (
+                <CollapsibleSection
+                  title="Hotels"
+                  description="Explore your stays and accommodation details."
+                  isOpen={openSections.hotels}
+                  onToggle={() => toggleSection("hotels")}
+                  className="mt-5"
+                >
+                  <div className="space-y-4 font-mont">
+                    {hotels.map((hotel) => (
+                      <div
+                        key={hotel.id}
+                        className="rounded-xl border border-black/10 p-5 transition hover:border-black/30 sm:p-4"
+                      >
+                        {/* Hotel Name and Rating */}
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-sm font-semibold font-mont">
+                              {hotel.hotelName ||
+                                hotel.name ||
+                                hotel.title ||
+                                "Hotel"}
+                            </h3>
+
+                            {hotel.city && (
+                              <p className="mt-1 flex items-center gap-2 text-sm text-black/55">
+                                <MapPin size={13} />
+                                {hotel.city}
+                              </p>
+                            )}
+                          </div>
+
+                          {hotel.starRating != null && (
+                            <div className="flex shrink-0 items-center gap-1 rounded-full bg-black/[0.04] px-3 py-2">
+                              <Star
+                                size={14}
+                                className="fill-amber-400 text-amber-500"
+                              />
+                              <span className="text-sm font-mont">
+                                {hotel.starRating}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Check-in and Check-out */}
+                        {/* <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-lg bg-black/[0.035] p-4">
+                            <p className="flex items-center gap-2 text-xs text-black/50">
+                              <CalendarDays size={14} />
+                              Check-in
+                            </p>
+
+                            <p className="mt-2 text-sm font-semibold">
+                              {hotel.checkIn
+                                ? formatDateTime(hotel.checkIn)
+                                : "Not specified"}
+                            </p>
+                          </div>
+
+                          <div className="rounded-lg bg-black/[0.035] p-4">
+                            <p className="flex items-center gap-2 text-xs text-black/50">
+                              <CalendarDays size={14} />
+                              Check-out
+                            </p>
+
+                            <p className="mt-2 text-sm font-semibold">
+                              {hotel.checkOut
+                                ? formatDateTime(hotel.checkOut)
+                                : "Not specified"}
+                            </p>
+                          </div>
+                        </div> */}
+
+                        {/* Additional Backend Information */}
+                        {/* <div className="mt-5 border-t border-black/10 pt-4">
+                          <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-black/40">
+                            Booking Information
+                          </h4>
+
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            <div>
+                              <p className="text-xs text-black/45">Hotel ID</p>
+                              <p className="mt-1 text-sm font-semibold">
+                                {hotel.id ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Package ID
+                              </p>
+                              <p className="mt-1 text-sm font-semibold">
+                                {hotel.packageId ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Sort Order
+                              </p>
+                              <p className="mt-1 text-sm font-semibold">
+                                {hotel.sortOrder ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Created At
+                              </p>
+                              <p className="mt-1 text-sm font-semibold">
+                                {hotel.createdAt
+                                  ? formatDateTime(hotel.createdAt)
+                                  : "—"}
+                              </p>
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <p className="text-xs text-black/45">
+                                Last Updated
+                              </p>
+                              <p className="mt-1 text-sm font-semibold">
+                                {hotel.updatedAt
+                                  ? formatDateTime(hotel.updatedAt)
+                                  : "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </div> */}
+                      </div>
+                    ))}
+                  </div>
+                </CollapsibleSection>
+              )}
               {/* =================================================
     FLIGHTS
 ================================================== */}
@@ -863,103 +1206,141 @@ function PackageDetails() {
               {flights.length > 0 && (
                 <CollapsibleSection
                   title="Flights"
-                  description="Flight details arranged as part of your journey."
+                  description="View your flight schedules and journey details."
                   isOpen={openSections.flights}
                   onToggle={() => toggleSection("flights")}
-                  className="my-5"
+                  className="mt-5"
                 >
-                  <div className="rounded-[28px] border border-black/10 p-6 sm:p-8">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
-                        <Plane size={20} />
-                      </div>
+                  <div className="space-y-4 font-mont">
+                    {flights.map((flight) => (
+                      <div
+                        key={flight.id}
+                        className="rounded-xl border border-black/10 p-5 transition hover:border-black/30 sm:p-4"
+                      >
+                        {/* Airline Details */}
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-sm font-semibold font-mont sm:text-lg">
+                              {flight.airline || "Airline not specified"}
+                            </h3>
 
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                          Transportation
-                        </p>
-
-                        <h3 className="mt-1 text-2xl font-black">Flights</h3>
-                      </div>
-                    </div>
-
-                    <div className="mt-7 space-y-3">
-                      {flights.map((flight) => (
-                        <div
-                          key={flight.id}
-                          className="rounded-2xl bg-black/[0.035] p-5"
-                        >
-                          {/* Airline */}
-
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-xs font-black">
-                                {flight.airline}
-                              </p>
-
-                              <p className="mt-1 text-[11px] text-black/40">
-                                {flight.flightNumber}
-                              </p>
-                            </div>
-
-                            <Plane size={17} />
+                            <p className="mt-1 text-xs text-black/50">
+                              Flight No:{" "}
+                              {flight.flightNumber || "Not specified"}
+                            </p>
                           </div>
 
-                          {/* Flight Route */}
+                          {/* <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black/[0.04]">
+                            <Plane size={18} className="text-black/70" />
+                          </div> */}
+                        </div>
 
-                          <div className="mt-6 flex items-center gap-4">
-                            {/* Departure */}
+                        {/* Flight Route */}
+                        <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center  gap-3">
+                          {/* Departure */}
+                          <div className="min-w-0">
+                            <p className=" text-sm font-semibold font-mont ">
+                              {flight.fromLocation || "--"}
+                            </p>
 
-                            <div>
-                              <p className="text-lg font-black">
-                                {flight.fromLocation}
-                              </p>
+                            <p className=" text-[10px] font-bold uppercase tracking-wider text-black/40">
+                              Departure
+                            </p>
 
-                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
-                                Departure
-                              </p>
+                            <p className="mt-1 break-words text-xs font-medium text-black/60">
+                              {flight.departureTime
+                                ? formatDateTime(flight.departureTime)
+                                : "Time not specified"}
+                            </p>
+                          </div>
 
-                              <p className="mt-1 text-xs font-semibold text-black/55">
-                                {formatDateTime(flight.departureTime)}
-                              </p>
-                            </div>
+                          {/* Flight Path */}
+                          <div className="flex w-12 flex-col items-center gap-1 sm:w-15">
+                            <Plane size={18} className="text-black/50" />
 
-                            {/* Route Line */}
+                            <div className="w-full border-t border-dashed border-black/25" />
+                          </div>
 
-                            <div className="flex flex-1 items-center">
-                              <div className="h-px flex-1 bg-black/15" />
+                          {/* Arrival */}
+                          <div className="min-w-0 text-right">
+                            <p className=" font-semibold font-mont text-sm">
+                              {flight.toLocation || "--"}
+                            </p>
 
-                              <div className="mx-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white">
-                                <ArrowRight size={13} />
-                              </div>
+                            <p className=" text-[10px] font-bold uppercase tracking-wider text-black/40">
+                              Arrival
+                            </p>
 
-                              <div className="h-px flex-1 bg-black/15" />
-                            </div>
-
-                            {/* Arrival */}
-
-                            <div className="text-right">
-                              <p className="text-lg font-black">
-                                {flight.toLocation}
-                              </p>
-
-                              <p className="mt-1 text-[10px] uppercase tracking-wider text-black/35">
-                                Arrival
-                              </p>
-
-                              <p className="mt-1 text-xs font-semibold text-black/55">
-                                {formatDateTime(flight.arrivalTime)}
-                              </p>
-                            </div>
+                            <p className="mt-1 break-words text-xs font-medium text-black/60">
+                              {flight.arrivalTime
+                                ? formatDateTime(flight.arrivalTime)
+                                : "Time not specified"}
+                            </p>
                           </div>
                         </div>
-                      ))}
-                    </div>
+
+                        {/* Additional Backend Details */}
+                        {/* <div className="mt-6 border-t border-black/10 pt-4">
+                          <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
+                            Booking Information
+                          </h4>
+
+                          <div className="grid grid-cols-1 gap-4 text-sm sm:grid-cols-2">
+                            <div>
+                              <p className="text-xs text-black/45">Flight ID</p>
+                              <p className="mt-1 font-semibold">
+                                {flight.id ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Package ID
+                              </p>
+                              <p className="mt-1 font-semibold">
+                                {flight.packageId ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Sort Order
+                              </p>
+                              <p className="mt-1 font-semibold">
+                                {flight.sortOrder ?? "—"}
+                              </p>
+                            </div>
+
+                            <div>
+                              <p className="text-xs text-black/45">
+                                Created At
+                              </p>
+                              <p className="mt-1 font-semibold">
+                                {flight.createdAt
+                                  ? formatDateTime(flight.createdAt)
+                                  : "—"}
+                              </p>
+                            </div>
+
+                            <div className="sm:col-span-2">
+                              <p className="text-xs text-black/45">
+                                Last Updated
+                              </p>
+                              <p className="mt-1 font-semibold">
+                                {flight.updatedAt
+                                  ? formatDateTime(flight.updatedAt)
+                                  : "—"}
+                              </p>
+                            </div>
+                          </div>
+                        </div> */}
+                      </div>
+                    ))}
                   </div>
                 </CollapsibleSection>
               )}
-              {/* Inclusions / Exclusions */}
 
+              {/* Inclusions / Exclusions */}
               {(inclusions.length > 0 || exclusions.length > 0) && (
                 <CollapsibleSection
                   title="What's included"
@@ -1037,7 +1418,6 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
-
               <CollapsibleSection
                 title="Terms and Conditions"
                 description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."

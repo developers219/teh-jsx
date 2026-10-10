@@ -136,7 +136,9 @@ function PackageCard({ travelPackage }) {
             <p className="text-xs font-medium text-slate-500">Starting from</p>
 
             <p className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
-              ₹{travelPackage.price?.toLocaleString?.("en-IN") ?? "36,999"}
+              ₹
+              {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
+                "36,999"}
             </p>
 
             <p className="text-xs text-slate-400">per person</p>
