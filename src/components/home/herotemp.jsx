@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import heroVideo from "../../assets/images/hero.mp4";
+
+const HERO_API = "https://cms.trvldeals.com/api/public/hero-sections";
 
 const destinations = [
   "Bali",
@@ -13,12 +15,81 @@ const destinations = [
   "Japan",
   "Sri Lanka",
 ];
+
 export default function HeroSection() {
   const [destination, setDestination] = useState("");
+  const [heroData, setHeroData] = useState(null);
+
+  // Fetch dynamic hero content from CMS
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchHeroData = async () => {
+      try {
+        const response = await fetch(HERO_API, {
+          signal: controller.signal,
+        });
+
+        if (!response.ok) {
+          throw new Error(`Hero API failed with status ${response.status}`);
+        }
+
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setHeroData(result.data);
+        }
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Error fetching hero section:", error);
+        }
+      }
+    };
+
+    fetchHeroData();
+
+    return () => controller.abort();
+  }, []);
+
+  // Dynamic heading and description
+  const heading = heroData?.heading || "Your next great escape starts here";
+
+  const description =
+    heroData?.description ||
+    "Discover handpicked destinations, thoughtfully crafted holidays";
+
+  // Dynamic text styles from CMS
+  const headingStyle = {
+    ...(heroData?.headingStyle?.color && {
+      color: heroData.headingStyle.color,
+    }),
+    ...(heroData?.headingStyle?.fontFamily && {
+      fontFamily: heroData.headingStyle.fontFamily,
+    }),
+  };
+
+  const descriptionStyle = {
+    ...(heroData?.descriptionStyle?.color && {
+      color: heroData.descriptionStyle.color,
+    }),
+    ...(heroData?.descriptionStyle?.fontFamily && {
+      fontFamily: heroData.descriptionStyle.fontFamily,
+    }),
+  };
+
+  // Dynamic background media
+  const imageSrc = heroData?.images?.[0]?.url;
+
+  const videoSrc =
+    typeof heroData?.video === "string" ? heroData.video : heroData?.video?.url;
+
+  const isImage = heroData?.mediaType === "image" && Boolean(imageSrc);
+
   const handleExplore = () => {
     if (!destination.trim()) return;
     console.log("Searching for:", destination);
   };
+
   return (
     <section
       className="
@@ -42,20 +113,42 @@ export default function HeroSection() {
       {/* =========================================================
             HERO VIDEO
         ========================================================== */}
-      <video
-        autoPlay
-        muted
-        loop
-        playsInline
-        src="https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
-        className="
-          absolute
-          inset-0
-          h-full
-          w-full
-          object-cover
-        "
-      />
+
+      {/* Dynamic background image from CMS */}
+      {isImage ? (
+        <img
+          src={imageSrc}
+          alt={heroData?.images?.[0]?.altText || ""}
+          aria-hidden="true"
+          fetchPriority="high"
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+          "
+        />
+      ) : (
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          src={
+            videoSrc ||
+            "https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
+          }
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+          "
+        />
+      )}
+
       {/* <video
         autoPlay
         muted
@@ -105,7 +198,7 @@ export default function HeroSection() {
           absolute
           inset-0
           bg-linear-to-b from-black/50 via-black/30 to-transparent
-        
+
         "
       />
 
@@ -129,7 +222,7 @@ export default function HeroSection() {
           className="
             w-full
             text-white
-            
+
             text-center
           "
         >
@@ -169,21 +262,26 @@ text-center
           >
             {"Your next great escape starts here"}
           </Typography> */}
-          <h2 className="text-white/80 text-[clamp(2.8rem,5vw,3.75rem)] font-cg font-thin">
-            Your next great escape starts here
+
+          <h2
+            style={headingStyle}
+            className="text-white/80 text-[clamp(2.8rem,5vw,3.75rem)] font-cg font-thin"
+          >
+            {heading}
           </h2>
 
           {/* =====================================================
             DESCRIPTION
         ====================================================== */}
           <p
+            style={descriptionStyle}
             className="
               mt-5
               text-xs
               text-white/80 font-bold font-mont uppercase tracking-[8px] text-center sm:mt-6 lg:mt-5
             "
           >
-            Discover handpicked destinations, thoughtfully crafted holidays
+            {description}
           </p>
 
           {/* =====================================================
@@ -202,7 +300,7 @@ text-center
             <div
               className="
                 flex
-                
+
                 w-full
                 items-center
                 rounded-full
@@ -281,9 +379,8 @@ text-center
                 aria-label="Explore destination"
                 className="
                   ml-2
-                  flex
-                  
-                  
+
+
                   shrink-0
                   items-center
                   justify-center
@@ -328,7 +425,7 @@ text-center
             uppercase
             tracking-[0.25em]
             text-white/70
-  
+
             md:flex
           "
         >
