@@ -176,11 +176,10 @@ export default function Careers() {
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/80" />
-
+         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/60" />
         <div className="relative mx-auto h-full max-w-7xl overflow-hidden">
-          <div className="absolute inset-0 z-10 flex items-end pb-10 text-white">
-            <div className="px-5 lg:px-0">
+          <div className="absolute inset-0 z-10 flex items-end text-white">
+            <div className="w-full pl-5 pb-8 sm:pl-8 sm:pb-10 lg:pl-10 lg:pb-5 xl:pl-8">
               <div className="overflow-hidden">
                 <motion.h1
                   initial={{ y: 70 }}
@@ -210,7 +209,7 @@ export default function Careers() {
       </div>
 
       {/* Vision */}
-      <div className="mx-auto max-w-7xl px-5 py-16 lg:px-0">
+      <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 xl:px-12">
         <SectionHeader
           title="Our Vision"
           description="To inspire people to see more of the world, one meaningful journey at a time."
@@ -226,7 +225,7 @@ export default function Careers() {
       </div>
 
       {/* Values */}
-      <div className="mx-auto max-w-7xl px-5 lg:px-0">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-12">
         <div className="mb-10">
           <SectionHeader
             title="What We Value"
@@ -269,7 +268,7 @@ export default function Careers() {
 
       {/* Current Openings */}
       <div>
-        <div className="mx-auto max-w-7xl px-5 lg:py-16 lg:px-0">
+        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-12 lg:py-16">
           <div className="mb-8">
             <SectionHeader
               title="Current Openings"

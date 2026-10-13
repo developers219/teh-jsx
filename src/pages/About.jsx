@@ -27,7 +27,7 @@ export default function About() {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-black/60" />
         <div className="relative mx-auto h-full max-w-7xl overflow-hidden">
           <div className="absolute inset-0 z-10 flex items-end">
-            <div className="w-full px-5 pb-8 sm:px-8 sm:pb-10 lg:px-0">
+            <div className="w-full pl-5 pb-8 sm:pl-8 sm:pb-10 lg:pl-10 lg:pb-5 xl:pl-8">
               <div className="overflow-hidden">
                 <motion.h1
                   initial={{ y: 70 }}
@@ -60,7 +60,7 @@ export default function About() {
       </div>
 
       {/* Main Content */}
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-0">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-12">
         {/* Our Story */}
         <motion.div {...reveal} className="my-16">
           <SectionHeader
