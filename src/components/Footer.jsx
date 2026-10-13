@@ -238,17 +238,17 @@ function Footer() {
     // Legal
     {
       name: "Terms & Conditions",
-      href: "/TermsConditions",
+      href: "/terms-conditions",
       category: "legal",
     },
     {
       name: "Privacy Policy",
-      href: "/privacy",
+      href: "/privacy-policy",
       category: "legal",
     },
     {
       name: "Cookies",
-      href: "/cookies",
+      href: "/cookies-policy",
       category: "legal",
     },
     {
