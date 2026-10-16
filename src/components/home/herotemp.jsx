@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import heroVideo from "../../assets/images/hero.mp4";
+// import heroVideo from "../../assets/images/hero.mp4";
 
 const HERO_API = "https://cms.trvldeals.com/api/public/hero-sections";
 
@@ -38,6 +38,7 @@ export default function HeroSection() {
 
         if (result.success && result.data) {
           setHeroData(result.data);
+          console.log("Fetched hero section by shivam: ", result.data);
         }
       } catch (error) {
         if (error.name !== "AbortError") {

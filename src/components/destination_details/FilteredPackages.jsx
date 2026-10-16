@@ -461,6 +461,14 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
     };
   }, [themes, durations]);
 
+  useEffect(() => {
+  window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant",
+  });
+}, []);
+
   return (
 
     <div className="my-8 w-full font-mont">
