@@ -17,6 +17,7 @@ import {
   X,
   Phone,
   ChevronDown,
+  Utensils
 } from "lucide-react";
 
 import api from "../services/api";
@@ -709,7 +710,7 @@ function PackageDetails() {
 
               {itineraries.length > 0 && (
                 <CollapsibleSection
-                  title="Itinerary"
+                  title=" Day-wise itinerary"
                   description="A closer look at how your trip unfolds."
                   isOpen={openSections.itinerary}
                   onToggle={() => toggleSection("itinerary")}
@@ -948,6 +949,10 @@ function PackageDetails() {
                                 {/* Meals */}
                                 {day.meals && (
                                   <div className="mb-5">
+                                    <Utensils size={18}
+                                      className="mt-0.5 shrink-0 text-black/60"
+                                      />
+                                     
                                     <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
                                       Meals
                                     </h4>

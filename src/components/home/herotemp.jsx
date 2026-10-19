@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-// import heroVideo from "../../assets/images/hero.mp4";
+// import heroVideo from "../../assets/images/hero1.mp4";
 
 const HERO_API = "https://cms.trvldeals.com/api/public/hero-sections";
 
@@ -116,7 +116,7 @@ export default function HeroSection() {
         ========================================================== */}
 
       {/* Dynamic background image from CMS */}
-      {isImage ? (
+      {/* {isImage ? (
         <img
           src={imageSrc}
           alt={heroData?.images?.[0]?.altText || ""}
@@ -148,9 +148,9 @@ export default function HeroSection() {
             object-cover
           "
         />
-      )}
+      )} */}
 
-      {/* <video
+      <video
         autoPlay
         muted
         loop
@@ -161,7 +161,7 @@ export default function HeroSection() {
           src="https://res.cloudinary.com/fxjte8jz/video/upload/f_auto,q_auto/hero1"
           type="video/mp4"
         />
-      </video> */}
+      </video>
       {/* <video
         autoplay=""
         loop
@@ -184,6 +184,23 @@ export default function HeroSection() {
           type="video/mp4"
         />
       </video> */}
+      
+{/* Active hero background video */}
+{/* <video
+  autoPlay
+  muted
+  loop
+  playsInline
+  preload="auto"
+  poster={heroData?.images?.[0]?.url}
+  className="absolute inset-0 h-full w-full object-cover object-center"
+>
+  <source
+    src={videoSrc || heroVideo}
+    type="video/mp4"
+  />
+</video> */}
+
 
       {/* =========================================================
             GENERAL DARK OVERLAY

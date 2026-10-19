@@ -130,34 +130,36 @@ function PackageCard({ travelPackage }) {
             "Experience unforgettable destinations, beautiful places and memorable experiences."}
         </p>
 
-        {/* ================= PRICE + CTA ================= */}
-        <div className="mt-auto pt-4">
-          <div className="flex items-center justify-between gap-4 rounded-2xl bg-slate-50 p-4">
-            {/* PRICE */}
-            <div>
-              <p className="text-xs font-medium text-slate-500">
-                Starting from
-              </p>
+        
+{/* ================= PRICE + CTA ================= */}
+<div className="mt-auto pt-4">
+  <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4">
+    {/* PRICE */}
+    <div className="min-w-0 flex-1">
+      <p className="text-xs font-medium text-slate-500">
+        Starting from
+      </p>
 
-              <p className="mt-0.5 text-2xl font-bold tracking-tight text-slate-950">
-                ₹
-                {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
-                  "36,999"}
-              </p>
+      <p className="mt-0.5 whitespace-nowrap text-2xl font-bold tracking-tight text-slate-950">
+        ₹
+        {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
+          "36,999"}
+      </p>
 
-              <p className="text-xs text-slate-400">per person</p>
-            </div>
+      <p className="text-xs font-medium  text-slate-400">per person</p>
+    </div>
 
-            {/* CTA */}
-            <Link
-              to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
-              className="inline-flex items-center gap-5 rounded-xl bg-black/90 px-6 py-3.5 text-sm font-semibold text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg"
-            >
-              View Details
-              <span className="text-lg">→</span>
-            </Link>
-          </div>
-        </div>
+    {/* CTA */}
+    <Link
+      to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
+      className="inline-flex shrink-0 items-center justify-center gap-4 whitespace-nowrap rounded-xl bg-black/90 px-5 py-4 text-sm font-semibold font-mont text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg sm:px-6"
+    >
+      <span>View Details</span>
+      <span className="text-lg leading-none">→</span>
+    </Link>
+  </div>
+</div>
+
       </div>
     </article>
   );

@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
@@ -7,8 +7,15 @@ import {
   useTransform,
 } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
+import api from "../../services/api";
 
-const destinations = [
+// =========================================================
+// DEFAULT DESTINATIONS
+// Used whenever the backend is unavailable or returns
+// no usable destination data.
+// =========================================================
+
+const DEFAULT_DESTINATIONS = [
   {
     id: 1,
     name: "Turkey",
@@ -31,7 +38,7 @@ const destinations = [
     description:
       "Ancient temples, lantern-lit streets and gardens shaped by centuries of Japanese tradition.",
     imageUrl:
-      "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1545569341-9eb8b30979d9?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaWdodHx8fGVufDB8fHx8fA%3D%3D",
   },
   {
     id: 4,
@@ -55,28 +62,86 @@ const destinations = [
     description:
       "Glaciers, black sand beaches, waterfalls and volcanic landscapes create a world that feels beautifully otherworldly.",
     imageUrl:
-      "https://images.unsplash.com/photo-1637314995939-7560a94b1495?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "https://images.unsplash.com/photo-1637314995939-7560a94b1495?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaWdodHx8fGVufDB8fHx8fA%3D%3D",
   },
 ];
 
+// =========================================================
+// POPULAR DESTINATIONS
+// =========================================================
+
 function PopularDestinations() {
   const containerRef = useRef(null);
+
+  const [destinations, setDestinations] = useState(DEFAULT_DESTINATIONS);
+
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // =======================================================
+  // FETCH DESTINATIONS FROM BACKEND
+  // =======================================================
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const fetchDestinations = async () => {
+      try {
+        const response = await api.get("/destinations/popular");
+
+        const payload = response?.data?.data;
+
+        const destinationList = Array.isArray(payload)
+          ? payload
+          : (payload?.destinations ?? payload?.data?.destinations ?? []);
+
+        if (!Array.isArray(destinationList) || destinationList.length === 0) {
+          return;
+        }
+
+        const normalizedDestinations = destinationList
+          .map((item, index) => {
+            const imageUrl =
+              item.imageUrl ??
+              item.images?.[0]?.imageUrl ??
+              item.images?.[0]?.url ??
+              item.image?.url;
+
+            return {
+              id: item.id ?? item._id ?? index + 1,
+              name: item.name ?? item.title,
+              description: item.description ?? "",
+              imageUrl,
+            };
+          })
+          .filter((item) => item.name && item.imageUrl);
+
+        // Replace defaults only when usable API data exists.
+        if (isMounted && normalizedDestinations.length > 0) {
+          setDestinations(normalizedDestinations);
+          setActiveIndex(0);
+        }
+      } catch (error) {
+        // Defaults remain visible if the backend fails.
+        console.error("Failed to fetch popular destinations:", error);
+      }
+    };
+
+    fetchDestinations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // =======================================================
+  // SCROLL-BASED SLIDE POSITION
+  // =======================================================
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
-  /*
-   * Instead of giving every slide its own animation,
-   * calculate ONE continuous slide position.
-   *
-   * 0    = first destination
-   * 1    = second destination
-   * 2    = third destination
-   * etc.
-   */
   const slidePosition = useTransform(
     scrollYProgress,
     [0, 1],
@@ -142,7 +207,7 @@ function PopularDestinations() {
         ))}
 
         {/* =====================================================
-            BOTTOM
+            BOTTOM PROGRESS INDICATOR
         ===================================================== */}
 
         <div className="absolute bottom-8 left-8 z-40 flex items-center gap-4 text-white lg:left-12">
@@ -169,42 +234,23 @@ function PopularDestinations() {
   );
 }
 
-/* =========================================================
-   IMAGE
-========================================================= */
+// =========================================================
+// DESTINATION IMAGE
+// =========================================================
 
 function DestinationImage({ destination, index, slidePosition }) {
-  /*
-   * Every image has a position relative to the SAME
-   * continuously moving slide track.
-   *
-   * index 0:
-   *   slidePosition 0 → center
-   *   slidePosition 1 → -100vh
-   *
-   * index 1:
-   *   slidePosition 0 → +100vh
-   *   slidePosition 1 → center
-   */
-
   const y = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
     ["100%", "0%", "-100%"],
   );
 
-  /*
-   * Slight image zoom while entering/leaving.
-   */
   const scale = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
     [1.12, 1, 1.08],
   );
 
-  /*
-   * Fade only when sufficiently away from the viewport.
-   */
   const opacity = useTransform(
     slidePosition,
     [index - 1.15, index - 0.85, index + 0.85, index + 1.15],
@@ -232,32 +278,23 @@ function DestinationImage({ destination, index, slidePosition }) {
   );
 }
 
-/* =========================================================
-   CONTENT
-========================================================= */
+// =========================================================
+// DESTINATION CONTENT
+// =========================================================
 
 function DestinationContent({ destination, index, slidePosition }) {
-  /*
-   * Content moves exactly with its image.
-   */
   const y = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
     ["100%", "0%", "-100%"],
   );
 
-  /*
-   * Content fades a little faster than image.
-   */
   const opacity = useTransform(
     slidePosition,
     [index - 0.75, index - 0.25, index + 0.25, index + 0.75],
     [0, 1, 1, 0],
   );
 
-  /*
-   * Tiny scale gives the content a more editorial feel.
-   */
   const scale = useTransform(
     slidePosition,
     [index - 1, index, index + 1],
@@ -274,7 +311,6 @@ function DestinationContent({ destination, index, slidePosition }) {
       }}
     >
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-12">
-        {/* <div className="ml-auto max-w-2xl lg:mr-[5%] bg-linear-to-b from-black/50 via-transparent to-black/50 p-8"> */}
         <div className="ml-auto max-w-2xl lg:mr-[5%]">
           {/* LABEL */}
 
@@ -290,7 +326,9 @@ function DestinationContent({ destination, index, slidePosition }) {
 
           <h2
             className="text-[clamp(2.8rem,5vw,3.75rem)] capitalize font-thin leading-[0.88] tracking-[-0.045em] text-white"
-            style={{ fontFamily: "Cormorant Garamond" }}
+            style={{
+              fontFamily: "Cormorant Garamond",
+            }}
           >
             {destination.name}
           </h2>
@@ -333,9 +371,9 @@ function DestinationContent({ destination, index, slidePosition }) {
   );
 }
 
-/* =========================================================
-   COUNTER
-========================================================= */
+// =========================================================
+// COUNTER
+// =========================================================
 
 function DestinationCounter({ activeIndex, total }) {
   const number = String(activeIndex + 1).padStart(2, "0");
@@ -343,8 +381,10 @@ function DestinationCounter({ activeIndex, total }) {
   return (
     <div className="absolute left-7 top-24 z-40 lg:left-12 lg:top-28 size-48">
       <div
-        className="flex h-[110px]  font-serif text-[6rem] leading-none tracking-[-0.06em] text-white/80 lg:text-[7rem]"
-        style={{ fontFamily: "Cormorant Garamond" }}
+        className="flex h-[110px] font-serif text-[6rem] leading-none tracking-[-0.06em] text-white/80 lg:text-[7rem]"
+        style={{
+          fontFamily: "Cormorant Garamond",
+        }}
       >
         <span>0</span>
 
