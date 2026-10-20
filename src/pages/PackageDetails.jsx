@@ -432,9 +432,60 @@ function PackageDetails() {
     tandc: false,
   });
   console.log(travelPackage);
+  const [activeSection, setActiveSection] = useState("package-overview");
+
+const packageSectionIds = [
+  "package-overview",
+  "package-itinerary",
+  "package-hotels",
+  "package-flights",
+  "package-inclusions",
+  "package-exclusions",
+  "package-faqs",
+  "package-terms",
+];
+
+useEffect(() => {
+  const handleScroll = () => {
+    // Account for the fixed website navbar and sticky section navigation.
+    const offset = 180;
+    let currentSection = "";
+
+    packageSectionIds.forEach((id) => {
+      const section = document.getElementById(id);
+
+      if (section && section.getBoundingClientRect().top <= offset) {
+        currentSection = id;
+      }
+    });
+
+    if (currentSection) {
+      setActiveSection(currentSection);
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const toggleSection = (key) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+
+  // Open a collapsed section first, then smoothly scroll to its heading.
+  const scrollToPackageSection = (targetId, sectionKey) => {
+    if (sectionKey && !openSections[sectionKey]) {
+      setOpenSections((prev) => ({ ...prev, [sectionKey]: true }));
+    }
+
+    window.setTimeout(() => {
+      document.getElementById(targetId)?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, sectionKey && !openSections[sectionKey] ? 380 : 0);
+  };
 
   useEffect(() => {
     async function fetchPackageDetails() {
@@ -690,12 +741,65 @@ function PackageDetails() {
                   <PackageGallery images={images} title={title} />
                 </motion.div>
 
+              </motion.div>
+
+                {/* Package section navigation */}
+                <nav
+                  aria-label="Package sections"
+                  className="sticky top-[58px] z-10 mt-8 w-full max-w-full rounded-xl border border-black/5 bg-[#f4f0e5]/95 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:top-[75px] sm:mt-10 sm:p-2.5"
+                >
+                  <div className="flex gap-1.5 overflow-x-auto scroll-smooth">
+                    {[
+                      overview ? { label: "Overview", id: "package-overview" } : null,
+                      itineraries.length > 0 ? { label: "Itinerary", id: "package-itinerary", key: "itinerary" } : null,
+                      hotels.length > 0 ? { label: "Hotels", id: "package-hotels", key: "hotels" } : null,
+                      flights.length > 0 ? { label: "Flights", id: "package-flights", key: "flights" } : null,
+                      inclusions.length > 0 ? { label: "Inclusions", id: "package-inclusions", key: "included" } : null,
+                      exclusions.length > 0 ? { label: "Exclusions", id: "package-exclusions", key: "included" } : null,
+                      { label: "Terms & Conditions", id: "package-terms", key: "tandc" },
+                    ].filter(Boolean).map((item) => (
+                      <button
+  key={item.id}
+  type="button"
+  onClick={() => {
+    setActiveSection(item.id);
+    scrollToPackageSection(item.id, item.key);
+  }}
+  className={`group relative shrink-0 rounded-xl px-4 py-3 text-medium font-cg font-semibold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black sm:px-5 sm:text-base ${
+    (activeSection === item.id ||
+      ((activeSection === "package-inclusions" ||
+        activeSection === "package-exclusions") &&
+        (item.id === "package-inclusions" ||
+          item.id === "package-exclusions")))
+      ? "text-[#c5bd96]"
+      : "text-black/70 hover:text-[#c5bd96]"
+  }`}
+>
+  {item.label}
+
+  <span
+    className={`absolute bottom-1 left-4 h-[2px] rounded-full bg-[#c5bd96] transition-all duration-300 sm:left-5 ${
+      (activeSection === item.id ||
+        ((activeSection === "package-inclusions" ||
+          activeSection === "package-exclusions") &&
+          (item.id === "package-inclusions" ||
+            item.id === "package-exclusions")))
+        ? "w-[calc(100%-2rem)] sm:w-[calc(100%-2.5rem)]"
+        : "w-0 group-hover:w-[calc(100%-2rem)] sm:group-hover:w-[calc(100%-2.5rem)]"
+    }`}
+  />
+</button>
+                    ))}
+                  </div>
+                </nav>
+
                 {/* Overview */}
 
                 {overview && (
                   <motion.div variants={reveal} className="mt-7">
                     <CollapsibleSection
                       title="Overview"
+                      sectionId="package-overview"
                       isOpen={openSections.overview}
                       onToggle={() => toggleSection("overview")}
                     >
@@ -705,12 +809,12 @@ function PackageDetails() {
                     </CollapsibleSection>
                   </motion.div>
                 )}
-              </motion.div>
               {/* Itinerary */}
 
               {itineraries.length > 0 && (
                 <CollapsibleSection
                   title=" Day-wise itinerary"
+                  sectionId="package-itinerary"
                   description="A closer look at how your trip unfolds."
                   isOpen={openSections.itinerary}
                   onToggle={() => toggleSection("itinerary")}
@@ -1073,6 +1177,7 @@ function PackageDetails() {
               {hotels.length > 0 && (
                 <CollapsibleSection
                   title="Hotels"
+                  sectionId="package-hotels"
                   description="Explore your stays and accommodation details."
                   isOpen={openSections.hotels}
                   onToggle={() => toggleSection("hotels")}
@@ -1211,6 +1316,7 @@ function PackageDetails() {
               {flights.length > 0 && (
                 <CollapsibleSection
                   title="Flights"
+                  sectionId="package-flights"
                   description="View your flight schedules and journey details."
                   isOpen={openSections.flights}
                   onToggle={() => toggleSection("flights")}
@@ -1358,7 +1464,7 @@ function PackageDetails() {
                     {/* INCLUSIONS */}
 
                     {inclusions.length > 0 && (
-                      <div className="rounded-[28px] bg-black p-7 text-white sm:p-9">
+                      <div id="package-inclusions" className="scroll-mt-28 rounded-[28px] bg-black p-7 text-white sm:p-9">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
                             <Check size={18} />
@@ -1390,7 +1496,7 @@ function PackageDetails() {
                     {/* EXCLUSIONS */}
 
                     {exclusions.length > 0 && (
-                      <div className="rounded-[28px] border border-black/10 p-7 sm:p-9">
+                      <div id="package-exclusions" className="scroll-mt-28 rounded-[28px] border border-black/10 p-7 sm:p-9">
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-beige text-white">
                             <X size={18} />
@@ -1425,6 +1531,7 @@ function PackageDetails() {
               )}
               <CollapsibleSection
                 title="Terms and Conditions"
+                sectionId="package-terms"
                 description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."
                 isOpen={openSections.tandc}
                 onToggle={() => toggleSection("tandc")}
@@ -1588,13 +1695,17 @@ function PackageDetails() {
 function CollapsibleSection({
   title,
   description,
+  sectionId,
   isOpen,
   onToggle,
   children,
   className = "",
 }) {
   return (
-    <section className={`border-t border-black/10 pt-5 ${className}`}>
+    <section
+      id={sectionId}
+      className={`scroll-mt-28 border-t border-black/10 pt-5 ${className}`}
+    >
       <button
         type="button"
         onClick={onToggle}
