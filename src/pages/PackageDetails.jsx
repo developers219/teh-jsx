@@ -439,6 +439,7 @@ const packageSectionIds = [
   "package-itinerary",
   "package-hotels",
   "package-flights",
+  "package-included-section",
   "package-inclusions",
   "package-exclusions",
   "package-faqs",
@@ -748,7 +749,7 @@ useEffect(() => {
                   aria-label="Package sections"
                   className="sticky top-[58px] z-10 mt-8 w-full max-w-full rounded-xl border border-black/5 bg-[#f4f0e5]/95 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:top-[75px] sm:mt-10 sm:p-2.5"
                 >
-                  <div className="flex gap-1.5 overflow-x-auto scroll-smooth">
+                  <div className="flex gap-11 overflow-x-auto scroll-smooth">
                     {[
                       overview ? { label: "Overview", id: "package-overview" } : null,
                       itineraries.length > 0 ? { label: "Itinerary", id: "package-itinerary", key: "itinerary" } : null,
@@ -765,9 +766,10 @@ useEffect(() => {
     setActiveSection(item.id);
     scrollToPackageSection(item.id, item.key);
   }}
-  className={`group relative shrink-0 rounded-xl px-4 py-3 text-medium font-cg font-semibold transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black sm:px-5 sm:text-base ${
+  className={`group relative shrink-0 rounded-xl px-4 py-3 text-medium font-cg font-bold transition-colors duration-300 focus-visible:outline-none  ${
     (activeSection === item.id ||
-      ((activeSection === "package-inclusions" ||
+      ((activeSection === "package-included-section" ||
+        activeSection === "package-inclusions" ||
         activeSection === "package-exclusions") &&
         (item.id === "package-inclusions" ||
           item.id === "package-exclusions")))
@@ -780,7 +782,8 @@ useEffect(() => {
   <span
     className={`absolute bottom-1 left-4 h-[2px] rounded-full bg-[#c5bd96] transition-all duration-300 sm:left-5 ${
       (activeSection === item.id ||
-        ((activeSection === "package-inclusions" ||
+        ((activeSection === "package-included-section" ||
+          activeSection === "package-inclusions" ||
           activeSection === "package-exclusions") &&
           (item.id === "package-inclusions" ||
             item.id === "package-exclusions")))
@@ -813,288 +816,200 @@ useEffect(() => {
 
               {itineraries.length > 0 && (
                 <CollapsibleSection
-                  title=" Day-wise itinerary"
+                  title="Day-wise itinerary"
                   sectionId="package-itinerary"
                   description="A closer look at how your trip unfolds."
                   isOpen={openSections.itinerary}
                   onToggle={() => toggleSection("itinerary")}
                   className="mt-5"
                 >
-                  <div className="relative font-mont">
-                    {/* Timeline line */}
-                    <div className="absolute left-[11px] top-0 hidden h-full w-px bg-black/10 md:block" />
+                  <div className="relative rounded-2xl bg-[#FBFAF6]/70 px-0 py-2 font-mont sm:px-1 sm:py-3">
+                    {/* Timeline rail */}
+                    <div className="absolute bottom-7 left-[21px] top-7 hidden w-px bg-[#DCD4BC] sm:block" />
 
-                    <div className="space-y-4">
-                      {itineraries.map((day) => {
-                        // Render backend values safely, including dates, arrays, and objects.
+                    <div className="space-y-4 sm:space-y-5">
+                      {itineraries.map((day, dayIndex) => {
+                        // Keep every displayed value connected to the backend response.
                         const formatValue = (value) => {
-                          if (
-                            value === null ||
-                            value === undefined ||
-                            value === ""
-                          ) {
-                            return "—";
-                          }
-
+                          if (value === null || value === undefined || value === "") return "—";
                           if (Array.isArray(value)) {
                             return value.length
-                              ? value
-                                  .map((item) =>
-                                    typeof item === "object" && item !== null
-                                      ? Object.entries(item)
-                                          .map(
-                                            ([key, itemValue]) =>
-                                              `${key}: ${formatValue(itemValue)}`,
-                                          )
-                                          .join(", ")
-                                      : String(item),
-                                  )
-                                  .join("; ")
+                              ? value.map((item) => typeof item === "object" && item !== null
+                                  ? Object.entries(item).map(([key, itemValue]) => `${key}: ${formatValue(itemValue)}`).join(", ")
+                                  : String(item)).join("; ")
                               : "—";
                           }
-
                           if (typeof value === "object") {
-                            return Object.entries(value)
-                              .map(
-                                ([key, itemValue]) =>
-                                  `${key}: ${formatValue(itemValue)}`,
-                              )
-                              .join(", ");
+                            return Object.entries(value).map(([key, itemValue]) => `${key}: ${formatValue(itemValue)}`).join(", ");
                           }
-
                           return String(value);
                         };
 
-                        const formatLabel = (key) =>
-                          key
-                            .replace(/([A-Z])/g, " $1")
-                            .replace(/[_-]/g, " ")
-                            .replace(/^./, (letter) => letter.toUpperCase());
+                        const formatLabel = (key) => key
+                          .replace(/([A-Z])/g, " $1")
+                          .replace(/[_-]/g, " ")
+                          .replace(/^./, (letter) => letter.toUpperCase());
 
-                        const formatDate = (value) => {
-                          if (!value) return "—";
-                          const date = new Date(value);
-                          return Number.isNaN(date.getTime())
-                            ? String(value)
-                            : date.toLocaleString("en-IN");
+                        const activityName = (activity) => typeof activity === "string"
+                          ? activity
+                          : activity?.activity || activity?.title || activity?.name || "Activity";
+
+                        const activityImage = (activity) => {
+                          if (!activity || typeof activity !== "object") return "";
+                          const image = activity.imageUrl || activity.imageURL || activity.image_url || activity.image || activity.thumbnail || activity.photo || activity.url || activity.src || activity.path;
+                          if (typeof image === "string") return image;
+                          if (image && typeof image === "object") return image.url || image.imageUrl || image.src || image.path || "";
+                          return "";
                         };
+
+                        const activities = Array.isArray(day.activities) ? day.activities : [];
+                        const activitySummary = activities.map(activityName).filter(Boolean).join(" · ");
+                        const location = day.overnightLocation || day.destination || day.location;
+                        const hotelName = day.hotelName || day.accommodationName || day.hotel?.hotelName || day.hotel?.name;
 
                         return (
                           <div
-                            key={day.id ?? `${day.dayNumber}-${day.title}`}
-                            className="relative grid md:grid-cols-[48px_1fr]"
+                            key={day.id ?? `${day.dayNumber ?? dayIndex + 1}-${day.title}`}
+                            className="relative grid grid-cols-[34px_minmax(0,1fr)] gap-2 sm:grid-cols-[48px_minmax(0,1fr)] sm:gap-3"
                           >
-                            {/* Day number */}
-                            <div className="relative z-10 top-4 flex size-6 items-center justify-center rounded-full bg-beige text-xs font-black text-white">
-                              {String(day.dayNumber ?? "—")}
-                            </div>
+                            {/* Number on the vertical timeline */}
+                            <div className="relative z-10 flex justify-center pt-5 sm:pt-6">
+  <div className="flex size-8 items-center justify-center rounded-full border border-[#B8AC7C] bg-[#B8AC7C] text-sm font-semibold text-white shadow-sm transition-colors sm:size-9">
+    {day.dayNumber ?? dayIndex + 1}
+  </div>
+</div>
 
-                            {/* Day card */}
-                            <details className="group rounded-lg border border-black/10 transition hover:border-black/30">
-                              <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3">
-                                <div className="min-w-0">
-                                  <h3 className="text-sm font-semibold tracking-tight sm:text-base">
-                                    {day.title || "Itinerary Details"}
+                            {/* Day itinerary card */}
+                            <details
+                              open={dayIndex === 0}
+                              className="group min-w-0 overflow-hidden rounded-2xl border border-[#E7E0CD] bg-white/80 transition-colors duration-300 open:border-[#B8AC7C] hover:border-[#C8BC91]"
+                            >
+                              <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-4 marker:hidden sm:px-4 sm:py-4 [&::-webkit-details-marker]:hidden">
+                                {/* <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#B8AC7C] text-sm font-semibold text-white sm:size-10">
+                                  {day.dayNumber ?? dayIndex + 1}
+                                </div> */}
+
+                                <div className="min-w-0 flex-1">
+                                  <h3 className="font-mont text-base font-semibold leading-snug text-[#201F1B] sm:text-lg">
+                                    {day.title || `Day ${day.dayNumber ?? dayIndex + 1}`}
                                   </h3>
+                                  {/* {activitySummary && (
+                                    <p className="mt-1 line-clamp-1 text-xs text-black/55 sm:text-sm">
+                                      {activitySummary}
+                                    </p>
+                                  )} */}
                                 </div>
 
-                                <div className="flex shrink-0 items-center gap-2">
-                                  {day.overnightLocation && (
-                                    <div className="hidden h-fit items-center gap-2 rounded-full bg-black/[0.04] px-4 py-2 text-xs font-bold sm:flex">
-                                      <MapPin size={13} />
-                                      {day.overnightLocation}
-                                    </div>
-                                  )}
-
-                                  <div className="flex size-8 items-center justify-center rounded-full border border-black/10 transition-transform group-open:rotate-180">
-                                    <ChevronDown size={16} />
+                                {location && (
+                                  <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-[#EDE8DB] bg-[#FBFAF6] px-3 py-1.5 text-xs font-medium text-[#4E4A3D] md:flex">
+                                    <MapPin size={13} className="text-[#9C8D59]" />
+                                    <span className="max-w-28 truncate">{location}</span>
                                   </div>
+                                )}
+
+                                <div className="flex size-8 shrink-0 items-center justify-center rounded-full border border-[#E7E0CD] text-[#514D40] transition-transform duration-300 group-open:rotate-180">
+                                  <ChevronDown size={16} />
                                 </div>
                               </summary>
 
-                              {/* Mobile location */}
-                              {day.overnightLocation && (
-                                <div className="flex items-center gap-2 px-6 pb-3 text-xs font-bold text-black/55 sm:hidden">
-                                  <MapPin size={13} />
-                                  {day.overnightLocation}
+                              {location && (
+                                <div className="flex items-center gap-1.5 px-4 pb-3 text-xs font-medium text-black/55 md:hidden">
+                                  <MapPin size={13} className="text-[#9C8D59]" />
+                                  {location}
                                 </div>
                               )}
 
-                              {/* Itinerary content */}
-                              <div className="border-t border-black/10 px-5 pb-6 pt-5 sm:px-7 sm:pb-7">
-                                {/* Description */}
+                              <div className="border-t border-[#F0EBDD] px-4 pb-5 pt-4 sm:px-5 sm:pb-6 sm:pt-5">
                                 {day.description && (
-                                  <p className="mb-5 max-w-3xl text-sm leading-7 text-black/55">
+                                  <p className="mb-4 text-sm leading-6 text-black/60 sm:mb-5 sm:text-[15px] sm:leading-7">
                                     {day.description}
                                   </p>
                                 )}
 
-                                {/* Hotel */}
-                                {day.hotelName && (
-                                  <div className="mb-5 flex items-start gap-3 rounded-lg bg-black/[0.035] p-4">
-                                    <Hotel
-                                      size={18}
-                                      className="mt-0.5 shrink-0 text-black/60"
-                                    />
-
-                                    <div>
-                                      <p className="text-xs text-black/45">
-                                        Accommodation
-                                      </p>
-                                      <p className="mt-1 text-sm font-semibold text-black/75">
-                                        {day.hotelName}
-                                      </p>
+                                {/* Accommodation — content and name remain backend-driven */}
+                                {hotelName && (
+                                  <div className="mb-4 flex items-center gap-3 rounded-xl bg-[#F5F2E9] px-3.5 py-3 sm:mb-5 sm:px-4">
+                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-white/80 text-[#A3935D]">
+                                      <Hotel size={17} />
                                     </div>
+                                    <div className="min-w-0 flex-1">
+                                      <p className="text-[11px] font-medium text-black/50 sm:text-xs">Your stay</p>
+                                      <p className="mt-0.5 break-words text-sm font-medium text-[#29271F] sm:text-[15px]">{hotelName}</p>
+                                    </div>
+                                    <ChevronDown size={16} className="-rotate-90 shrink-0 text-black/45" />
                                   </div>
                                 )}
 
-                                {/* Activities: show all fields returned for each activity */}
-                                {Array.isArray(day.activities) &&
-                                  day.activities.length > 0 && (
-                                    <div className="mb-5">
-                                      <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
-                                        Activities
-                                      </h4>
+                                {/* Activities and their images are rendered from backend values */}
+                                {activities.length > 0 && (
+                                  <div className="space-y-2.5 sm:space-y-3">
+                                    {activities.map((activity, activityIndex) => {
+                                      const isObject = typeof activity === "object" && activity !== null;
+                                      const imageSrc = activityImage(activity);
+                                      const title = activityName(activity);
+                                      const description = isObject ? activity.description || activity.details : "";
+                                      const duration = isObject ? activity.durationMinutes ?? activity.duration : null;
+                                      const startTime = isObject ? activity.startTime || activity.time : null;
 
-                                      <div className="space-y-3">
-                                        {day.activities.map(
-                                          (activity, index) => {
-                                            const activityIsObject =
-                                              typeof activity === "object" &&
-                                              activity !== null;
+                                      return (
+                                        <div
+                                          key={activity?.id ?? `${day.id ?? dayIndex}-${activityIndex}`}
+                                          className="flex min-w-0 items-center gap-3 rounded-xl border border-[#EEE8DA] bg-white p-2.5 transition-colors hover:border-[#D8CFB0] sm:gap-4 sm:p-3"
+                                        >
+                                          {imageSrc ? (
+                                            <img
+                                              src={imageSrc}
+                                              alt={title}
+                                              loading="lazy"
+                                              className="size-[76px] shrink-0 rounded-xl object-cover sm:size-[84px]"
+                                              onError={(event) => { event.currentTarget.style.display = "none"; }}
+                                            />
+                                          ) : (
+                                            <div className="flex size-[76px] shrink-0 items-center justify-center rounded-xl bg-[#F5F2E9] text-[#A3935D] sm:size-[84px]">
+                                              <Compass size={23} />
+                                            </div>
+                                          )}
 
-                                            return (
-                                              <div
-                                                key={activity?.id ?? index}
-                                                className="rounded-lg border border-black/10 bg-white p-4"
-                                              >
-                                                <div className="flex flex-wrap items-start justify-between gap-3">
-                                                  <h5 className="text-sm font-semibold text-black/80">
-                                                    {typeof activity ===
-                                                    "string"
-                                                      ? activity
-                                                      : activity.activity ||
-                                                        activity.title ||
-                                                        activity.name ||
-                                                        "Activity"}
-                                                  </h5>
-
-                                                  {activityIsObject &&
-                                                    activity.durationMinutes !=
-                                                      null && (
-                                                      <span className="rounded-full bg-black/[0.05] px-3 py-1 text-xs text-black/60">
-                                                        {
-                                                          activity.durationMinutes
-                                                        }{" "}
-                                                        minutes
-                                                      </span>
-                                                    )}
-                                                </div>
-
-                                                {activityIsObject &&
-                                                  activity.description && (
-                                                    <p className="mt-2 text-sm leading-6 text-black/55">
-                                                      {activity.description}
-                                                    </p>
-                                                  )}
-
-                                                {activityIsObject &&
-                                                  activity.startTime && (
-                                                    <p className="mt-3 text-sm text-black/60">
-                                                      <span className="font-semibold">
-                                                        Start time:{" "}
-                                                      </span>
-                                                      {activity.startTime}
-                                                    </p>
-                                                  )}
-
-                                                {/* Every activity field from the backend */}
-                                                {/* {activityIsObject && (
-                                                  <details className="mt-3 border-t border-black/10 pt-3">
-                                                    <summary className="cursor-pointer text-xs font-semibold text-black/50">
-                                                      View all activity details
-                                                    </summary>
-
-                                                    <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                                      {Object.entries(
-                                                        activity,
-                                                      ).map(([key, value]) => (
-                                                        <div
-                                                          key={key}
-                                                          className="min-w-0 rounded-md bg-black/[0.025] p-3"
-                                                        >
-                                                          <p className="text-xs text-black/45">
-                                                            {formatLabel(key)}
-                                                          </p>
-                                                          <p className="mt-1 break-words text-sm font-medium text-black/75">
-                                                            {key ===
-                                                              "createdAt" ||
-                                                            key === "updatedAt"
-                                                              ? formatDate(
-                                                                  value,
-                                                                )
-                                                              : formatValue(
-                                                                  value,
-                                                                )}
-                                                          </p>
-                                                        </div>
-                                                      ))}
-                                                    </div>
-                                                  </details>
-                                                )} */}
+                                          <div className="min-w-0 flex-1 py-0.5">
+                                            <h4 className="break-words text-sm font-semibold text-[#25241F] sm:text-[15px]">{title}</h4>
+                                            {description && (
+                                              <p className="mt-1 line-clamp-2 text-xs leading-5 text-black/55 sm:text-sm">{description}</p>
+                                            )}
+                                            {(duration !== null && duration !== undefined && duration !== "") || startTime ? (
+                                              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-black/50 sm:text-xs">
+                                                {duration !== null && duration !== undefined && duration !== "" && (
+                                                  <span className="inline-flex items-center gap-1"><Clock3 size={12} className="text-[#A3935D]" />{typeof duration === "number" ? `${duration} minutes` : duration}</span>
+                                                )}
+                                                {startTime && <span>{startTime}</span>}
                                               </div>
-                                            );
-                                          },
-                                        )}
-                                      </div>
-                                    </div>
-                                  )}
+                                            ) : null}
+                                          </div>
+                                          <ChevronDown size={16} className="-rotate-90 hidden shrink-0 text-black/40 sm:block" />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                )}
 
                                 {/* Meals */}
                                 {day.meals && (
-                                  <div className="mb-5">
-                                    <Utensils size={18}
-                                      className="mt-0.5 shrink-0 text-black/60"
-                                      />
-                                     
-                                    <h4 className="mb-3 text-xs font-bold uppercase tracking-wider text-black/40">
-                                      Meals
-                                    </h4>
-
-                                    <p className="flex items-start gap-3 text-sm leading-6 text-black/70">
-                                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-black" />
-                                      <span>{day.meals}</span>
-                                    </p>
+                                  <div className={`${activities.length ? "mt-4 border-t border-[#EEE8DA] pt-4" : "mt-1"} flex items-start gap-2.5 text-sm text-[#4A473D]`}>
+                                    <Utensils size={16} className="mt-0.5 shrink-0 text-[#A3935D]" />
+                                    <div className="min-w-0">
+                                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-black/45">Meals</p>
+                                      <p className="mt-1 break-words text-sm">{formatValue(day.meals)}</p>
+                                    </div>
                                   </div>
                                 )}
 
-                                {/* All itinerary fields from the backend */}
-                                {/* <div className="border-t border-black/10 pt-4">
-                                  <h4 className="mb-4 text-xs font-bold uppercase tracking-wider text-black/40">
-                                    Complete Itinerary Details
-                                  </h4>
-
-                                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                    {Object.entries(day)
-                                      .filter(([key]) => key !== "activities")
-                                      .map(([key, value]) => (
-                                        <div
-                                          key={key}
-                                          className="min-w-0 rounded-lg bg-black/[0.035] p-3"
-                                        >
-                                          <p className="text-xs text-black/45">
-                                            {formatLabel(key)}
-                                          </p>
-                                          <p className="mt-1 break-words text-sm font-medium text-black/75">
-                                            {key === "createdAt" ||
-                                            key === "updatedAt"
-                                              ? formatDate(value)
-                                              : formatValue(value)}
-                                          </p>
-                                        </div>
-                                      ))}
+                                {/* Preserve any additional backend fields without hardcoding package content */}
+                                {Array.isArray(day.inclusions) && day.inclusions.length > 0 && (
+                                  <div className="mt-4 flex flex-wrap gap-2 border-t border-[#EEE8DA] pt-4">
+                                    {day.inclusions.map((item, index) => (
+                                      <span key={index} className="rounded-full bg-[#F5F2E9] px-3 py-1.5 text-xs text-[#5D5745]">{formatValue(item)}</span>
+                                    ))}
                                   </div>
-                                </div> */}
+                                )}
                               </div>
                             </details>
                           </div>
@@ -1455,6 +1370,7 @@ useEffect(() => {
               {(inclusions.length > 0 || exclusions.length > 0) && (
                 <CollapsibleSection
                   title="What's included"
+                  sectionId="package-included-section"
                   description="Know exactly what is and isn't covered in your package."
                   isOpen={openSections.included}
                   onToggle={() => toggleSection("included")}
