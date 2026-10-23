@@ -1,4 +1,5 @@
 import HeroSection from "../components/home/herotemp";
+import HomeThemes from "../components/home/HomeThemes";
 import HowItWorks from "../components/home/HowItWorks";
 import PersonalizedHolidayPlan from "../components/home/PersonalizedHolidayPlan";
 import PopularDestinations from "../components/home/PopularDestinations";
@@ -13,10 +14,11 @@ const Home = () => {
   return (
     <>
       <HeroSection />
+      <HomeThemes />
       {/* <SearchWidget /> */}
       {/* <FeaturedPackages /> */}
       <TravelCategories />
-      <PopularDestinations />
+      {/* <PopularDestinations /> */}
       <HowItWorks />
       <WhyChooseUs />
       <LatestBlogs />
@@ -26,7 +28,7 @@ const Home = () => {
       <div id="holiday-plan">
         <PersonalizedHolidayPlan />
       </div>
-      
+
       {/* <ContactCTA /> */}
     </>
   );

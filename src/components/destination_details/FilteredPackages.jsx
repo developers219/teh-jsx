@@ -366,7 +366,7 @@
 //   );
 // };
 import { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import SectionHeader from "../home/SectionHeader";
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
@@ -385,8 +385,7 @@ const initialFilters = {
 const PackageFilters = ({ filters, setFilters, themes, durations }) => {
   const filterTrackRef = useRef(null);
 
-  const [filterProgress, setFilterProgress] =
-    useState(0);
+  const [filterProgress, setFilterProgress] = useState(0);
 
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
@@ -406,8 +405,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
       return;
     }
 
-    const [sortBy, sortOrder] =
-      value.split("-");
+    const [sortBy, sortOrder] = value.split("-");
 
     setFilters((prev) => ({
       ...prev,
@@ -430,16 +428,14 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
 
     if (!el) return;
 
-    const maxScroll =
-      el.scrollWidth - el.clientWidth;
+    const maxScroll = el.scrollWidth - el.clientWidth;
 
     if (maxScroll <= 0) {
       setFilterProgress(0);
       return;
     }
 
-    const progress =
-      el.scrollLeft / maxScroll;
+    const progress = el.scrollLeft / maxScroll;
 
     setFilterProgress(Math.min(1, Math.max(0, progress)));
   };
@@ -451,20 +447,14 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
       updateFilterProgress();
     };
 
-    window.addEventListener(
-      "resize",
-      handleResize
-    );
+    window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [themes, durations]);
 
-  
-
   return (
-
     <div className="my-8 w-full font-mont">
       {/* =====================================================
           FILTER CHIPS
@@ -507,9 +497,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
             whitespace-nowrap
           "
         >
-          <option value="">
-            Min Budget
-          </option>
+          <option value="">Min Budget</option>
 
           <option value="5000">₹5,000</option>
 
@@ -538,9 +526,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
             whitespace-nowrap
           "
         >
-          <option value="">
-            Max Budget
-          </option>
+          <option value="">Max Budget</option>
 
           <option value="10000">₹10,000</option>
 
@@ -569,9 +555,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
             whitespace-nowrap
           "
         >
-          <option value="">
-            Theme
-          </option>
+          <option value="">Theme</option>
 
           {themes?.map((theme) => (
             <option key={theme.id} value={theme.id}>
@@ -596,9 +580,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
             whitespace-nowrap
           "
         >
-          <option value="">
-            Duration
-          </option>
+          <option value="">Duration</option>
 
           {durations.map((duration) => (
             <option key={duration.id} value={duration.id}>
@@ -623,9 +605,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
             whitespace-nowrap
           "
         >
-          <option value="">
-            Sort
-          </option>
+          <option value="">Sort</option>
 
           <option value="price-asc">Price: Low to High</option>
 
@@ -660,8 +640,25 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
 
 export const FilteredPackages = () => {
   const { slug } = useParams();
+  const [searchParams] = useSearchParams();
+  const sectionRef = useRef(null);
 
-  const [filters, setFilters] = useState(initialFilters);
+  // Hero search can open this page with ?themeId=<id> -> preselect that theme
+  const [filters, setFilters] = useState(() => ({
+    ...initialFilters,
+    themeId: searchParams.get("themeId") || "",
+  }));
+
+  useEffect(() => {
+    if (searchParams.get("themeId")) {
+      sectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+    // run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [packages, setPackages] = useState([]);
   const [themes, setThemes] = useState([]);
@@ -701,69 +698,43 @@ export const FilteredPackages = () => {
         const params = new URLSearchParams();
 
         if (filters.minPrice) {
-          params.set(
-            "minPrice",
-            filters.minPrice
-          );
+          params.set("minPrice", filters.minPrice);
         }
 
         if (filters.maxPrice) {
-          params.set(
-            "maxPrice",
-            filters.maxPrice
-          );
+          params.set("maxPrice", filters.maxPrice);
         }
 
         if (filters.themeId) {
-          params.set(
-            "themeId",
-            filters.themeId
-          );
+          params.set("themeId", filters.themeId);
         }
 
         if (filters.durationId) {
-          params.set(
-            "durationId",
-            filters.durationId
-          );
+          params.set("durationId", filters.durationId);
         }
 
         if (filters.sortOrder) {
-          params.set(
-            "sortOrder",
-            filters.sortOrder
-          );
+          params.set("sortOrder", filters.sortOrder);
         }
 
-        const queryString =
-          params.toString();
+        const queryString = params.toString();
 
         const endpoint = queryString
           ? `/packages/slug/${slug}?${queryString}`
           : `/packages/${slug}`;
 
-        const res =
-          await api(endpoint);
+        const res = await api(endpoint);
 
-        setPackages(
-          res?.data?.data?.packages || []
-        );
+        setPackages(res?.data?.data?.packages || []);
       } catch (error) {
-        console.error(
-          "Failed to fetch packages:",
-          error
-        );
+        console.error("Failed to fetch packages:", error);
 
-        setError(
-          "Failed to load packages."
-        );
+        setError("Failed to load packages.");
 
         setPackages([]);
       } finally {
         setLoading(false);
       }
-
-
     };
 
     fetchPackages();
@@ -778,7 +749,7 @@ export const FilteredPackages = () => {
   ]);
 
   return (
-    <section className="bg-white">
+    <section ref={sectionRef} className="scroll-mt-20 bg-white">
       <div className="mx-auto max-w-7xl px-4 py-16">
         <SectionHeader
           title="Explore Packages"
