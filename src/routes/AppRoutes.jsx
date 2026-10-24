@@ -44,6 +44,7 @@ import PackageDetails from "../pages/PackageDetails";
 import PackageEditor from "../pages/PackageEditor";
 import Packages from "../pages/Packages";
 import ThemePackages from "../pages/ThemePackages";
+import TravellerTypePackages from "../pages/TravellerTypePackages";
 import PackageSubcategoryEditor from "../pages/PackageSubcategoryEditor";
 import TravelCategoryEditor from "../pages/TravelCategoryEditor";
 import Unauthorized from "../pages/Unauthorized";
@@ -75,6 +76,7 @@ function AppRoutes() {
         />
         <Route path="/packages" element={<Packages />} />
         <Route path="/packages/:slug" element={<PackageDetails />} />
+           <Route path="/packages/traveller-type/:slug" element={<TravellerTypePackages />} />
         <Route path="/themes/:themeId" element={<ThemePackages />} />
         <Route path="/blogs" element={<Blogs />} />
         <Route path="/blogs/:slug" element={<BlogDetails />} />

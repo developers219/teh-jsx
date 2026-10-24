@@ -1,4 +1,27 @@
 import { useEffect, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+
+/**
+ * Website carousel (teh-vite design):
+ *  - small round arrows at the top-right
+ *  - spring slide animation
+ *  - swipe support on touch screens
+ *
+ * Props are the same as before, so every page that already uses
+ * <Carousel items renderItem ... /> switches to this design automatically.
+ */
+
+// Cards visible at the current screen size
+function getVisibleItems(desktopItems, tabletItems, mobileItems) {
+  if (typeof window === "undefined") return desktopItems;
+
+  const width = window.innerWidth;
+
+  if (width < 640) return mobileItems;
+  if (width < 1024) return tabletItems;
+  return desktopItems;
+}
 
 export default function Carousel({
   items = [],
@@ -9,331 +32,147 @@ export default function Carousel({
   tabletItems = 2,
   mobileItems = 2,
 }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-  const viewportRef = useRef(null);
+  const trackRef = useRef(null);
+  const startX = useRef(0);
+  const endX = useRef(0);
+
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [step, setStep] = useState(0);
+  const [visibleItems, setVisibleItems] = useState(() =>
+    getVisibleItems(desktopItems, tabletItems, mobileItems),
+  );
+
+  const totalSlides = items.length;
+  const maxIndex = Math.max(totalSlides - visibleItems, 0);
 
   // -------------------------------------------------------
-  // CHECK MOBILE SCREEN
-  // -------------------------------------------------------
-
-  useEffect(() => {
-    const checkScreen = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    checkScreen();
-
-    window.addEventListener("resize", checkScreen);
-
-    return () => {
-      window.removeEventListener("resize", checkScreen);
-    };
-  }, []);
-
-  // -------------------------------------------------------
-  // RESET POSITION WHEN ITEMS CHANGE
+  // RESPONSIVE: how many cards are visible
   // -------------------------------------------------------
 
   useEffect(() => {
-    setCurrentIndex(0);
+    const handleResize = () => {
+      setVisibleItems(getVisibleItems(desktopItems, tabletItems, mobileItems));
+    };
 
-    if (viewportRef.current) {
-      viewportRef.current.scrollLeft = 0;
-    }
-  }, [items.length]);
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [desktopItems, tabletItems, mobileItems]);
+
+  // -------------------------------------------------------
+  // SLIDE WIDTH (card width + gap)
+  // -------------------------------------------------------
+
+  useEffect(() => {
+    const measure = () => {
+      const firstCard = trackRef.current?.children[0];
+
+      if (!firstCard) return;
+
+      setStep(firstCard.offsetWidth + gap);
+    };
+
+    measure();
+
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [totalSlides, visibleItems, gap]);
+
+  // -------------------------------------------------------
+  // KEEP POSITION VALID
+  // -------------------------------------------------------
+
+  // new list -> start from the first card
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [totalSlides]);
+
+  // layout change -> never go past the last card
+  useEffect(() => {
+    setActiveIndex((current) => Math.min(current, maxIndex));
+  }, [maxIndex]);
 
   // -------------------------------------------------------
   // NAVIGATION
   // -------------------------------------------------------
 
-  const getVisibleItems = () => {
-    if (typeof window === "undefined") return desktopItems;
+  const next = () => setActiveIndex((prev) => Math.min(prev + 1, maxIndex));
+  const prev = () => setActiveIndex((prev) => Math.max(prev - 1, 0));
 
-    if (window.innerWidth < 640) {
-      return mobileItems;
-    }
-
-    if (window.innerWidth < 1024) {
-      return tabletItems;
-    }
-
-    return desktopItems;
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+    endX.current = e.touches[0].clientX;
   };
 
-  const visibleItems = getVisibleItems();
-
-  const maxIndex = Math.max(items.length - visibleItems, 0);
-
-  const previousSlide = () => {
-    setCurrentIndex((prev) => Math.max(prev - 1, 0));
+  const handleTouchMove = (e) => {
+    endX.current = e.touches[0].clientX;
   };
 
-  const nextSlide = () => {
-    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
+  const handleTouchEnd = () => {
+    const distance = startX.current - endX.current;
+
+    if (distance > 50) next();
+    if (distance < -50) prev();
   };
 
-  // -------------------------------------------------------
-  // MOBILE SCROLL
-  // -------------------------------------------------------
+  if (totalSlides === 0) return null;
 
-  const handleMobileScroll = () => {
-    if (!viewportRef.current) return;
-
-    const viewport = viewportRef.current;
-
-    const firstCard = viewport.firstElementChild;
-
-    if (!firstCard) return;
-
-    const cardWidth = firstCard.getBoundingClientRect().width;
-
-    const index = Math.round(
-      viewport.scrollLeft / (cardWidth + gap)
-    );
-
-    setCurrentIndex(index);
-  };
-
-  // -------------------------------------------------------
-  // CARD WIDTH
-  // -------------------------------------------------------
-
-  const getCardWidth = () => {
-    if (mobileItems === 1) {
-      return "100%";
-    }
-
-    return `calc((100% - ${(mobileItems - 1) * gap}px) / ${mobileItems})`;
-  };
-
-  // -------------------------------------------------------
-  // RENDER
-  // -------------------------------------------------------
+  const cardWidth = `calc((100% - ${(visibleItems - 1) * gap}px) / ${visibleItems})`;
 
   return (
-    <div className="w-full">
-
-      {/* =================================================
-          ARROWS
-      ================================================== */}
-
-      {showArrows && (
-        <div className="flex justify-end gap-3">
-          
-          {/* PREVIOUS */}
-
+    <div className="flex w-full flex-col items-end">
+      {/* ARROWS (same as teh-vite) */}
+      {showArrows && maxIndex > 0 && (
+        <div className="mb-6 flex gap-[clamp(0.25rem,2vw,0.5rem)]">
           <button
             type="button"
-            onClick={previousSlide}
-            disabled={currentIndex === 0}
+            onClick={prev}
+            disabled={activeIndex === 0}
             aria-label="Previous"
-            className={`
-              flex
-              h-10
-              w-10
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              border
-              bg-white
-              transition-all
-              duration-300
-
-              ${
-                currentIndex > 0
-                  ? `
-                    border-[#e8ded4]
-                    text-slate-700
-                    hover:bg-slate-50
-                    hover:shadow-sm
-                  `
-                  : `
-                    cursor-not-allowed
-                    border-[#f1eee9]
-                    text-[#d8d1ca]
-                  `
-              }
-            `}
+            className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
           >
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M15 18L9 12L15 6" />
-            </svg>
+            <ArrowLeft size={18} />
           </button>
-
-          {/* NEXT */}
 
           <button
             type="button"
-            onClick={nextSlide}
-            disabled={currentIndex >= maxIndex}
+            onClick={next}
+            disabled={activeIndex >= maxIndex}
             aria-label="Next"
-            className={`
-              flex
-              h-10
-              w-10
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              border
-              bg-white
-              transition-all
-              duration-300
-
-              ${
-                currentIndex < maxIndex
-                  ? `
-                    border-[#e8ded4]
-                    text-slate-800
-                    hover:bg-slate-50
-                    hover:shadow-sm
-                  `
-                  : `
-                    cursor-not-allowed
-                    border-[#f1eee9]
-                    text-[#d8d1ca]
-                  `
-              }
-            `}
+            className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
           >
-            <svg
-              width="17"
-              height="17"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M9 18L15 12L9 6" />
-            </svg>
+            <ArrowRight size={18} />
           </button>
-
         </div>
       )}
 
-      {/* =================================================
-          VIEWPORT
-      ================================================== */}
-
+      {/* VIEWPORT: clips left/right only, so hover lift and shadows stay visible */}
       <div
-        ref={viewportRef}
-        onScroll={isMobile ? handleMobileScroll : undefined}
-        className={`
-          w-full
-          ${
-            isMobile
-              ? `
-                overflow-x-auto
-                overflow-y-hidden
-                snap-x
-                snap-mandatory
-                scroll-smooth
-                touch-pan-x
-                pb-3
-
-                [&::-webkit-scrollbar]:h-1.5
-                [&::-webkit-scrollbar-track]:bg-[#f1eee9]
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb]:bg-[#b8afa6]
-
-                scrollbar-thin
-                scrollbar-track-[#f1eee9]
-                scrollbar-thumb-[#b8afa6]
-              `
-              : "overflow-hidden"
-          }
-        `}
+        className="h-auto w-full touch-pan-y overflow-x-clip"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
       >
-
-        {/* =================================================
-            SLIDING TRACK
-        ================================================== */}
-
-        <div
-          className={`
-            flex
-            ${isMobile ? "" : "transition-transform duration-500 ease-out"}
-            will-change-transform
-            py-8
-          `}
-          style={{
-            gap: `${gap}px`,
-
-            ...(isMobile
-              ? {}
-              : {
-                  transform: `
-                    translateX(
-                      calc(
-                        -${currentIndex} *
-                        (
-                          (
-                            100% -
-                            ${(visibleItems - 1) * gap}px
-                          ) /
-                          ${visibleItems}
-                          +
-                          ${gap}px
-                        )
-                      )
-                    )
-                  `,
-                }),
-          }}
+        {/* SLIDING TRACK */}
+        <motion.div
+          ref={trackRef}
+          animate={{ x: -(activeIndex * step) }}
+          transition={{ type: "spring", stiffness: 120, damping: 20 }}
+          className="flex h-full"
+          style={{ gap: `${gap}px` }}
         >
           {items.map((item, index) => (
             <div
-              key={item.id ?? index}
-              className={`
-                min-w-0
-                shrink-0
-
-                ${
-                  isMobile
-                    ? "snap-start"
-                    : ""
-                }
-              `}
-              style={{
-                width: isMobile
-                  ? getCardWidth()
-                  : `calc(
-                      (100% - ${(visibleItems - 1) * gap}px) /
-                      ${visibleItems}
-                    )`,
-              }}
+              key={item?.id ?? index}
+              className="min-w-0 shrink-0"
+              style={{ width: cardWidth }}
             >
               {renderItem(item, index)}
             </div>
           ))}
-        </div>
+        </motion.div>
       </div>
-
-      {/* =================================================
-          MOBILE SCROLL HINT
-      ================================================== */}
-
-      {/* {isMobile && items.length > mobileItems && (
-        <div className="mt-1 flex justify-center">
-          <div className="text-[10px] font-medium uppercase tracking-[0.18em] text-slate-400">
-            Swipe to explore
-          </div>
-        </div>
-      )} */}
-
     </div>
   );
 }

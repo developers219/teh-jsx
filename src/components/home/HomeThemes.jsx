@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import api from "../../services/api";
+import { Heading } from "../ui/Heading";
 
 /* ---------------------------------------------------------------
    Images
@@ -212,16 +213,14 @@ export default function HomeThemes() {
   return (
     <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
-        {/* Heading (exact teh-vite spacing: mb-8 / sm:mb-10).
+        {/* Heading (same as every section: EB Garamond + Alex Brush).
             Arrows are positioned absolutely, so they never add any height. */}
-        <div className="relative mb-8 flex flex-col gap-[clamp(0.5rem,2vw,0.75rem)] sm:mb-10">
-          <h2 className="font-jakarta text-[clamp(1.8rem,5vw,2.5rem)] capitalize">
-            Explore by <span className="text-blue-400">themes</span>
-          </h2>
-
-          <p className="font-inter text-base sm:text-lg lg:text-xl">
-            Choose according to your mood
-          </p>
+        <div className="relative">
+          <Heading
+            heading="Explore by"
+            highlight="themes"
+            subheading="Choose according to your mood"
+          />
 
           {/* Carousel arrows (teh-vite style) - only when there is more to scroll */}
           {!isLoading && maxIndex > 0 && (
@@ -295,10 +294,6 @@ export default function HomeThemes() {
                   const isHovered = hoveredId === theme.id;
                   const isBlurred = hoveredId !== null && !isHovered;
 
-                  // Theme object ko page ke saath bhejo, taaki hero turant dikhe
-                  const goToTheme = () =>
-                    navigate(`/themes/${theme.id}`, { state: { theme } });
-
                   return (
                     <motion.div
                       key={theme.id}
@@ -306,9 +301,9 @@ export default function HomeThemes() {
                       tabIndex={0}
                       aria-label={`${theme.name} packages`}
                       variants={cardVariants}
-                      onClick={goToTheme}
+                      onClick={() => navigate(`/themes/${theme.id}`)}
                       onKeyDown={(e) => {
-                        if (e.key === "Enter") goToTheme();
+                        if (e.key === "Enter") navigate(`/themes/${theme.id}`);
                       }}
                       onMouseEnter={() => setHoveredId(theme.id)}
                       onMouseLeave={() => setHoveredId(null)}

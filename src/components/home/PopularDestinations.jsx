@@ -1,13 +1,9 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValueEvent,
-  useScroll,
-  useTransform,
-} from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AnimatePresence, motion } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import api from "../../services/api";
+import { Heading } from "../ui/Heading";
 
 // =========================================================
 // DEFAULT DESTINATIONS
@@ -66,19 +62,160 @@ const DEFAULT_DESTINATIONS = [
   },
 ];
 
+// Auto-advance time (same as teh-vite)
+const AUTO_SLIDE_MS = 4000;
+
+// Backend destination -> page link
+function getDestinationPath(destination) {
+  if (!destination?.slug) return "/destinations";
+
+  const isInternational =
+    destination.categoryName === "International" ||
+    Number(destination.categoryId) === 2;
+
+  return `/destinations/${isInternational ? "intl" : "dom"}/${destination.slug}`;
+}
+
 // =========================================================
-// POPULAR DESTINATIONS
+// LEFT SIDE: NAME, DESCRIPTION, BUTTON
+// =========================================================
+
+const DestinationContent = ({ destination, onExplore }) => {
+  return (
+    <div className="flex h-full w-full flex-col justify-center px-8">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={destination.id}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -30 }}
+          transition={{
+            duration: 0.5,
+            ease: "easeOut",
+          }}
+          className="space-y-6"
+        >
+          <motion.h2
+            className="text-[clamp(1.8rem,5vw,2.5rem)] font-bold uppercase text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            {destination.name}
+          </motion.h2>
+
+          {destination.description && (
+            <p className="leading-relaxed text-white/80">
+              {destination.description}
+            </p>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
+      <button
+        type="button"
+        onClick={() => onExplore(destination)}
+        className="my-5 w-fit cursor-pointer rounded-xl bg-blue-400 px-8 py-4 font-semibold text-white transition-colors hover:bg-blue-500"
+      >
+        Explore
+      </button>
+    </div>
+  );
+};
+
+// =========================================================
+// RIGHT SIDE: STACKED CARD CAROUSEL
+// =========================================================
+
+const DestinationCarousel = ({ items, activeIndex, onSelect, next, prev }) => {
+  return (
+    <div className="flex h-full w-full flex-col">
+      <div className="relative h-[256px] w-full md:h-[500px]">
+        {items.map((item, index) => {
+          const offset = (index - activeIndex + items.length) % items.length;
+
+          if (offset > 3) return null;
+
+          return (
+            <motion.button
+              type="button"
+              key={item.id}
+              onClick={() => onSelect(index)}
+              className="absolute top-1/2 cursor-pointer overflow-hidden rounded-3xl"
+              animate={{
+                x: offset * 165,
+                y: "-50%",
+                scale: offset === 0 ? 1 : 0.9,
+                zIndex: 10 - offset,
+              }}
+              initial={{ y: "-50%", zIndex: 10 - offset }}
+              transition={{
+                duration: 0.5,
+                ease: "easeInOut",
+              }}
+            >
+              <div
+                className={`relative overflow-hidden rounded-3xl ${
+                  offset === 0
+                    ? "h-[200px] w-[250px] md:h-[300px] md:w-[390px] lg:h-[420px] lg:w-[300px]"
+                    : "h-[200px] w-[250px] lg:h-[360px] lg:w-[240px]"
+                }`}
+              >
+                <img
+                  src={item.imageUrl}
+                  alt={item.name}
+                  loading="lazy"
+                  draggable={false}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+
+                <div className="absolute inset-0 bg-black/20" />
+
+                <div className="absolute bottom-6 left-6 right-6 text-left">
+                  <p className="text-lg font-semibold text-white">
+                    {item.name}
+                  </p>
+                </div>
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      <div className="mb-5 h-10">
+        <button
+          type="button"
+          aria-label="Previous destination"
+          className="mr-4 cursor-pointer rounded-full bg-white/20 p-2 text-white backdrop-blur-lg transition duration-300 hover:text-blue-300"
+          onClick={prev}
+        >
+          <ArrowLeft size={16} />
+        </button>
+
+        <button
+          type="button"
+          aria-label="Next destination"
+          className="cursor-pointer rounded-full bg-white/20 p-2 text-white backdrop-blur-lg transition duration-300 hover:text-blue-300"
+          onClick={next}
+        >
+          <ArrowRight size={16} />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+// =========================================================
+// POPULAR DESTINATIONS (Top 10)
 // =========================================================
 
 function PopularDestinations() {
-  const containerRef = useRef(null);
+  const navigate = useNavigate();
 
   const [destinations, setDestinations] = useState(DEFAULT_DESTINATIONS);
-
   const [activeIndex, setActiveIndex] = useState(0);
 
   // =======================================================
-  // FETCH DESTINATIONS FROM BACKEND
+  // FETCH POPULAR DESTINATIONS FROM BACKEND
   // =======================================================
 
   useEffect(() => {
@@ -111,9 +248,14 @@ function PopularDestinations() {
               name: item.name ?? item.title,
               description: item.description ?? "",
               imageUrl,
+              slug: item.slug,
+              categoryName: item.categoryName,
+              categoryId: item.categoryId,
             };
           })
-          .filter((item) => item.name && item.imageUrl);
+          .filter((item) => item.name && item.imageUrl)
+          // "Top 10 destinations"
+          .slice(0, 10);
 
         // Replace defaults only when usable API data exists.
         if (isMounted && normalizedDestinations.length > 0) {
@@ -134,285 +276,73 @@ function PopularDestinations() {
   }, []);
 
   // =======================================================
-  // SCROLL-BASED SLIDE POSITION
+  // AUTO SLIDE (restarts after every change, also manual ones)
   // =======================================================
 
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
+  useEffect(() => {
+    if (destinations.length < 2) return undefined;
 
-  const slidePosition = useTransform(
-    scrollYProgress,
-    [0, 1],
-    [0, destinations.length - 1],
-  );
+    const timeout = setTimeout(() => {
+      setActiveIndex((prev) => (prev + 1) % destinations.length);
+    }, AUTO_SLIDE_MS);
 
-  useMotionValueEvent(slidePosition, "change", (latest) => {
-    const index = Math.round(latest);
+    return () => clearTimeout(timeout);
+  }, [activeIndex, destinations.length]);
 
-    setActiveIndex(Math.max(0, Math.min(destinations.length - 1, index)));
-  });
+  const next = () => setActiveIndex((prev) => (prev + 1) % destinations.length);
+
+  const prev = () =>
+    setActiveIndex(
+      (prev) => (prev - 1 + destinations.length) % destinations.length,
+    );
+
+  const handleExplore = (destination) => {
+    navigate(getDestinationPath(destination));
+  };
+
+  const activeDestination = destinations[activeIndex] ?? destinations[0];
 
   return (
-    <section
-      ref={containerRef}
-      className="relative bg-black"
-      style={{
-        height: `${destinations.length * 100}vh`,
-      }}
-    >
-      <div className="sticky top-0 h-screen overflow-hidden">
-        {/* =====================================================
-            DESTINATION IMAGES
-        ===================================================== */}
-
-        {destinations.map((destination, index) => (
-          <DestinationImage
-            key={destination.id}
-            destination={destination}
-            index={index}
-            slidePosition={slidePosition}
+    <section className="my-[clamp(1.6rem,5vw,4rem)] h-auto max-h-175 font-inter md:h-screen">
+      <div className="mx-auto h-full w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
+        <div className="flex h-full flex-col gap-[clamp(0.25rem,2vw,2rem)]">
+          <Heading
+            heading="Top 10"
+            highlight="destinations"
+            subheading="Enjoy famous destinations trips with us"
           />
-        ))}
 
-        {/* =====================================================
-            OVERLAYS
-        ===================================================== */}
+          <div
+            className="relative flex h-full w-full flex-1 flex-col overflow-hidden rounded-2xl md:flex-row"
+            style={{
+              backgroundImage: `url("${activeDestination.imageUrl}")`,
+              backgroundPosition: "center center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+          >
+            <div className="absolute inset-0 z-0 bg-black/80" />
 
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/60 via-black/20 to-black/10" />
+            <div className="relative h-full w-full pt-8 md:w-[40%] md:pt-0">
+              <DestinationContent
+                destination={activeDestination}
+                onExplore={handleExplore}
+              />
+            </div>
 
-        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-t from-black/60 via-transparent to-black/10" />
-
-        {/* =====================================================
-            COUNTER
-        ===================================================== */}
-
-        {/* <DestinationCounter
-          activeIndex={activeIndex}
-          total={destinations.length}
-        /> */}
-
-        {/* =====================================================
-            CONTENT
-        ===================================================== */}
-
-        {destinations.map((destination, index) => (
-          <DestinationContent
-            key={destination.id}
-            destination={destination}
-            index={index}
-            slidePosition={slidePosition}
-          />
-        ))}
-
-        {/* =====================================================
-            BOTTOM PROGRESS INDICATOR
-        ===================================================== */}
-
-        <div className="absolute bottom-8 left-8 z-40 flex items-center gap-4 text-white lg:left-12">
-          <span className="text-[9px] uppercase tracking-[0.35em] text-white/60">
-            Destinations
-          </span>
-
-          <div className="h-px w-20 bg-white/30">
-            <motion.div
-              className="h-full origin-left bg-white"
-              style={{
-                scaleX: scrollYProgress,
-              }}
-            />
+            <div className="relative h-full w-full px-8 md:w-[60%] md:px-0">
+              <DestinationCarousel
+                items={destinations}
+                activeIndex={activeIndex}
+                onSelect={setActiveIndex}
+                next={next}
+                prev={prev}
+              />
+            </div>
           </div>
-
-          <span className="font-mono text-[10px] text-white/60">
-            {String(activeIndex + 1).padStart(2, "0")} /{" "}
-            {String(destinations.length).padStart(2, "0")}
-          </span>
         </div>
       </div>
     </section>
-  );
-}
-
-// =========================================================
-// DESTINATION IMAGE
-// =========================================================
-
-function DestinationImage({ destination, index, slidePosition }) {
-  const y = useTransform(
-    slidePosition,
-    [index - 1, index, index + 1],
-    ["100%", "0%", "-100%"],
-  );
-
-  const scale = useTransform(
-    slidePosition,
-    [index - 1, index, index + 1],
-    [1.12, 1, 1.08],
-  );
-
-  const opacity = useTransform(
-    slidePosition,
-    [index - 1.15, index - 0.85, index + 0.85, index + 1.15],
-    [0, 1, 1, 0],
-  );
-
-  return (
-    <motion.div
-      className="absolute inset-0 overflow-hidden"
-      style={{
-        y,
-        opacity,
-        zIndex: 5,
-      }}
-    >
-      <motion.img
-        src={destination.imageUrl}
-        alt={destination.name}
-        className="h-full w-full object-cover"
-        style={{
-          scale,
-        }}
-      />
-    </motion.div>
-  );
-}
-
-// =========================================================
-// DESTINATION CONTENT
-// =========================================================
-
-function DestinationContent({ destination, index, slidePosition }) {
-  const y = useTransform(
-    slidePosition,
-    [index - 1, index, index + 1],
-    ["100%", "0%", "-100%"],
-  );
-
-  const opacity = useTransform(
-    slidePosition,
-    [index - 0.75, index - 0.25, index + 0.25, index + 0.75],
-    [0, 1, 1, 0],
-  );
-
-  const scale = useTransform(
-    slidePosition,
-    [index - 1, index, index + 1],
-    [0.97, 1, 0.98],
-  );
-
-  return (
-    <motion.div
-      className="absolute inset-0 z-20 flex items-center"
-      style={{
-        y,
-        opacity,
-        scale,
-      }}
-    >
-      <div className="mx-auto w-full max-w-7xl px-6 lg:px-12">
-        <div className="ml-auto max-w-2xl lg:mr-[5%]">
-          {/* LABEL */}
-
-          <div className="mb-5 flex items-center gap-4 text-white">
-            <span className="h-px w-10 bg-white" />
-
-            <span className="text-[15px] font-semibold uppercase tracking-[0.45em]">
-              Destination of the week
-            </span>
-          </div>
-
-          {/* TITLE */}
-
-          <h2
-            className="text-[clamp(2.8rem,5vw,3.75rem)] capitalize font-thin leading-[0.88] tracking-[-0.045em] text-white"
-            style={{
-              fontFamily: "Cormorant Garamond",
-            }}
-          >
-            {destination.name}
-          </h2>
-
-          {/* DESCRIPTION */}
-
-          <p className="mt-7 max-w-xl text-sm leading-7 text-white sm:text-base font-medium font-mont">
-            {destination.description}
-          </p>
-
-          {/* BUTTONS */}
-
-          <div className="mt-9 flex flex-wrap gap-3">
-            {/* WHITE BUTTON */}
-
-            <button className="group relative flex h-12 items-center overflow-hidden rounded-full bg-[#c5bd96] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-black">
-              <span className="transition-transform duration-500">
-                Explore More
-              </span>
-
-              <ArrowUpRight
-                size={15}
-                className="ml-3 transition-transform duration-500 group-hover:rotate-45"
-              />
-            </button>
-
-            {/* GLASS BUTTON */}
-
-            <button className="group flex h-12 items-center rounded-full border border-white/30 bg-white/20 px-5 text-xs uppercase tracking-[0.1em] text-white backdrop-blur-md transition-colors hover:bg-white/30">
-              Explore {destination.name}
-              <ArrowUpRight
-                size={15}
-                className="ml-3 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// =========================================================
-// COUNTER
-// =========================================================
-
-function DestinationCounter({ activeIndex, total }) {
-  const number = String(activeIndex + 1).padStart(2, "0");
-
-  return (
-    <div className="absolute left-7 top-24 z-40 lg:left-12 lg:top-28 size-48">
-      <div
-        className="flex h-[110px] font-serif text-[6rem] leading-none tracking-[-0.06em] text-white/80 lg:text-[7rem]"
-        style={{
-          fontFamily: "Cormorant Garamond",
-        }}
-      >
-        <span>0</span>
-
-        <div className="relative h-[1em]">
-          <AnimatePresence mode="popLayout">
-            <motion.span
-              key={number[1]}
-              initial={{
-                y: "100%",
-              }}
-              animate={{
-                y: "0%",
-              }}
-              exit={{
-                y: "-100%",
-              }}
-              transition={{
-                duration: 0.5,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="block"
-            >
-              {number[1]}
-            </motion.span>
-          </AnimatePresence>
-        </div>
-      </div>
-    </div>
   );
 }
 

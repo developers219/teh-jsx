@@ -1,5 +1,4 @@
 import HeroSection from "../components/home/herotemp";
-import HomeThemes from "../components/home/HomeThemes";
 import HowItWorks from "../components/home/HowItWorks";
 import PersonalizedHolidayPlan from "../components/home/PersonalizedHolidayPlan";
 import PopularDestinations from "../components/home/PopularDestinations";
@@ -9,21 +8,25 @@ import TravelReviews from "../components/home/TravelReviews";
 import TrustCenter from "../components/home/TrustCenter";
 import VideoTestimonials from "../components/home/VideoTestimonials";
 import WhyChooseUs from "../components/home/WhyChooseUs";
+import HomeThemes from "../components/home/HomeThemes";
+import ExploreByPeople from "../components/home/ExploreByPeople";
 
 const Home = () => {
   return (
     <>
       <HeroSection />
+      <ExploreByPeople />
       <HomeThemes />
+      <PopularDestinations />
       {/* <SearchWidget /> */}
       {/* <FeaturedPackages /> */}
       <TravelCategories />
       {/* <PopularDestinations /> */}
-      <HowItWorks />
+      {/* <HowItWorks /> */}
       <WhyChooseUs />
       <LatestBlogs />
       <TravelReviews />
-      <TrustCenter />
+      {/* <TrustCenter /> */}
       <VideoTestimonials />
       <div id="holiday-plan">
         <PersonalizedHolidayPlan />

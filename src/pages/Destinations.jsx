@@ -4,7 +4,6 @@ import Button from "@mui/material/Button";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import DestinationCard from "../components/ui/DestinationCard";
 import api from "../services/api";
-import { domesticDestinations } from "../components/home/TravelCategories";
 function Destinations() {
   const [destinations, setDestinations] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
