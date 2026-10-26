@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -11,45 +11,119 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import Escapeora from "../assets/images/logo.png";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import { Link } from "react-router-dom";
+import api from "../services/api";
+
+/* =========================================================
+   FALLBACK DESTINATIONS
+   Used only when the backend fails or returns nothing.
+========================================================= */
+
+const FALLBACK_INTERNATIONAL = [
+  "Dubai",
+  "Bali",
+  "Thailand",
+  "Vietnam",
+  "Singapore",
+  "Malaysia",
+  "Maldives",
+  "Mauritius",
+  "Sri Lanka",
+  "Japan",
+  "Azerbaijan",
+  "Turkey",
+  "Switzerland",
+  "Australia",
+  "New Zealand",
+].map((name) => ({ name }));
+
+const FALLBACK_DOMESTIC = [
+  "Goa",
+  "Kerala",
+  "Rajasthan",
+  "Himachal Pradesh",
+  "Uttarakhand",
+  "Kashmir",
+  "Andaman",
+  "Sikkim",
+  "Meghalaya",
+  "Tamil Nadu",
+  "Karnataka",
+  "Maharashtra",
+  "Gujarat",
+  "Uttar Pradesh",
+  "Odisha",
+].map((name) => ({ name }));
+
+// Same class list as before, now shared by the Link and the plain span
+const DESTINATION_CHIP_CLASS =
+  "rounded-full border border-grey bg-grey px-4 py-2 text-xs font-medium text-slate-300 transition-colors duration-200 hover:bg-white hover:text-black";
+
+// Use backend list when it has data, otherwise the fallback
+function pickDestinations(result, fallback) {
+  if (result.status !== "fulfilled") return fallback;
+
+  const list = result.value?.data?.data;
+
+  if (!Array.isArray(list) || list.length === 0) return fallback;
+
+  const destinations = list
+    .map((destination) => ({
+      name:
+        destination?.name ||
+        destination?.title ||
+        destination?.destinationName ||
+        "",
+      slug: destination?.slug,
+    }))
+    .filter((destination) => destination.name);
+
+  return destinations.length > 0 ? destinations : fallback;
+}
 
 function Footer() {
   const [activeDestination, setActiveDestination] = useState("international");
 
-  const internationalDestinations = [
-    "Dubai",
-    "Bali",
-    "Thailand",
-    "Vietnam",
-    "Singapore",
-    "Malaysia",
-    "Maldives",
-    "Mauritius",
-    "Sri Lanka",
-    "Japan",
-    "Azerbaijan",
-    "Turkey",
-    "Switzerland",
-    "Australia",
-    "New Zealand",
-  ];
+  const [domesticDestinations, setDomesticDestinations] = useState([]);
+  const [internationalDestinations, setInternationalDestinations] = useState(
+    [],
+  );
 
-  const domesticDestinations = [
-    "Goa",
-    "Kerala",
-    "Rajasthan",
-    "Himachal Pradesh",
-    "Uttarakhand",
-    "Kashmir",
-    "Andaman",
-    "Sikkim",
-    "Meghalaya",
-    "Tamil Nadu",
-    "Karnataka",
-    "Maharashtra",
-    "Gujarat",
-    "Uttar Pradesh",
-    "Odisha",
-  ];
+  // =================================================
+  // FETCH DESTINATIONS FROM BACKEND
+  // (same endpoints as the home page TravelCategories)
+  // =================================================
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchDestinations = async () => {
+      // 1 = Domestic, 2 = International
+      const [domesticRes, internationalRes] = await Promise.allSettled([
+        api.get("/destinations/category/1", { signal: controller.signal }),
+        api.get("/destinations/category/2", { signal: controller.signal }),
+      ]);
+
+      if (controller.signal.aborted) return;
+
+      setDomesticDestinations(pickDestinations(domesticRes, FALLBACK_DOMESTIC));
+      setInternationalDestinations(
+        pickDestinations(internationalRes, FALLBACK_INTERNATIONAL),
+      );
+    };
+
+    fetchDestinations();
+
+    return () => controller.abort();
+  }, []);
+
+  const isInternational = activeDestination === "international";
+
+  const activeDestinations = isInternational
+    ? internationalDestinations
+    : domesticDestinations;
+
+  // Same route keys as TravelCategories: dom / intl
+  const activeCategory = isInternational ? "intl" : "dom";
 
   const brands = [
     {
@@ -311,7 +385,7 @@ function Footer() {
             FOOTER
         ================================================== */}
 
-      <footer className="font-mont rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
+      <footer className="font-inter rounded-t-[32px] bg-black px-6 py-10 text-white sm:px-8 lg:px-12 lg:py-14">
         <div className="mx-auto max-w-7xl">
           {/* =================================================
             BRANDING SECTION
@@ -322,7 +396,7 @@ function Footer() {
             <div className="mb-8 text-center">
               <p
                 component="h3"
-                className="text-base font-mont uppercase text-white tracking-wider"
+                className="text-base font-inter uppercase text-white tracking-wider"
               >
                 Partnered with the best in the industry
               </p>
@@ -454,7 +528,7 @@ function Footer() {
                     left-0
                     h-[2px]
                     rounded-full
-                    bg-[#c5bd96]
+                    bg-white
                     transition-all
                     duration-300
                     ${
@@ -481,7 +555,7 @@ function Footer() {
                     left-0
                     h-[2px]
                     rounded-full
-                    bg-[#c5bd96]
+                    bg-white
                     transition-all
                     duration-300
                     ${
@@ -494,35 +568,28 @@ function Footer() {
               </button>
             </div>
 
-            {/* DESTINATION CHIPS */}
+            {/* DESTINATION CHIPS (from backend) */}
 
             {activeDestination && (
               <div className="mx-auto mt-6 flex max-w-5xl flex-wrap justify-center gap-2.5">
-                {(activeDestination === "international"
-                  ? internationalDestinations
-                  : domesticDestinations
-                ).map((destination) => (
-                  <span
-                    key={destination}
-                    className="
-                      rounded-full
-                      border
-                      border-grey
-                      bg-grey
-                      px-4
-                      py-2
-                      text-xs
-                      font-medium
-                      text-slate-300
-                      transition-colors
-                      duration-200
-                      hover:bg-[#c5bd96]
-                      hover:text-black
-                    "
-                  >
-                    {destination}
-                  </span>
-                ))}
+                {activeDestinations.map((destination) =>
+                  destination.slug ? (
+                    <Link
+                      key={`${activeCategory}-${destination.slug}`}
+                      to={`/destinations/${activeCategory}/${destination.slug}`}
+                      className={DESTINATION_CHIP_CLASS}
+                    >
+                      {destination.name}
+                    </Link>
+                  ) : (
+                    <span
+                      key={`${activeCategory}-${destination.name}`}
+                      className={DESTINATION_CHIP_CLASS}
+                    >
+                      {destination.name}
+                    </span>
+                  ),
+                )}
               </div>
             )}
           </section>
@@ -583,7 +650,7 @@ function Footer() {
                   max-w-[310px]
                   text-sm
                   leading-6
-                  font-mont
+                  font-inter
                   text-slate-400
                 "
               >
@@ -606,8 +673,8 @@ function Footer() {
                     padding: 0,
                     color: "#ffffff",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "#c5bd96",
+                      color: "black",
+                      backgroundColor: "white",
                     },
                   }}
                 >
@@ -626,8 +693,8 @@ function Footer() {
                     padding: 0,
                     color: "#ffffff",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "#c5bd96",
+                      color: "black",
+                      backgroundColor: "white",
                     },
                   }}
                 >
@@ -646,8 +713,8 @@ function Footer() {
                     padding: 0,
                     color: "#ffffff",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "#c5bd96",
+                      color: "black",
+                      backgroundColor: "white",
                     },
                   }}
                 >
@@ -666,8 +733,8 @@ function Footer() {
                     padding: 0,
                     color: "#ffffff",
                     "&:hover": {
-                      color: "white",
-                      backgroundColor: "#c5bd96",
+                      color: "black",
+                      backgroundColor: "white",
                     },
                   }}
                 >
@@ -676,61 +743,6 @@ function Footer() {
               </div>
             </div>
 
-            {/* =================================================
-            FOOTER LINKS — 3 COLUMNS
-        ================================================== */}
-
-            {/* <div className="flex flex-col">
-
-              <div className="grid grid-cols-3 gap-x-16">
-
-                {footerColumns.map((column) => (
-                  <div
-                    key={column.category}
-                    className="flex flex-col items-end gap-5"
-                  >
-
-                    <Typography
-                      component="h3"
-                      className="
-                        text-sm
-                        font-bold
-                        uppercase
-                        tracking-wide
-                        text-white
-                        whitespace-nowrap
-                      "
-                    >
-                      {column.title}
-                    </Typography>
-
-                    {footerLinks
-                      .filter(
-                        (link) => link.category === column.category
-                      )
-                      .map((link) => (
-                        <Link
-                          key={link.name}
-                          to={link.href}
-                          className="
-                            whitespace-nowrap
-                            text-sm
-                            text-slate-400
-                            no-underline
-                            transition-colors
-                            hover:text-white
-                          "
-                        >
-                          {link.name}
-                        </Link>
-                      ))}
-
-                  </div>
-                ))}
-
-              </div>
-
-            </div> */}
             {/* =================================================
     FOOTER LINKS — RESPONSIVE 3 COLUMNS
 ================================================== */}
@@ -763,6 +775,7 @@ function Footer() {
                     {/* HEADING */}
                     <Typography
                       component="h3"
+                      style={{ fontFamily: '"EB Garamond", serif' }}
                       className="
             whitespace-nowrap
             text-sm
@@ -842,7 +855,8 @@ function Footer() {
                       fontSize: 18,
                       color: "white",
                       "&:hover": {
-                        color: "#c5bd96",
+                        color: "#white",
+                        bg: "black",
                       },
                       cursor: "pointer",
                     }}
@@ -878,7 +892,8 @@ function Footer() {
                       fontSize: 18,
                       color: "white",
                       "&:hover": {
-                        color: "#c5bd96",
+                        color: "#white",
+                        bg: "black",
                       },
                       cursor: "pointer",
                     }}
@@ -914,7 +929,8 @@ function Footer() {
                       fontSize: 18,
                       color: "white",
                       "&:hover": {
-                        color: "#c5bd96",
+                        color: "#white",
+                        bg: "black",
                       },
                       cursor: "pointer",
                     }}
@@ -954,7 +970,7 @@ function Footer() {
           >
             {/* COPYRIGHT */}
 
-            <p className="text-xs w-full text-slate-500 text-center font-mont">
+            <p className="text-xs w-full text-slate-500 text-center font-inter">
               © {new Date().getFullYear()} Travel Empire Holidays. All rights
               reserved.
             </p>

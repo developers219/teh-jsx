@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import SectionHeader from "./SectionHeader";
+import { Heading } from "../ui/Heading";
 import { Link } from "react-router-dom";
 // import blogs from "../../constants/blogs";
 
@@ -1173,6 +1173,7 @@ function BlogCard({ blog, index }) {
           <h3
             className="
               max-w-[90%]
+              font-eb
               text-[21px]
               font-semibold
               leading-[1.18]
@@ -1217,7 +1218,7 @@ function BlogCard({ blog, index }) {
         <div
           className="
             text-[10px]
-            font-mont
+            font-inter
             font-semibold
             uppercase
             tracking-[0.15em]
@@ -1232,6 +1233,7 @@ function BlogCard({ blog, index }) {
         <h3
           className="
             mt-2
+            font-eb
             text-[21px]
             font-semibold
             leading-[1.2]
@@ -1248,7 +1250,7 @@ function BlogCard({ blog, index }) {
           className="
             mt-3
             text-[13px]
-            font-mont
+            font-inter
             leading-[1.55]
             text-white/80
           "
@@ -1275,7 +1277,7 @@ function BlogCard({ blog, index }) {
               items-center
               gap-2
               text-[11px]
-              font-mont
+              font-inter
               text-white/70
             "
           >
@@ -1293,7 +1295,7 @@ function BlogCard({ blog, index }) {
               text-[12px]
               font-semibold
               text-white
-              font-mont
+              font-inter
               cursor-pointer
             "
             >
@@ -1493,11 +1495,15 @@ function LatestBlogs() {
           HEADER
       ================================================== */}
 
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <SectionHeader
-          title="Latest Blogs"
-          description="Explore travel inspiration, destination guides, useful tips, and ideas to help you plan your next journey."
-        />
+            <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-3xl text-center">
+          <Heading
+            heading="Latest"
+            highlight="Blogs"
+            subheading="Explore travel inspiration, destination guides, useful tips, and ideas to help you plan your next journey."
+            className="items-center text-center"
+          />
+        </div>
       </div>
 
       {/* =================================================

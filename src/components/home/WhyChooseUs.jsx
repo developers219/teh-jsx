@@ -1,5 +1,12 @@
-import { Globe2, Headset, MapPinned, SlidersHorizontal } from "lucide-react";
-import SectionHeader from "./SectionHeader";
+// import { Globe2, Headset, MapPinned, SlidersHorizontal } from "lucide-react";
+import { Heading } from "../ui/Heading";
+
+/* ---------------------------------------------------------------
+   OLD IMAGE ICONS (commented, so they can be switched back if required)
+   1) Uncomment these imports
+   2) In `reasons`, uncomment the `img` lines
+   3) In <ReasonIcon /> below, use the <img> version instead of the icon
+---------------------------------------------------------------- */
 import wcu1 from "../../assets/images/wcu1.png";
 import wcu2 from "../../assets/images/wcu2.png";
 import wcu3 from "../../assets/images/wcu3.png";
@@ -9,28 +16,59 @@ const reasons = [
   {
     title: "Expertise That Makes Travel Easier",
     img: wcu1,
+    // icon: Globe2,
     description:
       "20+ years of collective travel experience helps us plan smarter, recommend better, and anticipate the details that can make a journey smoother.",
   },
   {
     title: "Designed Around You",
     img: wcu2,
+    // icon: SlidersHorizontal,
     description:
       "Your holiday is built around your preferences, pace, comfort, and budget — giving you a journey that feels personal rather than pre-packaged.",
   },
   {
     title: "Support Beyond the Booking",
     img: wcu3,
+    // icon: Headset,
     description:
       "From planning to your return home, our team stays connected to help you navigate changes, questions, and unexpected situations with confidence.",
   },
   {
     title: "Experiences Worth Coming Home With",
     img: wcu4,
+    // icon: MapPinned,
     description:
       "We go beyond the standard sightseeing checklist to help you discover memorable places, meaningful experiences, and moments you’ll want to remember.",
   },
 ];
+
+/* ---------------------------------------------------------------
+   ICON OF A CARD (one place to change it for all screen sizes)
+   boxClass : size of the circle   (desktop / tablet / mobile)
+   iconSize : size of the icon
+---------------------------------------------------------------- */
+function ReasonIcon({ reason, boxClass, iconSize }) {
+  // ---- NEW: lucide icon ----
+  // const Icon = reason.icon;
+
+  // return (
+  //   <div
+  //     className={`flex shrink-0 items-center justify-center rounded-full bg-beige text-white ${boxClass}`}
+  //   >
+  //     <Icon size={iconSize} strokeWidth={1.75} />
+  //   </div>
+  // );
+
+  // ---- OLD: image icon (commented) ----
+  return (
+    <img
+      src={reason.img}
+      alt={reason.title}
+      className={boxClass}   // desktop/tablet: "size-32", mobile: "size-16"
+    />
+  );
+}
 
 export default function WhyChooseUs() {
   return (
@@ -40,9 +78,11 @@ export default function WhyChooseUs() {
             SECTION HEADER
         ========================== */}
         <div className="mx-auto max-w-3xl text-center">
-          <SectionHeader
-            title="Why choose us?"
-            description="Travel planning that feels effortless, from the first idea to the moment you return home."
+          <Heading
+            heading="Why choose"
+            highlight="us?"
+            subheading="Travel planning that feels effortless, from the first idea to the moment you return home."
+            className="items-center text-center"
           />
         </div>
 
@@ -76,12 +116,16 @@ export default function WhyChooseUs() {
                 {/* <div className="p-6 bg-beige text-white text-2xl rounded-full">
                   <reason.icon size={32} />
                 </div> */}
-                <img src={reason.img} alt={reason.title} className="size-32" />
-                <h3 className="text-lg font-bold leading-5 text-black">
+                <ReasonIcon
+                  reason={reason}
+                  boxClass="size-24"
+                  iconSize={40}
+                />
+                <h3 className="font-eb text-lg font-bold leading-5 text-black">
                   {reason.title}
                 </h3>
 
-                <p className="mt-3 font-mont text-sm leading-5 text-black/85">
+                <p className="mt-3 font-inter text-sm leading-5 text-black/85">
                   {reason.description}
                 </p>
               </div>
@@ -110,12 +154,16 @@ export default function WhyChooseUs() {
                   
                 "
               >
-                <img src={reason.img} alt={reason.title} className="size-32" />
-                <h3 className="text-base font-bold leading-5 text-black">
+                <ReasonIcon
+                  reason={reason}
+                  boxClass="size-24"
+                  iconSize={40}
+                />
+                <h3 className="mt-3 font-eb text-base font-bold leading-5 text-black">
                   {reason.title}
                 </h3>
 
-                <p className="mt-2 font-mont text-sm leading-5 text-black/80">
+                <p className="mt-2 font-inter text-sm leading-5 text-black/80">
                   {reason.description}
                 </p>
               </div>
@@ -154,16 +202,16 @@ export default function WhyChooseUs() {
                     shadow-lg
                   "
                 >
-                  <img
-                    src={reason.img}
-                    alt={reason.title}
-                    className="size-16"
+                  <ReasonIcon
+                    reason={reason}
+                    boxClass="size-16"
+                    iconSize={28}
                   />
-                  <h3 className="text-base font-bold leading-5 text-black">
+                  <h3 className="mt-3 font-eb text-base font-bold leading-5 text-black">
                     {reason.title}
                   </h3>
 
-                  <p className="mt-2 font-mont text-sm leading-5 text-black/80">
+                  <p className="mt-2 font-inter text-sm leading-5 text-black/80">
                     {reason.description}
                   </p>
                 </div>

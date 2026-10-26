@@ -1,56 +1,16 @@
 import { useEffect, useState } from "react";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import StarIcon from "@mui/icons-material/Star";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import api from "../../services/api";
 import Modal from "../ui/Modal";
+import Carousel from "../ui/Carousel";
 
 export default function TravelReviews() {
-  const [activeIndex, setActiveIndex] = useState(0);
   const [reviews, setReviews] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedReview, setSelectedReview] = useState(null);
-
-  const [isMobile, setIsMobile] = useState(() => {
-    if (typeof window === "undefined") return false;
-
-    return window.innerWidth < 640;
-  });
-
-  /*
-   * Mobile:
-   * 1 card visible
-   *
-   * Tablet / iPad / Desktop:
-   * 2 cards visible
-   */
-  const visibleCards = isMobile ? 1 : 2;
-
-  /*
-   * 4 reviews:
-   *
-   * Mobile:
-   * 0 -> Review 1
-   * 1 -> Review 2
-   * 2 -> Review 3
-   * 3 -> Review 4
-   *
-   * Tablet/Desktop:
-   * 0 -> Review 1 + 2
-   * 1 -> Review 2 + 3
-   * 2 -> Review 3 + 4
-   */
-  const maxIndex = Math.max(0, reviews.length - visibleCards);
-
-  const nextReview = () => {
-    setActiveIndex((current) => (current >= maxIndex ? 0 : current + 1));
-  };
-
-  const previousReview = () => {
-    setActiveIndex((current) => (current <= 0 ? maxIndex : current - 1));
-  };
 
   /* =====================================================
       FETCH REVIEWS
@@ -72,36 +32,6 @@ export default function TravelReviews() {
 
     fetchReviews();
   }, []);
-
-  /* =====================================================
-      RESPONSIVE BREAKPOINT
-      < 640px = mobile
-      >= 640px = tablet / iPad / desktop
-  ====================================================== */
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 640);
-    };
-
-    handleResize();
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  /* =====================================================
-      KEEP ACTIVE INDEX VALID
-  ====================================================== */
-
-  useEffect(() => {
-    if (activeIndex > maxIndex) {
-      setActiveIndex(maxIndex);
-    }
-  }, [activeIndex, maxIndex]);
 
   return (
     <section className="relative bg-white py-10 sm:py-14 lg:py-32">
@@ -130,9 +60,6 @@ export default function TravelReviews() {
 
       <div className="relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="relative overflow-visible rounded-[24px] bg-black shadow-[0_25px_70px_rgba(0,0,0,0.30)]">
-          {/* <div className="grid lg:grid-cols-[310px_1fr]"> */}
-          {/* <div className="grid lg:grid-cols-[310px_1fr]"> */}
-
           <div className="flex flex-col lg:flex-row">
             {/* =================================================
                 LEFT BLUE PANEL
@@ -147,25 +74,25 @@ export default function TravelReviews() {
 
               {/* Quote */}
 
-              <div className="relative mb-5 flex h-[76px] w-[76px] items-center justify-center rounded-full bg-[white] shadow-[0_8px_25px_rgba(0,0,0,0.20)]">
+              <div className="relative mb-5 flex h-[76px] w-[76px] items-center justify-center rounded-full bg-[white] text-blue-400 shadow-[0_8px_25px_rgba(0,0,0,0.20)]">
                 <FormatQuoteIcon
                   sx={{
                     fontSize: 52,
-                    color: "#c5bd96",
+                    color: "blue-400",
                   }}
                 />
               </div>
 
               {/* Heading */}
 
-              <h2 className="relative text-[30px] font-bold leading-[1.08] text-white sm:text-[34px]">
+              <h2 className="relative font-eb text-[30px] font-bold leading-[1.08] text-white sm:text-[34px]">
                 What Our
                 <span className="block">Travelers Say</span>
               </h2>
 
               {/* Description */}
 
-              <p className="relative mt-5 max-w-[250px] font-mont text-[14px] leading-6 text-blue-100">
+              <p className="relative mt-5 max-w-[250px] font-inter text-[14px] leading-6 text-blue-100">
                 Real experiences from travelers who explored the world with us.
                 Discover why thousands of travelers trust us with their
                 holidays.
@@ -186,12 +113,12 @@ export default function TravelReviews() {
                   ))}
                 </div>
 
-                <span className="text-sm font-semibold font-mont text-white">
+                <span className="text-sm font-semibold font-inter text-white">
                   4.9/5
                 </span>
               </div>
 
-              <p className="relative mt-1 text-xs font-mont text-blue-200">
+              <p className="relative mt-1 text-xs font-inter text-blue-200">
                 Based on 500+ traveler reviews
               </p>
 
@@ -199,7 +126,7 @@ export default function TravelReviews() {
 
               <button
                 type="button"
-                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-beige p-3 px-6 rounded-full cursor-pointer transition-colors font-mont text-white hover:bg-beigeD"
+                className="relative mt-6 flex w-fit items-center gap-2 text-sm font-semibold bg-blue-400 p-3 px-6 rounded-full cursor-pointer transition-colors font-inter text-white hover:bg-blue-500"
               >
                 Read More
                 <span className="flex h-4 w-4 items-center justify-center rounded-full bg-white text-[#063b72]">
@@ -207,9 +134,10 @@ export default function TravelReviews() {
                 </span>
               </button>
             </div>
+
             {isOpen && selectedReview && (
               <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-                <div className="bg-white w-[50vw]">
+                <div className="w-[50vw] bg-white font-inter">
                   {/* Image carousel */}
 
                   <div className="relative aspect-[16/10] overflow-hidden">
@@ -269,7 +197,7 @@ export default function TravelReviews() {
                   <div className="p-6">
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="text-xl font-medium text-gray-900">
+                        <h3 className="font-eb text-xl font-medium text-gray-900">
                           {selectedReview?.userName}
                         </h3>
 
@@ -313,175 +241,116 @@ export default function TravelReviews() {
             )}
 
             {/* =================================================
-                RIGHT CAROUSEL
+                RIGHT CAROUSEL (ui/Carousel)
             ================================================= */}
 
             <div className="lg:absolute right-0 bottom-12 w-full lg:w-2/3 min-w-0 rounded-b-[24px] px-4 pb-8 pt-8 sm:px-7 lg:rounded-r-[24px] lg:rounded-bl-none lg:px-6">
-              {/* Cards */}
+              <Carousel
+                items={reviews}
+                desktopItems={2}
+                tabletItems={2}
+                mobileItems={1}
+                gap={16}
+                showArrows={true}
+                renderItem={(review) => (
+                  /* =================================================
+                        LARGE REVIEW CARD
+                    ================================================= */
 
-              <div className="overflow-hidden w-full h-full">
-                <div
-                  className="flex h-full transition-transform duration-700 ease-in-out"
-                  style={{
-                    transform: `translateX(-${
-                      activeIndex * (isMobile ? 100 : 50)
-                    }%)`,
-                  }}
-                >
-                  {reviews?.map((review) => (
-                    <div
-                      key={review.id}
-                      className="w-full sm:w-1/2 shrink-0 px-2 h-full"
-                    >
-                      {/* =================================================
-                            LARGE REVIEW CARD
-                        ================================================= */}
+                  <article className="relative font-inter h-[420px] flex flex-col justify-between overflow-hidden rounded-[20px] bg-white">
+                    {/* Customer Image */}
 
-                      <article className="relative font-mont h-[420px] flex flex-col justify-between overflow-hidden rounded-[20px] bg-white">
-                        {/* Customer Image */}
+                    <div className="relative h-[170px] overflow-hidden">
+                      <img
+                        src={
+                          review?.images?.[0]?.imageUrl ??
+                          "https://i.pravatar.cc/400?img=12"
+                        }
+                        alt={review?.userName}
+                        className="h-full w-full object-cover"
+                      />
 
-                        <div className="relative h-[170px] overflow-hidden">
-                          <img
-                            src={
-                              review?.images?.[0]?.imageUrl ??
-                              "https://i.pravatar.cc/400?img=12"
-                            }
-                            alt={review?.userName}
-                            className="h-full w-full object-cover"
-                          />
+                      {/* Image gradient */}
 
-                          {/* Image gradient */}
-
-                          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" />
-                        </div>
-
-                        {/* ================================================= 
-                            CARD CONTENT 
-                        ================================================= */}
-
-                        <div className="relative px-5 pb-5 pt-7">
-                          {/* Straight white transition */}
-
-                          <div className="absolute left-0 right-0 top-0 h-5 bg-white" />
-
-                          {/* Quote */}
-
-                          <FormatQuoteIcon
-                            className="absolute right-4 top-3"
-                            sx={{
-                              fontSize: 44,
-                              color: "#17694d",
-                              opacity: 0.1,
-                            }}
-                          />
-
-                          {/* Review */}
-
-                          <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
-                            {review?.description?.slice(0, 200)}
-
-                            <span
-                              className="text-blue-400"
-                              onClick={() => {
-                                setSelectedReview(review);
-                                setIsOpen(true);
-                              }}
-                            >
-                              {review?.description?.length >= 300 ? (
-                                <a className="text-blue-400 cursor-pointer font-bold">
-                                  ... Read More
-                                </a>
-                              ) : (
-                                ""
-                              )}
-                            </span>
-                          </p>
-
-                          {/* Bottom */}
-
-                          <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4">
-                            {/* Customer */}
-
-                            <div>
-                              <h4 className="text-sm font-bold text-slate-900">
-                                {review?.userName}
-                              </h4>
-
-                              <p className="mt-0.5 text-[11px] text-slate-500">
-                                {review?.location ?? "Bali"}
-                              </p>
-                            </div>
-
-                            {/* Stars */}
-
-                            <div className="flex shrink-0">
-                              {[...new Array(review?.rating)].map(
-                                (star, index) => (
-                                  <StarIcon
-                                    key={index}
-                                    sx={{
-                                      fontSize: 16,
-                                      color: "#f59e0b",
-                                    }}
-                                  />
-                                ),
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      </article>
+                      <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent" />
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* ================================================= 
-                    CONTROLS 
-                ================================================= */}
+                    {/* =================================================
+                        CARD CONTENT
+                    ================================================= */}
 
-              <div className="mt-5 flex items-center justify-between px-2">
-                {/* Arrow buttons */}
+                    <div className="relative px-5 pb-5 pt-7">
+                      {/* Straight white transition */}
 
-                <div className="flex gap-2">
-                  <button
-                    type="button"
-                    onClick={previousReview}
-                    aria-label="Previous review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
-                  >
-                    <ArrowBackIosNewIcon sx={{ fontSize: 13 }} />
-                  </button>
+                      <div className="absolute left-0 right-0 top-0 h-5 bg-white" />
 
-                  <button
-                    type="button"
-                    onClick={nextReview}
-                    aria-label="Next review"
-                    className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-beige text-white transition-all hover:bg-beigeD cursor-pointer"
-                  >
-                    <ArrowForwardIosIcon sx={{ fontSize: 13 }} />
-                  </button>
-                </div>
+                      {/* Quote */}
 
-                {/* Pagination */}
+                      <FormatQuoteIcon
+                        className="absolute right-4 top-3"
+                        sx={{
+                          fontSize: 44,
+                          color: "#17694d",
+                          opacity: 0.1,
+                        }}
+                      />
 
-                <div className="flex items-center gap-2">
-                  {Array.from({
-                    length: maxIndex + 1,
-                  }).map((_, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => setActiveIndex(index)}
-                      aria-label={`Show reviews ${index + 1}`}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        activeIndex === index
-                          ? "w-6 bg-white"
-                          : "w-2 bg-white/40 hover:bg-white/70"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
+                      {/* Review */}
+
+                      <p className="relative mt-3 min-h-[105px] text-[13px] leading-[1.55] text-slate-600">
+                        {review?.description?.slice(0, 200)}
+
+                        <span
+                          className="text-blue-400"
+                          onClick={() => {
+                            setSelectedReview(review);
+                            setCurrentImage(0);
+                            setIsOpen(true);
+                          }}
+                        >
+                          {review?.description?.length >= 300 ? (
+                            <a className="text-blue-400 cursor-pointer font-bold">
+                              ... Read More
+                            </a>
+                          ) : (
+                            ""
+                          )}
+                        </span>
+                      </p>
+
+                      {/* Bottom */}
+
+                      <div className="mt-4 flex items-end justify-between gap-3 border-t border-slate-100 pt-4">
+                        {/* Customer */}
+
+                        <div>
+                          <h4 className="font-eb text-sm font-bold text-slate-900">
+                            {review?.userName}
+                          </h4>
+
+                          <p className="mt-0.5 text-[11px] text-slate-500">
+                            {review?.location ?? "Bali"}
+                          </p>
+                        </div>
+
+                        {/* Stars */}
+
+                        <div className="flex shrink-0">
+                          {[...new Array(review?.rating)].map((star, index) => (
+                            <StarIcon
+                              key={index}
+                              sx={{
+                                fontSize: 16,
+                                color: "#f59e0b",
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </article>
+                )}
+              />
             </div>
           </div>
         </div>

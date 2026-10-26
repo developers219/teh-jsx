@@ -10,7 +10,27 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
  *
  * Props are the same as before, so every page that already uses
  * <Carousel items renderItem ... /> switches to this design automatically.
+ *
+ * arrowsVariant:
+ *  - "default" -> dark glass arrows (as before)
+ *  - "glass"   -> light glass arrows (same as Popular Destinations)
  */
+
+// Arrow styles
+const ARROW_VARIANTS = {
+  default: {
+    wrapper: "mb-6 flex gap-[clamp(0.25rem,2vw,0.5rem)]",
+    button:
+      "cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white",
+    size: 18,
+  },
+  glass: {
+    wrapper: "mb-6 flex gap-4",
+    button:
+      "cursor-pointer rounded-full bg-white/20 p-2 text-white backdrop-blur-lg transition duration-300 hover:text-blue-300 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white",
+    size: 16,
+  },
+};
 
 // Cards visible at the current screen size
 function getVisibleItems(desktopItems, tabletItems, mobileItems) {
@@ -28,6 +48,7 @@ export default function Carousel({
   renderItem,
   gap = 20,
   showArrows = true,
+  arrowsVariant = "default",
   desktopItems = 5,
   tabletItems = 2,
   mobileItems = 2,
@@ -44,6 +65,8 @@ export default function Carousel({
 
   const totalSlides = items.length;
   const maxIndex = Math.max(totalSlides - visibleItems, 0);
+
+  const arrowStyle = ARROW_VARIANTS[arrowsVariant] ?? ARROW_VARIANTS.default;
 
   // -------------------------------------------------------
   // RESPONSIVE: how many cards are visible
@@ -122,17 +145,17 @@ export default function Carousel({
 
   return (
     <div className="flex w-full flex-col items-end">
-      {/* ARROWS (same as teh-vite) */}
+      {/* ARROWS */}
       {showArrows && maxIndex > 0 && (
-        <div className="mb-6 flex gap-[clamp(0.25rem,2vw,0.5rem)]">
+        <div className={arrowStyle.wrapper}>
           <button
             type="button"
             onClick={prev}
             disabled={activeIndex === 0}
             aria-label="Previous"
-            className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
+            className={arrowStyle.button}
           >
-            <ArrowLeft size={18} />
+            <ArrowLeft size={arrowStyle.size} />
           </button>
 
           <button
@@ -140,9 +163,9 @@ export default function Carousel({
             onClick={next}
             disabled={activeIndex >= maxIndex}
             aria-label="Next"
-            className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
+            className={arrowStyle.button}
           >
-            <ArrowRight size={18} />
+            <ArrowRight size={arrowStyle.size} />
           </button>
         </div>
       )}

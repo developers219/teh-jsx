@@ -1,1246 +1,592 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import SectionHeader from "./SectionHeader";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useMotionValue } from "motion/react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Play,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { getVideoTestimonials } from "../../services/video-testimonial.service";
 
-const videos = [
-  {
-    id: 1,
-    title: "Family holiday experience",
-    customer: "Happy Family",
-    location: "Dubai & Abu Dhabi",
-    thumbnail:
-      "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=85",
-    videoUrl: "YOUR_DUBAI_VIDEO_URL",
-  },
-  {
-    id: 2,
-    title: "Honeymoon trip review",
-    customer: "Happy Couple",
-    location: "Bali",
-    thumbnail:
-      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=85",
-    videoUrl: "YOUR_DUBAI_VIDEO_URL",
-  },
-  {
-    id: 3,
-    title: "Group tour feedback",
-    customer: "Happy Traveller",
-    location: "Thailand",
-    thumbnail:
-      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=85",
-    videoUrl: "YOUR_THAILAND_VIDEO_URL",
-  },
-  {
-    id: 4,
-    title: "Couple Tour",
-    customer: "Couple Moments",
-    location: "Singapore",
-    thumbnail:
-      "https://plus.unsplash.com/premium_photo-1675549150924-283eaed11725?q=80&w=1170&auto=format&fit=crop",
-    videoUrl: "YOUR_THAILAND_VIDEO_URL",
-  },
-  {
-    id: 5,
-    title: "Family Tour",
-    customer: "Family Moments",
-    location: "Kerala",
-    thumbnail:
-      "https://plus.unsplash.com/premium_photo-1718146019714-a7a0ab9e8e8d?q=80&w=1170&auto=format&fit=crop",
-    videoUrl: "YOUR_THAILAND_VIDEO_URL",
-  },
-];
+const EASE = [0.22, 1, 0.36, 1];
 
-function getYouTubeEmbedUrl(url) {
-  if (!url || url.startsWith("YOUR_")) {
-    return null;
+/*
+ * Page-turn animation. `custom` carries the direction
+ * (1 = next, -1 = previous) to both entering and exiting pages.
+ */
+const spreadVariants = {
+  enter: (direction) => ({
+    rotateY: direction > 0 ? 8 : -8,
+    opacity: 0,
+    scale: 0.98,
+  }),
+  center: {
+    rotateY: 0,
+    opacity: 1,
+    scale: 1,
+  },
+  exit: (direction) => ({
+    rotateY: direction > 0 ? -90 : 90,
+    opacity: 0,
+    scale: 0.96,
+  }),
+};
+
+function chunk(list, size) {
+  const result = [];
+
+  for (let i = 0; i < list.length; i += size) {
+    result.push(list.slice(i, i + size));
   }
 
-  try {
-    const parsedUrl = new URL(url);
-
-    let videoId = "";
-
-    if (parsedUrl.hostname.includes("youtu.be")) {
-      videoId = parsedUrl.pathname.replace("/", "");
-    }
-
-    if (parsedUrl.hostname.includes("youtube.com")) {
-      if (parsedUrl.pathname.startsWith("/shorts/")) {
-        videoId = parsedUrl.pathname.split("/shorts/")[1];
-      } else if (parsedUrl.pathname.startsWith("/watch")) {
-        videoId = parsedUrl.searchParams.get("v") || "";
-      } else if (parsedUrl.pathname.startsWith("/embed/")) {
-        videoId = parsedUrl.pathname.split("/embed/")[1];
-      }
-    }
-
-    if (!videoId) {
-      return null;
-    }
-
-    return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`;
-  } catch {
-    return null;
-  }
+  return result;
 }
 
-function VideoTestimonials() {
-  /*
-   * =========================================================
-   * DESKTOP STATE
-   * =========================================================
-   */
+/* sm and above = open book (2 pages), below sm = 1 page at a time */
+function useIsWide() {
+  const query = "(min-width: 640px)";
 
-  const [visualIndex, setVisualIndex] = useState(0);
-  const [contentIndex, setContentIndex] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  /*
-   * =========================================================
-   * REFS
-   * =========================================================
-   */
-
-  const videoRef = useRef(null);
-
-  /*
-   * Mobile / tablet / iPad carousel
-   */
-  const responsiveScrollerRef = useRef(null);
-  const responsiveCardRefs = useRef([]);
-
-  /*
-   * Scroll timer
-   */
-  const scrollTimerRef = useRef(null);
-
-  const totalVideos = videos.length;
-
-  /*
-   * =========================================================
-   * INDEX HELPER
-   * =========================================================
-   */
-
-  const getIndex = useCallback(
-    (index) => {
-      return (index + totalVideos) % totalVideos;
-    },
-    [totalVideos]
+  const [isWide, setIsWide] = useState(() =>
+    typeof window === "undefined" ? true : window.matchMedia(query).matches,
   );
-
-  const activeVideo = videos[contentIndex];
-
-  /*
-   * =========================================================
-   * DESKTOP RELATIVE POSITION
-   *
-   * 0 = Main
-   * 1 = Right Inner
-   * 2 = Right Outer
-   * 3 = Left Outer
-   * 4 = Left Inner
-   * =========================================================
-   */
-
-  const getRelativePosition = useCallback(
-    (videoIndex) => {
-      return getIndex(videoIndex - visualIndex);
-    },
-    [getIndex, visualIndex]
-  );
-
-  /*
-   * =========================================================
-   * DESKTOP TRANSITION
-   * =========================================================
-   */
-
-  const startTransition = useCallback(
-    (targetIndex) => {
-      if (isAnimating) return;
-
-      const nextIndex = getIndex(targetIndex);
-
-      if (nextIndex === visualIndex) return;
-
-      setIsAnimating(true);
-
-      /*
-       * Move the desktop cards first.
-       */
-      setVisualIndex(nextIndex);
-
-      /*
-       * Change the actual video after
-       * the card movement finishes.
-       */
-      window.setTimeout(() => {
-        setContentIndex(nextIndex);
-
-        if (videoRef.current) {
-          videoRef.current.pause();
-          videoRef.current.currentTime = 0;
-        }
-
-        setIsAnimating(false);
-      }, 720);
-    },
-    [getIndex, isAnimating, visualIndex]
-  );
-
-  /*
-   * =========================================================
-   * DESKTOP NEXT
-   * =========================================================
-   */
-
-  const goToNext = useCallback(() => {
-    startTransition(getIndex(visualIndex + 1));
-  }, [getIndex, startTransition, visualIndex]);
-
-  /*
-   * =========================================================
-   * DESKTOP PREVIOUS
-   * =========================================================
-   */
-
-  const goToPrevious = useCallback(() => {
-    startTransition(getIndex(visualIndex - 1));
-  }, [getIndex, startTransition, visualIndex]);
-
-  /*
-   * =========================================================
-   * DESKTOP DIRECT SELECTION
-   * =========================================================
-   */
-
-  const goToVideo = useCallback(
-    (index) => {
-      startTransition(index);
-    },
-    [startTransition]
-  );
-
-  /*
-   * =========================================================
-   * DESKTOP AUTOMATIC CAROUSEL
-   *
-   * Every 4 seconds.
-   * =========================================================
-   */
 
   useEffect(() => {
-    const timer = window.setTimeout(() => {
-      if (!isAnimating) {
-        startTransition(getIndex(visualIndex + 1));
-      }
-    }, 4000);
+    const media = window.matchMedia(query);
+    const handleChange = (event) => setIsWide(event.matches);
 
-    return () => {
-      window.clearTimeout(timer);
-    };
-  }, [
-    visualIndex,
-    isAnimating,
-    getIndex,
-    startTransition,
-  ]);
+    media.addEventListener("change", handleChange);
 
-  /*
-   * =========================================================
-   * RESPONSIVE CARD SCROLL
-   * =========================================================
-   */
+    return () => media.removeEventListener("change", handleChange);
+  }, []);
 
-  const scrollResponsiveToIndex = useCallback(
-    (index, smooth = true) => {
-      const card = responsiveCardRefs.current[index];
+  return isWide;
+}
 
-      if (!card) return;
+/* =========================================================
+   EMPTY PAGE (when the last spread has only one video)
+========================================================= */
 
-      card.scrollIntoView({
-        behavior: smooth ? "smooth" : "auto",
-        block: "nearest",
-        inline: "center",
-      });
-    },
-    []
+function BlankPage() {
+  return (
+    <div className="relative flex h-full w-full items-center justify-center bg-[#f5f1e8] p-8 text-center">
+      <p className="font-cg text-xl italic text-slate-400 sm:text-2xl">
+        More stories coming soon…
+      </p>
+    </div>
   );
+}
 
-  /*
-   * =========================================================
-   * RESPONSIVE SELECT VIDEO
-   *
-   * Used by:
-   * - Indicator
-   * - Side-card click
-   * - Swipe
-   * =========================================================
-   */
+/* =========================================================
+   SINGLE VIDEO PAGE
+========================================================= */
 
-  const selectResponsiveVideo = useCallback(
-    (index, smooth = true) => {
-      const nextIndex = getIndex(index);
+function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
+  const videoRef = useRef(null);
+  const [muted, setMuted] = useState(true);
 
-      setVisualIndex(nextIndex);
-      setContentIndex(nextIndex);
+  const isActive = activeId === testimonial.id;
 
-      scrollResponsiveToIndex(nextIndex, smooth);
+  const handleEnter = async () => {
+    setActiveId(testimonial.id);
+    setMuted(true);
 
-      if (videoRef.current) {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0;
-      }
-    },
-    [getIndex, scrollResponsiveToIndex]
-  );
+    const video = videoRef.current;
 
-  /*
-   * =========================================================
-   * DETECT ACTIVE CARD AFTER SWIPE
-   * =========================================================
-   */
+    if (!video) return;
 
-  const handleResponsiveScroll = useCallback(() => {
-    if (scrollTimerRef.current) {
-      window.clearTimeout(scrollTimerRef.current);
+    try {
+      video.muted = true;
+      video.currentTime = 0;
+      await video.play();
+    } catch {
+      // Browser may block playback until the visitor interacts.
+    }
+  };
+
+  const handleLeave = () => {
+    setActiveId(null);
+    setMuted(true);
+
+    const video = videoRef.current;
+
+    if (!video) return;
+
+    video.pause();
+    video.currentTime = 0;
+  };
+
+  /* Click = turn sound on / off while the video is playing */
+  const handleClick = () => {
+    if (!isActive) {
+      handleEnter();
+      return;
     }
 
-    scrollTimerRef.current = window.setTimeout(() => {
-      const scroller = responsiveScrollerRef.current;
+    const video = videoRef.current;
 
-      if (!scroller) return;
+    if (!video) return;
 
-      const track = scroller.querySelector(
-        ".responsive-video-track"
-      );
+    video.muted = !video.muted;
+    setMuted(video.muted);
+  };
 
-      if (!track) return;
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleClick();
+    }
+  };
 
-      const trackRect = track.getBoundingClientRect();
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Watch ${testimonial.name}'s story`}
+      className="relative h-full w-full cursor-pointer overflow-hidden outline-none"
+      onMouseEnter={handleEnter}
+      onMouseLeave={handleLeave}
+      onFocus={handleEnter}
+      onBlur={handleLeave}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+    >
+      {/* Video */}
+      <motion.video
+        ref={videoRef}
+        src={testimonial.poster ? testimonial.video : `${testimonial.video}#t=0.1`}
+        poster={testimonial.poster || undefined}
+        muted
+        playsInline
+        loop
+        preload="metadata"
+        className="absolute inset-0 h-full w-full object-cover"
+        animate={{ scale: isActive ? 1.035 : 1 }}
+        transition={{ duration: 0.8, ease: EASE }}
+      />
 
-      const trackCenter =
-        trackRect.left + trackRect.width / 2;
+      {/* Paper light */}
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,.12),transparent_20%,transparent_80%,rgba(0,0,0,.08))]" />
 
-      let closestIndex = visualIndex;
-      let closestDistance = Infinity;
+      {/* Dark gradient */}
+      <motion.div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent"
+        animate={{ opacity: isActive ? 1 : 0.8 }}
+      />
 
-      responsiveCardRefs.current.forEach(
-        (card, index) => {
-          if (!card) return;
+      {/* Play indicator */}
+      <AnimatePresence>
+        {!isActive && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/50 bg-black/20 backdrop-blur-md">
+              <Play size={20} fill="white" className="ml-1 text-white" />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          const cardRect = card.getBoundingClientRect();
+      {/* Content */}
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-7">
+        {(testimonial.destination || testimonial.date) && (
+          <div className="mb-3 flex flex-wrap items-center gap-2 font-mont text-[9px] uppercase tracking-[0.2em] text-white/70 sm:text-[10px]">
+            {testimonial.destination && <span>{testimonial.destination}</span>}
 
-          const cardCenter =
-            cardRect.left + cardRect.width / 2;
+            {testimonial.destination && testimonial.date && (
+              <span className="h-px w-5 bg-white/40" />
+            )}
 
-          const distance = Math.abs(
-            cardCenter - trackCenter
-          );
+            {testimonial.date && <span>{testimonial.date}</span>}
+          </div>
+        )}
 
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestIndex = index;
-          }
-        }
-      );
+        {testimonial.quote && (
+          <motion.p
+            className="line-clamp-4 max-w-md font-cg text-lg font-medium leading-snug text-white sm:text-xl lg:text-2xl"
+            animate={{ y: isActive ? 0 : 4 }}
+          >
+            “{testimonial.quote}”
+          </motion.p>
+        )}
 
-      if (closestIndex !== visualIndex) {
-        setVisualIndex(closestIndex);
-        setContentIndex(closestIndex);
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <span className="font-mont text-[10px] font-medium uppercase tracking-[0.16em] text-white sm:text-xs">
+            {testimonial.name}
+          </span>
 
-        if (videoRef.current) {
-          videoRef.current.pause();
-          videoRef.current.currentTime = 0;
-        }
-      }
-    }, 100);
-  }, [visualIndex]);
+          {isActive && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex items-center gap-1.5 text-white/70"
+            >
+              {muted ? <VolumeX size={13} /> : <Volume2 size={13} />}
 
-  /*
-   * =========================================================
-   * CLEANUP SCROLL TIMER
-   * =========================================================
-   */
+              <span className="font-mont text-[9px] uppercase tracking-widest">
+                {muted ? "Sound off" : "Sound on"}
+              </span>
+            </motion.div>
+          )}
+        </div>
+      </div>
+
+      {/* Page number */}
+      <div
+        className={`pointer-events-none absolute top-5 ${
+          side === "left" ? "left-5" : "right-5"
+        } font-mont text-[10px] uppercase tracking-[0.2em] text-white/60`}
+      >
+        {String(pageNumber).padStart(2, "0")}
+      </div>
+    </div>
+  );
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+export default function VideoTestimonials() {
+  const isWide = useIsWide();
+  const perSpread = isWide ? 2 : 1;
+
+  const [testimonials, setTestimonials] = useState([]);
+
+  const [isOpen, setIsOpen] = useState(false);
+  const [spreadIndex, setSpreadIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+  const [activeId, setActiveId] = useState(null);
+  const [lastPerSpread, setLastPerSpread] = useState(perSpread);
+
+  const dragX = useMotionValue(0);
+
+  /* Screen switched between 1-page and 2-page layout -> start from the first page */
+  if (lastPerSpread !== perSpread) {
+    setLastPerSpread(perSpread);
+    setSpreadIndex(0);
+    setActiveId(null);
+  }
+
+  /* ---------------------------------------------------------
+     FETCH FROM BACKEND
+  --------------------------------------------------------- */
 
   useEffect(() => {
-    return () => {
-      if (scrollTimerRef.current) {
-        window.clearTimeout(scrollTimerRef.current);
+    let isMounted = true;
+
+    const fetchTestimonials = async () => {
+      try {
+        const list = await getVideoTestimonials();
+
+        if (isMounted) setTestimonials(list);
+      } catch (error) {
+        console.error("Failed to fetch video testimonials:", error);
+
+        if (isMounted) setTestimonials([]);
       }
+    };
+
+    fetchTestimonials();
+
+    return () => {
+      isMounted = false;
     };
   }, []);
 
-  /*
-   * =========================================================
-   * DESKTOP CARD POSITION
-   * =========================================================
-   */
+  const spreads = useMemo(
+    () => chunk(testimonials, perSpread),
+    [testimonials, perSpread],
+  );
 
-  const getCardStyle = (videoIndex) => {
-    const position =
-      getRelativePosition(videoIndex);
+  const lastIndex = spreads.length - 1;
 
-    /*
-     * MAIN
-     */
+  /* ---------------------------------------------------------
+     NAVIGATION
+  --------------------------------------------------------- */
 
-    if (position === 0) {
-      return {
-        left: "184px",
-        top: "0px",
-        width: "700px",
-        height: "400px",
-        zIndex: 30,
-      };
-    }
+  const goTo = useCallback(
+    (index) => {
+      if (index < 0 || index > lastIndex || index === spreadIndex) return;
 
-    /*
-     * RIGHT INNER
-     */
+      setDirection(index > spreadIndex ? 1 : -1);
+      setSpreadIndex(index);
+      setActiveId(null);
+    },
+    [lastIndex, spreadIndex],
+  );
 
-    if (position === 1) {
-      return {
-        left: "896px",
-        top: "30px",
-        width: "88px",
-        height: "330px",
-        zIndex: 20,
-      };
-    }
+  const nextPage = useCallback(
+    () => goTo(spreadIndex + 1),
+    [goTo, spreadIndex],
+  );
 
-    /*
-     * RIGHT OUTER
-     */
+  const previousPage = useCallback(
+    () => goTo(spreadIndex - 1),
+    [goTo, spreadIndex],
+  );
 
-    if (position === 2) {
-      return {
-        left: "996px",
-        top: "60px",
-        width: "72px",
-        height: "280px",
-        zIndex: 10,
-      };
-    }
+  const closeDiary = useCallback(() => {
+    setIsOpen(false);
+    setActiveId(null);
+  }, []);
 
-    /*
-     * LEFT OUTER
-     */
+  const handleDragEnd = (_, info) => {
+    const threshold = 80;
 
-    if (position === 3) {
-      return {
-        left: "0px",
-        top: "60px",
-        width: "72px",
-        height: "280px",
-        zIndex: 10,
-      };
-    }
+    if (info.offset.x < -threshold) nextPage();
+    if (info.offset.x > threshold) previousPage();
+  };
 
-    /*
-     * LEFT INNER
-     */
+  useEffect(() => {
+    if (!isOpen) return;
 
-    return {
-      left: "84px",
-      top: "30px",
-      width: "88px",
-      height: "330px",
-      zIndex: 20,
+    const handleKeyDown = (event) => {
+      if (event.key === "ArrowRight") nextPage();
+      if (event.key === "ArrowLeft") previousPage();
+      if (event.key === "Escape") closeDiary();
     };
-  };
 
-  /*
-   * =========================================================
-   * MAIN CARD CHECK
-   * =========================================================
-   */
+    window.addEventListener("keydown", handleKeyDown);
 
-  const isMainCard = (videoIndex) => {
-    return getRelativePosition(videoIndex) === 0;
-  };
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, nextPage, previousPage, closeDiary]);
 
-  /*
-   * =========================================================
-   * ACTIVE YOUTUBE URL
-   * =========================================================
-   */
+  /* Nothing from the backend (or still loading) -> don't show an empty section */
+  if (spreads.length === 0) return null;
 
-  const activeYouTubeUrl =
-    getYouTubeEmbedUrl(activeVideo.videoUrl);
+  const currentSpread = spreads[Math.min(spreadIndex, lastIndex)];
 
   return (
-    <section className="bg-white px-4 py-7 text-white md:px-8 lg:px-10">
-      <div className="mx-auto max-w-[1450px]">
+    <section className="relative overflow-hidden px-5 py-20 sm:px-8 sm:py-24">
+      {/* Background dots */}
+      {/* <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(#9b9487_0.7px,transparent_0.7px)] [background-size:18px_18px]" /> */}
 
-        {/* =====================================================
-            SECTION HEADER
-        ====================================================== */}
+      {/* Heading */}
+      <div className="relative z-10 mx-auto mb-14 max-w-3xl text-center">
+        <p className="mb-4 font-mont text-[10px] font-medium uppercase tracking-[0.35em] text-slate-500">
+          Real stories from real journeys
+        </p>
 
-        <SectionHeader
-          title="Real stories from happy travellers"
-          description="Hear directly from travellers who trusted us to plan their journey."
-        />
-
-        {/* =====================================================
-            DESKTOP CAROUSEL
-            xl AND ABOVE ONLY
-        ====================================================== */}
-
-        <div className="mt-14 hidden w-full items-center justify-center xl:flex">
-
-          <div
-            className="relative h-[394px] w-[1076px]"
-            style={{
-              perspective: "1200px",
-            }}
+        <h2 className="font-cg text-[clamp(2rem,5vw,3rem)] font-semibold leading-tight tracking-tight text-slate-900">
+          Dear Diary{" "}
+          {/* <span
+            className="text-[1.15em] font-normal text-blue-400"
+            style={{ fontFamily: '"Alex Brush", cursive' }}
           >
-            {videos.map((video, index) => {
-              const cardStyle =
-                getCardStyle(index);
+            Diary
+          </span> */}
+        </h2>
 
-              const relativePosition =
-                getRelativePosition(index);
+        <p className="mx-auto mt-5 max-w-xl font-mont text-sm leading-7 text-slate-500 sm:text-base">
+          Every journey leaves a story behind.
+          <br />
+          Here are a few of ours.
+        </p>
+      </div>
 
-              const mainCard =
-                isMainCard(index);
+      <AnimatePresence mode="wait">
+        {/* ================= CLOSED DIARY ================= */}
+        {!isOpen && (
+          <motion.div
+            key="closed-book"
+            initial={{ opacity: 0, y: 30, rotateX: 8 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, scale: 1.05, rotateY: -85, x: -100 }}
+            transition={{ duration: 0.8, ease: EASE }}
+            className="relative z-10 mx-auto w-full max-w-[680px]"
+            style={{ perspective: 1500 }}
+          >
+            <motion.button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              whileHover={{ y: -8, rotateZ: -0.5 }}
+              whileTap={{ scale: 0.98 }}
+              className="group relative aspect-[1.45/1] w-full cursor-pointer overflow-hidden rounded-[4px] bg-[#243a32] text-left shadow-[0_30px_70px_rgba(0,0,0,.22)]"
+            >
+              {/* Leather-like cover */}
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,.08),transparent_30%),linear-gradient(135deg,#31483f,#182b25)]" />
 
-              const youtubeUrl =
-                index === contentIndex
-                  ? getYouTubeEmbedUrl(
-                      video.videoUrl
-                    )
-                  : null;
+              {/* Cover border */}
+              <div className="absolute inset-5 rounded-[2px] border border-[#d7c6a0]/30 sm:inset-7" />
 
-              return (
-                <div
-                  key={video.id}
-                  className="
-                    absolute
-                    overflow-hidden
-                    border
-                    border-white/10
-                    bg-white/5
-                  "
-                  style={{
-                    left: cardStyle.left,
-                    top: cardStyle.top,
-                    width: cardStyle.width,
-                    height: cardStyle.height,
-                    zIndex: cardStyle.zIndex,
+              {/* Spine */}
+              <div className="absolute inset-y-0 left-0 w-5 bg-black/10 sm:w-7" />
 
-                    transition:
-                      "left 720ms cubic-bezier(0.22, 1, 0.36, 1), top 720ms cubic-bezier(0.22, 1, 0.36, 1), width 720ms cubic-bezier(0.22, 1, 0.36, 1), height 720ms cubic-bezier(0.22, 1, 0.36, 1), border-radius 720ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 720ms cubic-bezier(0.22, 1, 0.36, 1)",
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-yellow-100">
+                <div className="mb-5 font-mont text-[9px] uppercase tracking-[0.5em] opacity-70">
+                  Travel stories
+                </div>
 
-                    boxShadow: mainCard
-                      ? "0 25px 60px rgba(0,0,0,0.18)"
-                      : "0 15px 35px rgba(0,0,0,0.12)",
+                <h3 className="font-cg text-5xl text-yellow-200 font-semibold sm:text-7xl">
+                  Dear Diary
+                </h3>
 
-                    borderRadius: mainCard
-                      ? "16px"
-                      : "12px",
-                  }}
+                <div className="mt-6 h-px w-20 bg-[#d7c6a0]/40" />
+
+                <p className="mt-5 font-mont text-[10px] uppercase tracking-[0.3em] opacity-70">
+                  Open our memories
+                </p>
+              </div>
+
+              {/* Hover hint */}
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 font-mont text-[9px] uppercase tracking-[0.3em] text-[#e4d6b7]/50 opacity-0 transition-opacity group-hover:opacity-100">
+                Tap to open
+              </div>
+            </motion.button>
+
+            {/* Shadow underneath */}
+            <div className="absolute -bottom-5 left-[8%] right-[8%] -z-10 h-10 rounded-full bg-black/20 blur-2xl" />
+          </motion.div>
+        )}
+
+        {/* ================= OPEN BOOK ================= */}
+        {isOpen && (
+          <motion.div
+            key="open-book"
+            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: EASE }}
+            className="relative z-10 mx-auto w-full max-w-[1200px]"
+          >
+            {/* Close */}
+            <button
+              type="button"
+              onClick={closeDiary}
+              className="absolute -top-12 right-0 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-400 transition hover:text-slate-900"
+            >
+              Close diary
+            </button>
+
+            {/* Book */}
+            <motion.div
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.18}
+              style={{ x: dragX }}
+              onDragEnd={handleDragEnd}
+              className={`relative mx-auto cursor-grab overflow-hidden rounded-sm bg-[#f5f1e8] shadow-[0_35px_90px_rgba(0,0,0,.25)] active:cursor-grabbing ${
+                isWide
+                  ? "aspect-[1.45/1] w-[80%]"
+                  : "aspect-[3/4] w-[88%] max-w-[420px]"
+              }`}
+            >
+              <AnimatePresence mode="popLayout" custom={direction} initial={false}>
+                <motion.div
+                  key={`${perSpread}-${spreadIndex}`}
+                  custom={direction}
+                  variants={spreadVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.75, ease: EASE }}
+                  style={{ transformPerspective: 1800 }}
+                  className="absolute inset-0"
                 >
-
-                  {/* ==========================================
-                      DESKTOP VIDEO
-                  =========================================== */}
-
-                  {mainCard &&
-                  index === contentIndex ? (
-                    youtubeUrl ? (
-                      <iframe
-                        key={`youtube-${video.id}`}
-                        src={youtubeUrl}
-                        title={video.title}
-                        className="
-                          absolute
-                          inset-0
-                          h-full
-                          w-full
-                        "
-                        allow="
-                          accelerometer;
-                          autoplay;
-                          clipboard-write;
-                          encrypted-media;
-                          gyroscope;
-                          picture-in-picture;
-                          web-share
-                        "
-                        allowFullScreen
-                      />
-                    ) : (
-                      <video
-                        ref={videoRef}
-                        key={`video-${video.id}`}
-                        className="
-                          h-full
-                          w-full
-                          object-cover
-                        "
-                        controls
-                        playsInline
-                        poster={video.thumbnail}
+                  <div
+                    className={`grid h-full w-full ${
+                      isWide ? "grid-cols-2" : "grid-cols-1"
+                    }`}
+                  >
+                    {currentSpread.map((testimonial, position) => (
+                      <div
+                        key={testimonial.id}
+                        className="relative overflow-hidden bg-[#f5f1e8]"
                       >
-                        <source
-                          src={video.videoUrl}
-                          type="video/mp4"
+                        <DiaryVideo
+                          testimonial={testimonial}
+                          side={position === 0 ? "left" : "right"}
+                          pageNumber={spreadIndex * perSpread + position + 1}
+                          activeId={activeId}
+                          setActiveId={setActiveId}
                         />
 
-                        Your browser does not support
-                        the video tag.
-                      </video>
-                    )
-                  ) : (
-                    <img
-                      src={video.thumbnail}
-                      alt={video.title}
-                      className="
-                        absolute
-                        inset-0
-                        h-full
-                        w-full
-                        object-cover
-                      "
-                    />
-                  )}
-
-                  {/* ==========================================
-                      DESKTOP ACTIVE VIDEO INFORMATION
-                  =========================================== */}
-
-                  {mainCard &&
-                    index === contentIndex && (
-                      <div
-                        className="
-                          pointer-events-none
-                          absolute
-                          bottom-0
-                          left-0
-                          right-0
-                          p-6
-                          pt-24
-                        "
-                      >
-                        <p
-                          className="
-                            text-[10px]
-                            font-semibold
-                            uppercase
-                            tracking-[0.22em]
-                            text-white/70
-                          "
-                        >
-                          {video.location}
-                        </p>
-
-                        <h3
-                          className="
-                            mt-1
-                            text-xl
-                            font-semibold
-                            text-white
-                            md:text-2xl
-                          "
-                        >
-                          {video.title}
-                        </h3>
-
-                        <p
-                          className="
-                            mt-1
-                            text-sm
-                            text-white/75
-                          "
-                        >
-                          {video.customer}
-                        </p>
-                      </div>
-                    )}
-
-                  {/* ==========================================
-                      DESKTOP LEFT INNER
-                  =========================================== */}
-
-                  {relativePosition === 4 && (
-                    <button
-                      type="button"
-                      onClick={goToPrevious}
-                      disabled={isAnimating}
-                      aria-label="Previous testimonial"
-                      className="
-                        group
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-                      <ChevronLeftIcon
-                        className="
-                          text-white
-                          drop-shadow-lg
-                          transition-transform
-                          duration-300
-                          group-hover:-translate-x-1
-                        "
-                        sx={{
-                          fontSize: 36,
-                        }}
-                      />
-
-                      <span
-                        className="
-                          absolute
-                          bottom-4
-                          whitespace-nowrap
-                          text-[11px]
-                          font-medium
-                          text-white
-                        "
-                        style={{
-                          writingMode:
-                            "vertical-rl",
-                          transform:
-                            "rotate(180deg)",
-                        }}
-                      >
-                        {video.title}
-                      </span>
-                    </button>
-                  )}
-
-                  {/* ==========================================
-                      DESKTOP RIGHT INNER
-                  =========================================== */}
-
-                  {relativePosition === 1 && (
-                    <button
-                      type="button"
-                      onClick={goToNext}
-                      disabled={isAnimating}
-                      aria-label="Next testimonial"
-                      className="
-                        group
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-                      <ChevronRightIcon
-                        className="
-                          text-white
-                          drop-shadow-lg
-                          transition-transform
-                          duration-300
-                          group-hover:translate-x-1
-                        "
-                        sx={{
-                          fontSize: 36,
-                        }}
-                      />
-
-                      <span
-                        className="
-                          absolute
-                          bottom-4
-                          whitespace-nowrap
-                          text-[11px]
-                          font-medium
-                          text-white
-                        "
-                        style={{
-                          writingMode:
-                            "vertical-rl",
-                        }}
-                      >
-                        {video.title}
-                      </span>
-                    </button>
-                  )}
-
-                  {/* ==========================================
-                      DESKTOP LEFT OUTER
-                  =========================================== */}
-
-                  {relativePosition === 3 && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        goToVideo(index)
-                      }
-                      disabled={isAnimating}
-                      aria-label={`View ${video.title}`}
-                      className="
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-                      <span
-                        className="
-                          whitespace-nowrap
-                          text-[11px]
-                          font-medium
-                          text-white/90
-                        "
-                        style={{
-                          writingMode:
-                            "vertical-rl",
-                          transform:
-                            "rotate(180deg)",
-                        }}
-                      >
-                        {video.title}
-                      </span>
-                    </button>
-                  )}
-
-                  {/* ==========================================
-                      DESKTOP RIGHT OUTER
-                  =========================================== */}
-
-                  {relativePosition === 2 && (
-                    <button
-                      type="button"
-                      onClick={() =>
-                        goToVideo(index)
-                      }
-                      disabled={isAnimating}
-                      aria-label={`View ${video.title}`}
-                      className="
-                        absolute
-                        inset-0
-                        flex
-                        items-center
-                        justify-center
-                      "
-                    >
-                      <span
-                        className="
-                          whitespace-nowrap
-                          text-[11px]
-                          font-medium
-                          text-white/90
-                        "
-                        style={{
-                          writingMode:
-                            "vertical-rl",
-                        }}
-                      >
-                        {video.title}
-                      </span>
-                    </button>
-                  )}
-
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* =====================================================
-            DESKTOP INDICATOR
-        ====================================================== */}
-
-        <div
-          className="
-            mt-5
-            hidden
-            items-center
-            justify-center
-            gap-2
-            xl:flex
-          "
-        >
-          {videos.map((video, index) => (
-            <button
-              key={video.id}
-              type="button"
-              onClick={() => goToVideo(index)}
-              disabled={isAnimating}
-              aria-label={`Go to testimonial ${
-                index + 1
-              }`}
-              className={`
-                h-2
-                rounded-full
-                transition-all
-                duration-300
-                ${
-                  index === visualIndex
-                    ? "w-8 bg-slate-900"
-                    : "w-2 bg-slate-900/30 hover:bg-slate-900/60"
-                }
-              `}
-            />
-          ))}
-        </div>
-
-        {/* =====================================================
-            MOBILE / TABLET / IPAD
-
-            CENTER ACTIVE VIDEO
-            PREVIOUS VIDEO PEEK
-            NEXT VIDEO PEEK
-        ====================================================== */}
-
-        <div className="mt-10 block xl:hidden">
-
-          {/* ===================================================
-              RESPONSIVE VIDEO CAROUSEL
-          ==================================================== */}
-
-          <div
-            ref={responsiveScrollerRef}
-            className="
-              w-full
-              overflow-hidden
-            "
-          >
-            <div
-              className="
-                w-full
-                overflow-x-auto
-                overscroll-x-contain
-                scroll-smooth
-                snap-x
-                snap-mandatory
-                touch-pan-x
-                py-3
-              "
-              style={{
-                scrollbarWidth: "none",
-                msOverflowStyle: "none",
-              }}
-              onScroll={
-                handleResponsiveScroll
-              }
-            >
-
-              <div
-                className="
-                  responsive-video-track
-                  flex
-                  w-max
-                  items-center
-                  gap-3
-                "
-                style={{
-                  /*
-                   * =================================================
-                   * OUTER CORNER PADDING
-                   * =================================================
-                   *
-                   * The active card width is:
-                   *
-                   * viewport - 96px
-                   *
-                   * Therefore 48px remains visible on
-                   * both sides.
-                   *
-                   * This is what creates the reference
-                   * design:
-                   *
-                   *     previous | ACTIVE | next
-                   *
-                   * without filling the screen completely.
-                   */
-
-                  paddingLeft:
-                    "max(48px, calc((100vw - min(760px, calc(100vw - 96px))) / 2))",
-
-                  paddingRight:
-                    "max(48px, calc((100vw - min(760px, calc(100vw - 96px))) / 2))",
-                }}
-              >
-
-                {videos.map((video, index) => {
-                  const isActive =
-                    index === visualIndex;
-
-                  const youtubeUrl =
-                    getYouTubeEmbedUrl(
-                      video.videoUrl
-                    );
-
-                  return (
-                    <article
-                      key={video.id}
-                      ref={(element) => {
-                        responsiveCardRefs.current[
-                          index
-                        ] = element;
-                      }}
-                      onClick={() => {
-                        if (!isActive) {
-                          selectResponsiveVideo(
-                            index,
-                            true
-                          );
-                        }
-                      }}
-                      className="
-                        relative
-                        shrink-0
-                        snap-center
-                        overflow-hidden
-                        rounded-xl
-                        bg-black
-                        shadow-white
-                      "
-                      style={{
-                        /*
-                         * =================================================
-                         * RESPONSIVE CARD WIDTH
-                         * =================================================
-                         *
-                         * The active card NEVER takes 100vw.
-                         *
-                         * This guarantees that previous and next
-                         * cards can always be seen.
-                         */
-
-                        width:
-                          "min(760px, calc(100vw - 96px))",
-
-                        /*
-                         * IMPORTANT:
-                         *
-                         * Side cards are NOT blurred.
-                         * Side cards are NOT faded.
-                         * Side cards are NOT darkened.
-                         */
-
-                        opacity: 1,
-                        filter: "none",
-                        transform: "scale(1)",
-
-                        transition:
-                          "transform 300ms ease",
-                      }}
-                    >
-
-                      {/* =============================================
-                          VIDEO / THUMBNAIL
-                      ============================================== */}
-
-                      <div
-                        className="
-                          relative
-                          aspect-video
-                          w-full
-                          overflow-hidden
-                          rounded-xl
-                          bg-black
-                        "
-                      >
-
-                        {/* ACTIVE YOUTUBE */}
-
-                        {isActive &&
-                        youtubeUrl ? (
-                          <iframe
-                            key={`responsive-youtube-${video.id}`}
-                            src={youtubeUrl}
-                            title={video.title}
-                            className="
-                              absolute
-                              inset-0
-                              h-full
-                              w-full
-                            "
-                            allow="
-                              accelerometer;
-                              autoplay;
-                              clipboard-write;
-                              encrypted-media;
-                              gyroscope;
-                              picture-in-picture;
-                              web-share
-                            "
-                            allowFullScreen
-                          />
-                        ) : isActive ? (
-                          /*
-                           * ACTIVE MP4
-                           */
-                          <video
-                            ref={videoRef}
-                            key={`responsive-video-${video.id}`}
-                            className="
-                              h-full
-                              w-full
-                              object-cover
-                            "
-                            controls
-                            playsInline
-                            poster={
-                              video.thumbnail
-                            }
-                          >
-                            <source
-                              src={
-                                video.videoUrl
-                              }
-                              type="video/mp4"
-                            />
-
-                            Your browser does not
-                            support the video tag.
-                          </video>
-                        ) : (
-                          /*
-                           * SIDE VIDEO PREVIEW
-                           *
-                           * No blur.
-                           * No overlay.
-                           * No opacity.
-                           */
-                          <img
-                            src={video.thumbnail}
-                            alt={video.title}
-                            draggable="false"
-                            className="
-                              h-full
-                              w-full
-                              object-cover
-                              select-none
-                            "
+                        {/* Inner binding shadow */}
+                        {isWide && (
+                          <div
+                            className={`pointer-events-none absolute inset-y-0 w-12 from-black/15 to-transparent ${
+                              position === 0
+                                ? "right-0 bg-gradient-to-l"
+                                : "left-0 bg-gradient-to-r"
+                            }`}
                           />
                         )}
-
                       </div>
+                    ))}
 
-                      {/* =============================================
-                          ACTIVE VIDEO INFORMATION
-                      ============================================== */}
+                    {/* Odd number of videos -> blank right page */}
+                    {isWide && currentSpread.length === 1 && (
+                      <div className="relative overflow-hidden">
+                        <BlankPage />
+                        <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/15 to-transparent" />
+                      </div>
+                    )}
+                  </div>
 
-                      {isActive && (
-                        <div
-                          className="
-                            absolute
-                            bottom-0
-                            left-0
-                            right-0
-                            bg-gradient-to-t
-                            from-black/95
-                            via-black/45
-                            to-transparent
-                            px-4
-                            pb-4
-                            pt-16
-                            sm:px-5
-                            sm:pb-5
-                            md:px-6
-                            md:pb-6
-                          "
-                        >
+                  {/* Center binding */}
+                  {isWide && (
+                    <div className="pointer-events-none absolute left-1/2 top-0 h-full w-[2px] -translate-x-1/2 bg-black/15 shadow-[0_0_15px_rgba(0,0,0,.18)]" />
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
 
-                          <p
-                            className="
-                              text-[8px]
-                              font-semibold
-                              uppercase
-                              tracking-[0.18em]
-                              text-white/75
-                              sm:text-[9px]
-                              md:text-[10px]
-                            "
-                          >
-                            {video.location}
-                          </p>
-
-                          <h3
-                            className="
-                              mt-1
-                              text-sm
-                              font-semibold
-                              leading-tight
-                              text-white
-                              sm:text-base
-                              md:text-xl
-                            "
-                          >
-                            {video.title}
-                          </h3>
-
-                          <p
-                            className="
-                              mt-1
-                              text-[11px]
-                              text-white/70
-                              sm:text-xs
-                              md:text-sm
-                            "
-                          >
-                            {video.customer}
-                          </p>
-
-                        </div>
-                      )}
-
-                    </article>
-                  );
-                })}
-
-              </div>
-            </div>
-          </div>
-
-          {/* ===================================================
-              ONLY BOTTOM INDICATOR
-          ==================================================== */}
-
-          <div
-            className="
-              mt-4
-              flex
-              items-center
-              justify-center
-              gap-1.5
-            "
-          >
-            {videos.map((video, index) => (
+            {/* Navigation */}
+            <div className="mt-7 flex items-center justify-between">
               <button
-                key={video.id}
                 type="button"
-                onClick={() =>
-                  selectResponsiveVideo(
-                    index,
-                    true
-                  )
-                }
-                aria-label={`Go to testimonial ${
-                  index + 1
-                }`}
-                className={`
-                  h-1.5
-                  rounded-full
-                  transition-all
-                  duration-300
-                  ${
-                    index === visualIndex
-                      ? "w-7 bg-slate-900"
-                      : "w-1.5 bg-slate-300"
-                  }
-                `}
-              />
-            ))}
-          </div>
+                onClick={previousPage}
+                disabled={spreadIndex === 0}
+                className="group flex items-center gap-3 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
+              >
+                <ChevronLeft
+                  size={16}
+                  className="transition-transform group-hover:-translate-x-1"
+                />
+                Previous
+              </button>
 
-        </div>
-      </div>
+              <div className="flex items-center gap-3">
+                {spreads.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => goTo(index)}
+                    className={`h-1.5 rounded-full transition-all ${
+                      index === spreadIndex
+                        ? "w-8 bg-slate-900"
+                        : "w-1.5 bg-slate-300"
+                    }`}
+                    aria-label={`Go to page ${index + 1}`}
+                  />
+                ))}
+              </div>
+
+              <button
+                type="button"
+                onClick={nextPage}
+                disabled={spreadIndex === lastIndex}
+                className="group flex items-center gap-3 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
+              >
+                Next
+                <ChevronRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-1"
+                />
+              </button>
+            </div>
+
+            <p className="mt-5 text-center font-mont text-[9px] uppercase tracking-[0.25em] text-slate-400">
+              {isWide
+                ? "Drag the pages · Hover to watch · Click for sound"
+                : "Swipe the pages · Tap to watch · Tap again for sound"}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
-
-export default VideoTestimonials;

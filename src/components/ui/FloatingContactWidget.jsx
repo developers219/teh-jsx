@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ChevronUp, MessageCircle, Pen, Phone, X } from "lucide-react";
 import LeadCapturePopup from "../forms/LeadCapturePopup";
+import whatsappIcon from "../../assets/images/whatsapp.png";
 
 const WHATSAPP_NUMBER = "919211215500";
 const CALLBACK_PHONE_NUMBER = "+919211215500";
@@ -91,14 +92,14 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
               href={"tel:+919211215500"}
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              <Phone size={18} className="text-beige" />
+              <Phone size={18} className="text-blue-400" />
               Call Now
             </a>
             <p
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
               onClick={() => setIsPopUpOpen(true)}
             >
-              <Pen size={18} className="text-beige" />
+              <Pen size={18} className="text-blue-400" />
               Submit an enquiry
             </p>
 
@@ -108,7 +109,7 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
               rel="noopener noreferrer"
               className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              <MessageCircle size={18} className="text-beige" />
+              <MessageCircle size={18} className="text-blue-400" />
               Chat With Our Executive
             </a>
           </div>
@@ -121,14 +122,17 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
       </div>
 
       <button
-        type="button"
-        onClick={handleToggle}
-        aria-label="Contact us"
-        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-beige text-white shadow-xl transition hover:bg-beigeD cursor-pointer"
-      >
-        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-beige opacity-75" />
-        <MessageCircle size={26} className="relative" />
-      </button>
+  type="button"
+  onClick={handleToggle}
+  aria-label="Contact us"
+  className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent shadow-none transition cursor-pointer"
+>
+  <img
+    src={whatsappIcon}
+    alt=""
+    className="h-full w-full object-contain"
+  />
+</button>
     </div>
   );
 }

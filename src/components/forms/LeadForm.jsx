@@ -1,8 +1,20 @@
-import { useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@mui/material/Button";
 import Alert from "@mui/material/Alert";
 import { createLead } from "../../services/lead.service";
+
+/* =========================================================
+   FORM VARIANT
+   "default" = underline fields (popup etc.)
+   "card"    = boxed fields (home page frosted card)
+========================================================= */
+
+const FormVariantContext = createContext("default");
+
+function useIsCard() {
+  return useContext(FormVariantContext) === "card";
+}
 
 /* =========================================================
    DEFAULT VALUES
@@ -93,7 +105,10 @@ function LeadForm({
   successMessage = "Your holiday enquiry has been received. Our travel expert will contact you shortly.",
   onSubmitLead = createLead,
   onSuccess,
+  variant = "default",
 }) {
+  const isCard = variant === "card";
+
   /* =======================================================
      STEP / STATUS
   ======================================================== */
@@ -628,19 +643,11 @@ function LeadForm({
               setFormData(resetValues);
               reset(resetValues);
             }}
-            className="
-              mt-7
-              bg-[#080b0b]
-              px-7
-              py-3
-              text-[10px]
-              font-semibold
-              uppercase
-              tracking-[0.08em]
-              text-white
-              transition
-              hover:bg-neutral-800
-            "
+            className={
+              isCard
+                ? "mt-7 rounded-[14px] bg-[#080b0b] px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#c5bd96] transition hover:bg-neutral-800"
+                : "mt-7 bg-[#080b0b] px-7 py-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-neutral-800"
+            }
           >
             Submit Another Enquiry
           </button>
@@ -654,171 +661,175 @@ function LeadForm({
   ======================================================== */
 
   return (
-    <div
-      className="
-        w-full
-        bg-transparent
-        text-[#080b0b]
-      "
-    >
-      {/* ===================================================
-          OPTIONAL TITLE
-      ==================================================== */}
+    <FormVariantContext.Provider value={variant}>
+      <div className="w-full bg-transparent text-[#080b0b]">
+        {/* ===================================================
+            OPTIONAL TITLE
+        ==================================================== */}
 
-      {(title || subtitle) && (
-        <div className="mb-7">
-          {title && (
-            <h3
-              className="
-                font-serif
-                text-[29px]
-                font-medium
-                leading-none
-                tracking-[-1.2px]
-                text-[#080b0b]
-                sm:text-[31px]
-              "
-            >
-              {title}
-            </h3>
-          )}
+        {(title || subtitle) && (
+          <div className="mb-7">
+            {title && (
+              <h3
+                className="
+                  font-serif
+                  text-[29px]
+                  font-medium
+                  leading-none
+                  tracking-[-1.2px]
+                  text-[#080b0b]
+                  sm:text-[31px]
+                "
+              >
+                {title}
+              </h3>
+            )}
 
-          {subtitle && (
-            <p
-              className="
-                mt-3
-                text-[13px]
-                leading-5
-                text-black/60
-              "
-            >
-              {subtitle}
-            </p>
-          )}
-        </div>
-      )}
+            {subtitle && (
+              <p className="mt-3 text-[13px] leading-5 text-black/60">
+                {subtitle}
+              </p>
+            )}
+          </div>
+        )}
 
-      {/* ===================================================
-          ERROR
-      ==================================================== */}
+        {/* ===================================================
+            ERROR
+        ==================================================== */}
 
-      {formError && (
-        <div className="mb-5">
-          <Alert
-            severity="error"
-            sx={{
-              borderRadius: 0,
-              border: "1px solid rgba(0,0,0,0.3)",
-              backgroundColor: "transparent",
-              color: "#080b0b",
-              fontSize: "11px",
-              padding: "2px 10px",
-
-              "& .MuiAlert-icon": {
+        {formError && (
+          <div className="mb-5">
+            <Alert
+              severity="error"
+              sx={{
+                borderRadius: 0,
+                border: "1px solid rgba(0,0,0,0.3)",
+                backgroundColor: "transparent",
                 color: "#080b0b",
-              },
-            }}
-          >
-            {formError}
-          </Alert>
-        </div>
-      )}
+                fontSize: "11px",
+                padding: "2px 10px",
 
-      <form
-        onSubmit={handleSubmit(submitLead)}
-        noValidate
-        className="font-mont"
-      >
-        {/* =================================================
-            PAGE 1
-        ================================================== */}
-
-        {step === 1 && (
-          <PageOne
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            nextStep={nextStep}
-            formData={formData}
-            handleFieldChange={handleFieldChange}
-          />
+                "& .MuiAlert-icon": {
+                  color: "#080b0b",
+                },
+              }}
+            >
+              {formError}
+            </Alert>
+          </div>
         )}
 
-        {/* =================================================
-            PAGE 2
-        ================================================== */}
+        <form
+          onSubmit={handleSubmit(submitLead)}
+          noValidate
+          className={isCard ? "font-inter" : "font-mont"}
+        >
+          {/* =================================================
+              PAGE 1
+          ================================================== */}
 
-        {step === 2 && (
-          <PageTwo
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            exploringDestinations={exploringDestinations}
-            nextStep={nextStep}
-            previousStep={previousStep}
-            formData={formData}
-            handleFieldChange={handleFieldChange}
-          />
+          {step === 1 && (
+            <PageOne
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              nextStep={nextStep}
+              formData={formData}
+              handleFieldChange={handleFieldChange}
+            />
+          )}
+
+          {/* =================================================
+              PAGE 2
+          ================================================== */}
+
+          {step === 2 && (
+            <PageTwo
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              exploringDestinations={exploringDestinations}
+              nextStep={nextStep}
+              previousStep={previousStep}
+              formData={formData}
+              handleFieldChange={handleFieldChange}
+            />
+          )}
+
+          {/* =================================================
+              PAGE 3
+          ================================================== */}
+
+          {step === 3 && (
+            <PageThree
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              hotelCategory={hotelCategory}
+              flightsIncluded={flightsIncluded}
+              budgetWithAirfare={budgetWithAirfare}
+              adults={adults}
+              infants={infants}
+              children={children}
+              travellersCount={travellersCount}
+              nextStep={nextStep}
+              previousStep={previousStep}
+              formData={formData}
+              handleFieldChange={handleFieldChange}
+            />
+          )}
+
+          {/* =================================================
+              PAGE 4
+          ================================================== */}
+
+          {step === 4 && (
+            <PageFour
+              setValue={setValue}
+              packageType={packageType}
+              preferredCallTime={preferredCallTime}
+              tourType={tourType}
+              isSubmitting={isSubmitting}
+              submitLabel={submitLabel}
+              previousStep={previousStep}
+              formData={formData}
+              handleFieldChange={handleFieldChange}
+            />
+          )}
+        </form>
+
+        {/* ===================================================
+            PRIVACY NOTE
+        ==================================================== */}
+
+        {isCard ? (
+          <p className="mt-5 flex items-center justify-center gap-2 text-center text-[13px] leading-5 text-slate-600">
+            <svg
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="shrink-0"
+            >
+              <rect x="5" y="11" width="14" height="9" rx="2" />
+              <path d="M8 11V8a4 4 0 018 0v3" />
+            </svg>
+            Your information is secure and will only be used to prepare your
+            travel plan.
+          </p>
+        ) : (
+          <p className="mt-6 text-[14px] leading-4 text-black/40">
+            Your information is secure and will only be used to prepare your
+            travel plan.
+          </p>
         )}
-
-        {/* =================================================
-            PAGE 3
-        ================================================== */}
-
-        {step === 3 && (
-          <PageThree
-            register={register}
-            setValue={setValue}
-            errors={errors}
-            hotelCategory={hotelCategory}
-            flightsIncluded={flightsIncluded}
-            budgetWithAirfare={budgetWithAirfare}
-            adults={adults}
-            infants={infants}
-            children={children}
-            travellersCount={travellersCount}
-            nextStep={nextStep}
-            previousStep={previousStep}
-            formData={formData}
-            handleFieldChange={handleFieldChange}
-          />
-        )}
-
-        {/* =================================================
-            PAGE 4
-        ================================================== */}
-
-        {step === 4 && (
-          <PageFour
-            setValue={setValue}
-            packageType={packageType}
-            preferredCallTime={preferredCallTime}
-            tourType={tourType}
-            isSubmitting={isSubmitting}
-            submitLabel={submitLabel}
-            previousStep={previousStep}
-            formData={formData}
-            handleFieldChange={handleFieldChange}
-          />
-        )}
-      </form>
-
-      {/* ===================================================
-          PRIVACY NOTE
-      ==================================================== */}
-
-      <p
-        className="
-          mt-6
-          text-[14px]
-          leading-4
-          text-black/40
-        "
-      >
-        Your information is secure and will only be used to prepare your travel
-        plan.
-      </p>
-    </div>
+      </div>
+    </FormVariantContext.Provider>
   );
 }
 
@@ -834,6 +845,8 @@ function PageOne({
   formData,
   handleFieldChange,
 }) {
+  const isCard = useIsCard();
+
   return (
     <div className="w-full">
       <div className="space-y-5">
@@ -919,6 +932,7 @@ function PageOne({
 
         <MinimalField
           label="Email Address"
+          optional
           placeholder="Enter your email"
           value={formData.email}
           onChange={(value) => handleFieldChange("email", value)}
@@ -935,7 +949,9 @@ function PageOne({
 
       {/* NEXT */}
 
-      <div className="mt-4 flex justify-end">
+      <div
+        className={isCard ? "mt-7 flex justify-end" : "mt-4 flex justify-end"}
+      >
         <NextButton onClick={nextStep} />
       </div>
     </div>
@@ -956,6 +972,8 @@ function PageTwo({
   formData,
   handleFieldChange,
 }) {
+  const isCard = useIsCard();
+
   return (
     <div className="w-full">
       <StepTitle title="Plan Your Trip" />
@@ -978,17 +996,11 @@ function PageTwo({
         {/* EXPLORING */}
 
         <label
-          className="
-            flex
-            min-h-[42px]
-            cursor-pointer
-            items-center
-            gap-2
-            border-b
-            border-black/30
-            text-[11px]
-            font-medium
-          "
+          className={
+            isCard
+              ? "flex cursor-pointer items-center gap-2 text-[13px] font-medium text-slate-700"
+              : "flex min-h-[42px] cursor-pointer items-center gap-2 border-b border-black/30 text-[11px] font-medium"
+          }
         >
           <input
             type="checkbox"
@@ -1181,13 +1193,7 @@ function PageThree({
 
         {/* TRAVELLERS */}
 
-        <div
-        // className="
-        //   border-t
-        //   border-black/20
-        //   pt-5
-        // "
-        >
+        <div>
           <div
             className="
               grid
@@ -1275,6 +1281,8 @@ function PageFour({
   formData,
   handleFieldChange,
 }) {
+  const isCard = useIsCard();
+
   return (
     <div className="w-full">
       <StepTitle title="Almost Done" />
@@ -1375,7 +1383,6 @@ function PageFour({
           mt-7
           flex
           gap-3
-          
           pt-4
         "
       >
@@ -1386,27 +1393,28 @@ function PageFour({
           disabled={isSubmitting}
           fullWidth
           sx={{
-            minHeight: 42,
-            borderRadius: 0,
+            minHeight: isCard ? 56 : 42,
+            borderRadius: isCard ? "14px" : 0,
 
-            backgroundColor: "#080b0b",
+            backgroundColor: "#60A5FA",
 
-            color: "#ffffff",
+            color: isCard ? "#ffffff" : "#ffffff",
 
             fontFamily: "inherit",
 
-            fontSize: "10px",
+            fontSize: isCard ? "15px" : "10px",
 
             fontWeight: 700,
 
-            letterSpacing: "0.06em",
+            letterSpacing: isCard ? "0.14em" : "0.06em",
 
             textTransform: "uppercase",
+            cursor: isSubmitting ? "not-allowed" : "pointer",
 
             boxShadow: "none",
 
             "&:hover": {
-              backgroundColor: "#202424",
+              backgroundColor: "#3B82F6",
               boxShadow: "none",
             },
 
@@ -1424,12 +1432,26 @@ function PageFour({
 }
 
 /* =========================================================
+   INPUT STYLES
+========================================================= */
+
+const UNDERLINE_FIELD_CLASS =
+  "block h-[32px] w-full rounded-none border-0 border-b border-black/50 bg-transparent px-0 pb-2 pt-0 text-[16px] font-normal text-[#080b0b] outline-none placeholder:text-black/50 focus:border-black focus:bg-transparent focus:outline-none focus:ring-0 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-[#080b0b] [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset] [&:-webkit-autofill:hover]:bg-transparent [&:-webkit-autofill:focus]:bg-transparent [&:-webkit-autofill:active]:bg-transparent";
+
+const UNDERLINE_INPUT_CLASS =
+  "block h-[36px] w-full rounded-none border-0 border-b border-black/50 bg-transparent px-0 pb-2 text-[12px] text-[#080b0b] outline-none placeholder:text-black/40 focus:border-black focus:bg-transparent focus:outline-none focus:ring-0 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-[#080b0b] [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset] [&:-webkit-autofill:hover]:bg-transparent [&:-webkit-autofill:focus]:bg-transparent [&:-webkit-autofill:active]:bg-transparent";
+
+const CARD_INPUT_CLASS =
+  "block h-[52px] w-full rounded-[14px] border border-[#8c866b] bg-white/80 px-[18px] text-[15px] text-slate-900 outline-none placeholder:text-gray-500 focus:border-black focus:outline-none focus:ring-0 [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#f6f3e9_inset]";
+
+/* =========================================================
    MINIMAL FIELD
 ========================================================= */
 
 function MinimalField({
   label,
   required = false,
+  optional = false,
   placeholder,
   type = "text",
   registration,
@@ -1437,28 +1459,29 @@ function MinimalField({
   value,
   onChange,
 }) {
+  const isCard = useIsCard();
+
   return (
     <div className="w-full">
       <label
-        className="
-          mb-2
-          block
-          text-lg
-          font-medium
-          text-[#080b0b]
-        "
+        className={
+          isCard
+            ? "mb-2 block text-sm font-medium text-slate-900"
+            : "mb-2 block text-lg font-medium text-[#080b0b]"
+        }
       >
         {label}
 
         {required && (
           <span
-            className="
-              ml-1
-              text-black-500
-            "
+            className={isCard ? "ml-1 text-amber-700" : "ml-1 text-black-500"}
           >
             *
           </span>
+        )}
+
+        {optional && isCard && (
+          <span className="ml-1 font-normal text-slate-600">(optional)</span>
         )}
       </label>
 
@@ -1474,46 +1497,16 @@ function MinimalField({
         placeholder={placeholder}
         autoComplete="off"
         spellCheck="false"
-        className="
-          block
-          h-[32px]
-          w-full
-          rounded-none
-          border-0
-          border-b
-          border-black/50
-          bg-transparent
-          px-0
-          pb-2
-          pt-0
-          text-[16px]
-          font-normal
-          text-[#080b0b]
-          outline-none
-          placeholder:text-black/50
-
-          focus:border-black
-          focus:bg-transparent
-          focus:outline-none
-          focus:ring-0
-
-          [&:-webkit-autofill]:bg-transparent
-          [&:-webkit-autofill]:text-[#080b0b]
-          [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset]
-
-          [&:-webkit-autofill:hover]:bg-transparent
-          [&:-webkit-autofill:focus]:bg-transparent
-          [&:-webkit-autofill:active]:bg-transparent
-        "
+        className={isCard ? CARD_INPUT_CLASS : UNDERLINE_FIELD_CLASS}
       />
 
       {error && (
         <p
-          className="
-            mt-1
-            text-[9px]
-            text-black-600
-          "
+          className={
+            isCard
+              ? "mt-1.5 text-xs text-red-700"
+              : "mt-1 text-[9px] text-black-600"
+          }
         >
           {error}
         </p>
@@ -1534,6 +1527,8 @@ function MinimalInput({
   value,
   onChange,
 }) {
+  const isCard = useIsCard();
+
   return (
     <div>
       <input
@@ -1548,44 +1543,16 @@ function MinimalInput({
         placeholder={placeholder}
         autoComplete="off"
         spellCheck="false"
-        className="
-          block
-          h-[36px]
-          w-full
-          rounded-none
-          border-0
-          border-b
-          border-black/50
-          bg-transparent
-          px-0
-          pb-2
-          text-[12px]
-          text-[#080b0b]
-          outline-none
-          placeholder:text-black/40
-
-          focus:border-black
-          focus:bg-transparent
-          focus:outline-none
-          focus:ring-0
-
-          [&:-webkit-autofill]:bg-transparent
-          [&:-webkit-autofill]:text-[#080b0b]
-          [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset]
-
-          [&:-webkit-autofill:hover]:bg-transparent
-          [&:-webkit-autofill:focus]:bg-transparent
-          [&:-webkit-autofill:active]:bg-transparent
-        "
+        className={isCard ? CARD_INPUT_CLASS : UNDERLINE_INPUT_CLASS}
       />
 
       {error && (
         <p
-          className="
-            mt-1
-            text-[9px]
-            text-red-600
-          "
+          className={
+            isCard
+              ? "mt-1.5 text-xs text-red-700"
+              : "mt-1 text-[9px] text-red-600"
+          }
         >
           {error}
         </p>
@@ -1599,6 +1566,18 @@ function MinimalInput({
 ========================================================= */
 
 function StepTitle({ title }) {
+  const isCard = useIsCard();
+
+  if (isCard) {
+    return (
+      <div className="mb-6 border-b border-[#8c866b]/45 pb-5">
+        <h3 className="text-center font-eb text-[30px] font-medium leading-none text-[#080b0b] sm:text-[34px]">
+          {title}
+        </h3>
+      </div>
+    );
+  }
+
   return (
     <div className="mb-7">
       <h3
@@ -1622,50 +1601,32 @@ function StepTitle({ title }) {
 ========================================================= */
 
 function ChoiceSection({ title, smallText, children }) {
+  const isCard = useIsCard();
+
   return (
-    <div
-    // className="
-    //   border-t
-    //   border-black/20
-    //   pt-5
-    // "
-    >
-      <div
-        className="
-          mb-3
-          flex
-          items-center
-          gap-2
-        "
-      >
+    <div>
+      <div className="mb-3 flex items-center gap-2">
         <span
-          className="
-            text-[23px]
-            font-semibold
-            text-[#080b0b]
-          "
+          className={
+            isCard
+              ? "text-[15px] font-medium text-slate-900"
+              : "text-[23px] font-semibold text-[#080b0b]"
+          }
         >
           {title}
         </span>
 
         {smallText && (
           <span
-            className="
-              text-[9px]
-              text-black/40
-            "
+            className={
+              isCard ? "text-xs text-slate-600" : "text-[9px] text-black/40"
+            }
           >
             {smallText}
           </span>
         )}
 
-        <span
-          className="
-            text-black-500
-          "
-        >
-          *
-        </span>
+        <span className={isCard ? "text-amber-700" : "text-black-500"}>*</span>
       </div>
 
       {children}
@@ -1678,6 +1639,36 @@ function ChoiceSection({ title, smallText, children }) {
 ========================================================= */
 
 function ChoiceButton({ children, selected, onClick }) {
+  const isCard = useIsCard();
+
+  if (isCard) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`
+          min-h-[48px]
+          rounded-[12px]
+          border
+          px-3
+          py-2
+          text-sm
+          font-medium
+          transition-all
+          duration-150
+
+          ${
+            selected
+              ? "border-black bg-blue-100 text-white-500"
+              : "border-black/60 bg-white/60 text-slate-900"
+          }
+        `}
+      >
+        {children}
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -1709,30 +1700,27 @@ function ChoiceButton({ children, selected, onClick }) {
 ========================================================= */
 
 function TravellerSelect({ label, subtitle, value, registration, onChange }) {
+  const isCard = useIsCard();
+
   return (
     <div>
-      <label
-        className="
-          mb-2
-          block
-        "
-      >
+      <label className="mb-2 block">
         <span
-          className="
-            text-[23px]
-            font-semibold
-            text-[#080b0b]
-          "
+          className={
+            isCard
+              ? "text-sm font-medium text-slate-900"
+              : "text-[23px] font-semibold text-[#080b0b]"
+          }
         >
           {label}
         </span>
 
         <span
-          className="
-            ml-1
-            text-[11px]
-            text-black/40
-          "
+          className={
+            isCard
+              ? "ml-1 text-xs text-slate-600"
+              : "ml-1 text-[11px] text-black/40"
+          }
         >
           ({subtitle})
         </span>
@@ -1746,32 +1734,13 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
 
           onChange?.(event.target.value);
         }}
-        className="
-          h-[42px]
-          w-full
-          appearance-none
-          rounded-none
-          border-0
-          border-b
-          border-black/50
-          bg-transparent
-          px-0
-          text-[11px]
-          text-[#080b0b]
-          outline-none
-
-          focus:border-black
-          focus:bg-transparent
-          focus:outline-none
-          focus:ring-0
-        "
+        className={
+          isCard
+            ? "h-[48px] w-full rounded-[12px] border border-[#8c866b] bg-white/80 px-3 text-sm text-[#080b0b] outline-none focus:border-black focus:outline-none focus:ring-0"
+            : "h-[42px] w-full appearance-none rounded-none border-0 border-b border-black/50 bg-transparent px-0 text-[11px] text-[#080b0b] outline-none focus:border-black focus:bg-transparent focus:outline-none focus:ring-0"
+        }
       >
-        {Array.from(
-          {
-            length: 21,
-          },
-          (_, index) => index,
-        ).map((number) => (
+        {Array.from({ length: 21 }, (_, index) => index).map((number) => (
           <option key={number} value={number}>
             {number}
           </option>
@@ -1786,6 +1755,54 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
 ========================================================= */
 
 function NextButton({ onClick, className = "" }) {
+  const isCard = useIsCard();
+
+  if (isCard) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={`
+          flex
+          h-14
+          w-full
+          items-center
+          justify-center
+          gap-3
+          rounded-[14px]
+          bg-blue-400
+          hover:bg-blue-500
+          px-6
+          text-[15px]
+          font-semibold
+          uppercase
+          tracking-[0.14em]
+          text-white
+          transition
+          
+
+          ${className}
+        `}
+      >
+        <span>Next</span>
+
+        <svg
+          aria-hidden="true"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M4 12h15M14 7l5 5-5 5" />
+        </svg>
+      </button>
+    );
+  }
+
   return (
     <button
       type="button"
@@ -1797,7 +1814,7 @@ function NextButton({ onClick, className = "" }) {
         items-center
         justify-center
         gap-3
-        
+
         bg-[#080b0b]
         px-6
         text-[19px]
@@ -1813,14 +1830,7 @@ function NextButton({ onClick, className = "" }) {
     >
       <span>Next</span>
 
-      <span
-        className="
-          text-[35px]
-          leading-none
-        "
-      >
-        →
-      </span>
+      <span className="text-[35px] leading-none">→</span>
     </button>
   );
 }
@@ -1830,26 +1840,17 @@ function NextButton({ onClick, className = "" }) {
 ========================================================= */
 
 function BackButton({ onClick }) {
+  const isCard = useIsCard();
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className="
-        min-h-[42px]
-        min-w-[80px]
-        border
-        border-black
-        bg-transparent
-        px-5
-        text-[15px]
-        font-semibold
-        uppercase
-        tracking-wide
-        text-black
-        transition
-        hover:bg-black
-        hover:text-white
-      "
+      className={
+        isCard
+          ? "h-14 min-w-24 rounded-[14px] border  bg-blue-400 px-6 text-[15px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-blue-500"
+          : "min-h-10.5 min-w-20 border border-black bg-transparent px-5 text-[15px] font-semibold uppercase tracking-wide text-black transition hover:bg-black hover:text-yellow-200"
+      }
     >
       Back
     </button>
