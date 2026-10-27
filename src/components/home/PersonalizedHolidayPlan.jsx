@@ -39,7 +39,7 @@ function PersonalizedHolidayPlan() {
             BACKGROUND DOTS
         ====================================================== */}
 
-        <div
+        {/* <div
           aria-hidden="true"
           className="
             pointer-events-none
@@ -49,7 +49,7 @@ function PersonalizedHolidayPlan() {
             [background-image:radial-gradient(#b1aa87_0.7px,transparent_0.7px)]
             [background-size:20px_20px]
           "
-        />
+        /> */}
 
         {/* =====================================================
             LEFT SIDE — HEADING + ILLUSTRATION

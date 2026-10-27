@@ -1,13 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import {
-  ChevronLeft,
-  ChevronRight,
-  ArrowRight,
-} from "lucide-react";
-
-import SectionHeader from "../home/SectionHeader";
+import Heading from "../ui/Heading";
 import DestinationCard from "../ui/DestinationCard";
 
 import {
@@ -15,72 +9,34 @@ import {
   getThemes,
 } from "../../services/destination.service";
 
+// International category id (same as the backend: /destinations/:categoryId/theme/:themeId)
+const INTERNATIONAL_CATEGORY_ID = 2;
+
+// DestinationCard width (243px) + gap between cards (20px)
+const CARD_STEP = 243 + 20;
+
 // ---------------------------------------------------------------------------
-// Constants
+// Small reusable bits
 // ---------------------------------------------------------------------------
 
-const CARD_WIDTH = 240;
-const CARD_GAP = 20;
-
-// ---------------------------------------------------------------------------
-// Navigation Button
-// ---------------------------------------------------------------------------
-
-function NavButton({
-  direction = "left",
-  onClick,
-  disabled,
-  size = "md",
-  className = "",
-}) {
-  const Icon =
-    direction === "left"
-      ? ChevronLeft
-      : ChevronRight;
-
-  const dims =
-    size === "sm"
-      ? "w-9 h-9"
-      : "w-10 h-10";
+// Carousel arrow — same design as the Home page (Explore by themes)
+function NavButton({ direction = "left", onClick, disabled }) {
+  const Icon = direction === "left" ? ArrowLeft : ArrowRight;
 
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      aria-label={
-        direction === "left"
-          ? "Scroll left"
-          : "Scroll right"
-      }
-      className={[
-        dims,
-        "shrink-0 flex items-center justify-center rounded-full",
-        "bg-white border border-[#E3E1DC]",
-        "transition-all duration-200 ease-out",
-        disabled
-          ? "opacity-35 cursor-default"
-          : "hover:-translate-y-0.5 hover:scale-[1.04] hover:shadow-[0_8px_20px_rgba(20,20,20,0.10)]",
-        className,
-      ].join(" ")}
+      aria-label={direction === "left" ? "Scroll left" : "Scroll right"}
+      className="hidden shrink-0 cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white lg:block"
     >
-      <Icon
-        className="w-4 h-4 text-[#141414]"
-        strokeWidth={1.75}
-      />
+      <Icon size={18} />
     </button>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Category Chip
-// ---------------------------------------------------------------------------
-
-function CategoryChip({
-  label,
-  active,
-  onClick,
-}) {
+function CategoryChip({ label, active, onClick }) {
   return (
     <button
       type="button"
@@ -88,24 +44,19 @@ function CategoryChip({
       aria-selected={active}
       onClick={onClick}
       className={[
-        "relative shrink-0 inline-flex items-center",
-        "pl-3.5 pr-4 py-2.5 rounded-full",
-        "text-[13.5px] font-medium whitespace-nowrap",
-        "border transition-colors duration-200",
+        "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-4 py-2.5",
+        "font-inter text-[13.5px] font-medium transition-colors duration-200",
         active
-          ? "bg-beigeD text-text border-beigeD"
-          : "bg-white text-[#141414] border-beige",
+          ? "border-slate-900 bg-slate-900 text-white"
+          : "border-slate-300 bg-white text-slate-800 hover:border-slate-900",
       ].join(" ")}
     >
-      <span>{label}</span>
+      {label}
     </button>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Draggable / Scrollable Track
-// ---------------------------------------------------------------------------
-
+// Mouse drag to scroll (desktop)
 function useDragScroll(ref) {
   useEffect(() => {
     const el = ref.current;
@@ -128,328 +79,178 @@ function useDragScroll(ref) {
 
     const onMove = (e) => {
       if (!isDown) return;
-
-      el.scrollLeft =
-        scrollStart -
-        (e.pageX - startX);
+      el.scrollLeft = scrollStart - (e.pageX - startX);
     };
 
-    el.addEventListener(
-      "mousedown",
-      onDown
-    );
-
-    window.addEventListener(
-      "mouseup",
-      onUp
-    );
-
-    window.addEventListener(
-      "mousemove",
-      onMove
-    );
+    el.addEventListener("mousedown", onDown);
+    window.addEventListener("mouseup", onUp);
+    window.addEventListener("mousemove", onMove);
 
     return () => {
-      el.removeEventListener(
-        "mousedown",
-        onDown
-      );
-
-      window.removeEventListener(
-        "mouseup",
-        onUp
-      );
-
-      window.removeEventListener(
-        "mousemove",
-        onMove
-      );
+      el.removeEventListener("mousedown", onDown);
+      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("mousemove", onMove);
     };
   }, [ref]);
 }
 
 // ---------------------------------------------------------------------------
-// Scroll Thumb
-// ---------------------------------------------------------------------------
-
-function ScrollThumb({
-  progress,
-  mobileWidth = "w-[90px]",
-  tabletWidth = "sm:w-[110px]",
-  className = "",
-}) {
-  return (
-    <div
-      className={[
-        "flex justify-center",
-        className,
-      ].join(" ")}
-    >
-      <div
-        className={[
-          "relative h-[3px]",
-          mobileWidth,
-          tabletWidth,
-          "overflow-hidden rounded-full bg-slate-200",
-        ].join(" ")}
-      >
-        <div
-          className="
-            absolute
-            left-0
-            top-0
-            h-full
-            w-[25%]
-            rounded-full
-            bg-black
-          "
-          style={{
-            transform: `translateX(${
-              progress * 300
-            }%)`,
-          }}
-        />
-      </div>
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Main Component
+// Main component
 // ---------------------------------------------------------------------------
 
 export default function Themes() {
-  const [activeCategory, setActiveCategory] =
-    useState(1);
+  const [themes, setThemes] = useState([]);
+  const [activeTheme, setActiveTheme] = useState(null);
+  const [destinations, setDestinations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [chipNav, setChipNav] = useState({
-    atStart: true,
-    atEnd: false,
-  });
-
-  const [cardNav, setCardNav] = useState({
-    atStart: true,
-    atEnd: false,
-  });
-
-  const [categories, setCategories] =
-    useState(null);
-
-  const [destinations, setDestinations] =
-    useState(null);
-
-  const [page, setPage] = useState(0);
-
-  const [perPage, setPerPage] =
-    useState(1);
-
-  // -------------------------------------------------------------------------
-  // Scroll Refs
-  // -------------------------------------------------------------------------
+  const [chipNav, setChipNav] = useState({ atStart: true, atEnd: false });
+  const [cardNav, setCardNav] = useState({ atStart: true, atEnd: false });
+  const [cardProgress, setCardProgress] = useState(0);
 
   const chipTrackRef = useRef(null);
   const cardTrackRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   useDragScroll(chipTrackRef);
   useDragScroll(cardTrackRef);
 
-  // -------------------------------------------------------------------------
-  // Card Scroll Progress
-  // -------------------------------------------------------------------------
-
-  const [cardProgress, setCardProgress] =
-    useState(0);
-
-  // -------------------------------------------------------------------------
-  // Category Navigation
-  // -------------------------------------------------------------------------
+  // ---- scroll state -------------------------------------------------------
 
   const updateChipNav = useCallback(() => {
     const el = chipTrackRef.current;
 
     if (!el) return;
 
-    const maxScroll = Math.max(
-      0,
-      el.scrollWidth -
-        el.clientWidth
-    );
+    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
 
     setChipNav({
       atStart: el.scrollLeft <= 4,
-      atEnd:
-        maxScroll <= 0 ||
-        el.scrollLeft >=
-          maxScroll - 4,
+      atEnd: maxScroll <= 0 || el.scrollLeft >= maxScroll - 4,
     });
   }, []);
-
-  // -------------------------------------------------------------------------
-  // Destination Navigation
-  // -------------------------------------------------------------------------
 
   const updateCardNav = useCallback(() => {
     const el = cardTrackRef.current;
 
     if (!el) return;
 
-    const maxScroll = Math.max(
-      0,
-      el.scrollWidth -
-        el.clientWidth
-    );
+    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
 
-    const progress =
-      maxScroll > 0
-        ? Math.min(
-            1,
-            Math.max(
-              0,
-              el.scrollLeft /
-                maxScroll
-            )
-          )
-        : 0;
-
-    setCardProgress(progress);
-
-    const step =
-      CARD_WIDTH + CARD_GAP;
-
-    const visible = Math.max(
-      1,
-      Math.round(
-        el.clientWidth /
-          step
-      )
-    );
-
-    setPerPage(visible);
-
-    setPage(
-      Math.round(
-        el.scrollLeft /
-          (visible * step)
-      )
+    setCardProgress(
+      maxScroll > 0 ? Math.min(1, Math.max(0, el.scrollLeft / maxScroll)) : 0,
     );
 
     setCardNav({
-      atStart:
-        el.scrollLeft <= 4,
-
-      atEnd:
-        maxScroll <= 0 ||
-        el.scrollLeft >=
-          maxScroll - 4,
+      atStart: el.scrollLeft <= 4,
+      atEnd: maxScroll <= 0 || el.scrollLeft >= maxScroll - 4,
     });
   }, []);
 
-  // -------------------------------------------------------------------------
-  // Resize
-  // -------------------------------------------------------------------------
-
   useEffect(() => {
-    updateChipNav();
-    updateCardNav();
-
     const onResize = () => {
       updateChipNav();
       updateCardNav();
     };
 
-    window.addEventListener(
-      "resize",
-      onResize
-    );
+    window.addEventListener("resize", onResize);
 
-    return () => {
-      window.removeEventListener(
-        "resize",
-        onResize
+    return () => window.removeEventListener("resize", onResize);
+  }, [updateChipNav, updateCardNav]);
+
+  // ---- data ---------------------------------------------------------------
+
+  // Destinations of one theme (latest request wins)
+  const loadDestinations = useCallback(async (themeId) => {
+    const requestId = ++requestIdRef.current;
+
+    try {
+      setIsLoading(true);
+
+      const list = await getDestinationsByTheme(
+        INTERNATIONAL_CATEGORY_ID,
+        themeId,
       );
-    };
-  }, [
-    updateChipNav,
-    updateCardNav,
-  ]);
 
-  // -------------------------------------------------------------------------
-  // Fetch Themes + Initial International Destinations
-  // -------------------------------------------------------------------------
+      if (requestId !== requestIdRef.current) return;
 
+      setDestinations(Array.isArray(list) ? list : []);
+    } catch (error) {
+      if (requestId !== requestIdRef.current) return;
+
+      console.error("Failed to fetch destinations:", error);
+      setDestinations([]);
+    } finally {
+      if (requestId === requestIdRef.current) setIsLoading(false);
+    }
+  }, []);
+
+  // Themes + destinations of the first theme
   useEffect(() => {
+    let cancelled = false;
+
     async function fetchThemes() {
       try {
-        const res =
-          await getThemes();
+        const res = await getThemes();
 
-        setCategories(
-          res.data
-        );
+        if (cancelled) return;
 
-        const res2 =
-          await getDestinationsByTheme(
-            2,
-            7
-          );
+        const list = Array.isArray(res?.data) ? res.data : [];
 
-        setDestinations(
-          res2
-        );
+        setThemes(list);
+
+        if (list.length > 0) {
+          setActiveTheme(list[0].id);
+          loadDestinations(list[0].id);
+        } else {
+          setIsLoading(false);
+        }
       } catch (error) {
-        console.error(
-          "Failed to fetch themes:",
-          error
-        );
+        if (cancelled) return;
 
-        setCategories([]);
-        setDestinations([]);
+        console.error("Failed to fetch themes:", error);
+        setThemes([]);
+        setIsLoading(false);
       }
     }
 
     fetchThemes();
 
-    const el =
-      cardTrackRef.current;
+    return () => {
+      cancelled = true;
+    };
+  }, [loadDestinations]);
 
-    if (el) {
-      el.scrollTo({
-        left: 0,
-        behavior: "auto",
-      });
-    }
+  // New themes -> refresh chip arrows
+  useEffect(() => {
+    updateChipNav();
+  }, [themes, updateChipNav]);
 
+  // New destinations -> start from the first card
+  useEffect(() => {
+    cardTrackRef.current?.scrollTo({ left: 0 });
     updateCardNav();
-  }, [updateCardNav]);
+  }, [destinations, isLoading, updateCardNav]);
 
-  // -------------------------------------------------------------------------
-  // Scroll Categories
-  // -------------------------------------------------------------------------
+  // ---- actions ------------------------------------------------------------
 
-  const scrollChips = (dir) => {
-    chipTrackRef.current?.scrollBy({
-      left: dir * 220,
-      behavior: "smooth",
-    });
+  const handleThemeClick = (id) => {
+    if (id === activeTheme) return;
+
+    setActiveTheme(id);
+    loadDestinations(id);
   };
 
-  // -------------------------------------------------------------------------
-  // Scroll Destinations
-  // -------------------------------------------------------------------------
+  const scrollChips = (dir) => {
+    chipTrackRef.current?.scrollBy({ left: dir * 220, behavior: "smooth" });
+  };
 
   const scrollCards = (dir) => {
     cardTrackRef.current?.scrollBy({
-      left:
-        dir *
-        (CARD_WIDTH + CARD_GAP) *
-        2,
+      left: dir * CARD_STEP * 2,
       behavior: "smooth",
     });
   };
-
-  // -------------------------------------------------------------------------
-  // Keyboard Navigation
-  // -------------------------------------------------------------------------
 
   const onCardsKeyDown = (e) => {
     if (e.key === "ArrowRight") {
@@ -463,339 +264,136 @@ export default function Themes() {
     }
   };
 
-  // -------------------------------------------------------------------------
-  // Category Selection
-  // -------------------------------------------------------------------------
-
-  const handleCategoryClick =
-    async (id) => {
-      try {
-        setActiveCategory(id);
-
-        const res =
-          await getDestinationsByTheme(
-            2,
-            id
-          );
-
-        setDestinations(res);
-
-        // Reset destination carousel
-        requestAnimationFrame(() => {
-          const el =
-            cardTrackRef.current;
-
-          if (el) {
-            el.scrollTo({
-              left: 0,
-              behavior: "smooth",
-            });
-          }
-
-          setCardProgress(0);
-
-          setCardNav({
-            atStart: true,
-            atEnd: false,
-          });
-
-          updateCardNav();
-        });
-      } catch (error) {
-        console.error(
-          "Failed to fetch destinations:",
-          error
-        );
-
-        setDestinations([]);
-      }
-    };
-
-  // -------------------------------------------------------------------------
-  // Pagination Calculation
-  // -------------------------------------------------------------------------
-
-  const pageCount = Math.max(
-    1,
-    Math.ceil(
-      (destinations?.length ||
-        0) / perPage
-    )
-  );
-
-  // -------------------------------------------------------------------------
-  // Render
-  // -------------------------------------------------------------------------
+  // Nothing to show (no themes from backend)
+  if (!isLoading && themes.length === 0) return null;
 
   return (
-    <section className="w-full bg-white px-5 sm:px-8 md:px-10 lg:px-16 font-sans text-[#141414]">
-      <div className="mx-auto max-w-[1440px]">
-
-        {/* =====================================================
-            SECTION HEADER
-        ====================================================== */}
-
-        <SectionHeader
-          title="Explore destinations that inspire"
-          description="From serene beaches to majestic mountains, find places that match your vibe."
+    <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
+      <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
+        <Heading
+          heading="Explore destinations that"
+          highlight="inspire"
+          subheading="From serene beaches to majestic mountains, find places that match your vibe."
+          className="mb-6 sm:mb-8"
         />
 
-        {/* =====================================================
-            CATEGORY CAROUSEL
-        ====================================================== */}
-
-        <div className="mt-7 lg:mt-8 flex items-start gap-3">
-
-          {/* Desktop category arrow */}
-
+        {/* Theme chips */}
+        <div className="flex items-center gap-3">
           <NavButton
             direction="left"
-            onClick={() =>
-              scrollChips(-1)
-            }
-            disabled={
-              chipNav.atStart
-            }
-            className="hidden lg:flex"
+            onClick={() => scrollChips(-1)}
+            disabled={chipNav.atStart}
           />
-
-          {/* Category Track */}
 
           <div className="relative min-w-0 flex-1">
             <div
               ref={chipTrackRef}
-              onScroll={
-                updateChipNav
-              }
+              onScroll={updateChipNav}
               role="tablist"
-              aria-label="Destination categories"
-              className="
-                flex
-                gap-2.5
-                overflow-x-auto
-                px-1
-                py-1
-                snap-x
-                snap-mandatory
-                overscroll-x-contain
-                [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden
-              "
+              aria-label="Destination themes"
+              className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto overscroll-x-contain px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
-              {categories?.map(
-                (cat) => (
-                  <div
-                    key={cat.id}
-                    className="
-                      shrink-0
-                      snap-start
-                    "
-                  >
-                    <CategoryChip
-                      label={
-                        cat.name
-                      }
-                      active={
-                        cat.id ===
-                        activeCategory
-                      }
-                      onClick={() =>
-                        handleCategoryClick(
-                          cat.id
-                        )
-                      }
-                    />
-                  </div>
-                )
-              )}
+              {themes.map((theme) => (
+                <div key={theme.id} className="shrink-0 snap-start">
+                  <CategoryChip
+                    label={theme.name}
+                    active={theme.id === activeTheme}
+                    onClick={() => handleThemeClick(theme.id)}
+                  />
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Desktop category arrow */}
-
           <NavButton
             direction="right"
-            onClick={() =>
-              scrollChips(1)
-            }
-            disabled={
-              chipNav.atEnd
-            }
-            className="hidden lg:flex"
+            onClick={() => scrollChips(1)}
+            disabled={chipNav.atEnd}
           />
         </div>
 
-        {/* =====================================================
-            DESTINATIONS HEADER
-        ====================================================== */}
-
-        <div
-          className="
-            mt-8
-            lg:mt-10
-            flex
-            items-end
-            justify-between
-            border-b
-            border-[#E3E1DC]
-            pb-2
-          "
-        >
-          <span
-            className="
-              text-[11px]
-              font-semibold
-              tracking-[0.18em]
-              uppercase
-              text-[#8A877F]
-            "
-          >
+        {/* Destinations header */}
+        <div className="mt-8 flex items-end justify-between border-b border-slate-200 pb-2 lg:mt-10">
+          <span className="font-inter text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
             Top Destinations
           </span>
 
           <div className="flex items-center gap-4">
-
-            {/* View All */}
-
             <a
-              href="#"
-              className="
-                hidden
-                sm:inline-flex
-                items-center
-                gap-1.5
-                text-sm
-                text-[#141414]
-                transition-colors
-                hover:text-[#8A877F]
-              "
+              href="#all-destinations"
+              className="hidden items-center gap-1.5 font-inter text-sm text-slate-900 transition-colors hover:text-slate-500 sm:inline-flex"
             >
               View all
-
-              <ArrowRight
-                className="w-3.5 h-3.5"
-                strokeWidth={1.75}
-              />
+              <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />
             </a>
 
-            {/* Desktop destination arrows */}
-
-            <div className="hidden lg:flex items-center gap-2">
-
+            <div className="hidden items-center gap-2 lg:flex">
               <NavButton
                 direction="left"
-                size="sm"
-                onClick={() =>
-                  scrollCards(-1)
-                }
-                disabled={
-                  cardNav.atStart
-                }
+                onClick={() => scrollCards(-1)}
+                disabled={cardNav.atStart}
               />
-
               <NavButton
                 direction="right"
-                size="sm"
-                onClick={() =>
-                  scrollCards(1)
-                }
-                disabled={
-                  cardNav.atEnd
-                }
+                onClick={() => scrollCards(1)}
+                disabled={cardNav.atEnd}
               />
-
             </div>
           </div>
         </div>
 
-        {/* =====================================================
-            DESTINATION CAROUSEL
-        ====================================================== */}
-
-        <div
-          className="
-            mt-8
-            -mx-5
-            sm:-mx-8
-            md:-mx-10
-            lg:-mx-16
-            px-5
-            sm:px-8
-            md:px-10
-            lg:px-16
-          "
-        >
+        {/* Loading spinner (same as ThemePackages) */}
+        {isLoading && (
           <div
-            ref={cardTrackRef}
-            onScroll={
-              updateCardNav
-            }
-            onKeyDown={
-              onCardsKeyDown
-            }
-            tabIndex={0}
-            aria-label="Destination cards, use arrow keys to navigate"
-            className="
-              flex
-              gap-4
-              sm:gap-5
-              overflow-x-auto
-              py-2
-              snap-x
-              snap-mandatory
-              overscroll-x-contain
-              [scrollbar-width:none]
-              [&::-webkit-scrollbar]:hidden
-            "
+            role="status"
+            aria-live="polite"
+            className="flex min-h-[300px] flex-col items-center justify-center gap-4"
           >
-            <AnimatePresence
-              mode="popLayout"
-              initial={false}
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
+            <p className="font-inter text-sm font-medium text-slate-500">
+              Loading destinations…
+            </p>
+          </div>
+        )}
+
+        {!isLoading && destinations.length === 0 && (
+          <div className="mt-8 rounded-md border border-slate-200 bg-white p-8 text-center font-inter text-slate-600">
+            No destinations are available for this theme yet.
+          </div>
+        )}
+
+        {/* Destination cards */}
+        {!isLoading && destinations.length > 0 && (
+          <div className="-mx-6 mt-8 px-6 lg:-mx-8 lg:px-8">
+            <div
+              ref={cardTrackRef}
+              onScroll={updateCardNav}
+              onKeyDown={onCardsKeyDown}
+              tabIndex={0}
+              aria-label="Destination cards, use arrow keys to navigate"
+              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] sm:gap-5 [&::-webkit-scrollbar]:hidden"
             >
-              {destinations?.map(
-                (destination) => (
-                  <motion.div
-                    key={
-                      destination.id
-                    }
-                    className="
-                      shrink-0
-                      snap-start
+              {destinations.map((destination) => (
+                <div
+                  key={destination.id}
+                  className="w-[86%] shrink-0 snap-start sm:w-[72%] md:w-[62%] lg:w-auto"
+                >
+                  <DestinationCard destination={destination} />
+                </div>
+              ))}
+            </div>
 
-                      w-[86%]
-
-                      sm:w-[72%]
-
-                      md:w-[62%]
-
-                      lg:w-auto
-                    "
-                  >
-                    <DestinationCard
-                      destination={
-                        destination
-                      }
-                    />
-                  </motion.div>
-                )
-              )}
-            </AnimatePresence>
+            {/* Mobile / tablet scroll thumb */}
+            <div className="mt-5 flex justify-center lg:hidden">
+              <div className="relative h-[3px] w-[100px] overflow-hidden rounded-full bg-slate-200 sm:w-[120px]">
+                <div
+                  className="absolute left-0 top-0 h-full w-[25%] rounded-full bg-slate-900"
+                  style={{ transform: `translateX(${cardProgress * 300}%)` }}
+                />
+              </div>
+            </div>
           </div>
-
-          {/* =================================================
-              DESTINATION SCROLL THUMB
-          ================================================== */}
-
-          <div className="mt-5 lg:hidden">
-            <ScrollThumb
-              progress={
-                cardProgress
-              }
-              mobileWidth="w-[100px]"
-              tabletWidth="sm:w-[120px]"
-            />
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

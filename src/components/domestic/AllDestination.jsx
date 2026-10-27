@@ -1,290 +1,98 @@
-import React, { useEffect, useState } from "react";
-
-import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  CardMedia,
-  Chip,
-  CircularProgress,
-  Stack,
-} from "@mui/material";
-
-import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
-import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import useInfiniteScroll from "../../hooks/useInfiniteScroll";
-import DestinationCard from "../ui/DestinationCard";
-import SectionHeader from "../home/SectionHeader";
+import Heading from "../ui/Heading";
 import api from "../../services/api";
 
-// -----------------------------------------------------
-// DUMMY DESTINATION DATA
-// Replace this later with API data
-// -----------------------------------------------------
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=90";
 
-const destinationImages = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-  "https://images.unsplash.com/photo-1477587458883-47145ed94245",
-  "https://images.unsplash.com/photo-1512100356356-de1b84283e18",
-  "https://images.unsplash.com/photo-1506905925346-21bda4d32df4",
-  "https://images.unsplash.com/photo-1524492412937-b28074a5d7da",
-  "https://images.unsplash.com/photo-1530789253388-582c481c54b0",
-  "https://images.unsplash.com/photo-1518548419970-58e3b4079ab2",
-  "https://images.unsplash.com/photo-1548013146-72479768bada",
-  "https://images.unsplash.com/photo-1512453979798-5ea266f8880c",
-  "https://images.unsplash.com/photo-1528181304800-259b08848526",
-  "https://images.unsplash.com/photo-1526392060635-9d6019884377",
-];
+// ---------------------------------------------------------------------------
+// One destination card (same look as DestinationCard, but fluid so it fits
+// 2 / 3 / 4 columns on every screen size)
+// ---------------------------------------------------------------------------
+function DestinationGridCard({ destination }) {
+  const imageUrl =
+    destination?.images?.[0]?.imageUrl ??
+    destination?.imageUrl ??
+    destination?.image ??
+    FALLBACK_IMAGE;
 
-// -----------------------------------------------------
-// CREATE EXACTLY 60 DESTINATIONS
-// -----------------------------------------------------
+  const type = destination?.categoryName === "International" ? "intl" : "dom";
 
-// const destinations = Array.from({ length: 60 }, (_, index) => {
-//   const destination = baseDestinations[index];
+  return (
+    <Link
+      to={`/destinations/${type}/${destination?.slug}`}
+      className="group relative block h-[230px] overflow-hidden rounded bg-slate-200 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:h-[270px] lg:h-[300px]"
+    >
+      <img
+        src={imageUrl}
+        alt={`${destination?.name ?? "Destination"}${
+          destination?.tagline ? `, ${destination.tagline}` : ""
+        }`}
+        loading="lazy"
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.045]"
+      />
 
-//   return {
-//     id: index + 1,
-//     name: destination.name,
-//     region: destination.region,
-//     type: destination.type,
+      {/* Bottom gradient so the name is readable */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
 
-//     image: `${
-//       destinationImages[index % destinationImages.length]
-//     }?auto=format&fit=crop&w=900&q=85`,
+      <div className="absolute inset-x-0 bottom-0 px-3.5 pb-4 text-white sm:px-4 sm:pb-5">
+        {destination?.tagline && (
+          <p className="mb-1 truncate font-inter text-[10px] font-bold uppercase leading-tight tracking-[0.1px] [text-shadow:0_1px_5px_rgb(0_0_0/0.7)]">
+            {destination.tagline}
+          </p>
+        )}
 
-//     featured: index % 4 === 0,
-//     popular: index % 4 === 1,
-//   };
-// });
+        <h3 className="truncate font-eb text-xl uppercase leading-none tracking-tight [text-shadow:0_2px_8px_rgb(0_0_0/0.65)] sm:text-2xl">
+          {destination?.name}
+        </h3>
+      </div>
+    </Link>
+  );
+}
 
-// -----------------------------------------------------
-// DESTINATION CARD
-// -----------------------------------------------------
-
-// const DestinationCard = ({ destination }) => {
-//   return (
-//     <Card
-//       sx={{
-//         position: "relative",
-//         height: {
-//           xs: 245,
-//           sm: 270,
-//           md: 290,
-//         },
-
-//         borderRadius: "18px",
-//         overflow: "hidden",
-
-//         cursor: "pointer",
-
-//         boxShadow: "0 8px 25px rgba(15, 23, 42, 0.08)",
-
-//         transition:
-//           "transform 0.35s ease, box-shadow 0.35s ease",
-
-//         "&:hover": {
-//           transform: "translateY(-6px)",
-//           boxShadow:
-//             "0 18px 40px rgba(15, 23, 42, 0.18)",
-
-//           "& .destination-image": {
-//             transform: "scale(1.07)",
-//           },
-
-//           "& .destination-arrow": {
-//             transform: "translateX(3px)",
-//           },
-//         },
-//       }}
-//     >
-//       {/* IMAGE */}
-
-//       <CardMedia
-//         component="img"
-//         image={destination.image}
-//         alt={destination.name}
-//         className="destination-image"
-//         sx={{
-//           width: "100%",
-//           height: "100%",
-//           objectFit: "cover",
-
-//           transition: "transform 0.6s ease",
-//         }}
-//       />
-
-//       {/* GRADIENT */}
-
-//       <Box
-//         sx={{
-//           position: "absolute",
-//           inset: 0,
-
-//           background:
-//             "linear-gradient(180deg, rgba(0,0,0,0.02) 35%, rgba(0,0,0,0.72) 100%)",
-//         }}
-//       />
-
-//       {/* BADGE */}
-
-//       {(destination.featured || destination.popular) && (
-//         <Chip
-//           icon={
-//             destination.featured ? (
-//               <StarRoundedIcon
-//                 sx={{
-//                   fontSize: "14px !important",
-//                   color: "white !important",
-//                 }}
-//               />
-//             ) : undefined
-//           }
-//           label={
-//             destination.featured
-//               ? "FEATURED"
-//               : "POPULAR"
-//           }
-//           size="small"
-//           sx={{
-//             position: "absolute",
-//             top: 14,
-//             left: 14,
-
-//             height: 27,
-
-//             borderRadius: "8px",
-
-//             backgroundColor: destination.featured
-//               ? "rgba(16, 185, 129, 0.95)"
-//               : "rgba(249, 115, 22, 0.95)",
-
-//             color: "white",
-
-//             fontSize: "10px",
-//             fontWeight: 800,
-//             letterSpacing: "0.5px",
-
-//             "& .MuiChip-label": {
-//               px: destination.featured ? 1 : 1.3,
-//             },
-//           }}
-//         />
-//       )}
-
-//       {/* CONTENT */}
-
-//       <Box
-//         sx={{
-//           position: "absolute",
-//           bottom: 0,
-//           left: 0,
-//           right: 0,
-
-//           p: {
-//             xs: 1.8,
-//             sm: 2,
-//           },
-//         }}
-//       >
-//         <Typography
-//           sx={{
-//             color: "white",
-//             fontSize: {
-//               xs: "19px",
-//               sm: "21px",
-//             },
-//             fontWeight: 800,
-//             lineHeight: 1.1,
-
-//             mb: 0.5,
-//           }}
-//         >
-//           {destination.name}
-//         </Typography>
-
-//         <Stack
-//           direction="row"
-//           alignItems="center"
-//           spacing={0.4}
-//         >
-//           <LocationOnOutlinedIcon
-//             sx={{
-//               fontSize: 15,
-//               color: "rgba(255,255,255,0.9)",
-//             }}
-//           />
-
-//           <Typography
-//             sx={{
-//               color: "rgba(255,255,255,0.9)",
-//               fontSize: "12px",
-//               fontWeight: 500,
-//             }}
-//           >
-//             {destination.region}
-//           </Typography>
-//         </Stack>
-//       </Box>
-
-//       {/* ARROW */}
-
-//       <Box
-//         className="destination-arrow"
-//         sx={{
-//           position: "absolute",
-
-//           right: 14,
-//           bottom: 14,
-
-//           width: 34,
-//           height: 34,
-
-//           borderRadius: "50%",
-
-//           display: "flex",
-//           alignItems: "center",
-//           justifyContent: "center",
-
-//           backgroundColor:
-//             "rgba(255,255,255,0.18)",
-
-//           border:
-//             "1px solid rgba(255,255,255,0.55)",
-
-//           backdropFilter: "blur(8px)",
-
-//           color: "white",
-
-//           fontSize: 18,
-
-//           transition: "transform 0.3s ease",
-//         }}
-//       >
-//         →
-//       </Box>
-//     </Card>
-//   );
-// };
-
-// -----------------------------------------------------
-// MAIN COMPONENT
-// -----------------------------------------------------
-
+// ---------------------------------------------------------------------------
+// Main component
+// ---------------------------------------------------------------------------
 const AllDestinations = () => {
   const [destinations, setDestinations] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+
   useEffect(() => {
+    let cancelled = false;
+
     const fetchDestinations = async () => {
-      const res = await api.get("/destinations/category/1");
-      setDestinations(res.data.data);
-      console.log(res);
+      try {
+        setIsLoading(true);
+        setHasError(false);
+
+        const res = await api.get("/destinations/category/1");
+
+        if (cancelled) return;
+
+        setDestinations(Array.isArray(res.data?.data) ? res.data.data : []);
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error("Failed to fetch destinations:", error);
+        setDestinations([]);
+        setHasError(true);
+      } finally {
+        if (!cancelled) setIsLoading(false);
+      }
     };
+
     fetchDestinations();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
-  console.log(destinations);
+
   const { visibleItems, loadMoreRef, hasMore } = useInfiniteScroll(
     destinations,
     12,
@@ -292,584 +100,78 @@ const AllDestinations = () => {
   );
 
   return (
-    // <Box
-    //   component="section"
-    //   sx={{
-    //     width: "100%",
-    //     py: {
-    //       xs: 6,
-    //       sm: 8,
-    //       md: 10,
-    //     },
-
-    //     backgroundColor: "#ffffff",
-    //   }}
-    // >
-    //   <Container
-    //     maxWidth="xl"
-    //     sx={{
-    //       px: {
-    //         xs: 2,
-    //         sm: 3,
-    //         md: 4,
-    //       },
-    //     }}
-    //   >
-    //     {/* -------------------------------------------
-    //         HEADING
-    //     ------------------------------------------- */}
-
-    //     {/* <Box
-    //       sx={{
-    //         textAlign: "center",
-    //         maxWidth: 760,
-    //         mx: "auto",
-
-    //         mb: {
-    //           xs: 4,
-    //           md: 5,
-    //         },
-    //       }}
-    //     >
-    //       <Typography
-    //         sx={{
-    //           color: "#3574c5",
-
-    //           fontSize: {
-    //             xs: "11px",
-    //             sm: "12px",
-    //           },
-
-    //           fontWeight: 800,
-
-    //           letterSpacing: "4px",
-
-    //           textTransform: "uppercase",
-
-    //           mb: 1,
-    //         }}
-    //       >
-    //         Explore The World
-    //       </Typography>
-
-    //       <Typography
-    //         component="h2"
-    //         sx={{
-    //           fontSize: {
-    //             xs: "34px",
-    //             sm: "44px",
-    //             md: "54px",
-    //           },
-
-    //           lineHeight: 1.05,
-
-    //           fontWeight: 800,
-
-    //           letterSpacing: "-1.5px",
-
-    //           color: "#102a43",
-
-    //           mb: 1.5,
-    //         }}
-    //       >
-    //         All Destinations
-    //       </Typography>
-
-    //       <Typography
-    //         sx={{
-    //           color: "#607d9b",
-
-    //           fontSize: {
-    //             xs: "14px",
-    //             sm: "16px",
-    //           },
-
-    //           lineHeight: 1.7,
-
-    //           px: {
-    //             xs: 1,
-    //             sm: 0,
-    //           },
-    //         }}
-    //       >
-    //         From serene beaches to majestic mountains,
-    //         discover handpicked destinations for your next
-    //         unforgettable journey.
-    //       </Typography>
-    //     </Box> */}
-    //     <SectionHeader
-    //       title={"All Destinations"}
-    //       description={
-    //         "From serene beaches to majestic mountains, discover handpicked destinations for your next unforgettable journey."
-    //       }
-    //     />
-
-    //     {/* -------------------------------------------
-    //         DESTINATION GRID
-    //     ------------------------------------------- */}
-
-    //     <Box
-    //       sx={{
-    //         display: "grid",
-
-    //         gridTemplateColumns: {
-    //           xs: "1fr",
-    //           sm: "repeat(2, minmax(0, 1fr))",
-    //           md: "repeat(3, minmax(0, 1fr))",
-    //           lg: "repeat(4, minmax(0, 1fr))",
-    //           xl: "repeat(5, minmax(0, 1fr))",
-    //         },
-    //         marginTop: "20px",
-    //         gap: {
-    //           xs: 2,
-    //           sm: 2.5,
-    //           md: 3,
-    //         },
-    //       }}
-    //     >
-    //       {visibleItems.map((destination) => (
-    //         <DestinationCard key={destination.id} destination={destination} />
-    //       ))}
-    //     </Box>
-
-    //     {/* -------------------------------------------
-    //         INFINITE SCROLL TRIGGER
-    //     ------------------------------------------- */}
-
-    //     <Box
-    //       ref={loadMoreRef}
-    //       sx={{
-    //         minHeight: 100,
-
-    //         display: "flex",
-    //         alignItems: "center",
-    //         justifyContent: "center",
-
-    //         mt: 4,
-    //       }}
-    //     >
-    //       {hasMore ? (
-    //         <Stack alignItems="center" spacing={1.2}>
-    //           <CircularProgress
-    //             size={25}
-    //             thickness={4}
-    //             sx={{
-    //               color: "#3574c5",
-    //             }}
-    //           />
-
-    //           <Typography
-    //             sx={{
-    //               color: "#78909c",
-    //               fontSize: "12px",
-    //               fontWeight: 500,
-    //             }}
-    //           >
-    //             Loading more destinations...
-    //           </Typography>
-    //         </Stack>
-    //       ) : (
-    //         <Typography
-    //           sx={{
-    //             color: "#94a3b8",
-    //             fontSize: "13px",
-    //             fontWeight: 500,
-    //             py: 3,
-    //           }}
-    //         >
-    //           You've explored all destinations
-    //         </Typography>
-    //       )}
-    //     </Box>
-    //   </Container>
-    // </Box>
-    <Box
-      component="section"
-      sx={{
-        width: "100%",
-        py: {
-          xs: 6,
-          sm: 8,
-          md: 10,
-        },
-        backgroundColor: "#ffffff",
-      }}
+    <section
+      id="all-destinations"
+      className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]"
     >
-      <Container
-        maxWidth="xl"
-        sx={{
-          px: {
-            xs: 2,
-            sm: 3,
-            md: 4,
-          },
-        }}
-      >
-        {/* -------------------------------------------
-        HEADING
-    ------------------------------------------- */}
-
-        <SectionHeader
-          title={"All Destinations"}
-          description={
-            "From serene beaches to majestic mountains, discover handpicked destinations for your next unforgettable journey."
-          }
+      <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
+        <Heading
+          heading="All"
+          highlight="destinations"
+          subheading="From serene beaches to majestic mountains, discover handpicked destinations for your next unforgettable journey."
+          className="mb-6 sm:mb-8"
         />
 
-        {/* =================================================
-        MOBILE / TABLET / IPAD
-        CUSTOM DESTINATION CARDS
-        ================================================= */}
-
-        <Box
-          sx={{
-            display: {
-              xs: "flex",
-              sm: "flex",
-              md: "flex",
-              lg: "none",
-            },
-
-            flexWrap: "wrap",
-
-            width: "100%",
-
-            marginTop: "20px",
-
-            gap: {
-              xs: 1.5,
-              sm: 2,
-              md: 2.5,
-            },
-          }}
-        >
-          {visibleItems.map((destination) => (
-            <Box
-              key={destination.id}
-              component="a"
-              href={`/destinations/dom/${destination.slug}`}
-              sx={{
-                width: {
-                  xs: "calc(50% - 6px)",
-                  sm: "calc(50% - 8px)",
-                  md: "calc(50% - 10px)",
-                },
-
-                flexGrow: 0,
-                flexShrink: 0,
-
-                textDecoration: "none",
-
-                position: "relative",
-
-                height: {
-                  xs: 220,
-                  sm: 250,
-                  md: 280,
-                },
-
-                overflow: "hidden",
-
-                backgroundColor: "#e5e7eb",
-
-                boxShadow: "0 8px 25px rgba(15, 23, 42, 0.08)",
-
-                transition: "transform 0.3s ease, box-shadow 0.3s ease",
-
-                "&:hover": {
-                  transform: "translateY(-4px)",
-                  boxShadow: "0 14px 35px rgba(15, 23, 42, 0.14)",
-                },
-              }}
-            >
-              {/* IMAGE */}
-
-              <Box
-                component="img"
-                src={destination.imageUrl}
-                alt={destination.name || "Destination"}
-                loading="lazy"
-                sx={{
-                  position: "absolute",
-
-                  inset: 0,
-
-                  width: "100%",
-                  height: "100%",
-
-                  objectFit: "cover",
-
-                  display: "block",
-
-                  transition: "transform 0.5s ease",
-
-                  ".MuiBox-root:hover &": {
-                    transform: "scale(1.05)",
-                  },
-                }}
-              />
-
-              {/* GRADIENT */}
-
-              <Box
-                sx={{
-                  position: "absolute",
-
-                  inset: 0,
-
-                  background:
-                    "linear-gradient(180deg, rgba(0,0,0,0.02) 30%, rgba(0,0,0,0.78) 100%)",
-                }}
-              />
-
-              {/* CONTENT */}
-
-              <Box
-                sx={{
-                  position: "absolute",
-
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-
-                  p: {
-                    xs: 1.4,
-                    sm: 1.7,
-                    md: 2,
-                  },
-                }}
-              >
-                {/* DESTINATION NAME */}
-
-                <Typography
-                  component="h3"
-                  sx={{
-                    color: "#ffffff",
-
-                    fontSize: {
-                      xs: "15px",
-                      sm: "18px",
-                      md: "20px",
-                    },
-
-                    fontWeight: 800,
-
-                    lineHeight: 1.15,
-
-                    mb: {
-                      xs: 0.4,
-                      sm: 0.5,
-                    },
-
-                    overflow: "hidden",
-
-                    textOverflow: "ellipsis",
-
-                    display: "-webkit-box",
-
-                    WebkitLineClamp: 1,
-
-                    WebkitBoxOrient: "vertical",
-                  }}
-                >
-                  {destination.name}
-                </Typography>
-
-                {/* TAGLINE */}
-
-                {destination.tagline && (
-                  <Typography
-                    sx={{
-                      color: "rgba(255,255,255,0.88)",
-
-                      fontSize: {
-                        xs: "10px",
-                        sm: "11px",
-                        md: "12px",
-                      },
-
-                      lineHeight: 1.35,
-
-                      fontWeight: 400,
-
-                      overflow: "hidden",
-
-                      textOverflow: "ellipsis",
-
-                      display: "-webkit-box",
-
-                      WebkitLineClamp: {
-                        xs: 2,
-                        sm: 2,
-                        md: 2,
-                      },
-
-                      WebkitBoxOrient: "vertical",
-
-                      pr: {
-                        xs: 1,
-                        sm: 1.5,
-                      },
-                    }}
-                  >
-                    {destination.tagline}
-                  </Typography>
-                )}
-              </Box>
-
-              {/* ARROW */}
-              {/* 
-          <Box
-            sx={{
-              position: "absolute",
-
-              right: {
-                xs: 8,
-                sm: 10,
-                md: 12,
-              },
-
-              bottom: {
-                xs: 8,
-                sm: 10,
-                md: 12,
-              },
-
-              width: {
-                xs: 28,
-                sm: 31,
-                md: 34,
-              },
-
-              height: {
-                xs: 28,
-                sm: 31,
-                md: 34,
-              },
-
-              borderRadius: "50%",
-
-              display: "flex",
-
-              alignItems: "center",
-
-              justifyContent: "center",
-
-              backgroundColor:
-                "rgba(255,255,255,0.18)",
-
-              border:
-                "1px solid rgba(255,255,255,0.55)",
-
-              backdropFilter: "blur(8px)",
-
-              color: "#ffffff",
-
-              fontSize: {
-                xs: 14,
-                sm: 16,
-                md: 18,
-              },
-
-              lineHeight: 1,
-            }}
+        {/* Loading spinner (same as ThemePackages) */}
+        {isLoading && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex min-h-[320px] flex-col items-center justify-center gap-4"
           >
-            →
-          </Box> */}
-            </Box>
-          ))}
-        </Box>
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
+            <p className="text-sm font-medium text-slate-500">
+              Loading destinations…
+            </p>
+          </div>
+        )}
 
-        {/* =================================================
-        DESKTOP
-        ORIGINAL DESTINATION CARD GRID
-        ================================================= */}
+        {!isLoading && hasError && (
+          <div className="rounded-md border border-red-200 bg-red-50 p-8 text-center text-red-700">
+            We could not load destinations right now. Please try again later.
+          </div>
+        )}
 
-        <Box
-          sx={{
-            display: {
-              xs: "none",
-              sm: "none",
-              md: "none",
-              lg: "grid",
-            },
+        {!isLoading && !hasError && destinations.length === 0 && (
+          <div className="rounded-md border border-slate-200 bg-white p-8 text-center text-slate-600">
+            No destinations are available yet.
+          </div>
+        )}
 
-            gridTemplateColumns: {
-              lg: "repeat(4, minmax(0, 1fr))",
-              xl: "repeat(5, minmax(0, 1fr))",
-            },
+        {/* Destination grid */}
+        {!isLoading && destinations.length > 0 && (
+          <>
+            <div className="grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-4 lg:gap-6">
+              {visibleItems.map((destination) => (
+                <DestinationGridCard
+                  key={destination.id}
+                  destination={destination}
+                />
+              ))}
+            </div>
 
-            marginTop: "20px",
-
-            gap: {
-              lg: 3,
-              xl: 3,
-            },
-          }}
-        >
-          {visibleItems.map((destination) => (
-            <DestinationCard key={destination.id} destination={destination} />
-          ))}
-        </Box>
-
-        {/* -------------------------------------------
-        INFINITE SCROLL TRIGGER
-    ------------------------------------------- */}
-
-        <Box
-          ref={loadMoreRef}
-          sx={{
-            minHeight: 100,
-
-            display: "flex",
-
-            alignItems: "center",
-
-            justifyContent: "center",
-
-            mt: 4,
-          }}
-        >
-          {hasMore ? (
-            <Stack alignItems="center" spacing={1.2}>
-              <CircularProgress
-                size={25}
-                thickness={4}
-                sx={{
-                  color: "#3574c5",
-                }}
-              />
-
-              <Typography
-                sx={{
-                  color: "#78909c",
-
-                  fontSize: "12px",
-
-                  fontWeight: 500,
-                }}
-              >
-                Loading more destinations...
-              </Typography>
-            </Stack>
-          ) : (
-            <Typography
-              sx={{
-                color: "#94a3b8",
-
-                fontSize: "13px",
-
-                fontWeight: 500,
-
-                py: 3,
-              }}
+            {/* Infinite scroll trigger */}
+            <div
+              ref={loadMoreRef}
+              className="mt-8 flex min-h-[80px] items-center justify-center"
             >
-              You've explored all destinations
-            </Typography>
-          )}
-        </Box>
-      </Container>
-    </Box>
+              {hasMore ? (
+                <div className="flex flex-col items-center gap-2">
+                  <div className="h-6 w-6 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
+                  <p className="text-xs font-medium text-slate-500">
+                    Loading more destinations…
+                  </p>
+                </div>
+              ) : (
+                <p className="py-3 text-sm font-medium text-slate-400">
+                  You&apos;ve explored all destinations
+                </p>
+              )}
+            </div>
+          </>
+        )}
+      </div>
+    </section>
   );
 };
 

@@ -14,11 +14,15 @@ function DestinationCard({ destination }) {
    */
   const destinationName = destination?.name ?? "";
   const nameFontSize =
-    destinationName.length >= 12
-      ? "22px"
-      : destinationName.length >= 10
-        ? "24px"
-        : "27px";
+    destinationName.length >= 16
+      ? "17px"
+      : destinationName.length >= 13
+        ? "19px"
+        : destinationName.length >= 11
+          ? "21px"
+          : destinationName.length >= 9
+            ? "24px"
+            : "26px";
   return (
     <Link
       to={`/destinations/${
@@ -113,7 +117,7 @@ function DestinationCard({ destination }) {
             sx={{
               margin: 0,
               marginBottom: "5px",
-              fontFamily: "Arial, Helvetica, sans-serif",
+              fontFamily: "var(--font-inter, Arial, Helvetica, sans-serif)",
               fontSize: "10px",
               lineHeight: 1.15,
               fontWeight: 700,
@@ -137,7 +141,7 @@ function DestinationCard({ destination }) {
             component="h2"
             sx={{
               margin: 0,
-              fontFamily: "Cormorant Garamond",
+              fontFamily: "var(--font-eb, 'Times New Roman', Times, serif)",
               /*
                * Automatically adjusts for long names.
                */

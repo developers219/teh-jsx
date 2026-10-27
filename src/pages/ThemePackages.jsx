@@ -120,7 +120,7 @@ function ThemePackages() {
             <div
               role="status"
               aria-live="polite"
-              className="flex min-h-[320px] flex-col items-center justify-center gap-4"
+              className="flex min-h-[444px] flex-col items-center justify-center gap-4"
             >
               <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
               <p className="text-sm font-medium text-slate-500">

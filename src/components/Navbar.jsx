@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { ChevronDown, Menu, Phone, X } from "lucide-react";
+import { Menu, Phone, X } from "lucide-react";
 import Escapeora from "../assets/images/logo.png";
 import api from "../services/api";
 
@@ -63,7 +63,7 @@ function pickList(result) {
   return Array.isArray(list) ? list : [];
 }
 
-/* ---------------- DROPDOWN LIST ---------------- */
+/* ---------------- DROPDOWN LIST (desktop only) ---------------- */
 
 function DestinationList({ items, category, onNavigate, loading }) {
   return (
@@ -115,8 +115,6 @@ function Navbar() {
 
   // desktop hover dropdown: "dom" | "intl" | null
   const [activeMenu, setActiveMenu] = useState(null);
-  // mobile accordion: "dom" | "intl" | null
-  const [mobileMenu, setMobileMenu] = useState(null);
 
   const [destinations, setDestinations] = useState({ dom: [], intl: [] });
   const [isLoadingDest, setIsLoadingDest] = useState(true);
@@ -171,7 +169,6 @@ function Navbar() {
   const closeAll = () => {
     clearTimeout(closeTimer.current);
     setActiveMenu(null);
-    setMobileMenu(null);
     setIsOpen(false);
   };
 
@@ -194,7 +191,7 @@ function Navbar() {
             />
           </Link>
 
-          {/* Desktop navigation */}
+          {/* Desktop navigation (hover dropdown only here) */}
           <ul className="hidden items-center gap-[clamp(0.25rem,2vw,2rem)] rounded-full bg-black/30 px-8 py-3 font-bold backdrop-blur-sm lg:flex">
             {NAV_LINKS.map((link) => {
               const isActive = activeMenu === link.key;
@@ -259,78 +256,21 @@ function Navbar() {
           </button>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile menu: no dropdown, only two links that open the page directly */}
         {isOpen && (
           <div className="absolute left-1/2 top-full mt-4 w-[98%] -translate-x-1/2 rounded-2xl bg-black/50 p-3 backdrop-blur-md lg:hidden">
             <ul className="flex flex-col gap-1">
-              {NAV_LINKS.map((link) => {
-                const isExpanded = mobileMenu === link.key;
-                const items = destinations[link.key];
-
-                return (
-                  <li key={link.key}>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setMobileMenu(isExpanded ? null : link.key)
-                      }
-                      className="flex w-full cursor-pointer items-center justify-between rounded-xl px-4 py-3 text-left text-sm font-semibold transition hover:bg-white/10"
-                      aria-expanded={isExpanded}
-                    >
-                      {link.label}
-                      <ChevronDown
-                        size={16}
-                        className={`transition-transform duration-200 ${
-                          isExpanded ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
-
-                    {isExpanded && (
-                      <div className="mx-2 mb-2 rounded-xl bg-white/5">
-                        <ul className="max-h-[220px] overflow-y-auto overscroll-contain p-1 [scrollbar-width:thin] [scrollbar-color:rgba(255,255,255,0.4)_transparent]">
-                          {isLoadingDest && (
-                            <li className="px-3 py-2 text-sm text-white/70">
-                              Loading...
-                            </li>
-                          )}
-
-                          {!isLoadingDest && items.length === 0 && (
-                            <li className="px-3 py-2 text-sm text-white/70">
-                              No destinations available
-                            </li>
-                          )}
-
-                          {!isLoadingDest &&
-                            items.map((destination, index) => (
-                              <li
-                                key={
-                                  destination?.id ?? destination?.slug ?? index
-                                }
-                              >
-                                <Link
-                                  to={getDestinationPath(destination, link.key)}
-                                  onClick={closeAll}
-                                  className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition hover:bg-white/10"
-                                >
-                                  <img
-                                    src={getDestinationImage(destination)}
-                                    alt=""
-                                    loading="lazy"
-                                    className="h-7 w-7 shrink-0 rounded-full object-cover"
-                                  />
-                                  <span className="truncate">
-                                    {getDestinationName(destination)}
-                                  </span>
-                                </Link>
-                              </li>
-                            ))}
-                        </ul>
-                      </div>
-                    )}
-                  </li>
-                );
-              })}
+              {NAV_LINKS.map((link) => (
+                <li key={link.key}>
+                  <Link
+                    to={link.to}
+                    onClick={closeAll}
+                    className="block w-full rounded-xl px-4 py-3 text-left text-sm font-semibold transition hover:bg-white/10"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
 
               <li>
                 <a

@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
-import SectionHeader from "../home/SectionHeader";
+import Heading from "./Heading";
 
 const faqData = [
   {
@@ -44,23 +44,16 @@ export default function FAQ() {
   };
 
   return (
-    <section className="font-mont w-full bg-white py-16 md:py-20">
+    <section className="w-full bg-white py-16 font-inter md:py-20">
       <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
         {/* Header */}
-        <div className="mb-10 text-center md:mb-12">
-          <SectionHeader
-            title={"Frequently Asked Questions"}
-            description={"Your right to Know!"}
+        <div className="mb-10 md:mb-12">
+          <Heading
+            heading="Frequently asked"
+            highlight="questions"
+            subheading="Your right to know!"
+            className="items-center text-center"
           />
-          {/* <h2 className="text-4xl font-cg tracking-tight text-black sm:text-5xl">
-            Frequently Asked Questions
-          </h2>
-
-          <p className="mt-2 text-base font-medium text-black/70 sm:text-lg">
-            Your right to Know!
-          </p>
-
-          <div className="mx-auto  h-[3px] w-20 bg-[#c5bd96]" /> */}
         </div>
 
         {/* FAQ List */}
@@ -72,7 +65,7 @@ export default function FAQ() {
               <div
                 key={index}
                 className={`overflow-hidden hover:shadow-lg rounded-2xl border bg-white transition-all duration-300 ${
-                  isOpen ? "border-beige" : "border-black/20"
+                  isOpen ? "border-slate-900" : "border-black/20"
                 }`}
               >
                 {/* Question */}
@@ -102,7 +95,7 @@ export default function FAQ() {
 
                   {/* Arrow */}
                   <span
-                    className={`flex size-10 cursor-pointer shrink-0 items-center justify-center bg-beige rounded-full hover:bg-beigeD transition-transform duration-300 ${
+                    className={`flex size-10 cursor-pointer shrink-0 items-center justify-center rounded-full bg-slate-100 transition-transform hover:bg-slate-200 duration-300 ${
                       isOpen ? "rotate-90" : "rotate-0"
                     }`}
                   >
