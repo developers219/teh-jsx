@@ -17,7 +17,7 @@ import {
   X,
   Phone,
   ChevronDown,
-  Utensils
+  Utensils,
 } from "lucide-react";
 
 import api from "../services/api";
@@ -434,42 +434,42 @@ function PackageDetails() {
   console.log(travelPackage);
   const [activeSection, setActiveSection] = useState("package-overview");
 
-const packageSectionIds = [
-  "package-overview",
-  "package-itinerary",
-  "package-hotels",
-  "package-flights",
-  "package-included-section",
-  "package-inclusions",
-  "package-exclusions",
-  "package-faqs",
-  "package-terms",
-];
+  const packageSectionIds = [
+    "package-overview",
+    "package-itinerary",
+    "package-hotels",
+    "package-flights",
+    "package-included-section",
+    "package-inclusions",
+    "package-exclusions",
+    "package-faqs",
+    "package-terms",
+  ];
 
-useEffect(() => {
-  const handleScroll = () => {
-    // Account for the fixed website navbar and sticky section navigation.
-    const offset = 180;
-    let currentSection = "";
+  useEffect(() => {
+    const handleScroll = () => {
+      // Account for the fixed website navbar and sticky section navigation.
+      const offset = 180;
+      let currentSection = "";
 
-    packageSectionIds.forEach((id) => {
-      const section = document.getElementById(id);
+      packageSectionIds.forEach((id) => {
+        const section = document.getElementById(id);
 
-      if (section && section.getBoundingClientRect().top <= offset) {
-        currentSection = id;
+        if (section && section.getBoundingClientRect().top <= offset) {
+          currentSection = id;
+        }
+      });
+
+      if (currentSection) {
+        setActiveSection(currentSection);
       }
-    });
+    };
 
-    if (currentSection) {
-      setActiveSection(currentSection);
-    }
-  };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
 
-  window.addEventListener("scroll", handleScroll, { passive: true });
-  handleScroll();
-
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const toggleSection = (key) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -480,12 +480,15 @@ useEffect(() => {
       setOpenSections((prev) => ({ ...prev, [sectionKey]: true }));
     }
 
-    window.setTimeout(() => {
-      document.getElementById(targetId)?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }, sectionKey && !openSections[sectionKey] ? 380 : 0);
+    window.setTimeout(
+      () => {
+        document.getElementById(targetId)?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      },
+      sectionKey && !openSections[sectionKey] ? 380 : 0,
+    );
   };
 
   useEffect(() => {
@@ -741,77 +744,110 @@ useEffect(() => {
                 >
                   <PackageGallery images={images} title={title} />
                 </motion.div>
-
               </motion.div>
 
-                {/* Package section navigation */}
-                <nav
-                  aria-label="Package sections"
-                  className="sticky top-[58px] z-10 mt-8 w-full max-w-full rounded-xl border border-black/5 bg-[#f4f0e5]/95 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:top-[75px] sm:mt-10 sm:p-2.5"
-                >
-                  <div className="flex gap-11 overflow-x-auto scroll-smooth">
-                    {[
-                      overview ? { label: "Overview", id: "package-overview" } : null,
-                      itineraries.length > 0 ? { label: "Itinerary", id: "package-itinerary", key: "itinerary" } : null,
-                      hotels.length > 0 ? { label: "Hotels", id: "package-hotels", key: "hotels" } : null,
-                      flights.length > 0 ? { label: "Flights", id: "package-flights", key: "flights" } : null,
-                      inclusions.length > 0 ? { label: "Inclusions", id: "package-inclusions", key: "included" } : null,
-                      exclusions.length > 0 ? { label: "Exclusions", id: "package-exclusions", key: "included" } : null,
-                      { label: "Terms & Conditions", id: "package-terms", key: "tandc" },
-                    ].filter(Boolean).map((item) => (
+              {/* Package section navigation */}
+              <nav
+                aria-label="Package sections"
+                className="sticky top-[58px] z-10 mt-8 w-full max-w-full rounded-xl border border-black/5 bg-[#f4f0e5]/95 p-2 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:top-[75px] sm:mt-10 sm:p-2.5"
+              >
+                <div className="flex gap-11 overflow-x-auto scroll-smooth">
+                  {[
+                    overview
+                      ? { label: "Overview", id: "package-overview" }
+                      : null,
+                    itineraries.length > 0
+                      ? {
+                          label: "Itinerary",
+                          id: "package-itinerary",
+                          key: "itinerary",
+                        }
+                      : null,
+                    hotels.length > 0
+                      ? { label: "Hotels", id: "package-hotels", key: "hotels" }
+                      : null,
+                    flights.length > 0
+                      ? {
+                          label: "Flights",
+                          id: "package-flights",
+                          key: "flights",
+                        }
+                      : null,
+                    inclusions.length > 0
+                      ? {
+                          label: "Inclusions",
+                          id: "package-inclusions",
+                          key: "included",
+                        }
+                      : null,
+                    exclusions.length > 0
+                      ? {
+                          label: "Exclusions",
+                          id: "package-exclusions",
+                          key: "included",
+                        }
+                      : null,
+                    {
+                      label: "Terms & Conditions",
+                      id: "package-terms",
+                      key: "tandc",
+                    },
+                  ]
+                    .filter(Boolean)
+                    .map((item) => (
                       <button
-  key={item.id}
-  type="button"
-  onClick={() => {
-    setActiveSection(item.id);
-    scrollToPackageSection(item.id, item.key);
-  }}
-  className={`group relative shrink-0 rounded-xl px-4 py-3 text-medium font-cg font-bold transition-colors duration-300 focus-visible:outline-none  ${
-    (activeSection === item.id ||
-      ((activeSection === "package-included-section" ||
-        activeSection === "package-inclusions" ||
-        activeSection === "package-exclusions") &&
-        (item.id === "package-inclusions" ||
-          item.id === "package-exclusions")))
-      ? "text-[#c5bd96]"
-      : "text-black/70 hover:text-[#c5bd96]"
-  }`}
->
-  {item.label}
+                        key={item.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveSection(item.id);
+                          scrollToPackageSection(item.id, item.key);
+                        }}
+                        className={`group relative shrink-0 rounded-xl px-4 py-3 text-medium font-cg font-bold transition-colors duration-300 focus-visible:outline-none  ${
+                          activeSection === item.id ||
+                          ((activeSection === "package-included-section" ||
+                            activeSection === "package-inclusions" ||
+                            activeSection === "package-exclusions") &&
+                            (item.id === "package-inclusions" ||
+                              item.id === "package-exclusions"))
+                            ? "text-[#c5bd96]"
+                            : "text-black/70 hover:text-[#c5bd96]"
+                        }`}
+                      >
+                        {item.label}
 
-  <span
-    className={`absolute bottom-1 left-4 h-[2px] rounded-full bg-[#c5bd96] transition-all duration-300 sm:left-5 ${
-      (activeSection === item.id ||
-        ((activeSection === "package-included-section" ||
-          activeSection === "package-inclusions" ||
-          activeSection === "package-exclusions") &&
-          (item.id === "package-inclusions" ||
-            item.id === "package-exclusions")))
-        ? "w-[calc(100%-2rem)] sm:w-[calc(100%-2.5rem)]"
-        : "w-0 group-hover:w-[calc(100%-2rem)] sm:group-hover:w-[calc(100%-2.5rem)]"
-    }`}
-  />
-</button>
+                        <span
+                          className={`absolute bottom-1 left-4 h-[2px] rounded-full bg-[#c5bd96] transition-all duration-300 sm:left-5 ${
+                            activeSection === item.id ||
+                            ((activeSection === "package-included-section" ||
+                              activeSection === "package-inclusions" ||
+                              activeSection === "package-exclusions") &&
+                              (item.id === "package-inclusions" ||
+                                item.id === "package-exclusions"))
+                              ? "w-[calc(100%-2rem)] sm:w-[calc(100%-2.5rem)]"
+                              : "w-0 group-hover:w-[calc(100%-2rem)] sm:group-hover:w-[calc(100%-2.5rem)]"
+                          }`}
+                        />
+                      </button>
                     ))}
-                  </div>
-                </nav>
+                </div>
+              </nav>
 
-                {/* Overview */}
+              {/* Overview */}
 
-                {overview && (
-                  <motion.div variants={reveal} className="mt-7">
-                    <CollapsibleSection
-                      title="Overview"
-                      sectionId="package-overview"
-                      isOpen={openSections.overview}
-                      onToggle={() => toggleSection("overview")}
-                    >
-                      <p className="font-mont max-w-3xl text-sm text-black/55 sm:text-base">
-                        {overview}
-                      </p>
-                    </CollapsibleSection>
-                  </motion.div>
-                )}
+              {overview && (
+                <motion.div variants={reveal} className="mt-7">
+                  <CollapsibleSection
+                    title="Overview"
+                    sectionId="package-overview"
+                    isOpen={openSections.overview}
+                    onToggle={() => toggleSection("overview")}
+                  >
+                    <p className="font-mont max-w-3xl text-sm text-black/55 sm:text-base">
+                      {overview}
+                    </p>
+                  </CollapsibleSection>
+                </motion.div>
+              )}
               {/* Itinerary */}
 
               {itineraries.length > 0 && (
@@ -831,53 +867,109 @@ useEffect(() => {
                       {itineraries.map((day, dayIndex) => {
                         // Keep every displayed value connected to the backend response.
                         const formatValue = (value) => {
-                          if (value === null || value === undefined || value === "") return "—";
+                          if (
+                            value === null ||
+                            value === undefined ||
+                            value === ""
+                          )
+                            return "—";
                           if (Array.isArray(value)) {
                             return value.length
-                              ? value.map((item) => typeof item === "object" && item !== null
-                                  ? Object.entries(item).map(([key, itemValue]) => `${key}: ${formatValue(itemValue)}`).join(", ")
-                                  : String(item)).join("; ")
+                              ? value
+                                  .map((item) =>
+                                    typeof item === "object" && item !== null
+                                      ? Object.entries(item)
+                                          .map(
+                                            ([key, itemValue]) =>
+                                              `${key}: ${formatValue(itemValue)}`,
+                                          )
+                                          .join(", ")
+                                      : String(item),
+                                  )
+                                  .join("; ")
                               : "—";
                           }
                           if (typeof value === "object") {
-                            return Object.entries(value).map(([key, itemValue]) => `${key}: ${formatValue(itemValue)}`).join(", ");
+                            return Object.entries(value)
+                              .map(
+                                ([key, itemValue]) =>
+                                  `${key}: ${formatValue(itemValue)}`,
+                              )
+                              .join(", ");
                           }
                           return String(value);
                         };
 
-                        const formatLabel = (key) => key
-                          .replace(/([A-Z])/g, " $1")
-                          .replace(/[_-]/g, " ")
-                          .replace(/^./, (letter) => letter.toUpperCase());
+                        const formatLabel = (key) =>
+                          key
+                            .replace(/([A-Z])/g, " $1")
+                            .replace(/[_-]/g, " ")
+                            .replace(/^./, (letter) => letter.toUpperCase());
 
-                        const activityName = (activity) => typeof activity === "string"
-                          ? activity
-                          : activity?.activity || activity?.title || activity?.name || "Activity";
+                        const activityName = (activity) =>
+                          typeof activity === "string"
+                            ? activity
+                            : activity?.activity ||
+                              activity?.title ||
+                              activity?.name ||
+                              "Activity";
 
                         const activityImage = (activity) => {
-                          if (!activity || typeof activity !== "object") return "";
-                          const image = activity.imageUrl || activity.imageURL || activity.image_url || activity.image || activity.thumbnail || activity.photo || activity.url || activity.src || activity.path;
+                          if (!activity || typeof activity !== "object")
+                            return "";
+                          const image =
+                            activity.imageUrl ||
+                            activity.imageURL ||
+                            activity.image_url ||
+                            activity.image ||
+                            activity.thumbnail ||
+                            activity.photo ||
+                            activity.url ||
+                            activity.src ||
+                            activity.path;
                           if (typeof image === "string") return image;
-                          if (image && typeof image === "object") return image.url || image.imageUrl || image.src || image.path || "";
+                          if (image && typeof image === "object")
+                            return (
+                              image.url ||
+                              image.imageUrl ||
+                              image.src ||
+                              image.path ||
+                              ""
+                            );
                           return "";
                         };
 
-                        const activities = Array.isArray(day.activities) ? day.activities : [];
-                        const activitySummary = activities.map(activityName).filter(Boolean).join(" · ");
-                        const location = day.overnightLocation || day.destination || day.location;
-                        const hotelName = day.hotelName || day.accommodationName || day.hotel?.hotelName || day.hotel?.name;
+                        const activities = Array.isArray(day.activities)
+                          ? day.activities
+                          : [];
+                        const activitySummary = activities
+                          .map(activityName)
+                          .filter(Boolean)
+                          .join(" · ");
+                        const location =
+                          day.overnightLocation ||
+                          day.destination ||
+                          day.location;
+                        const hotelName =
+                          day.hotelName ||
+                          day.accommodationName ||
+                          day.hotel?.hotelName ||
+                          day.hotel?.name;
 
                         return (
                           <div
-                            key={day.id ?? `${day.dayNumber ?? dayIndex + 1}-${day.title}`}
+                            key={
+                              day.id ??
+                              `${day.dayNumber ?? dayIndex + 1}-${day.title}`
+                            }
                             className="relative grid grid-cols-[34px_minmax(0,1fr)] gap-2 sm:grid-cols-[48px_minmax(0,1fr)] sm:gap-3"
                           >
                             {/* Number on the vertical timeline */}
                             <div className="relative z-10 flex justify-center pt-5 sm:pt-6">
-  <div className="flex size-8 items-center justify-center rounded-full border border-[#B8AC7C] bg-[#B8AC7C] text-sm font-semibold text-white shadow-sm transition-colors sm:size-9">
-    {day.dayNumber ?? dayIndex + 1}
-  </div>
-</div>
+                              <div className="flex size-8 items-center justify-center rounded-full border border-[#B8AC7C] bg-[#B8AC7C] text-sm font-semibold text-white shadow-sm transition-colors sm:size-9">
+                                {day.dayNumber ?? dayIndex + 1}
+                              </div>
+                            </div>
 
                             {/* Day itinerary card */}
                             <details
@@ -891,7 +983,8 @@ useEffect(() => {
 
                                 <div className="min-w-0 flex-1">
                                   <h3 className="font-mont text-base font-semibold leading-snug text-[#201F1B] sm:text-lg">
-                                    {day.title || `Day ${day.dayNumber ?? dayIndex + 1}`}
+                                    {day.title ||
+                                      `Day ${day.dayNumber ?? dayIndex + 1}`}
                                   </h3>
                                   {/* {activitySummary && (
                                     <p className="mt-1 line-clamp-1 text-xs text-black/55 sm:text-sm">
@@ -902,8 +995,13 @@ useEffect(() => {
 
                                 {location && (
                                   <div className="hidden shrink-0 items-center gap-1.5 rounded-full border border-[#EDE8DB] bg-[#FBFAF6] px-3 py-1.5 text-xs font-medium text-[#4E4A3D] md:flex">
-                                    <MapPin size={13} className="text-[#9C8D59]" />
-                                    <span className="max-w-28 truncate">{location}</span>
+                                    <MapPin
+                                      size={13}
+                                      className="text-[#9C8D59]"
+                                    />
+                                    <span className="max-w-28 truncate">
+                                      {location}
+                                    </span>
                                   </div>
                                 )}
 
@@ -914,7 +1012,10 @@ useEffect(() => {
 
                               {location && (
                                 <div className="flex items-center gap-1.5 px-4 pb-3 text-xs font-medium text-black/55 md:hidden">
-                                  <MapPin size={13} className="text-[#9C8D59]" />
+                                  <MapPin
+                                    size={13}
+                                    className="text-[#9C8D59]"
+                                  />
                                   {location}
                                 </div>
                               )}
@@ -933,83 +1034,147 @@ useEffect(() => {
                                       <Hotel size={17} />
                                     </div>
                                     <div className="min-w-0 flex-1">
-                                      <p className="text-[11px] font-medium text-black/50 sm:text-xs">Your stay</p>
-                                      <p className="mt-0.5 break-words text-sm font-medium text-[#29271F] sm:text-[15px]">{hotelName}</p>
+                                      <p className="text-[11px] font-medium text-black/50 sm:text-xs">
+                                        Your stay
+                                      </p>
+                                      <p className="mt-0.5 break-words text-sm font-medium text-[#29271F] sm:text-[15px]">
+                                        {hotelName}
+                                      </p>
                                     </div>
-                                    <ChevronDown size={16} className="-rotate-90 shrink-0 text-black/45" />
+                                    <ChevronDown
+                                      size={16}
+                                      className="-rotate-90 shrink-0 text-black/45"
+                                    />
                                   </div>
                                 )}
 
                                 {/* Activities and their images are rendered from backend values */}
                                 {activities.length > 0 && (
                                   <div className="space-y-2.5 sm:space-y-3">
-                                    {activities.map((activity, activityIndex) => {
-                                      const isObject = typeof activity === "object" && activity !== null;
-                                      const imageSrc = activityImage(activity);
-                                      const title = activityName(activity);
-                                      const description = isObject ? activity.description || activity.details : "";
-                                      const duration = isObject ? activity.durationMinutes ?? activity.duration : null;
-                                      const startTime = isObject ? activity.startTime || activity.time : null;
+                                    {activities.map(
+                                      (activity, activityIndex) => {
+                                        const isObject =
+                                          typeof activity === "object" &&
+                                          activity !== null;
+                                        const imageSrc =
+                                          activityImage(activity);
+                                        const title = activityName(activity);
+                                        const description = isObject
+                                          ? activity.description ||
+                                            activity.details
+                                          : "";
+                                        const duration = isObject
+                                          ? (activity.durationMinutes ??
+                                            activity.duration)
+                                          : null;
+                                        const startTime = isObject
+                                          ? activity.startTime || activity.time
+                                          : null;
 
-                                      return (
-                                        <div
-                                          key={activity?.id ?? `${day.id ?? dayIndex}-${activityIndex}`}
-                                          className="flex min-w-0 items-center gap-3 rounded-xl border border-[#EEE8DA] bg-white p-2.5 transition-colors hover:border-[#D8CFB0] sm:gap-4 sm:p-3"
-                                        >
-                                          {imageSrc ? (
-                                            <img
-                                              src={imageSrc}
-                                              alt={title}
-                                              loading="lazy"
-                                              className="size-[76px] shrink-0 rounded-xl object-cover sm:size-[84px]"
-                                              onError={(event) => { event.currentTarget.style.display = "none"; }}
-                                            />
-                                          ) : (
-                                            <div className="flex size-[76px] shrink-0 items-center justify-center rounded-xl bg-[#F5F2E9] text-[#A3935D] sm:size-[84px]">
-                                              <Compass size={23} />
-                                            </div>
-                                          )}
-
-                                          <div className="min-w-0 flex-1 py-0.5">
-                                            <h4 className="break-words text-sm font-semibold text-[#25241F] sm:text-[15px]">{title}</h4>
-                                            {description && (
-                                              <p className="mt-1 line-clamp-2 text-xs leading-5 text-black/55 sm:text-sm">{description}</p>
-                                            )}
-                                            {(duration !== null && duration !== undefined && duration !== "") || startTime ? (
-                                              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-black/50 sm:text-xs">
-                                                {duration !== null && duration !== undefined && duration !== "" && (
-                                                  <span className="inline-flex items-center gap-1"><Clock3 size={12} className="text-[#A3935D]" />{typeof duration === "number" ? `${duration} minutes` : duration}</span>
-                                                )}
-                                                {startTime && <span>{startTime}</span>}
+                                        return (
+                                          <div
+                                            key={
+                                              activity?.id ??
+                                              `${day.id ?? dayIndex}-${activityIndex}`
+                                            }
+                                            className="flex min-w-0 items-center gap-3 rounded-xl border border-[#EEE8DA] bg-white p-2.5 transition-colors hover:border-[#D8CFB0] sm:gap-4 sm:p-3"
+                                          >
+                                            {imageSrc ? (
+                                              <img
+                                                src={imageSrc}
+                                                alt={title}
+                                                loading="lazy"
+                                                className="size-[76px] shrink-0 rounded-xl object-cover sm:size-[84px]"
+                                                onError={(event) => {
+                                                  event.currentTarget.style.display =
+                                                    "none";
+                                                }}
+                                              />
+                                            ) : (
+                                              <div className="flex size-[76px] shrink-0 items-center justify-center rounded-xl bg-[#F5F2E9] text-[#A3935D] sm:size-[84px]">
+                                                <Compass size={23} />
                                               </div>
-                                            ) : null}
+                                            )}
+
+                                            <div className="min-w-0 flex-1 py-0.5">
+                                              <h4 className="break-words text-sm font-semibold text-[#25241F] sm:text-[15px]">
+                                                {title}
+                                              </h4>
+                                              {description && (
+                                                <p className="mt-1 line-clamp-2 text-xs leading-5 text-black/55 sm:text-sm">
+                                                  {description}
+                                                </p>
+                                              )}
+                                              {(duration !== null &&
+                                                duration !== undefined &&
+                                                duration !== "") ||
+                                              startTime ? (
+                                                <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-black/50 sm:text-xs">
+                                                  {duration !== null &&
+                                                    duration !== undefined &&
+                                                    duration !== "" && (
+                                                      <span className="inline-flex items-center gap-1">
+                                                        <Clock3
+                                                          size={12}
+                                                          className="text-[#A3935D]"
+                                                        />
+                                                        {typeof duration ===
+                                                        "number"
+                                                          ? `${duration} minutes`
+                                                          : duration}
+                                                      </span>
+                                                    )}
+                                                  {startTime && (
+                                                    <span>{startTime}</span>
+                                                  )}
+                                                </div>
+                                              ) : null}
+                                            </div>
+                                            <ChevronDown
+                                              size={16}
+                                              className="-rotate-90 hidden shrink-0 text-black/40 sm:block"
+                                            />
                                           </div>
-                                          <ChevronDown size={16} className="-rotate-90 hidden shrink-0 text-black/40 sm:block" />
-                                        </div>
-                                      );
-                                    })}
+                                        );
+                                      },
+                                    )}
                                   </div>
                                 )}
 
                                 {/* Meals */}
                                 {day.meals && (
-                                  <div className={`${activities.length ? "mt-4 border-t border-[#EEE8DA] pt-4" : "mt-1"} flex items-start gap-2.5 text-sm text-[#4A473D]`}>
-                                    <Utensils size={16} className="mt-0.5 shrink-0 text-[#A3935D]" />
+                                  <div
+                                    className={`${activities.length ? "mt-4 border-t border-[#EEE8DA] pt-4" : "mt-1"} flex items-start gap-2.5 text-sm text-[#4A473D]`}
+                                  >
+                                    <Utensils
+                                      size={16}
+                                      className="mt-0.5 shrink-0 text-[#A3935D]"
+                                    />
                                     <div className="min-w-0">
-                                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-black/45">Meals</p>
-                                      <p className="mt-1 break-words text-sm">{formatValue(day.meals)}</p>
+                                      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-black/45">
+                                        Meals
+                                      </p>
+                                      <p className="mt-1 break-words text-sm">
+                                        {formatValue(day.meals)}
+                                      </p>
                                     </div>
                                   </div>
                                 )}
 
                                 {/* Preserve any additional backend fields without hardcoding package content */}
-                                {Array.isArray(day.inclusions) && day.inclusions.length > 0 && (
-                                  <div className="mt-4 flex flex-wrap gap-2 border-t border-[#EEE8DA] pt-4">
-                                    {day.inclusions.map((item, index) => (
-                                      <span key={index} className="rounded-full bg-[#F5F2E9] px-3 py-1.5 text-xs text-[#5D5745]">{formatValue(item)}</span>
-                                    ))}
-                                  </div>
-                                )}
+                                {Array.isArray(day.inclusions) &&
+                                  day.inclusions.length > 0 && (
+                                    <div className="mt-4 flex flex-wrap gap-2 border-t border-[#EEE8DA] pt-4">
+                                      {day.inclusions.map((item, index) => (
+                                        <span
+                                          key={index}
+                                          className="rounded-full bg-[#F5F2E9] px-3 py-1.5 text-xs text-[#5D5745]"
+                                        >
+                                          {formatValue(item)}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  )}
                               </div>
                             </details>
                           </div>
@@ -1380,7 +1545,10 @@ useEffect(() => {
                     {/* INCLUSIONS */}
 
                     {inclusions.length > 0 && (
-                      <div id="package-inclusions" className="scroll-mt-28 rounded-[28px] bg-black p-7 text-white sm:p-9">
+                      <div
+                        id="package-inclusions"
+                        className="scroll-mt-28 rounded-[28px] bg-black p-7 text-white sm:p-9"
+                      >
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-black">
                             <Check size={18} />
@@ -1412,7 +1580,10 @@ useEffect(() => {
                     {/* EXCLUSIONS */}
 
                     {exclusions.length > 0 && (
-                      <div id="package-exclusions" className="scroll-mt-28 rounded-[28px] border border-black/10 p-7 sm:p-9">
+                      <div
+                        id="package-exclusions"
+                        className="scroll-mt-28 rounded-[28px] border border-black/10 p-7 sm:p-9"
+                      >
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-beige text-white">
                             <X size={18} />
@@ -1489,9 +1660,7 @@ useEffect(() => {
                   {/* MOBILE / TABLET */}
                   <div className="flex items-center gap-4 px-5 py-4 lg:hidden">
                     <div>
-                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-black/40">
-                        Starting from
-                      </p>
+                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-black/40"></p>
 
                       <div className="mt-0.5 flex items-baseline gap-2">
                         <span className="text-2xl font-semibold tracking-[-0.04em]">

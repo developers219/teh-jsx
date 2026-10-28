@@ -10,7 +10,7 @@ const InternationalDestinations = () => {
       <Hero />
       <Trending />
       <Themes />
-      <AllDestination />
+      {/* <AllDestination /> */}
       <WhyChooseUs />
       <Faq />
     </>

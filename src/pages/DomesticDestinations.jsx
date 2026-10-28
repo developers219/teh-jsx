@@ -11,7 +11,7 @@ const DomesticDestinations = () => {
       <Hero />
       <Trending />
       <Themes />
-      <AllDestination />
+      {/* <AllDestination /> */}
       <WhyChooseUs />
       <Faq />
     </main>

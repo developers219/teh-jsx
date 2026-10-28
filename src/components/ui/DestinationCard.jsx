@@ -1,171 +1,69 @@
-import React from "react";
-import Card from "@mui/material/Card";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
-function DestinationCard({ destination }) {
-  const imageUrl =
-    destination?.images[0]?.imageUrl ??
-    destination?.image ??
-    "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=90";
-  /*
-   * Smaller font automatically for longer destination names.
-   * This keeps names such as SWITZERLAND completely visible.
-   */
-  const destinationName = destination?.name ?? "";
-  const nameFontSize =
-    destinationName.length >= 16
-      ? "17px"
-      : destinationName.length >= 13
-        ? "19px"
-        : destinationName.length >= 11
-          ? "21px"
-          : destinationName.length >= 9
-            ? "24px"
-            : "26px";
+
+const DEFAULT_IMAGE =
+  "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=1000&q=90";
+
+function getDestinationName(destination) {
+  return (
+    destination?.name ||
+    destination?.title ||
+    destination?.destinationName ||
+    destination?.city ||
+    "Destination"
+  );
+}
+
+function getDestinationImage(destination) {
+  return (
+    destination?.images?.[0]?.imageUrl ||
+    destination?.imageUrl ||
+    destination?.image ||
+    destination?.src ||
+    destination?.path ||
+    destination?.thumbnail ||
+    destination?.bannerImage ||
+    DEFAULT_IMAGE
+  );
+}
+
+/**
+ * The one destination card used across the whole website
+ * (same design as the Home page "Domestic / International" cards).
+ *
+ * category: "dom" | "intl". When it is not passed, it is read from
+ * destination.categoryName.
+ */
+function DestinationCard({ destination, category }) {
+  const name = getDestinationName(destination);
+
+  const type =
+    category ?? (destination?.categoryName === "International" ? "intl" : "dom");
+
+  // Items without a slug (fallback data) open the category page
+  const path = destination?.slug
+    ? `/destinations/${type}/${destination.slug}`
+    : `/destinations/${type}`;
+
   return (
     <Link
-      to={`/destinations/${
-        destination?.categoryName === "International" ? "intl" : "dom"
-      }/${destination?.slug}`}
+      to={path}
+      className="group relative flex h-[40vh] min-h-[240px] w-full cursor-pointer items-end overflow-hidden rounded-2xl shadow-sm"
     >
-      <Card
-        sx={{
-          position: "relative",
-          /* =========================================
-               FIXED REFERENCE CARD SIZE
-               ========================================= */
-          // width: "243px",
-          height: "300px",
-          minWidth: "243px",
-          // maxWidth: "243px",
-          minHeight: "300px",
-          maxHeight: "300px",
-          flex: "0 0 243px",
-          flexShrink: 0,
-          overflow: "hidden",
-          // borderRadius: "16px",
-          backgroundColor: "#111",
-          // boxShadow: "0 8px 24px rgba(15, 23, 42, 0.15)",
-          cursor: "pointer",
-          transition: "transform 0.35s ease, box-shadow 0.35s ease",
-          "&:hover": {
-            transform: "translateY(-4px)",
-          },
-          "&:hover .destination-card-image": {
-            transform: "scale(1.045)",
-          },
-        }}
-      >
-        {/* =========================================
-            BACKGROUND IMAGE
-            ========================================= */}
+      <img
+        src={getDestinationImage(destination)}
+        alt={name}
+        loading="lazy"
+        draggable={false}
+        className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-115"
+      />
 
-        <Box
-          className="destination-card-image"
-          component="img"
-          src={imageUrl}
-          alt={`${destination?.name}, ${destination?.tagline}`}
-          sx={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            transition: "transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1)",
-          }}
-        />
+      <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/30 to-transparent" />
 
-        {/* =========================================
-            BOTTOM DARK GRADIENT
-            ========================================= */}
-
-        <Box
-          sx={{
-            position: "absolute",
-            inset: 0,
-            zIndex: 2,
-            pointerEvents: "none",
-            background:
-              "linear-gradient(180deg, rgba(0,0,0,0) 38%, rgba(0,0,0,0.04) 50%, rgba(0,0,0,0.25) 67%, rgba(0,0,0,0.72) 84%, rgba(0,0,0,0.92) 100%)",
-          }}
-        />
-
-        {/* =========================================
-            DESTINATION CONTENT
-            ========================================= */}
-
-        <Box
-          sx={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 5,
-            px: "18px",
-            pb: "20px",
-            color: "#fff",
-          }}
-        >
-          {/* =======================================
-            TAGLINE
-            ======================================= */}
-
-          <Typography
-            component="div"
-            sx={{
-              margin: 0,
-              marginBottom: "5px",
-              fontFamily: "var(--font-inter, Arial, Helvetica, sans-serif)",
-              fontSize: "10px",
-              lineHeight: 1.15,
-              fontWeight: 700,
-              letterSpacing: "0.1px",
-              textTransform: "uppercase",
-              color: "#fff",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              textShadow: "0 1px 5px rgba(0,0,0,0.7)",
-            }}
-          >
-            {destination?.tagline}
-          </Typography>
-
-          {/* =======================================
-            DESTINATION NAME
-            ======================================= */}
-
-          <Typography
-            component="h2"
-            sx={{
-              margin: 0,
-              fontFamily: "var(--font-eb, 'Times New Roman', Times, serif)",
-              /*
-               * Automatically adjusts for long names.
-               */
-              fontSize: nameFontSize,
-              lineHeight: 1,
-              // fontWeight: 700,
-              letterSpacing: "-0.2px",
-              textTransform: "uppercase",
-              color: "#fff",
-              /*
-               * IMPORTANT:
-               * No ellipsis and no clipping.
-               */
-              whiteSpace: "nowrap",
-              overflow: "visible",
-              textOverflow: "clip",
-              textShadow: "0 2px 8px rgba(0,0,0,0.65)",
-            }}
-          >
-            {destinationName}
-          </Typography>
-        </Box>
-      </Card>
+      <div className="relative flex min-h-[15%] w-full items-center justify-center bg-linear-to-t from-black/30 to-transparent px-2 py-2 text-center text-lg font-inter font-semibold leading-tight text-white backdrop-blur-xs sm:text-xl">
+        {name}
+      </div>
     </Link>
   );
 }
+
 export default DestinationCard;

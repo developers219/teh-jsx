@@ -1,6 +1,6 @@
 import LeadForm from "../forms/LeadForm";
 import { Heading } from "../ui/Heading";
-import Contact from "../../assets/images/contact.png";
+import Contact from "../../assets/images/contactt.png";
 
 // Outside the component, so LeadForm doesn't reset on every parent render
 const LEAD_INITIAL_VALUES = {

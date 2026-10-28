@@ -1,25 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, SlidersHorizontal } from "lucide-react";
 
 import Heading from "../ui/Heading";
 import DestinationCard from "../ui/DestinationCard";
+import api from "../../services/api";
+import { getDestinationsByTheme, getThemes } from "../../services/destination.service";
 
-import {
-  getDestinationsByTheme,
-  getThemes,
-} from "../../services/destination.service";
-
-// Domestic category id (same as the backend: /destinations/:categoryId/theme/:themeId)
+// Domestic category id (backend: /destinations/category/:id and /destinations/:categoryId/theme/:themeId)
 const DOMESTIC_CATEGORY_ID = 1;
-
-// DestinationCard width (243px) + gap between cards (20px)
-const CARD_STEP = 243 + 20;
 
 // ---------------------------------------------------------------------------
 // Small reusable bits
 // ---------------------------------------------------------------------------
 
-// Carousel arrow — same design as the Home page (Explore by themes)
+// Chip row arrow
 function NavButton({ direction = "left", onClick, disabled }) {
   const Icon = direction === "left" ? ArrowLeft : ArrowRight;
 
@@ -95,27 +89,32 @@ function useDragScroll(ref) {
 }
 
 // ---------------------------------------------------------------------------
-// Main component
+// Main component  (Themes filter + All destinations, in one section)
 // ---------------------------------------------------------------------------
 
 export default function Themes() {
   const [themes, setThemes] = useState([]);
+
+  // null = no filter selected -> every destination is shown (default)
   const [activeTheme, setActiveTheme] = useState(null);
-  const [destinations, setDestinations] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [allDestinations, setAllDestinations] = useState([]);
+  const [allLoading, setAllLoading] = useState(true);
+  const [allError, setAllError] = useState(false);
+
+  const [themeDestinations, setThemeDestinations] = useState([]);
+  const [themeLoading, setThemeLoading] = useState(false);
+  const [themeError, setThemeError] = useState(false);
 
   const [chipNav, setChipNav] = useState({ atStart: true, atEnd: false });
-  const [cardNav, setCardNav] = useState({ atStart: true, atEnd: false });
-  const [cardProgress, setCardProgress] = useState(0);
 
   const chipTrackRef = useRef(null);
-  const cardTrackRef = useRef(null);
   const requestIdRef = useRef(0);
+  const themeCacheRef = useRef(new Map()); // themeId -> destinations
 
   useDragScroll(chipTrackRef);
-  useDragScroll(cardTrackRef);
 
-  // ---- scroll state -------------------------------------------------------
+  // ---- chip scroll state --------------------------------------------------
 
   const updateChipNav = useCallback(() => {
     const el = chipTrackRef.current;
@@ -130,59 +129,19 @@ export default function Themes() {
     });
   }, []);
 
-  const updateCardNav = useCallback(() => {
-    const el = cardTrackRef.current;
+  useEffect(() => {
+    window.addEventListener("resize", updateChipNav);
 
-    if (!el) return;
-
-    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth);
-
-    setCardProgress(
-      maxScroll > 0 ? Math.min(1, Math.max(0, el.scrollLeft / maxScroll)) : 0,
-    );
-
-    setCardNav({
-      atStart: el.scrollLeft <= 4,
-      atEnd: maxScroll <= 0 || el.scrollLeft >= maxScroll - 4,
-    });
-  }, []);
+    return () => window.removeEventListener("resize", updateChipNav);
+  }, [updateChipNav]);
 
   useEffect(() => {
-    const onResize = () => {
-      updateChipNav();
-      updateCardNav();
-    };
-
-    window.addEventListener("resize", onResize);
-
-    return () => window.removeEventListener("resize", onResize);
-  }, [updateChipNav, updateCardNav]);
+    updateChipNav();
+  }, [themes, updateChipNav]);
 
   // ---- data ---------------------------------------------------------------
 
-  // Destinations of one theme (latest request wins)
-  const loadDestinations = useCallback(async (themeId) => {
-    const requestId = ++requestIdRef.current;
-
-    try {
-      setIsLoading(true);
-
-      const list = await getDestinationsByTheme(DOMESTIC_CATEGORY_ID, themeId);
-
-      if (requestId !== requestIdRef.current) return;
-
-      setDestinations(Array.isArray(list) ? list : []);
-    } catch (error) {
-      if (requestId !== requestIdRef.current) return;
-
-      console.error("Failed to fetch destinations:", error);
-      setDestinations([]);
-    } finally {
-      if (requestId === requestIdRef.current) setIsLoading(false);
-    }
-  }, []);
-
-  // Themes + destinations of the first theme
+  // Themes (filter chips)
   useEffect(() => {
     let cancelled = false;
 
@@ -192,22 +151,12 @@ export default function Themes() {
 
         if (cancelled) return;
 
-        const list = Array.isArray(res?.data) ? res.data : [];
-
-        setThemes(list);
-
-        if (list.length > 0) {
-          setActiveTheme(list[0].id);
-          loadDestinations(list[0].id);
-        } else {
-          setIsLoading(false);
-        }
+        setThemes(Array.isArray(res?.data) ? res.data : []);
       } catch (error) {
         if (cancelled) return;
 
         console.error("Failed to fetch themes:", error);
         setThemes([]);
-        setIsLoading(false);
       }
     }
 
@@ -216,56 +165,117 @@ export default function Themes() {
     return () => {
       cancelled = true;
     };
-  }, [loadDestinations]);
+  }, []);
 
-  // New themes -> refresh chip arrows
+  // All domestic destinations (default view)
   useEffect(() => {
-    updateChipNav();
-  }, [themes, updateChipNav]);
+    let cancelled = false;
 
-  // New destinations -> start from the first card
-  useEffect(() => {
-    cardTrackRef.current?.scrollTo({ left: 0 });
-    updateCardNav();
-  }, [destinations, isLoading, updateCardNav]);
+    async function fetchAllDestinations() {
+      try {
+        setAllLoading(true);
+        setAllError(false);
+
+        const res = await api.get(
+          `/destinations/category/${DOMESTIC_CATEGORY_ID}`,
+        );
+
+        if (cancelled) return;
+
+        setAllDestinations(Array.isArray(res.data?.data) ? res.data.data : []);
+      } catch (error) {
+        if (cancelled) return;
+
+        console.error("Failed to fetch destinations:", error);
+        setAllDestinations([]);
+        setAllError(true);
+      } finally {
+        if (!cancelled) setAllLoading(false);
+      }
+    }
+
+    fetchAllDestinations();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Destinations of one theme (latest request wins, results are cached)
+  const loadThemeDestinations = useCallback(async (themeId) => {
+    const requestId = ++requestIdRef.current;
+
+    const cached = themeCacheRef.current.get(themeId);
+
+    if (cached) {
+      setThemeError(false);
+      setThemeDestinations(cached);
+      setThemeLoading(false);
+      return;
+    }
+
+    try {
+      setThemeLoading(true);
+      setThemeError(false);
+
+      const list = await getDestinationsByTheme(DOMESTIC_CATEGORY_ID, themeId);
+
+      if (requestId !== requestIdRef.current) return;
+
+      const safeList = Array.isArray(list) ? list : [];
+
+      themeCacheRef.current.set(themeId, safeList);
+      setThemeDestinations(safeList);
+    } catch (error) {
+      if (requestId !== requestIdRef.current) return;
+
+      console.error("Failed to fetch destinations:", error);
+      setThemeDestinations([]);
+      setThemeError(true);
+    } finally {
+      if (requestId === requestIdRef.current) setThemeLoading(false);
+    }
+  }, []);
 
   // ---- actions ------------------------------------------------------------
 
+  // Clear the selected theme -> show every destination again
+  const resetFilter = () => {
+    requestIdRef.current += 1; // ignore any theme request still in flight
+    setActiveTheme(null);
+  };
+
   const handleThemeClick = (id) => {
-    if (id === activeTheme) return;
+    // Clicking the selected chip again clears the filter -> all destinations
+    if (id === activeTheme) {
+      resetFilter();
+      return;
+    }
 
     setActiveTheme(id);
-    loadDestinations(id);
+    loadThemeDestinations(id);
   };
 
   const scrollChips = (dir) => {
     chipTrackRef.current?.scrollBy({ left: dir * 220, behavior: "smooth" });
   };
 
-  const scrollCards = (dir) => {
-    cardTrackRef.current?.scrollBy({
-      left: dir * CARD_STEP * 2,
-      behavior: "smooth",
-    });
-  };
+  // ---- what to show -------------------------------------------------------
 
-  const onCardsKeyDown = (e) => {
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      scrollCards(1);
-    }
+  const isAll = activeTheme === null;
+  const destinations = isAll ? allDestinations : themeDestinations;
+  const isLoading = isAll ? allLoading : themeLoading;
+  const hasError = isAll ? allError : themeError;
 
-    if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      scrollCards(-1);
-    }
-  };
-
-  // Nothing to show (no themes from backend)
-  if (!isLoading && themes.length === 0) return null;
+  const activeThemeName = isAll
+    ? ""
+    : (themes.find((theme) => theme.id === activeTheme)?.name ?? "");
 
   return (
-    <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
+    <section
+      id="all-destinations"
+      className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]"
+    >
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
         <Heading
           heading="Explore destinations that"
@@ -274,7 +284,7 @@ export default function Themes() {
           className="mb-6 sm:mb-8"
         />
 
-        {/* Theme chips */}
+        {/* Theme filter chips (no "All" chip: nothing selected = all destinations) */}
         <div className="flex items-center gap-3">
           <NavButton
             direction="left"
@@ -307,44 +317,40 @@ export default function Themes() {
             onClick={() => scrollChips(1)}
             disabled={chipNav.atEnd}
           />
+
+          {/* Reset: only visible while a theme filter is selected */}
+          {!isAll && (
+            <button
+              type="button"
+              onClick={resetFilter}
+              className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border border-slate-300 bg-white px-4 py-2.5 font-inter text-[13.5px] font-medium text-slate-800 transition-colors duration-200 hover:border-slate-900"
+            >
+              <SlidersHorizontal size={16} />
+              Reset
+            </button>
+          )}
         </div>
 
-        {/* Destinations header */}
+        {/* Header line */}
         <div className="mt-8 flex items-end justify-between border-b border-slate-200 pb-2 lg:mt-10">
           <span className="font-inter text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
-            Top Destinations
+            {isAll ? "All Destinations" : `${activeThemeName} Destinations`}
           </span>
 
-          <div className="flex items-center gap-4">
-            <a
-              href="#all-destinations"
-              className="hidden items-center gap-1.5 font-inter text-sm text-slate-900 transition-colors hover:text-slate-500 sm:inline-flex"
-            >
-              View all
-              <ArrowRight className="h-3.5 w-3.5" strokeWidth={1.75} />
-            </a>
-
-            <div className="hidden items-center gap-2 lg:flex">
-              <NavButton
-                direction="left"
-                onClick={() => scrollCards(-1)}
-                disabled={cardNav.atStart}
-              />
-              <NavButton
-                direction="right"
-                onClick={() => scrollCards(1)}
-                disabled={cardNav.atEnd}
-              />
-            </div>
-          </div>
+          {!isLoading && !hasError && destinations.length > 0 && (
+            <span className="font-inter text-sm text-slate-500">
+              {destinations.length}{" "}
+              {destinations.length === 1 ? "destination" : "destinations"}
+            </span>
+          )}
         </div>
 
-        {/* Loading spinner (same as ThemePackages) */}
+        {/* Loading spinner */}
         {isLoading && (
           <div
             role="status"
             aria-live="polite"
-            className="flex min-h-[300px] flex-col items-center justify-center gap-4"
+            className="flex min-h-[320px] flex-col items-center justify-center gap-4"
           >
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
             <p className="font-inter text-sm font-medium text-slate-500">
@@ -353,42 +359,30 @@ export default function Themes() {
           </div>
         )}
 
-        {!isLoading && destinations.length === 0 && (
-          <div className="mt-8 rounded-md border border-slate-200 bg-white p-8 text-center font-inter text-slate-600">
-            No destinations are available for this theme yet.
+        {!isLoading && hasError && (
+          <div className="mt-8 rounded-md border border-red-200 bg-red-50 p-8 text-center font-inter text-red-700">
+            We could not load destinations right now. Please try again later.
           </div>
         )}
 
-        {/* Destination cards */}
-        {!isLoading && destinations.length > 0 && (
-          <div className="-mx-6 mt-8 px-6 lg:-mx-8 lg:px-8">
-            <div
-              ref={cardTrackRef}
-              onScroll={updateCardNav}
-              onKeyDown={onCardsKeyDown}
-              tabIndex={0}
-              aria-label="Destination cards, use arrow keys to navigate"
-              className="flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] sm:gap-5 [&::-webkit-scrollbar]:hidden"
-            >
-              {destinations.map((destination) => (
-                <div
-                  key={destination.id}
-                  className="w-[86%] shrink-0 snap-start sm:w-[72%] md:w-[62%] lg:w-auto"
-                >
-                  <DestinationCard destination={destination} />
-                </div>
-              ))}
-            </div>
+        {!isLoading && !hasError && destinations.length === 0 && (
+          <div className="mt-8 rounded-md border border-slate-200 bg-white p-8 text-center font-inter text-slate-600">
+            {isAll
+              ? "No destinations are available yet."
+              : "No destinations are available for this theme yet."}
+          </div>
+        )}
 
-            {/* Mobile / tablet scroll thumb */}
-            <div className="mt-5 flex justify-center lg:hidden">
-              <div className="relative h-[3px] w-[100px] overflow-hidden rounded-full bg-slate-200 sm:w-[120px]">
-                <div
-                  className="absolute left-0 top-0 h-full w-[25%] rounded-full bg-slate-900"
-                  style={{ transform: `translateX(${cardProgress * 300}%)` }}
-                />
-              </div>
-            </div>
+        {/* Destination grid: 5 cards in a row on desktop, every destination is shown */}
+        {!isLoading && !hasError && destinations.length > 0 && (
+          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-5">
+            {destinations.map((destination) => (
+              <DestinationCard
+                key={destination.id}
+                destination={destination}
+                category="dom"
+              />
+            ))}
           </div>
         )}
       </div>

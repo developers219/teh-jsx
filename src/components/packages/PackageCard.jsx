@@ -70,9 +70,7 @@ function PackageCard({ travelPackage }) {
               type="button"
               onClick={() => setCurrentImage(index)}
               className={`h-1.5 rounded-full transition-all ${
-                index === currentImage
-                  ? "w-5 bg-white"
-                  : "w-1.5 bg-white/70"
+                index === currentImage ? "w-5 bg-white" : "w-1.5 bg-white/70"
               }`}
               aria-label={`Go to image ${index + 1}`}
             />
@@ -130,36 +128,32 @@ function PackageCard({ travelPackage }) {
             "Experience unforgettable destinations, beautiful places and memorable experiences."}
         </p>
 
-        
-{/* ================= PRICE + CTA ================= */}
-<div className="mt-auto pt-4">
-  <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4">
-    {/* PRICE */}
-    <div className="min-w-0 flex-1">
-      <p className="text-xs font-medium text-slate-500">
-        Starting from
-      </p>
+        {/* ================= PRICE + CTA ================= */}
+        <div className="mt-auto pt-4">
+          <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4">
+            {/* PRICE */}
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-medium text-slate-500"></p>
 
-      <p className="mt-0.5 whitespace-nowrap text-2xl font-bold tracking-tight text-slate-950">
-        ₹
-        {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
-          "36,999"}
-      </p>
+              <p className="mt-0.5 whitespace-nowrap text-2xl font-bold tracking-tight text-slate-950">
+                ₹
+                {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
+                  "36,999"}
+              </p>
 
-      <p className="text-xs font-medium  text-slate-400">per person</p>
-    </div>
+              <p className="text-xs font-medium  text-slate-400">per person</p>
+            </div>
 
-    {/* CTA */}
-    <Link
-      to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
-      className="inline-flex shrink-0 items-center justify-center gap-4 whitespace-nowrap rounded-xl bg-black/90 px-5 py-4 text-sm font-semibold font-mont text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg sm:px-6"
-    >
-      <span>View Details</span>
-      <span className="text-lg leading-none">→</span>
-    </Link>
-  </div>
-</div>
-
+            {/* CTA */}
+            <Link
+              to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
+              className="inline-flex shrink-0 items-center justify-center gap-4 whitespace-nowrap rounded-xl bg-black/90 px-5 py-4 text-sm font-semibold font-mont text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg sm:px-6"
+            >
+              <span>View Details</span>
+              <span className="text-lg leading-none">→</span>
+            </Link>
+          </div>
+        </div>
       </div>
     </article>
   );
