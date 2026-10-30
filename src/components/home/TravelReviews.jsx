@@ -87,7 +87,7 @@ export default function TravelReviews() {
 
               <h2 className="relative font-eb text-[30px] font-bold leading-[1.08] text-white sm:text-[34px]">
                 What Our
-                <span className="block">Travelers Say</span>
+                <span className="block">Travellers Say</span>
               </h2>
 
               {/* Description */}

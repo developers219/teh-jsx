@@ -416,7 +416,7 @@ export default function VideoTestimonials() {
               {/* Spine */}
               <div className="absolute inset-y-0 left-0 w-5 bg-black/10 sm:w-7" />
 
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-yellow-200">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-yellow-100">
                 <div className="mb-5 font-mont text-[9px] uppercase tracking-[0.5em] opacity-70">
                   Travel stories
                 </div>

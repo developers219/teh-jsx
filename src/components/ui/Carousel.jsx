@@ -8,12 +8,17 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
  *  - spring slide animation
  *  - swipe support on touch screens
  *
- * Props are the same as before, so every page that already uses
- * <Carousel items renderItem ... /> switches to this design automatically.
- *
  * arrowsVariant:
  *  - "default" -> dark glass arrows (as before)
  *  - "glass"   -> light glass arrows (same as Popular Destinations)
+ *  - "overlay" -> arrows sit ON the photo, left and right, vertically
+ *                 centred (photo sliders). Shown on hover on desktop
+ *                 (parent needs the `group` class), always on touch.
+ *
+ * Extra props:
+ *  - fillHeight     -> carousel takes 100% height of its parent (photo sliders)
+ *  - className      -> extra classes for the root element
+ *  - onIndexChange  -> called with the active index (used for dots)
  */
 
 // Arrow styles
@@ -22,13 +27,27 @@ const ARROW_VARIANTS = {
     wrapper: "mb-6 flex gap-[clamp(0.25rem,2vw,0.5rem)]",
     button:
       "cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white",
+    prev: "",
+    next: "",
     size: 18,
   },
   glass: {
     wrapper: "mb-6 flex gap-4",
     button:
       "cursor-pointer rounded-full bg-white/20 p-2 text-white backdrop-blur-lg transition duration-300 hover:text-blue-300 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white",
+    prev: "",
+    next: "",
     size: 16,
+  },
+  overlay: {
+    // `contents` -> the wrapper adds no box, so each button positions
+    // itself against the photo (the carousel root is `relative`)
+    wrapper: "contents",
+    button:
+      "absolute top-1/2 z-20 flex size-9 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm transition duration-300 hover:bg-black/55 disabled:cursor-default disabled:hover:bg-black/30 max-lg:disabled:opacity-40 lg:opacity-0 lg:group-hover:opacity-100 lg:group-hover:disabled:opacity-40",
+    prev: "left-3",
+    next: "right-3",
+    size: 18,
   },
 };
 
@@ -52,6 +71,9 @@ export default function Carousel({
   desktopItems = 5,
   tabletItems = 2,
   mobileItems = 2,
+  fillHeight = false,
+  className = "",
+  onIndexChange,
 }) {
   const trackRef = useRef(null);
   const startX = useRef(0);
@@ -116,6 +138,11 @@ export default function Carousel({
     setActiveIndex((current) => Math.min(current, maxIndex));
   }, [maxIndex]);
 
+  // tell the parent which card is active (for dots etc.)
+  useEffect(() => {
+    onIndexChange?.(activeIndex);
+  }, [activeIndex, onIndexChange]);
+
   // -------------------------------------------------------
   // NAVIGATION
   // -------------------------------------------------------
@@ -144,7 +171,11 @@ export default function Carousel({
   const cardWidth = `calc((100% - ${(visibleItems - 1) * gap}px) / ${visibleItems})`;
 
   return (
-    <div className="flex w-full flex-col items-end">
+    <div
+      className={`relative flex w-full flex-col items-end ${
+        fillHeight ? "h-full" : ""
+      } ${className}`}
+    >
       {/* ARROWS */}
       {showArrows && maxIndex > 0 && (
         <div className={arrowStyle.wrapper}>
@@ -153,7 +184,7 @@ export default function Carousel({
             onClick={prev}
             disabled={activeIndex === 0}
             aria-label="Previous"
-            className={arrowStyle.button}
+            className={`${arrowStyle.button} ${arrowStyle.prev}`}
           >
             <ArrowLeft size={arrowStyle.size} />
           </button>
@@ -163,7 +194,7 @@ export default function Carousel({
             onClick={next}
             disabled={activeIndex >= maxIndex}
             aria-label="Next"
-            className={arrowStyle.button}
+            className={`${arrowStyle.button} ${arrowStyle.next}`}
           >
             <ArrowRight size={arrowStyle.size} />
           </button>
@@ -172,7 +203,9 @@ export default function Carousel({
 
       {/* VIEWPORT: clips left/right only, so hover lift and shadows stay visible */}
       <div
-        className="h-auto w-full touch-pan-y overflow-x-clip"
+        className={`w-full touch-pan-y overflow-x-clip ${
+          fillHeight ? "h-full" : "h-auto"
+        }`}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
@@ -188,7 +221,7 @@ export default function Carousel({
           {items.map((item, index) => (
             <div
               key={item?.id ?? index}
-              className="min-w-0 shrink-0"
+              className={`min-w-0 shrink-0 ${fillHeight ? "h-full" : ""}`}
               style={{ width: cardWidth }}
             >
               {renderItem(item, index)}

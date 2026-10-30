@@ -126,7 +126,14 @@ const DestinationContent = ({ destination, onExplore }) => {
 // RIGHT SIDE: STACKED CARD CAROUSEL
 // =========================================================
 
-const DestinationCarousel = ({ items, activeIndex, onSelect, next, prev }) => {
+const DestinationCarousel = ({
+  items,
+  activeIndex,
+  onSelect,
+  onOpen,
+  next,
+  prev,
+}) => {
   return (
     <div className="flex h-full w-full flex-col">
       <div className="relative h-[256px] w-full md:h-[500px]">
@@ -137,10 +144,11 @@ const DestinationCarousel = ({ items, activeIndex, onSelect, next, prev }) => {
 
           return (
             <motion.button
-              type="button"
-              key={item.id}
-              onClick={() => onSelect(index)}
-              className="absolute top-1/2 cursor-pointer overflow-hidden rounded-3xl"
+  type="button"
+  key={item.id}
+  aria-label={offset === 0 ? `Open ${item.name}` : `Show ${item.name}`}
+  onClick={() => (offset === 0 ? onOpen(item) : onSelect(index))}
+  className="absolute top-1/2 cursor-pointer overflow-hidden rounded-3xl"
               animate={{
                 x: offset * 165,
                 y: "-50%",
@@ -335,6 +343,7 @@ function PopularDestinations() {
                 items={destinations}
                 activeIndex={activeIndex}
                 onSelect={setActiveIndex}
+                  onOpen={handleExplore}
                 next={next}
                 prev={prev}
               />

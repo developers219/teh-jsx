@@ -1,46 +1,57 @@
-import { MessageCircle, Phone } from "lucide-react";
+
 import { useEffect, useState } from "react";
+import { Phone } from "lucide-react";
 import RequestCallback from "../ui/RequestCallback";
 
-// const slides = [
-//   {
-//     image:
-//       "https://images.unsplash.com/photo-1530789253388-582c481c54b0?auto=format&fit=crop&w=2200&q=90", // Santorini, Greece
-//   },
-//   {
-//     image:
-//       "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=2200&q=90", // Dubai, UAE
-//   },
-//   {
-//     image:
-//       "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=2200&q=90", // Kyoto, Japan
-//   },
-//   {
-//     image:
-//       "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=2200&q=90", // Bangkok, Thailand
-//   },
-// ];
-export default function Hero({ slides, name, desc }) {
+const WHATSAPP_NUMBER = "919211215500";
+const SLIDE_INTERVAL = 5000;
+
+// WhatsApp outline icon
+function WhatsAppIcon({ size = 20 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+      <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1" />
+    </svg>
+  );
+}
+
+export default function Hero({ slides = [], name, desc }) {
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [direction, setDirection] = useState("right");
 
+  // Backend images
+  const images = slides
+    ?.map((slide) => slide?.image)
+    .filter(Boolean) || [];
+
+  // Auto slide every 5 seconds
   useEffect(() => {
+    if (images.length <= 1) return;
+
     const interval = setInterval(() => {
-      setDirection((prevDirection) =>
-        prevDirection === "right" ? "left" : "right",
+      setDirection((prev) =>
+        prev === "right" ? "left" : "right"
       );
 
-      setActiveSlide((prev) => (prev + 1) % slides.length);
-    }, 5000);
+      setActiveSlide((prev) => (prev + 1) % images.length);
+    }, SLIDE_INTERVAL);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [images.length]);
 
-  /*
-   * Allow clicking the small indicators.
-   */
-
+  // Handle manual slide navigation
   const goToSlide = (index) => {
     if (index === activeSlide) return;
 
@@ -49,17 +60,16 @@ export default function Hero({ slides, name, desc }) {
   };
 
   return (
-    <section className="relative h-screen w-full overflow-hidden ">
-      {/* =====================================================
-            BACKGROUND SLIDES
-        ====================================================== */}
+    <section className="relative overflow-hidden bg-slate-950 px-6 pb-8 pt-44 text-white lg:px-8">
 
-      {slides.map((slide, index) => {
+      {/* Backend background image slider */}
+      {images.map((image, index) => {
         const isActive = index === activeSlide;
 
         return (
           <div
-            key={index}
+            key={image}
+            aria-hidden="true"
             className={`absolute inset-0 overflow-hidden transition-transform duration-[1200ms] ease-[cubic-bezier(0.76,0,0.24,1)] ${
               isActive
                 ? "z-10 translate-x-0"
@@ -68,121 +78,86 @@ export default function Hero({ slides, name, desc }) {
                   : "z-0 translate-x-full"
             }`}
           >
-            {/* IMAGE */}
-
             <img
-              src={slide.image}
-              alt="Domestic destination in India"
+              src={image}
+              alt=""
+              draggable={false}
               className="absolute inset-0 h-full w-full object-cover"
             />
-
-            {/* =================================================
-                  DARK OVERLAY
-              ================================================== */}
-
-            <div className="absolute inset-0 bg-black/25" />
-
-            {/* LEFT DARK GRADIENT */}
-
-            <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
-
-            {/* BOTTOM GRADIENT */}
-
-            <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
           </div>
         );
       })}
 
-      {/* =====================================================
-            FIXED TEXT CONTENT
+      {/* Dark overlay */}
+      <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/70 via-black/50 to-black/60" />
 
-            IMPORTANT:
-            This does NOT move with the images.
-            Only the background image changes.
-        ====================================================== */}
+      {/* Hero content */}
+      <div className="relative z-30 mx-auto max-w-7xl">
 
-      <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 sm:px-8 md:px-12 md:pb-14 lg:px-16 lg:pb-16">
-        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-12 xl:px-16">
-          <div className="max-w-3xl">
-            {/* SMALL LABEL */}
+        {/* Backend destination name */}
+        <h1 className="mt-4 min-h-[1.25em] max-w-3xl font-cg text-4xl font-bold capitalize sm:text-5xl">
+          {name}
+        </h1>
 
-            {/* <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 backdrop-blur-md">
+        {/* Backend destination description */}
+        {desc && (
+          <p className="mt-4 max-w-2xl font-inter text-lg leading-8 text-slate-200">
+            {desc}
+          </p>
+        )}
 
-                <span className="h-2 w-2 rounded-full bg-white" />
+        {/* CTA buttons */}
+        <div className="mt-6 flex flex-wrap items-center gap-3">
 
-                <span className="text-xs font-semibold uppercase tracking-[0.18em] text-white sm:text-sm">
-                  Explore India
-                </span>
+          {/* Request Callback */}
+          <button
+            type="button"
+            onClick={() => setIsCallbackOpen(true)}
+            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-inter text-sm font-semibold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 sm:w-64"
+          >
+            <Phone size={17} strokeWidth={2} />
+            Request a callback
+          </button>
 
-              </div> */}
+          {/* WhatsApp */}
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-yellow-400 px-7 py-3.5 font-inter text-sm font-semibold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-yellow-300 sm:w-64"
+          >
+            <WhatsAppIcon size={20} />
+            Chat With Us
+          </a>
 
-            {/* MAIN HEADING */}
-
-            <h1 className="max-w-3xl font-thin leading-[1.05] tracking-tight text-white text-[clamp(2rem,4vw,3rem)]">
-              {name}
-            </h1>
-
-            {/* SUBHEADING */}
-
-            <p className="mt-5 max-w-2xl text-base font-mont leading-7 text-white/90 sm:text-base">
-              {desc}
-            </p>
-
-            {/* CTA */}
-
-            <div className="mt-7 flex flex-wrap items-center gap-3">
-              {/* REQUEST CALLBACK */}
-              <button
-                type="button"
-                onClick={() => setIsCallbackOpen(true)}
-                className="inline-flex items-center gap-2  rounded-full bg-white px-7 py-3.5 font-mont font-semibold text-sm text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 hover:shadow-2xl"
-              >
-                <Phone size={17} strokeWidth={2} />
-                Request a callback
-              </button>
-
-              {/* WHATSAPP */}
-              <a
-                href="https://wa.me/919211215500"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2  rounded-full bg-beige px-7 py-3.5 font-mont font-semibold text-sm text-black shadow-xl transition-all duration-300 hover:-translate-y-1 "
-              >
-                <MessageCircle size={18} strokeWidth={2} />
-                Chat With Us
-              </a>
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* =====================================================
-            SMALL SLIDE INDICATORS
+      {/* Slide indicators */}
+      {images.length > 1 && (
+        <div className="absolute bottom-3 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2">
+          {images.map((image, index) => (
+            <button
+              key={image}
+              type="button"
+              onClick={() => goToSlide(index)}
+              aria-label={`Show destination image ${index + 1}`}
+              className={`cursor-pointer rounded-full transition-all duration-500 ${
+                activeSlide === index
+                  ? "h-1.5 w-7 bg-white"
+                  : "h-1.5 w-1.5 bg-white/60 hover:bg-white"
+              }`}
+            />
+          ))}
+        </div>
+      )}
 
-            No arrows
-            No page number
-        ====================================================== */}
+      {/* Request Callback Popup */}
+      <RequestCallback
+        isOpen={isCallbackOpen}
+        setIsOpen={setIsCallbackOpen}
+      />
 
-      <div className="absolute bottom-7 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2">
-        {slides.map((_, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={() => goToSlide(index)}
-            aria-label={`Show destination image ${index + 1}`}
-            className={`rounded-full transition-all duration-500 ${
-              activeSlide === index
-                ? "h-1.5 w-7 bg-white"
-                : "h-1.5 w-1.5 bg-white/50 hover:bg-white/80"
-            }`}
-          />
-        ))}
-      </div>
-      {/* =====================================================
-                    REQUEST CALLBACK POPUP
-                ====================================================== */}
-
-      <RequestCallback isOpen={isCallbackOpen} setIsOpen={setIsCallbackOpen} />
     </section>
   );
 }

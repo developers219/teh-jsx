@@ -1,376 +1,8 @@
-// // import { useState } from "react";
-// // import SectionHeader from "../home/SectionHeader";
-// // // import PackageGrid from "./PackageGrid";
-
-// // import { SlidersHorizontal } from "lucide-react";
-
-// // const PackageFilters = ({ filters, setFilters }) => {
-// //   const updateFilter = (key, value) => {
-// //     setFilters((prev) => ({
-// //       ...prev,
-// //       [key]: value,
-// //     }));
-// //   };
-
-// //   return (
-// //     <div className="flex flex-wrap items-center gap-3 my-8">
-// //       {/* Budget */}
-// //       <select
-// //         value={filters.budget}
-// //         onChange={(e) => updateFilter("budget", e.target.value)}
-// //         className="border border-gray-300 rounded-full px-4 py-2.5"
-// //       >
-// //         <option value="">Budget</option>
-// //         <option value="under-10000">Under ₹10,000</option>
-// //         <option value="10000-25000">₹10,000 – ₹25,000</option>
-// //         <option value="25000-50000">₹25,000 – ₹50,000</option>
-// //         <option value="above-50000">Above ₹50,000</option>
-// //       </select>
-
-// //       {/* Duration */}
-// //       <select
-// //         value={filters.duration}
-// //         onChange={(e) => updateFilter("duration", e.target.value)}
-// //         className="border border-gray-300 rounded-full px-4 py-2.5"
-// //       >
-// //         <option value="">Duration</option>
-// //         <option value="1-3">1 – 3 Days</option>
-// //         <option value="4-6">4 – 6 Days</option>
-// //         <option value="7-10">7 – 10 Days</option>
-// //         <option value="10+">10+ Days</option>
-// //       </select>
-
-// //       {/* People */}
-// //       <select
-// //         value={filters.people}
-// //         onChange={(e) => updateFilter("people", e.target.value)}
-// //         className="border border-gray-300 rounded-full px-4 py-2.5"
-// //       >
-// //         <option value="">People</option>
-// //         <option value="1-2">1 – 2 People</option>
-// //         <option value="3-5">3 – 5 People</option>
-// //         <option value="6-10">6 – 10 People</option>
-// //         <option value="10+">10+ People</option>
-// //       </select>
-
-// //       {/* Sort */}
-// //       <select
-// //         value={filters.sort}
-// //         onChange={(e) => updateFilter("sort", e.target.value)}
-// //         className="border border-gray-300 rounded-full px-4 py-2.5"
-// //       >
-// //         <option value="popular">Sort: Popular</option>
-// //         <option value="price-low">Price: Low to High</option>
-// //         <option value="price-high">Price: High to Low</option>
-// //         <option value="duration-short">Duration: Shortest</option>
-// //         <option value="duration-long">Duration: Longest</option>
-// //       </select>
-
-// //       {/* Optional reset */}
-// //       <button
-// //         type="button"
-// //         onClick={() =>
-// //           setFilters({
-// //             budget: "",
-// //             duration: "",
-// //             people: "",
-// //             sort: "popular",
-// //           })
-// //         }
-// //         className="flex items-center gap-2 px-4 py-2.5 text-sm"
-// //       >
-// //         <SlidersHorizontal size={16} />
-// //         Reset
-// //       </button>
-// //     </div>
-// //   );
-// // };
-
-// // // export default PackageFilters;
-
-// // export const FilteredPackages = () => {
-// //   const [filters, setFilters] = useState({
-// //     budget: null,
-// //     duration: null,
-// //     people: null,
-// //     sort: "popular",
-// //   });
-
-// //   return (
-// //     <section>
-// //       <div className="max-w-[1440px] mx-auto my-16">
-// //         <SectionHeader
-// //           title="Explore Filtered Packages"
-// //           description="Choose what suits your needs."
-// //         />
-
-// //         <PackageFilters filters={filters} setFilters={setFilters} />
-
-// //         {/* <PackageGrid filters={filters} /> */}
-// //       </div>
-// //     </section>
-// //   );
-// // };
-
-// import { useEffect, useMemo, useState } from "react";
-// import SectionHeader from "../home/SectionHeader";
-// // import PackageCard from "./PackageCard";
-
-// import { SlidersHorizontal } from "lucide-react";
-// import PackageCard from "../packages/PackageCard";
-// import api from "../../services/api";
-
-// const PackageFilters = ({ filters, setFilters }) => {
-//   const updateFilter = (key, value) => {
-//     setFilters((prev) => ({
-//       ...prev,
-//       [key]: value,
-//     }));
-//   };
-
-//   return (
-//     <div className="flex flex-wrap items-center gap-3 my-8">
-//       {/* Budget */}
-//       <select
-//         value={filters.budget}
-//         onChange={(e) => updateFilter("budget", e.target.value)}
-//         className="border border-gray-300 rounded-full px-4 py-2.5"
-//       >
-//         <option value="">Budget</option>
-//         <option value="under-10000">Under ₹10,000</option>
-//         <option value="10000-25000">₹10,000 – ₹25,000</option>
-//         <option value="25000-50000">₹25,000 – ₹50,000</option>
-//         <option value="above-50000">Above ₹50,000</option>
-//       </select>
-
-//       {/* Duration */}
-//       <select
-//         value={filters.duration}
-//         onChange={(e) => updateFilter("duration", e.target.value)}
-//         className="border border-gray-300 rounded-full px-4 py-2.5"
-//       >
-//         <option value="">Duration</option>
-//         <option value="1-3">1 – 3 Days</option>
-//         <option value="4-6">4 – 6 Days</option>
-//         <option value="7-10">7 – 10 Days</option>
-//         <option value="10+">10+ Days</option>
-//       </select>
-
-//       {/* People */}
-//       <select
-//         value={filters.people}
-//         onChange={(e) => updateFilter("people", e.target.value)}
-//         className="border border-gray-300 rounded-full px-4 py-2.5"
-//       >
-//         <option value="">People</option>
-//         <option value="1-2">1 – 2 People</option>
-//         <option value="3-5">3 – 5 People</option>
-//         <option value="6-10">6 – 10 People</option>
-//         <option value="10+">10+ People</option>
-//       </select>
-
-//       {/* Sort */}
-//       <select
-//         value={filters.sort}
-//         onChange={(e) => updateFilter("sort", e.target.value)}
-//         className="border border-gray-300 rounded-full px-4 py-2.5"
-//       >
-//         <option value="popular">Sort: Popular</option>
-//         <option value="price-low">Price: Low to High</option>
-//         <option value="price-high">Price: High to Low</option>
-//         <option value="duration-short">Duration: Shortest</option>
-//         <option value="duration-long">Duration: Longest</option>
-//       </select>
-
-//       {/* Optional reset */}
-//       <button
-//         type="button"
-//         onClick={() =>
-//           setFilters({
-//             budget: "",
-//             duration: "",
-//             people: "",
-//             sort: "popular",
-//           })
-//         }
-//         className="flex items-center gap-2 px-4 py-2.5 text-sm"
-//       >
-//         <SlidersHorizontal size={16} />
-//         Reset
-//       </button>
-//     </div>
-//   );
-// };
-
-// const packages = [
-//   {
-//     id: 1,
-//     title: "Goa Escape",
-//     price: 15000,
-//     duration: 3,
-//     people: 2,
-//   },
-//   {
-//     id: 2,
-//     title: "Kerala Explorer",
-//     price: 28000,
-//     duration: 6,
-//     people: 4,
-//   },
-//   {
-//     id: 3,
-//     title: "Rajasthan Heritage",
-//     price: 45000,
-//     duration: 8,
-//     people: 6,
-//   },
-// ];
-
-// export const FilteredPackages = () => {
-//   const [filters, setFilters] = useState({
-//     budget: "",
-//     duration: "",
-//     people: "",
-//     sort: "popular",
-//   });
-
-//   useEffect(() => {
-//     const fetchPackagesByFiltering = async () => {
-//       const res = await api("/packages");
-//       console.log(res);
-//     };
-//     fetchPackagesByFiltering();
-//   }, []);
-
-//   const filteredPackages = useMemo(() => {
-//     let result = [...packages];
-
-//     // Budget
-//     if (filters.budget) {
-//       result = result.filter((pkg) => {
-//         switch (filters.budget) {
-//           case "under-10000":
-//             return pkg.price < 10000;
-
-//           case "10000-25000":
-//             return pkg.price >= 10000 && pkg.price <= 25000;
-
-//           case "25000-50000":
-//             return pkg.price > 25000 && pkg.price <= 50000;
-
-//           case "above-50000":
-//             return pkg.price > 50000;
-
-//           default:
-//             return true;
-//         }
-//       });
-//     }
-
-//     // Duration
-//     if (filters.duration) {
-//       result = result.filter((pkg) => {
-//         switch (filters.duration) {
-//           case "1-3":
-//             return pkg.duration >= 1 && pkg.duration <= 3;
-
-//           case "4-6":
-//             return pkg.duration >= 4 && pkg.duration <= 6;
-
-//           case "7-10":
-//             return pkg.duration >= 7 && pkg.duration <= 10;
-
-//           case "10+":
-//             return pkg.duration > 10;
-
-//           default:
-//             return true;
-//         }
-//       });
-//     }
-
-//     // People
-//     if (filters.people) {
-//       result = result.filter((pkg) => {
-//         switch (filters.people) {
-//           case "1-2":
-//             return pkg.people >= 1 && pkg.people <= 2;
-
-//           case "3-5":
-//             return pkg.people >= 3 && pkg.people <= 5;
-
-//           case "6-10":
-//             return pkg.people >= 6 && pkg.people <= 10;
-
-//           case "10+":
-//             return pkg.people > 10;
-
-//           default:
-//             return true;
-//         }
-//       });
-//     }
-
-//     // Sort
-//     switch (filters.sort) {
-//       case "price-low":
-//         result.sort((a, b) => a.price - b.price);
-//         break;
-
-//       case "price-high":
-//         result.sort((a, b) => b.price - a.price);
-//         break;
-
-//       case "duration-short":
-//         result.sort((a, b) => a.duration - b.duration);
-//         break;
-
-//       case "duration-long":
-//         result.sort((a, b) => b.duration - a.duration);
-//         break;
-
-//       default:
-//         break;
-//     }
-
-//     return result;
-//   }, [filters]);
-
-//   return (
-//     <section className="bg-white">
-//       <div className="max-w-7xl mx-auto py-16 px-4">
-//         <SectionHeader
-//           title="Explore Filtered Packages"
-//           description="Choose what suits your needs."
-//         />
-
-//         <PackageFilters filters={filters} setFilters={setFilters} />
-
-//         {filteredPackages.length > 0 ? (
-//           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
-//             {filteredPackages.map((pkg) => (
-//               <div key={pkg.id}>
-//                 <PackageCard travelPackage={pkg} />
-//               </div>
-//             ))}
-//           </div>
-//         ) : (
-//           <div className="py-16 text-center">
-//             <h3 className="text-xl font-semibold">No packages found</h3>
-
-//             <p className="text-gray-500 mt-2">Try changing your filters.</p>
-//           </div>
-//         )}
-//       </div>
-//     </section>
-//   );
-// };
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import SectionHeader from "../home/SectionHeader";
+import Heading from "../ui/Heading";
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
-import Carousel from "../ui/Carousel";
 import api from "../../services/api";
 
 const initialFilters = {
@@ -382,11 +14,11 @@ const initialFilters = {
   sortOrder: "",
 };
 
+// one style for every filter chip (site font, slate colours)
+const selectClass =
+  "shrink-0 cursor-pointer whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 font-inter outline-none transition hover:border-slate-300 focus:border-blue-400";
+
 const PackageFilters = ({ filters, setFilters, themes, durations }) => {
-  const filterTrackRef = useRef(null);
-
-  const [filterProgress, setFilterProgress] = useState(0);
-
   const updateFilter = (key, value) => {
     setFilters((prev) => ({
       ...prev,
@@ -423,46 +55,13 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
     setFilters(initialFilters);
   };
 
-  const updateFilterProgress = () => {
-    const el = filterTrackRef.current;
-
-    if (!el) return;
-
-    const maxScroll = el.scrollWidth - el.clientWidth;
-
-    if (maxScroll <= 0) {
-      setFilterProgress(0);
-      return;
-    }
-
-    const progress = el.scrollLeft / maxScroll;
-
-    setFilterProgress(Math.min(1, Math.max(0, progress)));
-  };
-
-  useEffect(() => {
-    updateFilterProgress();
-
-    const handleResize = () => {
-      updateFilterProgress();
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [themes, durations]);
-
   return (
-    <div className="my-8 w-full font-mont">
+    <div className="my-8 w-full font-inter">
       {/* =====================================================
           FILTER CHIPS
       ===================================================== */}
 
       <div
-        ref={filterTrackRef}
-        onScroll={updateFilterProgress}
         className="
           flex
           w-full
@@ -484,76 +83,33 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
         <select
           value={filters.minPrice}
           onChange={(e) => updateFilter("minPrice", e.target.value)}
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-2.5
-            outline-none
-            text-sm
-            whitespace-nowrap
-          "
+          className={selectClass}
         >
           <option value="">Min Budget</option>
-
           <option value="5000">₹5,000</option>
-
           <option value="10000">₹10,000</option>
-
           <option value="15000">₹15,000</option>
-
           <option value="25000">₹25,000</option>
-
           <option value="50000">₹50,000</option>
         </select>
 
         <select
           value={filters.maxPrice}
           onChange={(e) => updateFilter("maxPrice", e.target.value)}
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-2.5
-            outline-none
-            text-sm
-            whitespace-nowrap
-          "
+          className={selectClass}
         >
           <option value="">Max Budget</option>
-
           <option value="10000">₹10,000</option>
-
           <option value="25000">₹25,000</option>
-
           <option value="50000">₹50,000</option>
-
           <option value="75000">₹75,000</option>
-
           <option value="100000">₹1,00,000</option>
         </select>
 
         <select
           value={filters.themeId}
           onChange={(e) => updateFilter("themeId", e.target.value)}
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-2.5
-            outline-none
-            text-sm
-            whitespace-nowrap
-          "
+          className={selectClass}
         >
           <option value="">Theme</option>
 
@@ -567,18 +123,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
         <select
           value={filters.durationId}
           onChange={(e) => updateFilter("durationId", e.target.value)}
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-2.5
-            outline-none
-            text-sm
-            whitespace-nowrap
-          "
+          className={selectClass}
         >
           <option value="">Duration</option>
 
@@ -592,43 +137,19 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
         <select
           value={sortValue}
           onChange={(e) => handleSortChange(e.target.value)}
-          className="
-            shrink-0
-            rounded-full
-            border
-            border-gray-300
-            bg-white
-            px-4
-            py-2.5
-            outline-none
-            text-sm
-            whitespace-nowrap
-          "
+          className={selectClass}
         >
           <option value="">Sort</option>
-
           <option value="price-asc">Price: Low to High</option>
-
           <option value="price-desc">Price: High to Low</option>
-
           <option value="duration-asc">Duration: Shortest</option>
-
           <option value="duration-desc">Duration: Longest</option>
         </select>
 
         <button
           type="button"
           onClick={resetFilters}
-          className="
-            shrink-0
-            flex
-            items-center
-            gap-2
-            px-4
-            py-2.5
-            text-sm
-            whitespace-nowrap
-          "
+          className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap font-inter px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:text-slate-950"
         >
           <SlidersHorizontal size={16} />
           Reset
@@ -749,12 +270,17 @@ export const FilteredPackages = () => {
   ]);
 
   return (
-    <section ref={sectionRef} className="scroll-mt-20 bg-white">
-      <div className="mx-auto max-w-7xl px-4 py-16">
-        <SectionHeader
-          title="Explore Packages"
-          description="Choose what suits your needs."
-        />
+    <section
+      ref={sectionRef}
+      className="scroll-mt-20 bg-white px-6 pb-16 pt-14 font-inter lg:px-8"
+    >
+      <div className="mx-auto max-w-7xl">
+        <Heading
+  heading="Explore"
+  highlight="Packages"
+  subheading="Choose what suits your needs."
+  className="mb-0"
+/>
 
         <PackageFilters
           filters={filters}
@@ -763,32 +289,41 @@ export const FilteredPackages = () => {
           durations={durations}
         />
 
-        {loading ? (
-          <div className="py-16 text-center">
-            <p className="text-gray-500">Loading packages...</p>
+        {/* Loading spinner (same as ThemePackages) */}
+        {loading && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="flex min-h-[320px] flex-col items-center justify-center gap-4"
+          >
+            <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
+            <p className="text-sm font-medium text-slate-500">
+              Loading packages…
+            </p>
           </div>
-        ) : error ? (
-          <div className="py-16 text-center">
-            <h3 className="text-xl font-semibold">Something went wrong</h3>
+        )}
 
-            <p className="text-gray-500 mt-2">{error}</p>
+        {!loading && error && (
+          <div className="rounded-md border border-red-200 bg-red-50 p-8 text-center text-red-700">
+            <p>{error}</p>
           </div>
-        ) : packages.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        )}
+
+        {!loading && !error && packages.length === 0 && (
+          <div className="rounded-md border border-slate-200 bg-white p-8 text-center text-slate-600">
+            <p>No packages found. Try changing your filters.</p>
+          </div>
+        )}
+
+        {!loading && !error && packages.length > 0 && (
+          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {packages.map((pkg) => (
-              <div key={pkg.id}>
-                <PackageCard travelPackage={pkg} />
-              </div>
+              <PackageCard key={pkg.id ?? pkg.slug} travelPackage={pkg} />
             ))}
-          </div>
-        ) : (
-          <div className="py-16 text-center">
-            <h3 className="text-xl font-semibold">No packages found</h3>
-
-            <p className="text-gray-500 mt-2">Try changing your filters.</p>
           </div>
         )}
       </div>
     </section>
   );
-};
+}
+;

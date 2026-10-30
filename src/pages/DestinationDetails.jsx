@@ -1,104 +1,127 @@
 import { Link, useParams } from "react-router-dom";
-import Alert from "@mui/material/Alert";
-import Button from "@mui/material/Button";
-import Skeleton from "@mui/material/Skeleton";
+import { useEffect, useState } from "react";
 import api from "../services/api";
 import Hero from "../components/destination_details/Hero";
-import { useEffect, useState } from "react";
 import { FilteredPackages } from "../components/destination_details/FilteredPackages";
 import PackageByCategories from "../components/destination_details/PackageByCategories";
+
+const FALLBACK_HERO_IMAGE =
+  "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=85";
 
 export default function DestinationDetails() {
   const { slug } = useParams();
   const [destination, setDestination] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+
   useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+
     async function fetchDestinationDetails() {
       if (!slug) {
         setErrorMessage("Destination URL is invalid.");
         setIsLoading(false);
         return;
       }
+
       try {
         setIsLoading(true);
         setErrorMessage("");
-        const response = await api.get(`/destinations/${slug}`);
-        console.log(response);
+
+        const response = await api.get(`/destinations/${slug}`, {
+          signal: controller.signal,
+        });
+
+        if (cancelled) return;
+
         setDestination(response.data.data);
       } catch (error) {
+        if (cancelled) return;
+
+        console.error("Failed to load destination:", error);
         setErrorMessage(
           "We could not load this destination right now. Please try again later.",
         );
       } finally {
-        setIsLoading(false);
+        if (!cancelled) setIsLoading(false);
       }
     }
+
     fetchDestinationDetails();
+
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
   }, [slug]);
+
+  /* ---------------- LOADING (same spinner as ThemePackages) ---------------- */
   if (isLoading) {
     return (
-      <main className="bg-slate-50 px-6 py-10 lg:px-8">
-        <div className="mx-auto  max-w-7xl space-y-6">
-          <Skeleton variant="rounded" height={420} sx={{ borderRadius: 4 }} />
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton
-                key={index}
-                variant="rounded"
-                height={430}
-                sx={{ borderRadius: 4 }}
-              />
-            ))}
-          </div>
-        </div>
-      </main>
-    );
-  }
-  if (errorMessage) {
-    return (
-      <main className="px-6 py-16 lg:px-8">
-        <div className="mx-auto max-w-3xl">
-          <Alert
-            severity="error"
-            action={
-              <Button
-                component={Link}
-                to="/destinations"
-                color="inherit"
-                size="small"
-              >
-                Back to destinations
-              </Button>
-            }
-          >
-            {errorMessage}
-          </Alert>
-        </div>
-      </main>
-    );
-  }
-  if (!destination) {
-    return (
-      <main className="bg-slate-50 px-6 py-16 lg:px-8">
-        <div className="mx-auto max-w-3xl">
-          <Alert severity="info">Destination details are not available.</Alert>
+      <main className="bg-slate-50 font-mont">
+        <div
+          role="status"
+          aria-live="polite"
+          className="flex min-h-screen flex-col items-center justify-center gap-4"
+        >
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
+          <p className="text-sm font-medium text-slate-500">
+            Loading destination…
+          </p>
         </div>
       </main>
     );
   }
 
-  const heroImage =
-    destination.images[0].imageUrl ??
-    "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1600&q=85";
+  /* ---------------- ERROR ---------------- */
+  if (errorMessage) {
+    return (
+      <main className="bg-slate-50 px-6 pb-16 pt-44 font-mont lg:px-8">
+        <div className="mx-auto max-w-3xl rounded-md border border-red-200 bg-red-50 p-8 text-center text-red-700">
+          <p>{errorMessage}</p>
+
+          <Link
+            to="/destinations"
+            className="mt-4 inline-block rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold text-white transition hover:bg-black"
+          >
+            Back to destinations
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  /* ---------------- NO DATA ---------------- */
+  if (!destination) {
+    return (
+      <main className="bg-slate-50 px-6 pb-16 pt-44 font-mont lg:px-8">
+        <div className="mx-auto max-w-3xl rounded-md border border-slate-200 bg-white p-8 text-center text-slate-600">
+          <p>Destination details are not available.</p>
+
+          <Link
+            to="/destinations"
+            className="mt-4 inline-block rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold text-white transition hover:bg-black"
+          >
+            Browse all destinations
+          </Link>
+        </div>
+      </main>
+    );
+  }
+
+  const heroImage = destination.images?.[0]?.imageUrl || FALLBACK_HERO_IMAGE;
+
   return (
-    <>
+    <main className="bg-slate-50 font-mont">
       <Hero
         slides={[{ image: heroImage }]}
         name={destination.name}
         desc={destination.description}
       />
+
       <FilteredPackages />
+
       <PackageByCategories
         destinationSlug={slug}
         heading={"Best Selling Packages"}
@@ -107,6 +130,7 @@ export default function DestinationDetails() {
         }
         themeId={4}
       />
+
       <PackageByCategories
         destinationSlug={slug}
         heading={"Romantic Getaways"}
@@ -133,6 +157,6 @@ export default function DestinationDetails() {
         }
         themeId={4}
       />
-    </>
+    </main>
   );
 }

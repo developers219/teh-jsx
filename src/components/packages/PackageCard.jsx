@@ -1,160 +1,282 @@
-import { Calendar } from "lucide-react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Calendar, MapPin } from "lucide-react";
+import Carousel from "../ui/Carousel";
 
-function PackageCard({ travelPackage }) {
-  const [currentImage, setCurrentImage] = useState(0);
+// Only used when a package has NO photo at all (keeps the card layout intact)
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85";
 
-  /*
-   * Keep your existing package image as the main image.
-   * If your API later provides multiple images, you can add them here.
-   */
-  // const images = [
-  //     travelPackage.image?.url ??
-  //         "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85",
-  // ];
+/* ---------------------------------------------------------------
+   Backend -> card data
+   Everything shown on the card comes from the package object.
+   If a value is missing the card hides that part (no fake values).
 
-  const images = travelPackage?.images || [
-    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1200&q=85",
-  ];
+   Supported backend shapes:
+   - images       : [{ imageUrl }] | [{ url }] | ["https://..."]
+   - destination  : destinations: [{ name }]  |  destination: { name } | "Goa"
+   - description  : shortDescription | overview | description
+   - price        : startingPrice | price   (+ discountPrice)
+   - duration     : durationName | durationDaysCount | durationDays
+   - link         : slug | id
+---------------------------------------------------------------- */
 
-  const nextImage = () => {
-    setCurrentImage((prev) => (prev + 1) % images.length);
-  };
+function toNumber(value) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
 
-  const previousImage = () => {
-    setCurrentImage((prev) => (prev - 1 + images.length) % images.length);
-  };
+function formatPrice(value) {
+  return toNumber(value).toLocaleString("en-IN", { maximumFractionDigits: 0 });
+}
+
+function getImageUrl(image) {
+  if (typeof image === "string") return image;
+  return image?.imageUrl || image?.url || image?.src || image?.path || "";
+}
+
+function getName(item) {
+  if (!item) return "";
+  if (typeof item === "string") return item;
+  return item.name || item.title || item.destinationName || "";
+}
+
+// "Goa"  |  "Goa, Pune"  |  "Goa, Pune +1"
+function getDestinationName(travelPackage) {
+  const list = Array.isArray(travelPackage?.destinations)
+    ? travelPackage.destinations
+    : [];
+  const names = list.map(getName).filter(Boolean);
+
+  if (names.length > 0) {
+    return names.length > 2
+      ? `${names.slice(0, 2).join(", ")} +${names.length - 2}`
+      : names.join(", ");
+  }
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white font-mont shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      {/* ================= IMAGE ================= */}
-      <div className="relative h-[200px] shrink-0 overflow-hidden">
-        <img
-          src={images[currentImage]?.imageUrl}
-          alt={
-            travelPackage.image?.altText ??
-            `${travelPackage.title} travel package`
-          }
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]"
-        />
+    getName(travelPackage?.destination) || travelPackage?.destinationName || ""
+  );
+}
 
-        {/* Dark subtle gradient */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black/20 to-transparent" />
+function getDuration(travelPackage) {
+  if (travelPackage?.durationName) return travelPackage.durationName;
 
-        {/* LEFT CAROUSEL BUTTON */}
-        <button
-          type="button"
-          onClick={previousImage}
-          className="absolute left-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-lg backdrop-blur-md transition hover:bg-white/35"
-          aria-label="Previous image"
+  const days = toNumber(
+    travelPackage?.durationDaysCount ?? travelPackage?.durationDays,
+  );
+
+  return days > 0 ? `${days} ${days === 1 ? "Day" : "Days"}` : "";
+}
+
+// discountPrice is used only when it is really lower than the normal price
+//   offer     -> price = discountPrice, oldPrice = startingPrice
+//   no offer  -> price = startingPrice, oldPrice = ""
+function getPricing(travelPackage) {
+  const starting = toNumber(travelPackage?.startingPrice ?? travelPackage?.price);
+  const discount = toNumber(travelPackage?.discountPrice);
+
+  const hasDiscount = discount > 0 && starting > 0 && discount < starting;
+  const final = hasDiscount ? discount : starting;
+
+  return {
+    price: final > 0 ? formatPrice(final) : "",
+    oldPrice: hasDiscount ? formatPrice(starting) : "",
+  };
+}
+
+function buildCardData(travelPackage) {
+  const images = (
+    Array.isArray(travelPackage?.images) ? travelPackage.images : []
+  )
+    .map(getImageUrl)
+    .filter(Boolean);
+
+  if (images.length === 0) images.push(FALLBACK_IMAGE);
+
+  return {
+    images,
+    title: travelPackage?.title ?? "",
+    destinationName: getDestinationName(travelPackage),
+    durationName: getDuration(travelPackage),
+    description:
+      travelPackage?.shortDescription ||
+      travelPackage?.overview ||
+      travelPackage?.description ||
+      "",
+    ...getPricing(travelPackage),
+    href: `/packages/${travelPackage?.slug ?? travelPackage?.id}`,
+  };
+}
+
+/* ---------------------------------------------------------------
+   Small shared pieces
+---------------------------------------------------------------- */
+
+// Click anywhere on the card -> open that package's details page.
+// Arrows, buttons and links keep their own behaviour.
+// Ctrl / Cmd + click opens the package in a new tab.
+function useCardClick(href) {
+  const navigate = useNavigate();
+
+  return (event) => {
+    if (event.defaultPrevented) return;
+    if (event.target.closest("a, button")) return;
+
+    if (event.metaKey || event.ctrlKey) {
+      window.open(href, "_blank", "noopener");
+      return;
+    }
+
+    navigate(href);
+  };
+}
+
+// Photo slider powered by your ui/Carousel (spring slide + swipe).
+// Arrows: the Carousel's own arrows ("overlay" variant) -> left and right,
+// vertically centred. Hover on desktop, always visible on touch screens.
+function ImageSlider({
+  ctx,
+  className = "",
+  gradient = "from-black/25",
+  dotsPosition = "bottom",
+}) {
+  const { images, title } = ctx;
+  const [current, setCurrent] = useState(0);
+  const hasMany = images.length > 1;
+
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <Carousel
+        items={images}
+        gap={0}
+        desktopItems={1}
+        tabletItems={1}
+        mobileItems={1}
+        arrowsVariant="overlay"
+        fillHeight
+        onIndexChange={setCurrent}
+        renderItem={(src) => (
+          <div className="h-full w-full overflow-hidden">
+            <img
+              src={src}
+              alt={`${title} travel package`}
+              loading="lazy"
+              draggable={false}
+              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+          </div>
+        )}
+      />
+
+      {/* readability gradient */}
+      <div
+        className={`pointer-events-none absolute inset-0 bg-linear-to-t ${gradient} to-transparent`}
+      />
+
+      {/* dots (only show which photo is active) */}
+      {hasMany && (
+        <div
+          className={`pointer-events-none absolute left-1/2 z-10 flex -translate-x-1/2 gap-1.5 ${
+            dotsPosition === "top" ? "top-4" : "bottom-3"
+          }`}
         >
-          <span className="text-2xl leading-none">‹</span>
-        </button>
-
-        {/* RIGHT CAROUSEL BUTTON */}
-        <button
-          type="button"
-          onClick={nextImage}
-          className="absolute right-4 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-white/20 text-white shadow-lg backdrop-blur-md transition hover:bg-white/35"
-          aria-label="Next image"
-        >
-          <span className="text-2xl leading-none">›</span>
-        </button>
-
-        {/* IMAGE DOTS */}
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-1.5">
           {images.map((_, index) => (
-            <button
+            <span
               key={index}
-              type="button"
-              onClick={() => setCurrentImage(index)}
               className={`h-1.5 rounded-full transition-all ${
-                index === currentImage ? "w-5 bg-white" : "w-1.5 bg-white/70"
+                index === current ? "w-5 bg-white" : "w-1.5 bg-white/60"
               }`}
-              aria-label={`Go to image ${index + 1}`}
             />
           ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function Location({ ctx, className = "", size = 16 }) {
+  if (!ctx.destinationName) return null;
+
+  return (
+    <div className={`flex items-center gap-1.5 ${className}`}>
+      <MapPin size={size} className="shrink-0" />
+      <span className="truncate">{ctx.destinationName}</span>
+    </div>
+  );
+}
+
+/* ===============================================================
+   PACKAGE CARD (overlay design: photo is the card)
+   - price badge top-right (dynamic: offer / no offer)
+   - location + duration, title, overview on the photo
+   - no button: clicking anywhere on the card opens the package
+=============================================================== */
+function PackageCard({ travelPackage }) {
+  const ctx = buildCardData(travelPackage);
+  const handleCardClick = useCardClick(ctx.href);
+
+  return (
+    <article
+      onClick={handleCardClick}
+      className="group relative h-[470px] cursor-pointer overflow-hidden rounded-3xl bg-slate-950 font-inter shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+    >
+      <ImageSlider
+        ctx={ctx}
+        className="absolute inset-0 h-full"
+        gradient="from-black/90 via-black/30"
+        dotsPosition="bottom"
+      />
+
+      {/* Top-right price badge
+          offer on package -> ~~original~~ discounted Onwards
+          no offer         -> original Onwards */}
+      {ctx.price && (
+        <div className="pointer-events-none absolute right-4 top-4 z-10 flex items-center gap-1.5 rounded-full border border-white bg-yellow-400 px-4 py-2 text-black shadow-lg">
+          {ctx.oldPrice && (
+            <span className="relative text-xs font-medium text-black/70 after:absolute after:-inset-x-0.5 after:top-1/2 after:h-[1.5px] after:-rotate-6 after:bg-red-600 after:content-['']">
+              ₹{ctx.oldPrice}
+            </span>
+          )}
+
+          <span className="text-base font-bold tracking-tight">
+            ₹{ctx.price}
+          </span>
+
+          <span className="text-sm font-medium">Onwards</span>
+        </div>
+      )}
+
+      {/* Bottom content */}
+      {/* Bottom content */}
+<div className="absolute inset-x-0 bottom-0 z-10 p-5 text-white">
+  {/* Location and duration side by side, without badge backgrounds */}
+  <div className="mb-4 flex items-center gap-3">
+    <Location ctx={ctx} className="text-sm font-medium text-white/80" />
+
+    {ctx.durationName && (
+      <div className="flex items-center gap-1.5 text-sm font-medium text-white/80">
+        <Calendar size={15} className="shrink-0" />
+        <span>{ctx.durationName}</span>
       </div>
+    )}
+  </div>
 
-      {/* ================= CONTENT ================= */}
-      <div className="flex flex-1 flex-col p-5">
-        {/* BADGES - LEFT / RIGHT */}
-        <div className="flex items-center justify-between gap-3">
-          {/* RATING */}
-          <div className="inline-flex items-center gap-1.5 rounded-full text-xs font-medium">
-            <span className="text-base text-yellow-400">★</span>
-            <span>{travelPackage.rating?.toFixed(1) ?? "4.8"} Rated</span>
-          </div>
+  {/* Package title (real link: keyboard, right-click, new tab) */}
+  <h3 className="mt-2 font-eb text-2xl font-bold leading-tight tracking-tight">
+    <Link to={ctx.href}>{ctx.title}</Link>
+  </h3>
 
-          {/* DURATION */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-beige px-2 py-1 text-xs font-medium text-black">
-            <Calendar size={12} />
-            {travelPackage.durationName}
-          </div>
-        </div>
-
-        {/* PACKAGE NAME */}
-        <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-          {travelPackage.title}
-        </h3>
-
-        {/* LOCATION */}
-        <div className="mt-1.5 flex items-center gap-1.5 text-sm font-medium text-slate-500">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" />
-            <circle cx="12" cy="10" r="2.5" />
-          </svg>
-
-          {travelPackage.destination?.name ??
-            travelPackage.destination ??
-            "Beautiful Destination"}
-        </div>
-
-        {/* SMALL DIVIDER */}
-        <div className="mt-4 h-px w-8 bg-beige" />
-
-        {/* DESCRIPTION */}
-        <p className="mt-3 line-clamp-2 min-h-[42px] text-sm leading-6 text-slate-500">
-          {travelPackage.description ??
-            "Experience unforgettable destinations, beautiful places and memorable experiences."}
-        </p>
-
-        {/* ================= PRICE + CTA ================= */}
-        <div className="mt-auto pt-4">
-          <div className="flex items-center justify-between gap-3 rounded-2xl bg-slate-50 p-4">
-            {/* PRICE */}
-            <div className="min-w-0 flex-1">
-              <p className="text-xs font-medium text-slate-500"></p>
-
-              <p className="mt-0.5 whitespace-nowrap text-2xl font-bold tracking-tight text-slate-950">
-                ₹
-                {travelPackage.startingPrice?.toLocaleString?.("en-IN") ??
-                  "36,999"}
-              </p>
-
-              <p className="text-xs font-medium  text-slate-400">per person</p>
-            </div>
-
-            {/* CTA */}
-            <Link
-              to={`/packages/${travelPackage.slug ?? travelPackage.id}`}
-              className="inline-flex shrink-0 items-center justify-center gap-4 whitespace-nowrap rounded-xl bg-black/90 px-5 py-4 text-sm font-semibold font-mont text-beige shadow-md transition-all duration-300 hover:bg-black hover:shadow-lg sm:px-6"
-            >
-              <span>View Details</span>
-              <span className="text-lg leading-none">→</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+  {/* Package overview: 2 lines normally, full text on hover.
+      The box grows upward smoothly, so location / duration / title slide up. */}
+  {ctx.description && (
+    <div className="mt-2 max-h-12 overflow-hidden transition-[max-height] duration-500 ease-in-out group-hover:max-h-72 group-hover:overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <p className="line-clamp-2 text-sm leading-6 text-white/80 group-hover:line-clamp-none">
+        {ctx.description}
+      </p>
+    </div>
+  )}
+</div>
     </article>
   );
 }
