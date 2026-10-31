@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Phone } from "lucide-react";
 import RequestCallback from "../ui/RequestCallback";
@@ -32,18 +31,14 @@ export default function Hero({ slides = [], name, desc }) {
   const [direction, setDirection] = useState("right");
 
   // Backend images
-  const images = slides
-    ?.map((slide) => slide?.image)
-    .filter(Boolean) || [];
+  const images = slides?.map((slide) => slide?.image).filter(Boolean) || [];
 
   // Auto slide every 5 seconds
   useEffect(() => {
     if (images.length <= 1) return;
 
     const interval = setInterval(() => {
-      setDirection((prev) =>
-        prev === "right" ? "left" : "right"
-      );
+      setDirection((prev) => (prev === "right" ? "left" : "right"));
 
       setActiveSlide((prev) => (prev + 1) % images.length);
     }, SLIDE_INTERVAL);
@@ -60,8 +55,7 @@ export default function Hero({ slides = [], name, desc }) {
   };
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 px-6 pb-8 pt-44 text-white lg:px-8">
-
+    <section className="relative overflow-hidden bg-slate-950 px-5 pb-10 pt-36 text-white sm:px-6 sm:pb-8 sm:pt-44 lg:px-8">
       {/* Backend background image slider */}
       {images.map((image, index) => {
         const isActive = index === activeSlide;
@@ -93,22 +87,20 @@ export default function Hero({ slides = [], name, desc }) {
 
       {/* Hero content */}
       <div className="relative z-30 mx-auto max-w-7xl">
-
         {/* Backend destination name */}
-        <h1 className="mt-4 min-h-[1.25em] max-w-3xl font-cg text-4xl font-bold capitalize sm:text-5xl">
+        <h1 className="mt-4 min-h-[1.25em] max-w-3xl break-words font-cg text-3xl font-bold capitalize min-[400px]:text-4xl sm:text-5xl">
           {name}
         </h1>
 
         {/* Backend destination description */}
         {desc && (
-          <p className="mt-4 max-w-2xl font-inter text-lg leading-8 text-slate-200">
+          <p className="mt-3 max-w-2xl font-inter text-base leading-7 text-slate-200 sm:mt-4 sm:text-lg sm:leading-8">
             {desc}
           </p>
         )}
 
         {/* CTA buttons */}
         <div className="mt-6 flex flex-wrap items-center gap-3">
-
           {/* Request Callback */}
           <button
             type="button"
@@ -129,7 +121,6 @@ export default function Hero({ slides = [], name, desc }) {
             <WhatsAppIcon size={20} />
             Chat With Us
           </a>
-
         </div>
       </div>
 
@@ -153,11 +144,7 @@ export default function Hero({ slides = [], name, desc }) {
       )}
 
       {/* Request Callback Popup */}
-      <RequestCallback
-        isOpen={isCallbackOpen}
-        setIsOpen={setIsCallbackOpen}
-      />
-
+      <RequestCallback isOpen={isCallbackOpen} setIsOpen={setIsCallbackOpen} />
     </section>
   );
 }

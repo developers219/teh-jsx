@@ -56,10 +56,10 @@ export default function PackageByCategories({
   const highlightWord = headingWords.pop();
 
   return (
-    <section className="bg-white py-16">
+    <section className="bg-white py-10 sm:py-14 lg:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
         {/* SECTION HEADER */}
-        <div className="mb-10 md:mb-12">
+        <div className="mb-4 sm:mb-8 md:mb-12">
           <Heading
             heading={headingWords.join(" ")}
             highlight={highlightWord}
@@ -68,12 +68,14 @@ export default function PackageByCategories({
           />
         </div>
 
-        {/* PACKAGE CAROUSEL */}
+        {/* PACKAGE CAROUSEL
+            mobile: one row, the next card peeks in (swipe / arrows)
+            tablet: 2 cards, desktop: 3 cards */}
         <Carousel
           items={packages}
           desktopItems={3}
           tabletItems={2}
-          mobileItems={1}
+          mobileItems={1.1}
           gap={24}
           showArrows={true}
           renderItem={(travelPackage) => (

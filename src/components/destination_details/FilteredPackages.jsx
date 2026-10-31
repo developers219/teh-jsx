@@ -3,6 +3,7 @@ import { useParams, useSearchParams } from "react-router-dom";
 import Heading from "../ui/Heading";
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
+import Carousel from "../ui/Carousel";
 import api from "../../services/api";
 
 const initialFilters = {
@@ -17,6 +18,24 @@ const initialFilters = {
 // one style for every filter chip (site font, slate colours)
 const selectClass =
   "shrink-0 cursor-pointer whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 font-inter outline-none transition hover:border-slate-300 focus:border-blue-400";
+
+// true below Tailwind's `md` breakpoint (768px) -> packages go in one swipeable row
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.innerWidth < breakpoint,
+  );
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < breakpoint);
+
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [breakpoint]);
+
+  return isMobile;
+}
 
 const PackageFilters = ({ filters, setFilters, themes, durations }) => {
   const updateFilter = (key, value) => {
@@ -56,7 +75,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
   };
 
   return (
-    <div className="my-8 w-full font-inter">
+    <div className="my-6 w-full font-inter sm:my-8">
       {/* =====================================================
           FILTER CHIPS
       ===================================================== */}
@@ -163,6 +182,7 @@ export const FilteredPackages = () => {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
   const sectionRef = useRef(null);
+  const isMobile = useIsMobile();
 
   // Hero search can open this page with ?themeId=<id> -> preselect that theme
   const [filters, setFilters] = useState(() => ({
@@ -272,15 +292,15 @@ export const FilteredPackages = () => {
   return (
     <section
       ref={sectionRef}
-      className="scroll-mt-20 bg-white px-6 pb-16 pt-14 font-inter lg:px-8"
+      className="scroll-mt-20 bg-white px-5 pb-10 pt-10 font-inter sm:px-6 sm:pb-16 sm:pt-14 lg:px-8"
     >
       <div className="mx-auto max-w-7xl">
         <Heading
-  heading="Explore"
-  highlight="Packages"
-  subheading="Choose what suits your needs."
-  className="mb-0"
-/>
+          heading="Explore"
+          highlight="Packages"
+          subheading="Choose what suits your needs."
+          className="mb-0"
+        />
 
         <PackageFilters
           filters={filters}
@@ -304,18 +324,34 @@ export const FilteredPackages = () => {
         )}
 
         {!loading && error && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-8 text-center text-red-700">
+          <div className="rounded-md border border-red-200 bg-red-50 p-6 text-center text-red-700 sm:p-8">
             <p>{error}</p>
           </div>
         )}
 
         {!loading && !error && packages.length === 0 && (
-          <div className="rounded-md border border-slate-200 bg-white p-8 text-center text-slate-600">
+          <div className="rounded-md border border-slate-200 bg-white p-6 text-center text-slate-600 sm:p-8">
             <p>No packages found. Try changing your filters.</p>
           </div>
         )}
 
-        {!loading && !error && packages.length > 0 && (
+        {/* Small screens: ONE swipeable row (next card peeks in) */}
+        {!loading && !error && packages.length > 0 && isMobile && (
+          <div className="mt-6">
+            <Carousel
+              items={packages}
+              desktopItems={3}
+              tabletItems={2}
+              mobileItems={1.1}
+              gap={16}
+              showArrows={true}
+              renderItem={(pkg) => <PackageCard travelPackage={pkg} />}
+            />
+          </div>
+        )}
+
+        {/* md and above: same grid as before */}
+        {!loading && !error && packages.length > 0 && !isMobile && (
           <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {packages.map((pkg) => (
               <PackageCard key={pkg.id ?? pkg.slug} travelPackage={pkg} />
@@ -325,5 +361,4 @@ export const FilteredPackages = () => {
       </div>
     </section>
   );
-}
-;
+};

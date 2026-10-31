@@ -224,16 +224,16 @@ function TravelCategories() {
 
       if (controller.signal.aborted) return;
 
-      if (domesticRes.status === "rejected") {
-        console.log("Domestic destinations API error:", domesticRes.reason);
-      }
+      // if (domesticRes.status === "rejected") {
+      //   console.log("Domestic destinations API error:", domesticRes.reason);
+      // }
 
-      if (internationalRes.status === "rejected") {
-        console.log(
-          "International destinations API error:",
-          internationalRes.reason,
-        );
-      }
+      // if (internationalRes.status === "rejected") {
+      //   console.log(
+      //     "International destinations API error:",
+      //     internationalRes.reason,
+      //   );
+      // }
 
       setDomesticDestinations(pickList(domesticRes, FALLBACK_DOMESTIC));
       setInternationalDestinations(

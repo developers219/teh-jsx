@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRight, User, Phone, MapPin } from "lucide-react";
+import { User, Phone, MapPin } from "lucide-react";
 import Modal from "./Modal";
 
 const RequestCallback = ({ isOpen, setIsOpen }) => {
@@ -21,7 +21,7 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("Callback Request:", formData);
+    // console.log("Callback Request:", formData);
 
     // Add your API call here
 

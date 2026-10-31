@@ -100,7 +100,7 @@ function TravellerTypePackages() {
         setPackages([]);
 
         const list = await getPackagesByTravellerType(slug);
-        console.log(`Packages for traveller type "${slug}" loaded:`, list);
+        // console.log(`Packages for traveller type "${slug}" loaded:`, list);
 
         if (cancelled) return;
         setPackages(Array.isArray(list) ? list : []);

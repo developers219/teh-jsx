@@ -72,7 +72,6 @@ function ExploreByPeople() {
     async function loadTypes() {
       try {
         const data = await getTravellerTypes();
-        console.log("Traveller types loaded:", data);
         setTypes(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Traveller types could not be loaded:", error);

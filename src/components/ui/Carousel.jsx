@@ -19,6 +19,8 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
  *  - fillHeight     -> carousel takes 100% height of its parent (photo sliders)
  *  - className      -> extra classes for the root element
  *  - onIndexChange  -> called with the active index (used for dots)
+ *  - index          -> optional: jump to this slide from outside (e.g. when a
+ *                      thumbnail is clicked). Leave it out for normal use.
  */
 
 // Arrow styles
@@ -74,6 +76,7 @@ export default function Carousel({
   fillHeight = false,
   className = "",
   onIndexChange,
+  index,
 }) {
   const trackRef = useRef(null);
   const startX = useRef(0);
@@ -137,6 +140,12 @@ export default function Carousel({
   useEffect(() => {
     setActiveIndex((current) => Math.min(current, maxIndex));
   }, [maxIndex]);
+
+  // parent asked for a specific slide (thumbnail click etc.)
+  useEffect(() => {
+    if (typeof index !== "number") return;
+    setActiveIndex(Math.min(Math.max(index, 0), maxIndex));
+  }, [index, maxIndex]);
 
   // tell the parent which card is active (for dots etc.)
   useEffect(() => {

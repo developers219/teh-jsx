@@ -67,7 +67,7 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
   }, []);
 
   return (
-    <div className="fixed bottom-6 font-inter right-6 z-50 flex flex-col items-end gap-1">
+    <div className="fixed bottom-6 max-lg:bottom-[var(--widget-bottom,1.5rem)] font-inter right-6 z-50 flex flex-col items-end gap-1">
       <div
         className="bg-white text-black mix-blend-difference mr-4 rounded-full p-1 cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
@@ -122,17 +122,17 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
       </div>
 
       <button
-  type="button"
-  onClick={handleToggle}
-  aria-label="Contact us"
-  className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent shadow-none transition cursor-pointer"
->
-  <img
-    src={whatsappIcon}
-    alt=""
-    className="h-full w-full object-contain"
-  />
-</button>
+        type="button"
+        onClick={handleToggle}
+        aria-label="Contact us"
+        className="relative flex h-14 w-14 items-center justify-center rounded-full bg-transparent shadow-none transition cursor-pointer"
+      >
+        <img
+          src={whatsappIcon}
+          alt=""
+          className="h-full w-full object-contain"
+        />
+      </button>
     </div>
   );
 }

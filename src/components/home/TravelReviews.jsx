@@ -21,7 +21,7 @@ export default function TravelReviews() {
       try {
         const res = await api.get("/reviews");
 
-        console.log(res.data.data);
+        // console.log(res.data.data);
 
         setReviews(res.data.data || []);
       } catch (error) {
