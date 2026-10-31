@@ -263,7 +263,7 @@ function TravelCategories() {
             ================================ */}
 
             <DestinationSection
-              heading="Desi Escapes. Your "
+              heading="India Your "
               highlight="Way"
               subheading="Handpicked Indian getaways for every mood and travel style."
               destinations={domesticDestinations}
@@ -275,8 +275,8 @@ function TravelCategories() {
             ================================ */}
 
             <DestinationSection
-              heading="International Escapes Endless "
-              highlight="stories"
+              heading="Around the " 
+              highlight="World"
               subheading="Explore the world. Collect moments. Create stories worth sharing."
               destinations={internationalDestinations}
               category="intl"

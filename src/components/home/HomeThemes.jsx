@@ -217,8 +217,8 @@ export default function HomeThemes() {
             Arrows are positioned absolutely, so they never add any height. */}
         <div className="relative">
           <Heading
-            heading="Escape your "
-            highlight="Way"
+            heading="Choose Your "
+            highlight="Vibe"
             subheading="Handcrafted trips matched to your passions, mood, and travel style."
           />
 

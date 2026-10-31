@@ -233,8 +233,8 @@ function ExploreByPeople() {
         {/* Heading + arrows: exactly like HomeThemes */}
         <div className="relative">
           <Heading
-            heading=" Any Vibe. Flawless "
-            highlight="Plans"
+            heading=" Pick Your "
+            highlight="People"
             subheading="Solo, couple or the whole crew — every trip, expertly crafted."
           />
 
