@@ -4,14 +4,68 @@ import { motion } from "motion/react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import Skeleton from "@mui/material/Skeleton";
 import { Heading } from "../ui/Heading";
+import api from "../../services/api";
 import { getTravellerTypes } from "../../services/traveller-type.service";
 
 function getTypeName(type) {
-  return type?.travellerTypeName || type?.name || type?.title || "Travellers";
+  return (
+    type?.travellerTypeName ||
+    type?.traveller_type_name ||
+    type?.name ||
+    type?.title ||
+    "Travellers"
+  );
+}
+
+const IMAGE_KEYS = [
+  "imageUrl",
+  "image_url",
+  "image",
+  "imagePath",
+  "image_path",
+  "thumbnail",
+  "photo",
+  "picture",
+  "coverImage",
+  "cover_image",
+];
+const IMAGE_FILE = /\.(png|jpe?g|webp|avif|gif|svg)(\?.*)?$/i;
+
+// image can be "url", { url }, or [url]
+function toUrl(value) {
+  if (Array.isArray(value)) return toUrl(value[0]);
+  if (value && typeof value === "object") {
+    return toUrl(value.url || value.imageUrl || value.src || value.path);
+  }
+  return typeof value === "string" ? value.trim() : "";
+}
+
+// "/uploads/a.jpg" -> "https://<cms-domain>/uploads/a.jpg"
+function toAbsoluteUrl(url) {
+  if (!url || /^(https?:)?\/\//i.test(url) || url.startsWith("data:")) {
+    return url;
+  }
+
+  try {
+    return new URL(url, new URL(api.defaults.baseURL).origin).href;
+  } catch {
+    return url;
+  }
 }
 
 function getTypeImage(type) {
-  return type?.imageUrl || type?.image || type?.thumbnail || "";
+  for (const key of IMAGE_KEYS) {
+    const url = toUrl(type?.[key]);
+    if (url) return toAbsoluteUrl(url);
+  }
+
+  // field name different? use any field that looks like an image link
+  for (const value of Object.values(type || {})) {
+    const url = toUrl(value);
+    if (IMAGE_FILE.test(url)) return toAbsoluteUrl(url);
+  }
+
+  return "";
 }
 
 /* Same gap as HomeThemes */
@@ -48,7 +102,7 @@ function PeopleCard({ type, style }) {
         />
       ) : null}
 
-      <div className="relative flex h-1/4 w-full items-end justify-center bg-linear-to-t from-black via-black/50 to-transparent pb-4 font-inter text-xl font-bold capitalize text-white sm:pb-5 sm:text-2xl">
+      <div className="relative flex h-1/4 w-full items-end justify-center bg-linear-to-t from-black via-black/50 to-transparent pb-4 font-alex text-xl font-bold capitalize text-white sm:pb-5 sm:text-2xl">
         <p>{name}</p>
       </div>
     </Link>
@@ -68,19 +122,45 @@ function ExploreByPeople() {
   const startX = useRef(0);
   const endX = useRef(0);
 
+  // Loads the list. `silent` refreshes in the background (no skeleton).
   useEffect(() => {
-    async function loadTypes() {
+    let ignore = false;
+
+    async function loadTypes({ silent = false } = {}) {
       try {
-        const data = await getTravellerTypes();
-        setTypes(Array.isArray(data) ? data : []);
+        const data = await getTravellerTypes({ fresh: true });
+
+        if (!ignore) setTypes(Array.isArray(data) ? data : []);
+
+        // Console me dikhega ki CMS ne kis type ki image nahi bheji
+        const noImage = (Array.isArray(data) ? data : []).filter(
+          (type) => !getTypeImage(type),
+        );
+        if (noImage.length) {
+          console.warn("Traveller types WITHOUT image from CMS:", noImage);
+        }
       } catch (error) {
         console.error("Traveller types could not be loaded:", error);
       } finally {
-        setIsLoading(false);
+        if (!ignore && !silent) setIsLoading(false);
       }
     }
 
     loadTypes();
+
+    // Admin panel me change karke wapas aate hi latest data le aao
+    const refresh = () => {
+      if (document.visibilityState === "visible") loadTypes({ silent: true });
+    };
+
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      ignore = true;
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
   }, []);
 
   // Responsive slides per view
@@ -153,9 +233,9 @@ function ExploreByPeople() {
         {/* Heading + arrows: exactly like HomeThemes */}
         <div className="relative">
           <Heading
-            heading="Explore by"
-            highlight="people"
-            subheading="Choose plan according to your company"
+            heading=" Any Vibe. Flawless "
+            highlight="Plans"
+            subheading="Solo, couple or the whole crew — every trip, expertly crafted."
           />
 
           {!isLoading && maxIndex > 0 && (
@@ -214,7 +294,11 @@ function ExploreByPeople() {
             >
               <div ref={trackRef} className="flex" style={{ gap: GAP }}>
                 {types.map((type) => (
-                  <PeopleCard key={type.id} type={type} style={cardStyle} />
+                  <PeopleCard
+                    key={type.id ?? type.slug}
+                    type={type}
+                    style={cardStyle}
+                  />
                 ))}
               </div>
             </motion.div>

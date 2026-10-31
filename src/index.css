@@ -14,7 +14,7 @@
    *   font-inter -> description / body (Arial style sans-serif)
    */
   --font-eb: "Times New Roman", Times, serif;
-  --font-alex: cursive;
+  --font-alex: "Instrument Serif", Georgia, serif;
   --font-inter: Arial, Helvetica, sans-serif;
 
   --color-beige: #c5bd96;

@@ -217,9 +217,9 @@ export default function HomeThemes() {
             Arrows are positioned absolutely, so they never add any height. */}
         <div className="relative">
           <Heading
-            heading="Explore by"
-            highlight="themes"
-            subheading="Choose according to your mood"
+            heading="Escape your "
+            highlight="Way"
+            subheading="Handcrafted trips matched to your passions, mood, and travel style."
           />
 
           {/* Carousel arrows (teh-vite style) - only when there is more to scroll */}

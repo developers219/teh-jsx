@@ -147,6 +147,7 @@ function DestinationTile({ destination, category }) {
 function DestinationSection({
   heading,
   subheading,
+  highlight,
   destinations,
   category,
 }) {
@@ -154,7 +155,7 @@ function DestinationSection({
     <div className="w-full">
       <Heading
         heading={heading}
-        highlight="Destinations"
+        highlight={highlight}
         subheading={subheading}
         className="mb-2"
       />
@@ -262,8 +263,9 @@ function TravelCategories() {
             ================================ */}
 
             <DestinationSection
-              heading="Domestic"
-              subheading="Choose from destinations across India"
+              heading="Desi Escapes. Your "
+              highlight="Way"
+              subheading="Handpicked Indian getaways for every mood and travel style."
               destinations={domesticDestinations}
               category="dom"
             />
@@ -273,8 +275,9 @@ function TravelCategories() {
             ================================ */}
 
             <DestinationSection
-              heading="International"
-              subheading="Explore destinations around the world"
+              heading="International Escapes Endless "
+              highlight="stories"
+              subheading="Explore the world. Collect moments. Create stories worth sharing."
               destinations={internationalDestinations}
               category="intl"
             />
