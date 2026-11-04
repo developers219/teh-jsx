@@ -5,6 +5,10 @@ import RequestCallback from "../ui/RequestCallback";
 const WHATSAPP_NUMBER = "919211215500";
 const SLIDE_INTERVAL = 5000;
 
+// Both CTA buttons: side by side on every screen size, label on one line
+const BUTTON_BASE =
+  "inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 py-3.5 text-center font-inter text-[11px] font-semibold leading-tight text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 min-[360px]:text-xs min-[400px]:px-3 min-[400px]:text-[13px] sm:w-64 sm:flex-none sm:gap-2 sm:px-7 sm:text-sm";
+
 // WhatsApp outline icon
 function WhatsAppIcon({ size = 20 }) {
   return (
@@ -99,15 +103,19 @@ export default function Hero({ slides = [], name, desc }) {
           </p>
         )}
 
-        {/* CTA buttons */}
-        <div className="mt-6 flex flex-wrap items-center gap-3">
+        {/* CTA buttons: always side by side, on every screen size */}
+        <div className="mt-6 flex items-stretch gap-2 sm:gap-3">
           {/* Request Callback */}
           <button
             type="button"
             onClick={() => setIsCallbackOpen(true)}
-            className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-white px-7 py-3.5 font-inter text-sm font-semibold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-slate-100 sm:w-64"
+            className={`${BUTTON_BASE} cursor-pointer bg-white hover:bg-slate-100`}
           >
-            <Phone size={17} strokeWidth={2} />
+            <Phone
+              size={16}
+              strokeWidth={2}
+              className="size-3.5 shrink-0 min-[400px]:size-4"
+            />
             Request a callback
           </button>
 
@@ -116,9 +124,11 @@ export default function Hero({ slides = [], name, desc }) {
             href={`https://wa.me/${WHATSAPP_NUMBER}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-yellow-400 px-7 py-3.5 font-inter text-sm font-semibold text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 hover:bg-yellow-300 sm:w-64"
+            className={`${BUTTON_BASE} bg-yellow-400 hover:bg-yellow-300`}
           >
-            <WhatsAppIcon size={20} />
+            <span className="shrink-0 [&>svg]:size-4 min-[400px]:[&>svg]:size-[18px]">
+              <WhatsAppIcon size={18} />
+            </span>
             Chat With Us
           </a>
         </div>

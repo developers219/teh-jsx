@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Calendar, MapPin } from "lucide-react";
 import Carousel from "../ui/Carousel";
+import LeadCapturePopup from "../forms/LeadCapturePopup";
 
 // Only used when a package has NO photo at all (keeps the card layout intact)
 const FALLBACK_IMAGE =
@@ -206,15 +207,114 @@ function Location({ ctx, className = "", size = 16 }) {
   );
 }
 
+// Overview text, always exactly 2 lines.
+// When it is longer, the second line ends with "… view more" (a link to the
+// package page). The cut point is measured, so it adapts to every card width.
+const MORE_LABEL = "… view more";
+
+function TwoLineText({ text, href, className = "" }) {
+  const boxRef = useRef(null);
+  const probeRef = useRef(null);
+
+  const cleanText = String(text ?? "").replace(/\s+/g, " ").trim();
+  const [shown, setShown] = useState(cleanText);
+  const [isCut, setIsCut] = useState(false);
+
+  useLayoutEffect(() => {
+    const box = boxRef.current;
+    const probe = probeRef.current;
+
+    if (!box || !probe) return undefined;
+
+    const fit = () => {
+      probe.style.width = `${Math.max(box.clientWidth - 2, 0)}px`;
+
+      const lineHeight = parseFloat(getComputedStyle(probe).lineHeight) || 24;
+      const maxHeight = lineHeight * 2 + 2;
+
+      const fits = (value) => {
+        probe.textContent = value;
+        return probe.offsetHeight <= maxHeight;
+      };
+
+      // fits in two lines -> show everything, no "view more"
+      if (fits(cleanText)) {
+        setShown(cleanText);
+        setIsCut(false);
+        return;
+      }
+
+      // longest start of the text that still leaves room for "… view more"
+      let low = 0;
+      let high = cleanText.length;
+
+      while (low < high) {
+        const mid = Math.ceil((low + high) / 2);
+
+        if (fits(cleanText.slice(0, mid).trimEnd() + MORE_LABEL)) low = mid;
+        else high = mid - 1;
+      }
+
+      // do not cut in the middle of a word, no dangling punctuation
+      let cut = cleanText.slice(0, low);
+      const lastSpace = cut.lastIndexOf(" ");
+
+      if (lastSpace > 0 && low < cleanText.length) cut = cut.slice(0, lastSpace);
+
+      setShown(cut.replace(/[\s.,;:!?-]+$/, ""));
+      setIsCut(true);
+    };
+
+    fit();
+
+    const observer = new ResizeObserver(fit);
+    observer.observe(box);
+    document.fonts?.ready.then(fit);
+
+    return () => observer.disconnect();
+  }, [cleanText]);
+
+  const textClass = "text-sm leading-6 text-white/80";
+
+  return (
+    <div ref={boxRef} className={`relative ${className}`}>
+      {/* hidden copy, only used to measure how much text fits */}
+      <p
+        ref={probeRef}
+        aria-hidden="true"
+        className={`${textClass} pointer-events-none invisible absolute left-0 top-0`}
+      />
+
+      <p className={`${textClass} line-clamp-2`}>
+        {shown}
+        {isCut && (
+          <>
+            …{" "}
+            <Link
+              to={href}
+              className="text-blue-300 underline-offset-2 hover:text-blue-200 hover:underline"
+            >
+              view more
+            </Link>
+          </>
+        )}
+      </p>
+    </div>
+  );
+}
+
 /* ===============================================================
    PACKAGE CARD (overlay design: photo is the card)
    - price badge top-right (dynamic: offer / no offer)
    - location + duration, title, overview on the photo
-   - no button: clicking anywhere on the card opens the package
+   - overview: 2 lines, "… view more" at the end of line 2
+   - two buttons: Enquire now (enquiry popup) + View details
+   - clicking elsewhere on the card still opens the package
 =============================================================== */
 function PackageCard({ travelPackage }) {
   const ctx = buildCardData(travelPackage);
   const handleCardClick = useCardClick(ctx.href);
+  const [isEnquiryOpen, setIsEnquiryOpen] = useState(false);
 
   return (
     <article
@@ -225,7 +325,7 @@ function PackageCard({ travelPackage }) {
         ctx={ctx}
         className="absolute inset-0 h-full"
         gradient="from-black/90 via-black/30"
-        dotsPosition="bottom"
+        dotsPosition="top"
       />
 
       {/* Top-right price badge
@@ -243,7 +343,7 @@ function PackageCard({ travelPackage }) {
             ₹{ctx.price}
           </span>
 
-          <span className="text-sm font-medium">Onwards</span>
+          {/* <span className="text-sm font-medium">Onwards</span> */}
         </div>
       )}
 
@@ -267,16 +367,41 @@ function PackageCard({ travelPackage }) {
     <Link to={ctx.href}>{ctx.title}</Link>
   </h3>
 
-  {/* Package overview: 2 lines normally, full text on hover.
-      The box grows upward smoothly, so location / duration / title slide up. */}
+  {/* Package overview: always 2 lines, "… view more" at the end of line 2 */}
   {ctx.description && (
-    <div className="mt-2 max-h-12 overflow-hidden transition-[max-height] duration-500 ease-in-out group-hover:max-h-72 group-hover:overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <p className="line-clamp-2 text-sm leading-6 text-white/80 group-hover:line-clamp-none">
-        {ctx.description}
-      </p>
-    </div>
+    <TwoLineText text={ctx.description} href={ctx.href} className="mt-2" />
   )}
+
+  {/* Buttons */}
+  <div className="mt-4 flex gap-2">
+    <button
+      type="button"
+      onClick={() => setIsEnquiryOpen(true)}
+      className="flex-1 cursor-pointer whitespace-nowrap rounded-full bg-blue-400 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-blue-500"
+    >
+      Enquire now
+    </button>
+
+    <Link
+      to={ctx.href}
+      className="flex-1 whitespace-nowrap rounded-full border border-white/70 px-3 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-white hover:text-slate-900"
+    >
+      View details
+    </Link>
+  </div>
 </div>
+
+      {/* Same enquiry popup as the floating "Submit an enquiry".
+          It renders in document.body; the wrapper stops its clicks from
+          reaching the card (which would open the package page). */}
+      {isEnquiryOpen && (
+        <div className="hidden" onClick={(event) => event.stopPropagation()}>
+          <LeadCapturePopup
+            isOpen={isEnquiryOpen}
+            setIsOpen={setIsEnquiryOpen}
+          />
+        </div>
+      )}
     </article>
   );
 }

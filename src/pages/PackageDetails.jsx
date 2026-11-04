@@ -3,8 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import {
   ArrowLeft,
-  // ArrowRight,
-  // CalendarDays,
   Check,
   Clock3,
   Compass,
@@ -13,7 +11,6 @@ import {
   Plane,
   Sparkles,
   Star,
-  // Users,
   X,
   Phone,
   ChevronDown,
@@ -505,9 +502,8 @@ function PackageDetails() {
     hotels: false,
     flights: false,
     included: false,
-    tandc: false,
   });
-  // console.log(travelPackage);
+
   const [activeSection, setActiveSection] = useState("package-overview");
 
   const packageSectionIds = [
@@ -519,7 +515,6 @@ function PackageDetails() {
     "package-inclusions",
     "package-exclusions",
     "package-faqs",
-    "package-terms",
   ];
 
   useEffect(() => {
@@ -560,15 +555,38 @@ function PackageDetails() {
     });
   }, [activeSection]);
 
+  // Small screens: body padding = exact height of the fixed "Book Now" bar,
+  // so there is no extra gap between the footer and the bar.
   useEffect(() => {
-    document.body.classList.add("max-lg:pb-16");
-    document.body.style.setProperty("--widget-bottom", "5rem");
+    const bar = document.getElementById("package-mobile-bar");
+
+    if (!bar) return;
+
+    const apply = () => {
+      const height = bar.offsetHeight; // bar is hidden on lg -> 0
+
+      document.body.style.paddingBottom = height ? `${height}px` : "";
+
+      if (height) {
+        document.body.style.setProperty("--widget-bottom", `${height + 16}px`);
+      } else {
+        document.body.style.removeProperty("--widget-bottom");
+      }
+    };
+
+    apply();
+
+    const observer = new ResizeObserver(apply);
+    observer.observe(bar);
+    window.addEventListener("resize", apply);
 
     return () => {
-      document.body.classList.remove("max-lg:pb-16");
+      observer.disconnect();
+      window.removeEventListener("resize", apply);
+      document.body.style.paddingBottom = "";
       document.body.style.removeProperty("--widget-bottom");
     };
-  }, []);
+  }, [isLoading, travelPackage]);
 
   const toggleSection = (key) =>
     setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -716,9 +734,7 @@ function PackageDetails() {
     startingPrice,
     discountPrice,
     themeName,
-    // travellerTypeName,
     durationName,
-    // durationDaysCount,
     images = [],
     destinations = [],
     itineraries = [],
@@ -777,25 +793,11 @@ function PackageDetails() {
         />
       )}
 
-      {/* =====================================================
-          HERO / BREADCRUMB
-      ====================================================== */}
-
-      <section className="h-18 bg-black md:h-24"></section>
-      {/* <section className="border-b border-black/10">
-        <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-12">
-          <Link
-            to="/packages"
-            className="group inline-flex items-center gap-2 text-sm font-bold text-black/60 font-inter transition hover:text-black"
-          >
-            <ArrowLeft
-              size={17}
-              className="transition-transform duration-300 group-hover:-translate-x-1"
-            />
-            All packages
-          </Link>
-        </div>
-      </section> */}
+      {/* Black space under the fixed navbar: exactly the navbar's height */}
+      <section
+        className="bg-black"
+        style={{ height: "var(--nav-height, 4.5rem)" }}
+      />
 
       {/* =====================================================
           MAIN
@@ -824,15 +826,8 @@ function PackageDetails() {
                     </span>
                   )}
 
-                  {/* {travellerTypeName && (
-                    <span className="flex items-center gap-1.5 rounded-full border bg-black px-4 py-2 text-[10px] uppercase tracking-[0.16em] text-white">
-                      <Users size={12} />
-                      {travellerTypeName}
-                    </span>
-                  )} */}
-
                   {durationName && (
-                    <span className="flex items-center gap-1.5 rounded-full bg-black border px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-white sm:px-4 sm:py-2">
+                    <span className="flex items-center gap-1.5 rounded-full border bg-black px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-white sm:px-4 sm:py-2">
                       <Clock3 size={12} />
                       {durationName}
                     </span>
@@ -860,7 +855,7 @@ function PackageDetails() {
               {/* Package section navigation */}
               <nav
                 aria-label="Package sections"
-                className="sticky top-[58px] z-10 mt-6 w-full max-w-full rounded-xl border border-slate-200 bg-white/95 p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:top-[75px] sm:mt-10 sm:p-2.5"
+                className="sticky top-[calc(var(--nav-height,4.5rem)+4px)] z-10 mt-6 w-full max-w-full rounded-xl border border-slate-200 bg-white/95 p-1.5 shadow-[0_8px_24px_rgba(0,0,0,0.06)] backdrop-blur-md sm:mt-10 sm:p-2.5"
               >
                 <div className="no-scrollbar relative flex gap-2 overflow-x-auto scroll-smooth sm:gap-11">
                   {[
@@ -898,11 +893,6 @@ function PackageDetails() {
                           key: "included",
                         }
                       : null,
-                    {
-                      label: "Terms & Conditions",
-                      id: "package-terms",
-                      key: "tandc",
-                    },
                   ]
                     .filter(Boolean)
                     .map((item) => {
@@ -960,6 +950,7 @@ function PackageDetails() {
                   </CollapsibleSection>
                 </motion.div>
               )}
+
               {/* Itinerary */}
 
               {itineraries.length > 0 && (
@@ -991,74 +982,7 @@ function PackageDetails() {
                 </CollapsibleSection>
               )}
 
-              {/* =================================================
-    HOTELS
-================================================== */}
-              {/* {hotels.length > 0 && (
-                <CollapsibleSection
-                  title="Hotels"
-                  description="Accommodation arranged as part of your journey."
-                  isOpen={openSections.hotels}
-                  onToggle={() => toggleSection("hotels")}
-                  className="my-5"
-                >
-                  <div className="rounded-[28px] border border-black/10 p-6 sm:p-8">
-                    <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-black text-white">
-                        <Hotel size={20} />
-                      </div>
-
-                      <div>
-                        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-black/35">
-                          Accommodation
-                        </p>
-
-                        <h3 className="mt-1 text-2xl font-black">Hotels</h3>
-                      </div>
-                    </div>
-
-                    <div className="mt-7 space-y-3">
-                      {hotels.map((hotel) => (
-                        <div
-                          key={hotel.id}
-                          className="rounded-2xl bg-black/[0.035] p-5"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <h4 className="font-black">{hotel.hotelName}</h4>
-
-                              <p className="mt-1 flex items-center gap-1.5 text-xs text-black/45">
-                                <MapPin size={12} />
-                                {hotel.city}
-                              </p>
-                            </div>
-
-                            {hotel.starRating && (
-                              <div className="flex items-center gap-1 rounded-full bg-white px-3 py-1.5 text-xs font-bold shadow-sm">
-                                <Star size={12} fill="currentColor" />
-
-                                {hotel.starRating}
-                              </div>
-                            )}
-                          </div>
-
-                          <div className="mt-5 grid grid-cols-2 gap-3">
-                            <DateBox
-                              label="Check in"
-                              value={formatDate(hotel.checkIn)}
-                            />
-
-                            <DateBox
-                              label="Check out"
-                              value={formatDate(hotel.checkOut)}
-                            />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </CollapsibleSection>
-              )} */}
+              {/* Hotels */}
 
               {hotels.length > 0 && (
                 <CollapsibleSection
@@ -1076,9 +1000,8 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
-              {/* =================================================
-    FLIGHTS
-================================================== */}
+
+              {/* Flights */}
 
               {flights.length > 0 && (
                 <CollapsibleSection
@@ -1101,6 +1024,7 @@ function PackageDetails() {
               )}
 
               {/* Inclusions / Exclusions */}
+
               {(inclusions.length > 0 || exclusions.length > 0) && (
                 <CollapsibleSection
                   title="What's included"
@@ -1123,7 +1047,7 @@ function PackageDetails() {
                             <Check size={18} />
                           </div>
 
-                          <h3 className="font-eb text-xl font-bold sm:text-2xl">
+                          <h3 className="font-eb text-xl font-medium sm:text-2xl">
                             Included
                           </h3>
                         </div>
@@ -1160,7 +1084,7 @@ function PackageDetails() {
                             <X size={18} />
                           </div>
 
-                          <h3 className="font-eb text-xl font-bold sm:text-2xl">
+                          <h3 className="font-eb text-xl font-medium sm:text-2xl">
                             Not included
                           </h3>
                         </div>
@@ -1187,23 +1111,6 @@ function PackageDetails() {
                   </div>
                 </CollapsibleSection>
               )}
-              <CollapsibleSection
-                title="Terms and Conditions"
-                sectionId="package-terms"
-                description="By proceeding with the booking, you agree to our Terms & Conditions, including applicable payment, cancellation, refund, and service policies."
-                isOpen={openSections.tandc}
-                onToggle={() => toggleSection("tandc")}
-                className="my-5"
-              >
-                <p className="h-10">
-                  <Link
-                    to="/terms-conditions"
-                    className="inline-block rounded-lg bg-blue-400 px-6 py-2 font-inter text-sm font-semibold text-white transition-colors hover:bg-blue-500 sm:text-base"
-                  >
-                    Terms and Conditions
-                  </Link>
-                </p>
-              </CollapsibleSection>
             </div>
 
             {/* RIGHT — BOOKING CARD */}
@@ -1211,36 +1118,28 @@ function PackageDetails() {
               <motion.aside
                 initial={{ opacity: 0, y: 35 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.7,
-                  delay: 0.15,
-                }}
-                className="
-      font-inter
-
-      fixed bottom-0 left-0 right-0 z-20
-      lg:sticky lg:top-8 lg:right-80 lg:mb-5
-    "
+                transition={{ duration: 0.7, delay: 0.15 }}
+                className="fixed inset-x-0 bottom-0 z-20 font-inter lg:sticky lg:inset-x-auto lg:bottom-auto lg:top-[calc(var(--nav-height,4.5rem)+1.5rem)] lg:mb-5"
               >
-                <div
-                  className="
-        overflow-hidden bg-white shadow-[0_-10px_40px_rgba(0,0,0,0.12)]
-        lg:rounded-[30px] lg:shadow-[0_20px_60px_rgba(0,0,0,0.08)]
-      "
-                >
+                <div className="overflow-hidden bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.10)] lg:rounded-3xl lg:border lg:border-slate-200 lg:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
                   {/* MOBILE / TABLET */}
-                  <div className="flex items-center justify-between gap-3 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8 sm:py-4 lg:hidden">
+                  <div
+                    id="package-mobile-bar"
+                    className="flex items-center justify-between gap-3 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8 sm:py-4 lg:hidden"
+                  >
                     <div className="min-w-0">
-                      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-black/40"></p>
+                      {/* <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+                        From · per traveller
+                      </p> */}
 
-                      <div className="mt-0.5 flex items-baseline gap-2">
-                        <span className="truncate text-xl font-semibold tracking-[-0.04em] sm:text-2xl">
-                          ₹{starting.toLocaleString("en-IN")}
+                      <div className="flex items-baseline gap-2">
+                        <span className="truncate text-xl font-semibold tracking-[-0.03em] sm:text-2xl">
+                          ₹{finalPrice.toLocaleString("en-IN")}
                         </span>
 
                         {hasDiscount && (
-                          <span className="text-xs font-bold text-black/30 line-through">
-                            ₹{finalPrice.toLocaleString("en-IN")}
+                          <span className="text-xs text-slate-400 line-through">
+                            ₹{starting.toLocaleString("en-IN")}
                           </span>
                         )}
                       </div>
@@ -1249,12 +1148,7 @@ function PackageDetails() {
                     <button
                       type="button"
                       onClick={() => setIsOpen(true)}
-                      className="
-            flex shrink-0 items-center gap-2 rounded-full
-            bg-blue-400 px-4 py-2.5 text-xs font-semibold
-            text-white transition-all duration-300
-            hover:bg-blue-500 hover:shadow-xl sm:px-5 sm:py-3
-          "
+                      className="flex shrink-0 items-center gap-2 rounded-full bg-blue-400 px-4 py-2.5 text-xs font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-xl sm:px-5 sm:py-3"
                     >
                       <Phone size={15} />
                       <span>Book Now</span>
@@ -1263,54 +1157,44 @@ function PackageDetails() {
 
                   {/* DESKTOP */}
                   <div className="hidden lg:block">
-                    <div className="bg-black/90 px-7 py-6 text-white">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
-                            Package price
-                          </p>
-
-                          <p className="mt-1 text-sm font-semibold text-white/75">
-                            Per traveller
-                          </p>
-                        </div>
-
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10">
-                          <Plane size={17} />
-                        </div>
-                      </div>
-                    </div>
-
                     <div className="p-7">
-                      <div className="flex items-end gap-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
+                          Starting from
+                        </p>
+
+                        {hasDiscount && (
+                          <span className="rounded-full bg-blue-50 px-3 py-1 text-[11px] font-semibold text-blue-600">
+                            Save {discountPercentage}%
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="mt-3 flex flex-wrap items-baseline gap-x-3">
                         <span className="text-4xl font-semibold tracking-[-0.04em]">
                           ₹{finalPrice.toLocaleString("en-IN")}
                         </span>
 
                         {hasDiscount && (
-                          <span className="mb-1 text-sm font-bold text-black/30 line-through">
+                          <span className="text-base text-slate-400 line-through">
                             ₹{starting.toLocaleString("en-IN")}
                           </span>
                         )}
                       </div>
 
-                      {hasDiscount && (
-                        <div className="mt-3 inline-flex rounded-full bg-yellow-500 px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-black">
-                          Save {discountPercentage}%
-                        </div>
-                      )}
+                      <p className="mt-1 text-sm text-slate-500">
+                        per traveller
+                      </p>
 
-                      <div className="my-7 h-px bg-black/10" />
-
-                      <div className="space-y-4">
-                        <BookingRow label="Duration" value={durationName} />
-
-                        {/* <BookingRow
-                          label="Traveller"
-                          value={travellerTypeName}
-                        /> */}
+                      <div className="my-6 space-y-3.5 border-y border-slate-100 py-5">
+                        <BookingRow
+                          icon={Clock3}
+                          label="Duration"
+                          value={durationName}
+                        />
 
                         <BookingRow
+                          icon={MapPin}
                           label="Destinations"
                           value={`${destinations.length} places`}
                         />
@@ -1319,16 +1203,12 @@ function PackageDetails() {
                       <button
                         type="button"
                         onClick={() => setIsOpen(true)}
-                        className="
-              group mt-7 flex w-full items-center justify-center
-              gap-2 rounded-full bg-blue-400 px-6 py-4
-              text-sm font-semibold text-white
-              transition-all duration-300 hover:bg-blue-500 hover:shadow-xl
-            "
+                        className="group flex w-full items-center justify-center gap-2 rounded-full bg-blue-400 px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-xl"
                       >
-                        <span className="flex items-center justify-center rounded-full transition-transform duration-300 group-hover:translate-x-1">
-                          <Phone size={17} />
-                        </span>
+                        <Phone
+                          size={17}
+                          className="transition-transform duration-300 group-hover:translate-x-1"
+                        />
 
                         <span>Plan this trip</span>
                       </button>
@@ -1440,7 +1320,7 @@ function ItineraryDay({ day, dayIndex }) {
       >
         <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-3.5 marker:hidden sm:px-4 sm:py-4 [&::-webkit-details-marker]:hidden">
           <div className="min-w-0 flex-1">
-            <h3 className="break-words font-eb text-base font-bold leading-snug text-slate-900 sm:text-xl">
+            <h3 className="break-words font-eb text-base font-medium leading-snug text-slate-900 sm:text-xl">
               {day.title || `Day ${day.dayNumber ?? dayIndex + 1}`}
             </h3>
           </div>
@@ -1686,7 +1566,7 @@ function CollapsibleSection({
         className="flex w-full items-center justify-between gap-3 text-left sm:gap-4"
       >
         <div className="min-w-0 max-w-2xl">
-          <h2 className="font-eb text-xl font-bold tracking-tight sm:text-3xl">
+          <h2 className="font-eb text-xl font-medium tracking-tight sm:text-3xl">
             {title}
           </h2>
 
@@ -1698,8 +1578,10 @@ function CollapsibleSection({
         </div>
 
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-600 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full border transition duration-300 ${
+            isOpen
+              ? "rotate-180 border-blue-400 bg-blue-400 text-white"
+              : "border-slate-200 text-slate-600"
           }`}
         >
           <ChevronDown size={16} />
@@ -1724,12 +1606,17 @@ function CollapsibleSection({
   );
 }
 
-function BookingRow({ label, value }) {
+function BookingRow({ icon: Icon, label, value }) {
   return (
     <div className="flex items-center justify-between gap-5">
-      <span className="text-sm text-black/45">{label}</span>
+      <span className="flex items-center gap-2 text-sm text-slate-500">
+        {Icon && <Icon size={15} className="text-blue-500" />}
+        {label}
+      </span>
 
-      <span className="text-right text-sm font-bold">{value || "—"}</span>
+      <span className="text-right text-sm font-semibold text-slate-900">
+        {value || "—"}
+      </span>
     </div>
   );
 }

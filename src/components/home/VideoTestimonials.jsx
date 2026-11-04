@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue } from "motion/react";
 import {
   ChevronLeft,
@@ -7,9 +7,48 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
-import { getVideoTestimonials } from "../../services/video-testimonial.service";
+import {
+  getVideoTestimonials,
+  getVideoTestimonialSection,
+} from "../../services/video-testimonial.service";
 
 const EASE = [0.22, 1, 0.36, 1];
+
+/* CMS se kuch na aaye to ye default text dikhega */
+const DEFAULT_HEADING = {
+  eyebrow: "Real stories from real journeys",
+  title: "Dear Diary",
+  description: "Every journey leaves a story behind.\nHere are a few of ours.",
+};
+
+/* CMS ki empty / missing values ko default se replace kar deta hai */
+function mergeHeading(cms) {
+  const result = { ...DEFAULT_HEADING };
+
+  if (!cms || typeof cms !== "object") return result;
+
+  Object.keys(DEFAULT_HEADING).forEach((key) => {
+    const value = cms[key];
+
+    if (typeof value === "string" && value.trim()) {
+      result[key] = value.trim();
+    }
+  });
+
+  return result;
+}
+
+/* "line 1\nline 2" -> line 1 <br /> line 2 */
+function MultiLine({ text }) {
+  const lines = String(text).split(/\r?\n/);
+
+  return lines.map((line, index) => (
+    <Fragment key={index}>
+      {line}
+      {index < lines.length - 1 && <br />}
+    </Fragment>
+  ));
+}
 
 /*
  * Page-turn animation. `custom` carries the direction
@@ -255,6 +294,7 @@ export default function VideoTestimonials() {
   const perSpread = isWide ? 2 : 1;
 
   const [testimonials, setTestimonials] = useState([]);
+  const [heading, setHeading] = useState(DEFAULT_HEADING);
 
   const [isOpen, setIsOpen] = useState(false);
   const [spreadIndex, setSpreadIndex] = useState(0);
@@ -278,19 +318,37 @@ export default function VideoTestimonials() {
   useEffect(() => {
     let isMounted = true;
 
-    const fetchTestimonials = async () => {
-      try {
-        const list = await getVideoTestimonials();
+    const fetchData = async () => {
+      /* Heading CMS fail ho jaye to bhi testimonials chalne chahiye */
+      const [testimonialsResult, headingResult] = await Promise.allSettled([
+        getVideoTestimonials(),
+        getVideoTestimonialSection(),
+      ]);
 
-        if (isMounted) setTestimonials(list);
-      } catch (error) {
-        console.error("Failed to fetch video testimonials:", error);
+      if (!isMounted) return;
 
-        if (isMounted) setTestimonials([]);
+      if (testimonialsResult.status === "fulfilled") {
+        setTestimonials(testimonialsResult.value);
+      } else {
+        console.error(
+          "Failed to fetch video testimonials:",
+          testimonialsResult.reason,
+        );
+        setTestimonials([]);
+      }
+
+      if (headingResult.status === "fulfilled") {
+        setHeading(mergeHeading(headingResult.value));
+      } else {
+        console.error(
+          "Failed to fetch video testimonial heading:",
+          headingResult.reason,
+        );
+        setHeading(DEFAULT_HEADING);
       }
     };
 
-    fetchTestimonials();
+    fetchData();
 
     return () => {
       isMounted = false;
@@ -362,29 +420,18 @@ export default function VideoTestimonials() {
 
   return (
     <section className="relative overflow-hidden px-5 py-20 sm:px-8 sm:py-24">
-      {/* Background dots */}
-      {/* <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(#9b9487_0.7px,transparent_0.7px)] [background-size:18px_18px]" /> */}
-
-      {/* Heading */}
+      {/* Heading (CMS driven) */}
       <div className="relative z-10 mx-auto mb-14 max-w-3xl text-center">
         <p className="mb-4 font-mont text-[10px] font-medium uppercase tracking-[0.35em] text-slate-500">
-          Real stories from real journeys
+          {heading.eyebrow}
         </p>
 
         <h2 className="font-cg text-[clamp(2rem,5vw,3rem)] font-semibold leading-tight tracking-tight text-slate-900">
-          Dear Diary{" "}
-          {/* <span
-            className="text-[1.15em] font-normal text-blue-400"
-            style={{ fontFamily: '"Alex Brush", cursive' }}
-          >
-            Diary
-          </span> */}
+          {heading.title}
         </h2>
 
         <p className="mx-auto mt-5 max-w-xl font-mont text-sm leading-7 text-slate-500 sm:text-base">
-          Every journey leaves a story behind.
-          <br />
-          Here are a few of ours.
+          <MultiLine text={heading.description} />
         </p>
       </div>
 

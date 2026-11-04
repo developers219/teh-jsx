@@ -6,10 +6,12 @@ import api from "../../services/api";
 
 const HERO_API = "https://cms.trvldeals.com/api/public/hero-sections";
 
-// Local fallback video inside the public folder
 const STATIC_HERO_VIDEO = "/hero_compressed.mp4";
 
-// Used for the typing placeholder until the real destinations load
+const STATIC_HERO_MOBILE_VIDEO = "";
+
+const STATIC_HERO_POSTER = "/hero_poster.jpg";
+
 const FALLBACK_DESTINATIONS = [
   "Bali",
   "Dubai",
@@ -30,7 +32,6 @@ const DEFAULT_STATS = [
   "150+ India Tour Packages",
 ];
 
-// Shown only until backend reviews load (or if they fail to load)
 const GOOGLE_RATING = "4.6";
 
 /* ---------------------------------------------------------------
@@ -66,12 +67,20 @@ const buildPath = (destination, theme) =>
     theme ? `?themeId=${theme.id}` : ""
   }`;
 
+/* ---------------------------------------------------------------
+   CMS media helpers
+---------------------------------------------------------------- */
+
+// First non-empty string from a list of possible values
+const firstValidUrl = (urls) =>
+  urls.find((url) => typeof url === "string" && url.trim().length > 0) || null;
+
 /*
  * Read the video URL from common CMS response formats.
  * If your backend uses a different field name, add it here.
  */
 function getCmsVideoUrl(data) {
-  const possibleUrls = [
+  return firstValidUrl([
     data?.videoUrl,
     data?.videoURL,
     data?.video_url,
@@ -90,13 +99,166 @@ function getCmsVideoUrl(data) {
     data?.video?.secure_url,
     data?.backgroundVideo?.url,
     data?.background_video?.url,
-  ];
+  ]);
+}
 
-  return (
-    possibleUrls.find(
-      (url) => typeof url === "string" && url.trim().length > 0,
-    ) || null
+/*
+ * Optional: separate portrait (9:16 / 4:5) video for small screens.
+ * If the CMS does not send one, the normal video is used on mobile too.
+ */
+function getCmsMobileVideoUrl(data) {
+  return firstValidUrl([
+    data?.mobileVideo,
+    data?.mobileVideoUrl,
+    data?.mobile_video,
+    data?.mobile_video_url,
+    data?.videoMobile,
+    data?.video_mobile,
+    data?.mobileVideo?.url,
+    data?.mobile_video?.url,
+  ]);
+}
+
+/*
+ * Optional: poster / background image (desktop).
+ */
+function getCmsPosterUrl(data) {
+  return firstValidUrl([
+    data?.posterUrl,
+    data?.poster_url,
+    data?.poster,
+    data?.imageUrl,
+    data?.image_url,
+    data?.image,
+    data?.backgroundImage,
+    data?.background_image,
+    data?.heroImage,
+    data?.hero_image,
+    data?.poster?.url,
+    data?.image?.url,
+    data?.backgroundImage?.url,
+    data?.background_image?.url,
+  ]);
+}
+
+/*
+ * Optional: poster / background image for mobile (portrait).
+ */
+function getCmsMobilePosterUrl(data) {
+  return firstValidUrl([
+    data?.mobilePosterUrl,
+    data?.mobile_poster_url,
+    data?.mobilePoster,
+    data?.mobile_poster,
+    data?.mobileImageUrl,
+    data?.mobile_image_url,
+    data?.mobileImage,
+    data?.mobile_image,
+    data?.mobileBackgroundImage,
+    data?.mobile_background_image,
+    data?.mobilePoster?.url,
+    data?.mobileImage?.url,
+    data?.mobile_image?.url,
+  ]);
+}
+
+/*
+ * Optional: which part of the video/image stays visible when it gets cropped.
+ * Accepts: left | center | right | "30% 50%" etc. Default: center.
+ * On mobile, `mobileVideoFocus` is used first (if the CMS sends it).
+ */
+function getCmsVideoFocus(data, isMobile) {
+  const pick = (value) =>
+    typeof value === "string" && value.trim() ? value.trim() : null;
+
+  const mobileFocus = isMobile
+    ? pick(data?.mobileVideoFocus ?? data?.mobile_video_focus)
+    : null;
+
+  const focus = pick(data?.videoFocus ?? data?.video_focus);
+
+  return mobileFocus || focus || "center";
+}
+
+/*
+ * The 6 chips (stats) from the CMS.
+ * Works with any of these list fields: stats / statistics / chips /
+ * highlights / badges / counters, and with items like
+ *   "15+ Years Experience"
+ *   { value: "15+", label: "Years Experience" }
+ *   { title: "24/7 Expert Travel Support" }   (text / name also work)
+ * Inactive items are skipped and `sortOrder` is respected.
+ */
+const STAT_LIST_KEYS = [
+  "stats",
+  "statistics",
+  "chips",
+  "highlights",
+  "badges",
+  "counters",
+];
+
+function getStatText(item) {
+  if (typeof item === "string" || typeof item === "number") {
+    return String(item).trim();
+  }
+
+  if (!item || typeof item !== "object") return "";
+  if (item.isActive === false || item.status === "inactive") return "";
+
+  const value = item.value ?? item.count ?? item.number ?? item.stat;
+  const label =
+    item.label ?? item.title ?? item.name ?? item.text ?? item.description;
+
+  return [value, label]
+    .map((part) =>
+      part === null || part === undefined ? "" : String(part).trim(),
+    )
+    .filter(Boolean)
+    .join(" ");
+}
+
+function getCmsStats(data) {
+  for (const key of STAT_LIST_KEYS) {
+    let list = data?.[key];
+
+    // "a | b | c" or one chip per line
+    if (typeof list === "string") list = list.split(/\r?\n|\|/);
+
+    if (!Array.isArray(list)) continue;
+
+    const items = [...list]
+      .sort((a, b) => Number(a?.sortOrder ?? 0) - Number(b?.sortOrder ?? 0))
+      .map(getStatText)
+      .filter(Boolean);
+
+    if (items.length) return items;
+  }
+
+  return [];
+}
+
+/* ---------------------------------------------------------------
+   Screen size hook (true below the breakpoint, default 768px)
+---------------------------------------------------------------- */
+function useIsMobile(breakpoint = 768) {
+  const query = `(max-width: ${breakpoint - 1}px)`;
+
+  const [isMobile, setIsMobile] = useState(
+    () => typeof window !== "undefined" && window.matchMedia(query).matches,
   );
+
+  useEffect(() => {
+    const mq = window.matchMedia(query);
+    const onChange = () => setIsMobile(mq.matches);
+
+    onChange();
+    mq.addEventListener("change", onChange);
+
+    return () => mq.removeEventListener("change", onChange);
+  }, [query]);
+
+  return isMobile;
 }
 
 /* Rotating statistics list */
@@ -180,12 +342,17 @@ function SuggestionRow({ row, active, onSelect }) {
 
 export default function HeroSection() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const [destination, setDestination] = useState("");
   const [heroData, setHeroData] = useState(null);
 
-  // Tracks whether the local fallback video should be used
-  const [useStaticVideo, setUseStaticVideo] = useState(false);
+
+  const [failedCount, setFailedCount] = useState(0);
+
+  const [videoRatio, setVideoRatio] = useState(16 / 9);
+
+  const videoRef = useRef(null);
 
   // ---- Search state (all data comes from the backend) ----
   const [destinationList, setDestinationList] = useState([]);
@@ -203,7 +370,8 @@ export default function HeroSection() {
 
     const fetchHeroData = async () => {
       try {
-        const response = await fetch(HERO_API, {
+        // `_t` = throw-away param so browser / CDN can never serve an old copy
+        const response = await fetch(`${HERO_API}?_t=${Date.now()}`, {
           signal: controller.signal,
         });
 
@@ -279,7 +447,12 @@ export default function HeroSection() {
     };
 
     document.addEventListener("mousedown", handleOutside);
-    return () => document.removeEventListener("mousedown", handleOutside);
+    document.addEventListener("touchstart", handleOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutside);
+      document.removeEventListener("touchstart", handleOutside);
+    };
   }, []);
 
   // Typing placeholder uses real destination names once loaded
@@ -405,17 +578,92 @@ export default function HeroSection() {
 
   const showDropdown = isOpen && Boolean(query);
 
-  // Dynamic video URL from CMS
+  /* ---------------------------------------------------------------
+     Dynamic media:
+     video  -> mobile video -> CMS video -> local mobile -> local static
+     image  -> mobile poster -> CMS poster -> local poster
+  ---------------------------------------------------------------- */
   const dynamicVideo = getCmsVideoUrl(heroData);
+  const mobileVideo = getCmsMobileVideoUrl(heroData);
+  const videoFocus = getCmsVideoFocus(heroData, isMobile);
 
-  // Reset video selection whenever the CMS video changes
+  const dynamicPoster = getCmsPosterUrl(heroData);
+  const mobilePoster = getCmsMobilePosterUrl(heroData);
+
+  // Poster/image: mobile one first on small screens
+  const posterSrc =
+    (isMobile ? mobilePoster : null) ||
+    dynamicPoster ||
+    STATIC_HERO_POSTER ||
+    null;
+
+  // Ordered list of sources to try (duplicates removed)
+  const videoCandidates = useMemo(() => {
+    const list = [
+      isMobile ? mobileVideo : null,
+      dynamicVideo,
+      isMobile ? STATIC_HERO_MOBILE_VIDEO || null : null,
+      STATIC_HERO_VIDEO,
+    ].filter(Boolean);
+
+    return list.filter((src, index) => list.indexOf(src) === index);
+  }, [isMobile, mobileVideo, dynamicVideo]);
+
+  const candidatesKey = videoCandidates.join("|");
+
+  // Start again from the first source whenever the sources change
   useEffect(() => {
-    setUseStaticVideo(false);
-  }, [dynamicVideo]);
+    setFailedCount(0);
+  }, [candidatesKey]);
 
-  // Use the CMS video when available; otherwise use the local video
   const videoSrc =
-    dynamicVideo && !useStaticVideo ? dynamicVideo : STATIC_HERO_VIDEO;
+    videoCandidates[Math.min(failedCount, videoCandidates.length - 1)];
+
+  /*
+   * Layout mode:
+   * - Desktop/tablet: hero = full screen height, video covers it.
+   * - Mobile + portrait video: hero = full screen height (same as desktop).
+   * - Mobile + normal (landscape) video: hero ki height = video ki height
+   *   (real ratio). Saara text video ke UPAR overlay hota hai.
+   *   Agar text video se zyada jagah maange to hero thoda sa badh jata hai.
+   */
+  const isPortraitMobileVideo =
+    isMobile &&
+    Boolean(videoSrc) &&
+    (videoSrc === mobileVideo ||
+      (Boolean(STATIC_HERO_MOBILE_VIDEO) &&
+        videoSrc === STATIC_HERO_MOBILE_VIDEO));
+
+  const fullBleed = !isMobile || isPortraitMobileVideo;
+
+  // Mobile browsers (iOS Safari / Android Chrome) need muted + play()
+  // to be set manually for autoplay to work reliably
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    const playPromise = video.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {
+        // Autoplay blocked (e.g. Low Power Mode) -> poster image stays visible
+      });
+    }
+  }, [videoSrc]);
+
+  // Console hint: the CMS answered but sent no usable chips
+  useEffect(() => {
+    if (heroData && !getCmsStats(heroData).length) {
+      console.warn(
+        "Hero chips: no usable stats in the hero data, default chips are shown. Hero data:",
+        heroData,
+      );
+    }
+  }, [heroData]);
 
   // Dynamic heading + description
   const heading = (
@@ -450,55 +698,109 @@ export default function HeroSection() {
     }),
   };
 
-  // Optional CMS stats
-  const cmsStats = Array.isArray(heroData?.stats)
-    ? heroData.stats
-        .filter((s) => s?.label && s?.value)
-        .map((s) => `${s.value} ${s.label}`)
-    : [];
+  // The 6 chips: from the CMS, or the defaults when the CMS sends none
+  const cmsStats = getCmsStats(heroData);
 
   const stats = cmsStats.length ? cmsStats : DEFAULT_STATS;
 
-  // If the CMS video fails to load, switch to the local video.
-  // If the local video itself fails, avoid repeatedly switching sources.
+  // Video load hote hi uska asli ratio save kar lo
+  const handleLoadedMetadata = (event) => {
+    const { videoWidth, videoHeight } = event.currentTarget;
+    if (videoWidth && videoHeight) {
+      setVideoRatio(videoWidth / videoHeight);
+    }
+  };
+
+  // If a video fails to load, try the next source in the chain.
+  // If the last (local) video fails too, stop switching sources
+  // (the poster image stays visible behind it).
   const handleVideoError = () => {
-    if (dynamicVideo && !useStaticVideo) {
-      console.warn("CMS hero video failed to load. Using the static fallback.");
-      setUseStaticVideo(true);
+    if (failedCount < videoCandidates.length - 1) {
+      console.warn("Hero video failed to load. Trying the next source.");
+      setFailedCount((prev) => prev + 1);
     } else {
       console.error("The local hero fallback video could not be loaded.");
     }
   };
 
+  // Mobile text ko video ke upar readable rakhne ke liye halka shadow
+  // (koi dark gradient / black background nahi)
+  const textShadow = fullBleed
+    ? undefined
+    : { textShadow: "0 1px 6px rgba(0,0,0,0.55)" };
+
   return (
-    <section className="relative h-svh max-h-[1000px] min-h-[600px] w-full overflow-hidden">
-      {/* Background video: CMS first, local fallback when needed */}
-      <video
-        key={videoSrc}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        onError={handleVideoError}
-        className="absolute inset-0 h-full w-full object-cover object-center"
-      >
-        <source src={videoSrc} type="video/mp4" />
-      </video>
+    <section
+      // Mobile (landscape video): section ki height = video ka real ratio.
+      // aspect-ratio ki wajah se content zyada ho to section apne aap badh jata hai.
+      style={fullBleed ? undefined : { aspectRatio: videoRatio }}
+      className={`relative w-full bg-gray-900 ${
+        fullBleed
+          ? "h-svh max-h-[1000px] min-h-[560px] overflow-hidden"
+          : "flex flex-col justify-end"
+      }`}
+    >
+      {/* Media box: hamesha poore hero ko cover karta hai (video + poster) */}
+      <div className="absolute inset-0 overflow-hidden">
+        {/* Background image (mobile poster -> CMS poster -> local poster).
+            Visible while the video loads, or if every video fails. */}
+        {posterSrc && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full bg-cover bg-no-repeat"
+            style={{
+              backgroundImage: `url("${posterSrc}")`,
+              backgroundPosition: videoFocus,
+            }}
+          />
+        )}
 
-      {/* Bottom gradient for text contrast */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/60 from-1% to-transparent to-80%" />
+        {/* Background video: mobile -> CMS -> local fallback */}
+        <video
+          ref={videoRef}
+          key={videoSrc}
+          src={videoSrc}
+          poster={posterSrc || undefined}
+          autoPlay
+          muted
+          loop
+          playsInline
+          disablePictureInPicture
+          preload={isMobile ? "metadata" : "auto"}
+          onError={handleVideoError}
+          onLoadedMetadata={handleLoadedMetadata}
+          style={{ objectPosition: videoFocus }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
 
-      {/* Hero content */}
-      <div className="absolute inset-0">
-        <div className="mx-auto flex h-full w-full max-w-7xl items-end px-2 sm:px-4 lg:px-6 xl:px-0">
-          <div className="flex w-full flex-col justify-end gap-8 pb-[clamp(2rem,6vw,4rem)] lg:flex-row lg:items-end">
+        {/* Gradient sirf desktop / full-screen mode me.
+            Mobile (video ke size wale hero) me koi dark fade nahi */}
+        {fullBleed && (
+          <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/25 via-45% to-transparent md:from-black/60 md:from-1% md:via-transparent md:to-transparent md:to-80%" />
+        )}
+      </div>
+
+      {/* Hero content (hamesha video ke upar) */}
+      <div className={fullBleed ? "absolute inset-0" : "relative z-10"}>
+        <div className="mx-auto flex h-full w-full max-w-7xl items-end px-4 sm:px-4 lg:px-6 xl:px-0">
+          <div
+            className={`flex w-full flex-col justify-end gap-6 sm:gap-8 lg:flex-row lg:items-end ${
+              fullBleed ? "pb-[clamp(1.5rem,6vw,4rem)]" : "gap-3 pb-4 pt-20"
+            }`}
+          >
             {/* LEFT */}
-            <div className="flex w-full flex-col gap-[clamp(1rem,2vw,2rem)] px-2 lg:w-2/3">
+            <div
+              style={textShadow}
+              className="flex w-full flex-col gap-[clamp(0.625rem,2vw,2rem)] px-0 sm:px-2 lg:w-2/3"
+            >
               {/* Badge */}
               <div
                 style={descriptionStyle}
-                className="w-fit max-w-full rounded-full border-gray-100 bg-black/20 px-6 py-2 font-mont text-xs font-semibold uppercase text-gray-300 backdrop-blur-sm"
+                className={`w-fit max-w-full rounded-2xl border-gray-100 px-4 py-2 font-mont text-[11px] font-semibold uppercase leading-snug text-gray-100 sm:rounded-full sm:px-6 sm:text-xs ${
+                  fullBleed
+                    ? "bg-black/20 text-gray-300 backdrop-blur-sm"
+                    : "bg-white/15 backdrop-blur-sm"
+                }`}
               >
                 {description}
               </div>
@@ -506,7 +808,11 @@ export default function HeroSection() {
               {/* Heading */}
               <h2
                 style={headingStyle}
-                className="font-cg text-[clamp(2.4rem,5.5vw,4rem)] font-medium leading-[1.1] text-white"
+                className={`font-cg font-medium leading-[1.1] text-white ${
+                  fullBleed
+                    ? "text-[clamp(2rem,5.5vw,4rem)]"
+                    : "text-[clamp(1.6rem,7vw,2rem)]"
+                }`}
               >
                 {headingStart}{" "}
                 {highlight && (
@@ -518,6 +824,7 @@ export default function HeroSection() {
               <form
                 ref={searchRef}
                 onSubmit={handleExplore}
+                style={{ textShadow: "none" }}
                 className="relative flex w-full items-center rounded-full bg-white p-1 font-mont text-slate-500 shadow-lg sm:w-[80%]"
               >
                 <span className="shrink-0 rounded-full p-3 sm:p-4">
@@ -546,7 +853,7 @@ export default function HeroSection() {
                 {showDropdown && (
                   <div
                     role="listbox"
-                    className="absolute bottom-full left-0 z-30 mb-2 max-h-72 w-full overflow-y-auto rounded-2xl bg-white p-2 text-left shadow-xl"
+                    className="absolute bottom-full left-0 z-30 mb-2 max-h-60 w-full overflow-y-auto rounded-2xl bg-white p-2 text-left shadow-xl sm:max-h-72"
                   >
                     {rows.map((row, index) => (
                       <SuggestionRow
@@ -560,7 +867,7 @@ export default function HeroSection() {
                     {rows.length === 0 && (
                       <p className="px-4 py-3 text-sm text-gray-500">
                         {searchDataLoading
-                          ? "Searching…"
+                          ? "Searching..."
                           : `No destination or theme found for “${destination.trim()}”.`}
                       </p>
                     )}

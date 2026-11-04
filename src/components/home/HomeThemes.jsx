@@ -36,19 +36,70 @@ const KEYWORD_IMAGES = [
   [["luxury", "leisure", "best", "popular", "trending"], IMAGES.luxury],
 ];
 
-function getThemeImage(theme) {
-  const fromBackend =
-    theme?.imageUrl ||
-    theme?.image_url ||
-    theme?.image ||
-    theme?.thumbnail ||
-    theme?.images?.[0]?.imageUrl ||
-    theme?.images?.[0]?.url;
+const IMAGE_KEYS = [
+  "imageUrl",
+  "image_url",
+  "image",
+  "imagePath",
+  "image_path",
+  "thumbnail",
+  "photo",
+  "picture",
+  "bannerImage",
+  "coverImage",
+  "cover_image",
+  "images",
+];
+const IMAGE_FILE = /\.(png|jpe?g|webp|avif|gif|svg)(\?.*)?$/i;
 
-  if (typeof fromBackend === "string" && fromBackend.trim()) {
-    return fromBackend;
+// image can be "url", { url | imageUrl }, or [ ... ] (first item is used)
+function toUrl(value) {
+  if (Array.isArray(value)) return toUrl(value[0]);
+
+  if (value && typeof value === "object") {
+    return toUrl(
+      value.imageUrl ||
+        value.image_url ||
+        value.url ||
+        value.src ||
+        value.path,
+    );
   }
 
+  return typeof value === "string" ? value.trim() : "";
+}
+
+// "/uploads/a.jpg" -> "https://<cms-domain>/uploads/a.jpg"
+function toAbsoluteUrl(url) {
+  if (!url || /^(https?:)?\/\//i.test(url) || url.startsWith("data:")) {
+    return url;
+  }
+
+  try {
+    return new URL(url, new URL(api.defaults.baseURL).origin).href;
+  } catch {
+    return url;
+  }
+}
+
+// Image sent by the backend ("" when the backend sent none)
+function getBackendImage(theme) {
+  for (const key of IMAGE_KEYS) {
+    const url = toUrl(theme?.[key]);
+    if (url) return toAbsoluteUrl(url);
+  }
+
+  // field name different? use any field that looks like an image link
+  for (const value of Object.values(theme || {})) {
+    const url = toUrl(value);
+    if (IMAGE_FILE.test(url)) return toAbsoluteUrl(url);
+  }
+
+  return "";
+}
+
+// Picked from the theme name (used only when the backend has no image)
+function getFallbackImage(theme) {
   const name = String(theme?.name ?? "").toLowerCase();
   const match = KEYWORD_IMAGES.find(([keywords]) =>
     keywords.some((keyword) => name.includes(keyword)),
@@ -116,33 +167,62 @@ export default function HomeThemes() {
   const startX = useRef(0);
   const endX = useRef(0);
 
-  // Fetch themes from backend
+  // Fetch themes from backend (fresh every time, and again when the tab
+  // gets focus back, e.g. after editing in the admin panel)
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchThemes = async () => {
+    const fetchThemes = async ({ silent = false } = {}) => {
       try {
-        const res = await api.get("/themes", { signal: controller.signal });
+        const res = await api.get("/themes", {
+          signal: controller.signal,
+          // throw-away param: browser / CDN can never answer from old cache
+          params: { _t: Date.now() },
+        });
         const list = res.data?.data;
+        const clean = Array.isArray(list)
+          ? list.filter((t) => t?.name && t?.id != null)
+          : [];
 
-        setThemes(
-          Array.isArray(list)
-            ? list.filter((t) => t?.name && t?.id != null)
-            : [],
-        );
+        if (controller.signal.aborted) return;
+
+        setThemes(clean);
+
+        // Console me dikhega ki backend ne kis theme ki image nahi bheji
+        const noImage = clean.filter((theme) => !getBackendImage(theme));
+        if (noImage.length) {
+          console.warn(
+            "Themes WITHOUT backend image (fallback image shown):",
+            noImage,
+          );
+        }
       } catch (error) {
         if (error.name !== "CanceledError" && error.name !== "AbortError") {
           console.error("Failed to fetch themes:", error);
+          // a failed background refresh keeps what is already on screen
+          if (!silent) setThemes([]);
         }
-        setThemes([]);
       } finally {
-        if (!controller.signal.aborted) setIsLoading(false);
+        if (!controller.signal.aborted && !silent) setIsLoading(false);
       }
     };
 
     fetchThemes();
 
-    return () => controller.abort();
+    const refresh = () => {
+      if (document.visibilityState === "visible") {
+        fetchThemes({ silent: true });
+      }
+    };
+
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      controller.abort();
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
   }, []);
 
   // Responsive slides per view
@@ -213,7 +293,7 @@ export default function HomeThemes() {
   return (
     <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
-        {/* Heading (same as every section: EB Garamond + Alex Brush).
+        {/* Heading (same as every section).
             Arrows are positioned absolutely, so they never add any height. */}
         <div className="relative">
           <Heading
@@ -293,6 +373,7 @@ export default function HomeThemes() {
                 {themes.map((theme) => {
                   const isHovered = hoveredId === theme.id;
                   const isBlurred = hoveredId !== null && !isHovered;
+                  const fallbackImage = getFallbackImage(theme);
 
                   return (
                     <motion.div
@@ -323,10 +404,15 @@ export default function HomeThemes() {
                       className={`relative ${CARD_HEIGHT} cursor-pointer overflow-hidden rounded-2xl p-2 shadow-2xl`}
                     >
                       <img
-                        src={getThemeImage(theme)}
+                        src={getBackendImage(theme) || fallbackImage}
                         alt={theme.name}
                         loading="lazy"
                         draggable={false}
+                        onError={(e) => {
+                          // backend link broken -> use the name-based image
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = fallbackImage;
+                        }}
                         className="absolute inset-0 h-full w-full object-cover"
                       />
 

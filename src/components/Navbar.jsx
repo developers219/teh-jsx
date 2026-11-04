@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Menu, Phone, X } from "lucide-react";
 import Escapeora from "../assets/images/logo.png";
 import api from "../services/api";
@@ -38,17 +38,118 @@ function getDestinationName(destination) {
   );
 }
 
-function getDestinationImage(destination) {
-  return (
-    destination?.images?.[0]?.imageUrl ||
-    destination?.imageUrl ||
-    destination?.image ||
-    destination?.src ||
-    destination?.path ||
-    destination?.thumbnail ||
-    destination?.bannerImage ||
-    DEFAULT_IMAGE
+/* ---------------------------------------------------------
+   Finds the image of a backend destination, whatever the
+   field is called or however it is nested:
+     imageUrl / image / images[0].imageUrl / banner: { url } ...
+   Anything that looks like an image link is picked up.
+--------------------------------------------------------- */
+
+const IMAGE_FILE = /\.(png|jpe?g|webp|avif|gif|svg)(\?.*)?$/i;
+const IMAGE_KEY_HINT = /image|img|photo|picture|banner|cover|thumb|hero|media/i;
+const KNOWN_KEYS = [
+  "images",
+  "imageUrl",
+  "image_url",
+  "image",
+  "thumbnail",
+  "bannerImage",
+  "banner",
+  "coverImage",
+  "cover_image",
+  "photo",
+  "picture",
+];
+
+const looksLikeUrl = (text) =>
+  /^(https?:)?\/\//i.test(text) ||
+  text.startsWith("/") ||
+  text.startsWith("data:image");
+
+const keyRank = (key) => {
+  const index = KNOWN_KEYS.indexOf(key);
+  return index === -1 ? 99 : index;
+};
+
+const isPrimary = (item) =>
+  Boolean(
+    item &&
+      typeof item === "object" &&
+      (item.isPrimary ||
+        item.isMain ||
+        item.isCover ||
+        item.isDefault ||
+        item.primary),
   );
+
+function findImage(value, depth = 0, keyHint = false) {
+  if (value === null || value === undefined || depth > 3) return "";
+
+  if (typeof value === "string") {
+    const text = value.trim();
+
+    if (!text) return "";
+    if (IMAGE_FILE.test(text)) return text;
+
+    // link without a file extension: only trusted under an "image"-like key
+    return keyHint && looksLikeUrl(text) ? text : "";
+  }
+
+  if (Array.isArray(value)) {
+    const ordered = [...value].sort(
+      (a, b) => Number(isPrimary(b)) - Number(isPrimary(a)),
+    );
+
+    for (const item of ordered) {
+      const url = findImage(item, depth + 1, keyHint);
+      if (url) return url;
+    }
+
+    return "";
+  }
+
+  if (typeof value === "object") {
+    const entries = Object.entries(value).sort(
+      ([a], [b]) => keyRank(a) - keyRank(b),
+    );
+
+    for (const [key, child] of entries) {
+      const url = findImage(child, depth + 1, keyHint || IMAGE_KEY_HINT.test(key));
+      if (url) return url;
+    }
+  }
+
+  return "";
+}
+
+// "/uploads/a.jpg" -> "https://<cms-domain>/uploads/a.jpg"
+function toAbsoluteUrl(url) {
+  if (!url || /^(https?:)?\/\//i.test(url) || url.startsWith("data:")) {
+    return url;
+  }
+
+  try {
+    return new URL(url, new URL(api.defaults.baseURL).origin).href;
+  } catch {
+    return url;
+  }
+}
+
+// Image sent by the CMS ("" when there is none)
+function getCmsImage(destination) {
+  return toAbsoluteUrl(findImage(destination));
+}
+
+function getDestinationImage(destination) {
+  return getCmsImage(destination) || DEFAULT_IMAGE;
+}
+
+function warnMissingImages(list, label) {
+  const noImage = list.filter((item) => !getCmsImage(item));
+
+  if (noImage.length) {
+    console.warn(`${label} WITHOUT CMS image (default image shown):`, noImage);
+  }
 }
 
 function getDestinationPath(destination, category) {
@@ -95,6 +196,11 @@ function DestinationList({ items, category, onNavigate, loading }) {
                     src={getDestinationImage(destination)}
                     alt=""
                     loading="lazy"
+                    onError={(e) => {
+                      // CMS link broken -> default image instead of a broken icon
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = DEFAULT_IMAGE;
+                    }}
                     className="h-8 w-8 shrink-0 rounded-full object-cover"
                   />
                   <span className="truncate">{name}</span>
@@ -120,6 +226,30 @@ function Navbar() {
   const [isLoadingDest, setIsLoadingDest] = useState(true);
 
   const closeTimer = useRef(null);
+  const navRef = useRef(null);
+  const { pathname } = useLocation();
+
+  // /packages/<slug> (package details) par navbar hamesha compact rahe
+  const keepCompact = /^\/packages\/[^/]+\/?$/.test(pathname);
+  const isCompact = isScrolled || keepCompact;
+
+  // navbar ki asli height CSS variable me (pages isse spacer set karte hain)
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+
+    const update = () =>
+      document.documentElement.style.setProperty(
+        "--nav-height",
+        `${el.offsetHeight}px`,
+      );
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
 
   /* scroll effect */
   useEffect(() => {
@@ -133,24 +263,68 @@ function Navbar() {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchDestinations = async () => {
+    // silent = true -> background refresh (menu me jo hai wahi rehta hai)
+    const fetchDestinations = async ({ silent = false } = {}) => {
+      // `_t` = throw-away param so browser / CDN can never serve an old copy
+      const params = { _t: Date.now() };
+
       const [domRes, intlRes] = await Promise.allSettled([
-        api.get("/destinations/category/1", { signal: controller.signal }),
-        api.get("/destinations/category/2", { signal: controller.signal }),
+        api.get("/destinations/category/1", {
+          signal: controller.signal,
+          params,
+        }),
+        api.get("/destinations/category/2", {
+          signal: controller.signal,
+          params,
+        }),
       ]);
 
       if (controller.signal.aborted) return;
 
-      setDestinations({
-        dom: pickList(domRes),
-        intl: pickList(intlRes),
+      if (!silent) {
+        warnMissingImages(pickList(domRes), "Navbar domestic destinations");
+        warnMissingImages(pickList(intlRes), "Navbar international destinations");
+      }
+
+      setDestinations((previous) => {
+        const next = {
+          // a failed background refresh keeps what is already in the menu
+          dom:
+            silent && domRes.status !== "fulfilled"
+              ? previous.dom
+              : pickList(domRes),
+          intl:
+            silent && intlRes.status !== "fulfilled"
+              ? previous.intl
+              : pickList(intlRes),
+        };
+
+        // same data as before -> no re-render
+        return JSON.stringify(previous) === JSON.stringify(next)
+          ? previous
+          : next;
       });
+
       setIsLoadingDest(false);
     };
 
     fetchDestinations();
 
-    return () => controller.abort();
+    // Latest CMS data when the tab gets focus back
+    const refresh = () => {
+      if (document.visibilityState === "visible") {
+        fetchDestinations({ silent: true });
+      }
+    };
+
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+
+    return () => {
+      controller.abort();
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+    };
   }, []);
 
   useEffect(() => () => clearTimeout(closeTimer.current), []);
@@ -174,8 +348,9 @@ function Navbar() {
 
   return (
     <nav
+      ref={navRef}
       className={`fixed inset-x-0 top-0 z-40 w-full font-mont text-white transition-all duration-300 ${
-        isScrolled
+        isCompact
           ? "bg-black/70 py-3 shadow-lg backdrop-blur-md"
           : "bg-linear-to-b from-black/70 via-black/30 to-transparent py-5"
       }`}

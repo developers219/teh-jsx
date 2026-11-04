@@ -1,4 +1,5 @@
 // import { Globe2, Headset, MapPinned, SlidersHorizontal } from "lucide-react";
+import Carousel from "../ui/Carousel";
 import { Heading } from "../ui/Heading";
 
 /* ---------------------------------------------------------------
@@ -45,10 +46,10 @@ const reasons = [
 
 /* ---------------------------------------------------------------
    ICON OF A CARD (one place to change it for all screen sizes)
-   boxClass : size of the circle   (desktop / tablet / mobile)
-   iconSize : size of the icon
+   boxClass : size of the icon box (small screens / sm and up)
+   iconSize : size of the icon (only used by the lucide icon version)
 ---------------------------------------------------------------- */
-function ReasonIcon({ reason, boxClass, iconSize }) {
+function ReasonIcon({ reason, boxClass }) {
   // ---- NEW: lucide icon ----
   // const Icon = reason.icon;
 
@@ -60,13 +61,29 @@ function ReasonIcon({ reason, boxClass, iconSize }) {
   //   </div>
   // );
 
-  // ---- OLD: image icon (commented) ----
+  // ---- OLD: image icon ----
+  return <img src={reason.img} alt={reason.title} className={boxClass} />;
+}
+
+/* ---------------------------------------------------------------
+   ONE CARD (same card for every screen size)
+   mobile  : p-5, small icon
+   tablet  : p-6, big icon
+   desktop : p-8, centred content
+---------------------------------------------------------------- */
+function ReasonCard({ reason }) {
   return (
-    <img
-      src={reason.img}
-      alt={reason.title}
-      className={boxClass}   // desktop/tablet: "size-32", mobile: "size-16"
-    />
+    <div className="flex h-full flex-col justify-around gap-3 rounded-2xl border border-black/10 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 sm:p-6 lg:items-center lg:p-8 lg:shadow-xl">
+      <ReasonIcon reason={reason} boxClass="size-16 sm:size-24" />
+
+      <h3 className="font-eb text-base font-bold leading-5 text-black lg:text-lg">
+        {reason.title}
+      </h3>
+
+      <p className="font-inter text-sm leading-5 text-black/80 lg:mt-3 lg:text-black/85">
+        {reason.description}
+      </p>
+    </div>
   );
 }
 
@@ -87,149 +104,21 @@ export default function WhyChooseUs() {
         </div>
 
         {/* =========================
-            CARDS
+            CARDS (carousel)
+            desktop : all 4 cards visible (no arrows needed)
+            tablet  : 2 cards + arrows
+            mobile  : 1 card + arrows + swipe
         ========================== */}
         <div className="mx-auto mt-10 max-w-6xl sm:mt-12">
-          {/* =========================
-              DESKTOP
-          ========================== */}
-          <div className="hidden lg:grid lg:grid-cols-4 lg:gap-3">
-            {reasons.map((reason) => (
-              <div
-                key={reason.title}
-                className="
-                  rounded-2xl
-                  border
-                  border-black/10
-                  flex flex-col
-                  items-center
-                  gap-3
-                  justify-around
-                  p-8
-                  shadow-xl
-                  transition-all
-                  duration-300
-                  hover:-translate-y-1
-                  
-                "
-              >
-                {/* <div className="p-6 bg-beige text-white text-2xl rounded-full">
-                  <reason.icon size={32} />
-                </div> */}
-                <ReasonIcon
-                  reason={reason}
-                  boxClass="size-24"
-                  iconSize={40}
-                />
-                <h3 className="font-eb text-lg font-bold leading-5 text-black">
-                  {reason.title}
-                </h3>
-
-                <p className="mt-3 font-inter text-sm leading-5 text-black/85">
-                  {reason.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* =========================
-              TABLET
-          ========================== */}
-          <div className="hidden sm:grid sm:grid-cols-2 sm:gap-4 lg:hidden">
-            {reasons.map((reason) => (
-              <div
-                key={reason.title}
-                className="
-                flex flex-col
-                  rounded-2xl
-                  border
-                  border-black/10
-                  flex flex-col
-                  justify-around
-                  p-6
-                  shadow-lg
-                  transition-all
-                  duration-300
-                  hover:-translate-y-1
-                  
-                "
-              >
-                <ReasonIcon
-                  reason={reason}
-                  boxClass="size-24"
-                  iconSize={40}
-                />
-                <h3 className="mt-3 font-eb text-base font-bold leading-5 text-black">
-                  {reason.title}
-                </h3>
-
-                <p className="mt-2 font-inter text-sm leading-5 text-black/80">
-                  {reason.description}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* =========================
-              MOBILE
-          ========================== */}
-          <div className="sm:hidden">
-            <div
-              className="
-                flex
-                gap-3
-                overflow-x-auto
-                pb-4
-                snap-x
-                snap-mandatory
-                [-ms-overflow-style:none]
-                [scrollbar-width:none]
-                [&::-webkit-scrollbar]:hidden
-              "
-            >
-              {reasons.map((reason) => (
-                <div
-                  key={reason.title}
-                  className="
-                    min-w-[82%]
-                    snap-start
-                    rounded-2xl
-                    border
-                    border-black/10
-                   flex flex-col
-                  justify-around
-                    p-5
-                    shadow-lg
-                  "
-                >
-                  <ReasonIcon
-                    reason={reason}
-                    boxClass="size-16"
-                    iconSize={28}
-                  />
-                  <h3 className="mt-3 font-eb text-base font-bold leading-5 text-black">
-                    {reason.title}
-                  </h3>
-
-                  <p className="mt-2 font-inter text-sm leading-5 text-black/80">
-                    {reason.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-
-            {/* Mobile scroll hint */}
-            {/* <div className="mt-1 flex justify-center gap-1.5">
-              {reasons.map((reason, index) => (
-                <span
-                  key={reason.title}
-                  className={`h-1.5 rounded-full ${
-                    index === 0 ? "w-6 bg-black" : "w-1.5 bg-black/20"
-                  }`}
-                />
-              ))}
-            </div> */}
-          </div>
+          <Carousel
+            items={reasons}
+            desktopItems={4}
+            tabletItems={2}
+            mobileItems={1}
+            gap={16}
+            showArrows={true}
+            renderItem={(reason) => <ReasonCard reason={reason} />}
+          />
         </div>
       </div>
     </section>

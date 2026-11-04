@@ -45,7 +45,8 @@ export function normalizeVideoTestimonial(item, index) {
     name: item.customerName ?? item.name ?? item.customer ?? "",
     destination: item.destination ?? item.location ?? "",
     date: formatTravelDate(item.travelDate ?? item.date ?? item.tripDate),
-    quote: item.quote ?? item.testimonial ?? item.message ?? item.description ?? "",
+    quote:
+      item.quote ?? item.testimonial ?? item.message ?? item.description ?? "",
     video: item.videoUrl ?? item.video?.url ?? item.video ?? "",
     poster:
       item.thumbnailUrl ??
@@ -71,4 +72,46 @@ export async function getVideoTestimonials() {
     .map(normalizeVideoTestimonial)
     .filter((item) => item.status !== "inactive" && item.video)
     .sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+/*
+ * Section heading (optional, CMS driven)
+ *
+ * GET /api/public/video-testimonials/section
+ *
+ * {
+ *   data: {
+ *     eyebrow,       // "Real stories from real journeys"
+ *     title,         // "Dear Diary"
+ *     description    // "Every journey leaves a story behind.\nHere are a few of ours."
+ *   }
+ * }
+ *
+ * Every field is optional. Anything missing or empty falls back to the
+ * hardcoded default text in VideoTestimonials.jsx.
+ * Also accepts alternative names (heading / subtitle / subheading etc.).
+ */
+export function normalizeVideoTestimonialSection(item) {
+  if (!item || typeof item !== "object") return null;
+
+  return {
+    eyebrow: item.eyebrow ?? item.tagline ?? item.label ?? "",
+    title: item.title ?? item.heading ?? "",
+    description:
+      item.description ?? item.subtitle ?? item.subheading ?? item.text ?? "",
+  };
+}
+
+export async function getVideoTestimonialSection() {
+  const response = await api.get("/diary");
+
+  const payload = response?.data?.data ?? response?.data ?? null;
+
+  // console.log("Shivam -- Video Testimonial Section Payload:", payload);
+  // console.log("Video Testimonial Section Response:", response);
+
+  // Some backends return a one-item array for single-record settings.
+  const record = Array.isArray(payload) ? payload[0] : payload;
+
+  return normalizeVideoTestimonialSection(record);
 }
