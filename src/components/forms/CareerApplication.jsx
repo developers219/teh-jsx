@@ -99,10 +99,10 @@ const CareerApplication = ({ isOpen, setIsOpen, jobRole }) => {
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="w-[calc(100vw-32px)] max-w-2xl bg-white p-6 font-mont sm:p-8">
+      <div className="w-[calc(100vw-32px)] max-w-2xl bg-white p-6 font-inter sm:p-8">
         {/* Header */}
         <div className="mb-7 pr-8">
-          <h2 className="font-cg  text-[clamp(2rem,4vw,3rem)] text-center font-medium text-slate-900 ">
+          <h2 className="font-eb  text-[clamp(2rem,4vw,3rem)] text-center font-medium text-slate-900 ">
             Apply for a Job
           </h2>
 
@@ -213,9 +213,7 @@ const CareerApplication = ({ isOpen, setIsOpen, jobRole }) => {
               <span className="mb-2 text-2xl text-slate-500">↑</span>
 
               <span className="text-sm font-medium text-slate-700">
-                {resume
-                  ? resume.name
-                  : "Click to upload your resume"}
+                {resume ? resume.name : "Click to upload your resume"}
               </span>
 
               <span className="mt-1 text-xs text-slate-400">
@@ -241,9 +239,7 @@ const CareerApplication = ({ isOpen, setIsOpen, jobRole }) => {
 
           {/* Message */}
           {message && (
-            <p className="mt-5 text-sm leading-6 text-slate-600">
-              {message}
-            </p>
+            <p className="mt-5 text-sm leading-6 text-slate-600">{message}</p>
           )}
 
           {/* Submit */}

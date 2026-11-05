@@ -1,474 +1,321 @@
-import React, { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
-import Navbar from "../components/Navbar";
+import api from "../services/api";
 
-const PrivacyPolicy = () => {
-  useEffect(() => {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
+/*
+ * Privacy Policy - everything comes from the backend:
+ *   GET /api/public/pages/privacy-policy
+ *   -> { data: { title, content (HTML), updatedAt, metaTitle } }
+ * Fonts: headings = font-eb, text = font-inter (website font).
+ */
+const SLUG = "privacy-policy";
+const FALLBACK_TITLE = "Privacy Policy";
+const SITE_NAME = "Travel Empire Holidays";
+
+/* ---------------------------------------------------------------
+   Safe HTML (CMS content): unknown tags are unwrapped, script /
+   iframe / img / forms are removed, only safe attributes and
+   http / https / mailto / tel links are kept.
+---------------------------------------------------------------- */
+const ALLOWED_TAGS = new Set([
+  "p", "br", "hr", "div", "span",
+  "h1", "h2", "h3", "h4", "h5", "h6",
+  "strong", "b", "em", "i", "u", "s", "sup", "sub", "small", "mark",
+  "ul", "ol", "li", "blockquote", "pre", "code", "a",
+  "table", "thead", "tbody", "tfoot", "tr", "th", "td",
+]);
+
+const DROP_TAGS = new Set([
+  "script", "style", "iframe", "object", "embed", "form", "input",
+  "button", "textarea", "select", "svg", "math", "link", "meta",
+  "base", "noscript", "template", "img", "video", "audio",
+]);
+
+const ALLOWED_ATTRIBUTES = {
+  a: ["href", "target", "rel", "title"],
+  th: ["colspan", "rowspan"],
+  td: ["colspan", "rowspan"],
+};
+
+const SAFE_PROTOCOLS = new Set(["http:", "https:", "mailto:", "tel:"]);
+
+function getProtocol(href) {
+  try {
+    return new URL(href).protocol;
+  } catch {
+    try {
+      return new URL(href, "https://relative.invalid").protocol;
+    } catch {
+      return null;
+    }
+  }
+}
+
+function isSafeHref(value) {
+  const href = String(value || "").trim();
+
+  if (!href) return false;
+  if (href.startsWith("#")) return true;
+
+  return SAFE_PROTOCOLS.has(getProtocol(href));
+}
+
+function cleanNode(node, documentRef) {
+  Array.from(node.childNodes).forEach((child) => {
+    if (child.nodeType === 3) return;
+
+    if (child.nodeType !== 1) {
+      child.remove();
+      return;
+    }
+
+    const tag = child.tagName.toLowerCase();
+
+    if (DROP_TAGS.has(tag)) {
+      child.remove();
+      return;
+    }
+
+    cleanNode(child, documentRef);
+
+    if (!ALLOWED_TAGS.has(tag)) {
+      const fragment = documentRef.createDocumentFragment();
+      while (child.firstChild) fragment.appendChild(child.firstChild);
+      child.replaceWith(fragment);
+      return;
+    }
+
+    const allowed = ALLOWED_ATTRIBUTES[tag] || [];
+
+    Array.from(child.attributes).forEach((attribute) => {
+      if (!allowed.includes(attribute.name.toLowerCase())) {
+        child.removeAttribute(attribute.name);
+      }
     });
-  }, []);
+
+    if (tag === "a") {
+      if (!isSafeHref(child.getAttribute("href"))) {
+        child.removeAttribute("href");
+      }
+
+      if (child.getAttribute("target") === "_blank") {
+        child.setAttribute("rel", "noopener noreferrer");
+      } else {
+        child.removeAttribute("target");
+        child.removeAttribute("rel");
+      }
+    }
+  });
+}
+
+function sanitizeHtml(html) {
+  if (typeof html !== "string" || !html.trim()) return "";
+
+  const parsed = new DOMParser().parseFromString(html, "text/html");
+
+  cleanNode(parsed.body, parsed);
+
+  return parsed.body.innerHTML;
+}
+
+// Plain text from the CMS -> paragraphs (real HTML is kept as it is)
+function toHtml(value) {
+  const text = typeof value === "string" ? value.trim() : "";
+
+  if (!text) return "";
+  if (/<[a-z][\s\S]*>/i.test(text)) return text;
+
+  return text
+    .split(/\n{2,}/)
+    .map(
+      (paragraph) =>
+        `<p>${paragraph
+          .trim()
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")}</p>`,
+    )
+    .join("");
+}
+
+/* ---------------------------------------------------------------
+   Content styling (Tailwind removes list / heading styles)
+---------------------------------------------------------------- */
+const CONTENT_STYLES = [
+  "font-inter text-sm leading-7 text-slate-600 sm:text-base",
+  "[&_h1]:mb-5 [&_h1]:mt-12 [&_h1]:font-eb [&_h1]:text-3xl [&_h1]:font-medium [&_h1]:text-slate-900 sm:[&_h1]:text-4xl",
+  "[&_h2]:mb-5 [&_h2]:mt-12 [&_h2]:font-eb [&_h2]:text-2xl [&_h2]:font-medium [&_h2]:text-slate-900 sm:[&_h2]:text-3xl",
+  "[&_h3]:mb-4 [&_h3]:mt-10 [&_h3]:font-eb [&_h3]:text-xl [&_h3]:font-medium [&_h3]:text-slate-900 sm:[&_h3]:text-2xl",
+  "[&_h4]:mb-3 [&_h4]:mt-8 [&_h4]:font-eb [&_h4]:text-lg [&_h4]:font-medium [&_h4]:text-slate-900",
+  "[&_h5]:mb-3 [&_h5]:mt-6 [&_h5]:font-inter [&_h5]:text-base [&_h5]:font-semibold [&_h5]:text-slate-900",
+  "[&_h6]:mb-3 [&_h6]:mt-6 [&_h6]:font-inter [&_h6]:text-sm [&_h6]:font-semibold [&_h6]:uppercase [&_h6]:text-slate-900",
+  "[&>:first-child]:mt-0",
+  "[&_p]:mt-5 [&_h1+p]:mt-0 [&_h2+p]:mt-0 [&_h3+p]:mt-0 [&_h4+p]:mt-0",
+  "[&_strong]:font-semibold [&_strong]:text-slate-900 [&_b]:font-semibold [&_b]:text-slate-900",
+  "[&_a]:text-slate-900 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-black",
+  "[&_blockquote]:mt-5 [&_blockquote]:border-l-2 [&_blockquote]:border-slate-300 [&_blockquote]:pl-5 [&_blockquote]:italic",
+  "[&_hr]:my-10 [&_hr]:border-slate-200",
+  "[&_ul]:mt-5 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-6",
+  "[&_ol]:mt-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-6",
+  "[&_li>ul]:mt-2 [&_li>ol]:mt-2",
+  "[&_table]:mt-5 [&_table]:block [&_table]:w-full [&_table]:overflow-x-auto [&_table]:border-collapse [&_table]:text-sm",
+  "[&_th]:border [&_th]:border-slate-200 [&_th]:bg-slate-50 [&_th]:px-4 [&_th]:py-2 [&_th]:text-left [&_th]:font-semibold",
+  "[&_td]:border [&_td]:border-slate-200 [&_td]:px-4 [&_td]:py-2",
+].join(" ");
+
+function formatDate(value) {
+  if (!value) return "";
+
+  const date = new Date(value);
+
+  return Number.isNaN(date.getTime())
+    ? ""
+    : date.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      });
+}
+
+/* ---------------------------------------------------------------
+   Page
+---------------------------------------------------------------- */
+const PrivacyPolicy = () => {
+  const [page, setPage] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    setIsLoading(true);
+    setHasError(false);
+
+    api
+      .get(`/legal-pages/${SLUG}`, { signal: controller.signal })
+      .then((response) => {
+        const record = response.data?.data;
+
+        if (!record || typeof record !== "object") {
+          throw new Error("Page not found");
+        }
+
+        const hasStructured = record.intro || record.sections?.length;
+
+        setPage({
+          title: record.title || "",
+          content: hasStructured
+            ? buildLegalHtml(record)
+            : toHtml(
+                record.content ??
+                  record.body ??
+                  record.html ??
+                  record.description,
+              ),
+          updatedAt: record.updatedAt ?? record.updated_at ?? null,
+          metaTitle: record.metaTitle ?? record.meta_title ?? "",
+        });
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        if (controller.signal.aborted || error?.code === "ERR_CANCELED") return;
+
+        console.error(`Failed to load "${SLUG}" page:`, error);
+        setHasError(true);
+        setIsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [attempt]);
+
+  const title = page?.title || FALLBACK_TITLE;
+  const updatedAt = formatDate(page?.updatedAt);
+  const cleanHtml = useMemo(() => sanitizeHtml(page?.content), [page]);
+
+  // Browser tab title
+  useEffect(() => {
+    const previous = document.title;
+
+    document.title = `${page?.metaTitle || title} | ${SITE_NAME}`;
+
+    return () => {
+      document.title = previous;
+    };
+  }, [page?.metaTitle, title]);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      {/* Black Header Area */}
-      <section className="bg-black h-18 lg:h-40"></section>
+    <div className="min-h-screen bg-white font-inter text-slate-900">
+      {/* Dark strip behind the fixed navbar */}
+      <section className="h-18 bg-black lg:h-22"></section>
 
-      {/* Navbar */}
-      <Navbar />
-
-      {/* Main Content */}
       <motion.main
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.7,
-          ease: "easeOut",
-        }}
-        className="w-full "
+        transition={{ duration: 0.7, ease: "easeOut" }}
+        className="w-full"
       >
-        <div className="mx-auto w-full max-w-6xl ">
-          <div className="rounded-xl bg-white px-6 py-10  sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+        <div className="mx-auto w-full max-w-6xl">
+          <div className="bg-white px-6 py-10 sm:px-8 sm:py-12 lg:px-12 lg:py-14">
+            <h1 className="text-center font-eb text-[clamp(2rem,4vw,3rem)] font-medium tracking-tight text-slate-900">
+              {title}
+            </h1>
 
-            {/* Page Heading */}
-            <div className="mb-12">
-              <h1 className="font-cg text-[clamp(2rem,4vw,3rem)] text-center font-medium tracking-tight text-slate-900 ">
-                Privacy Policy
-              </h1>
-
-              <p className="mt-6 max-w-5xl font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Travel Empire Holidays Private Limited respects your privacy
-                and is committed to protecting the personal information you
-                provide while using our website and travel services. This
-                Privacy Policy explains what information we may collect, how
-                we use it, how it may be shared and the choices available to
-                you when you interact with us.
+            {updatedAt && !isLoading && !hasError && (
+              <p className="mt-3 text-center font-inter text-xs uppercase tracking-[0.14em] text-slate-400">
+                Last updated: {updatedAt}
               </p>
+            )}
 
-              <p className="mt-5 max-w-5xl font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                This policy applies to visitors browsing our website,
-                customers making travel enquiries, travellers confirming
-                bookings and individuals communicating with our team through
-                authorised channels.
+            {/* Loading */}
+            {isLoading && (
+              <div
+                role="status"
+                aria-live="polite"
+                aria-label="Loading page"
+                className="mx-auto mt-10 max-w-4xl animate-pulse space-y-4"
+              >
+                {[100, 92, 96, 70, 100, 88, 94, 60].map((width, index) => (
+                  <div
+                    key={index}
+                    className="h-4 rounded bg-slate-200"
+                    style={{ width: `${width}%` }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {/* Error */}
+            {!isLoading && hasError && (
+              <div className="mx-auto mt-10 max-w-xl rounded-md border border-red-200 bg-red-50 p-8 text-center">
+                <p className="font-inter text-sm text-red-700">
+                  We could not load this page right now. Please try again.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => setAttempt((value) => value + 1)}
+                  className="mt-5 cursor-pointer rounded-full bg-black px-6 py-2.5 font-inter text-sm text-white"
+                >
+                  Try again
+                </button>
+              </div>
+            )}
+
+            {/* Empty */}
+            {!isLoading && !hasError && !cleanHtml && (
+              <p className="mx-auto mt-10 max-w-xl text-center font-inter text-sm text-slate-500">
+                This page has no content yet.
               </p>
-            </div>
-
-            {/* 1 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                1. Understanding This Policy
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                This Privacy Policy describes the way Travel Empire Holidays
-                handles personal information received during enquiries,
-                quotations, bookings, travel arrangements and customer support.
-                It also explains how information collected through our website
-                and digital communication channels may be processed.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                By using our website or requesting our services, you acknowledge
-                that you have read this policy and understand the practices
-                described here. Certain services may also be subject to
-                additional privacy requirements imposed by the relevant
-                supplier.
-              </p>
-            </section>
-
-            {/* 2 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                2. Information We May Collect
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We may collect information that you provide when you contact us,
-                request a quotation, submit an enquiry or confirm a travel
-                booking. The information collected depends on the service you
-                request and may include:
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Your name, phone number, email address, travel dates,
-                destination preferences, traveller details, passport
-                information, accommodation requirements, transportation
-                preferences and emergency contact information may be required
-                for arranging certain services.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Where required for a particular booking, additional information
-                may be collected to assist with airline, hotel, visa,
-                insurance, transportation or activity arrangements.
-              </p>
-            </section>
-
-            {/* 3 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                3. Types of Information
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Depending on the services requested, the information we handle
-                may fall into several categories.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                <strong>Contact Information:</strong> This may include your
-                name, email address, telephone number and communication
-                preferences.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                <strong>Travel Information:</strong> This may include
-                destinations, travel dates, accommodation requirements,
-                itinerary preferences and booking history.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                <strong>Identity and Documentation:</strong> Certain bookings
-                may require passport details, visa information or other
-                identification documents.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                <strong>Transaction Information:</strong> Information relating
-                to invoices, payments and applicable taxes may be processed as
-                necessary for completing a booking.
-              </p>
-            </section>
-
-            {/* 4 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                4. Information Collected Through Our Website
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                When you browse our website, certain technical information may
-                be collected automatically. This can include browser details,
-                device information, approximate location, IP address, pages
-                visited and general interaction data.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                This information helps us understand how visitors use our
-                website, identify technical issues, improve website performance
-                and maintain a more reliable browsing experience.
-              </p>
-            </section>
-
-            {/* 5 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                5. Cookies and Similar Technologies
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Our website may use cookies and similar technologies to remember
-                preferences, understand visitor activity and support essential
-                website functionality.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Some cookies may be used for analytics and performance
-                measurement, while others may help us understand which pages
-                and features are useful to visitors.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                You can manage cookies through your browser settings. Please
-                note that restricting certain cookies may affect some website
-                functionality.
-              </p>
-            </section>
-
-            {/* 6 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                6. How We Use Your Information
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                The information we collect is primarily used to respond to
-                enquiries, prepare quotations and coordinate the travel services
-                requested by you.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We may also use relevant information to communicate booking
-                confirmations, payment updates, itinerary details, travel
-                assistance, service notifications and customer-support
-                information.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Information may also be used for internal administration,
-                improving our services, preventing misuse of our systems,
-                maintaining records and meeting applicable legal or regulatory
-                requirements.
-              </p>
-            </section>
-
-            {/* 7 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                7. Marketing and Communication
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Where permitted and where you have provided the appropriate
-                consent, we may contact you about holiday packages, travel
-                offers, destination updates or other services that may be
-                relevant to your enquiry.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                You may request that promotional communications be stopped.
-                Essential messages relating to an existing enquiry, booking,
-                payment or travel arrangement may still be sent where required
-                to provide the requested service.
-              </p>
-            </section>
-
-            {/* 8 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                8. Sharing Information With Travel Partners
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Travel arrangements often require us to provide relevant
-                traveller information to third-party service providers. These
-                may include airlines, hotels, transportation companies,
-                destination partners, activity operators, insurance providers
-                and visa-related service providers.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Only information reasonably required for the relevant service
-                may be shared. The applicable supplier may separately process
-                information according to its own terms and privacy practices.
-              </p>
-            </section>
-
-            {/* 9 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                9. Data Security
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We take reasonable administrative and technical measures to
-                protect personal information against unauthorised access,
-                misuse, alteration or disclosure.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Access to customer information may be limited to personnel and
-                authorised service partners who require the information for
-                legitimate business or travel-service purposes.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Although we take reasonable precautions, no method of
-                transmitting or storing information can be guaranteed to be
-                completely secure.
-              </p>
-            </section>
-
-            {/* 10 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                10. Data Retention
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Personal information may be retained for as long as reasonably
-                necessary to complete the requested services, maintain booking
-                records, provide customer support or satisfy applicable
-                accounting, legal and regulatory requirements.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                When information is no longer required for a legitimate
-                business or legal purpose, it may be deleted, anonymised or
-                securely disposed of in accordance with our internal practices.
-              </p>
-            </section>
-
-            {/* 11 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                11. Your Privacy Choices
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Depending on applicable law, you may have rights relating to
-                the personal information we hold about you. These may include
-                requesting access to information, asking for corrections or
-                raising concerns regarding its use.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Requests may require reasonable verification so that we can
-                protect customer information from unauthorised access.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                If you no longer wish to receive promotional communication, you
-                may contact us through our official communication channels.
-              </p>
-            </section>
-
-            {/* 12 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                12. Information Relating to Children
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Some travel bookings may include children or minors. Where
-                information relating to a minor is required for a booking, it
-                should be provided by a parent, guardian or other person
-                authorised to provide that information.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We only seek information about minors where it is reasonably
-                necessary for arranging the requested travel service or meeting
-                applicable requirements.
-              </p>
-            </section>
-
-            {/* 13 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                13. International Travel and Cross-Border Processing
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                International travel may require traveller information to be
-                provided to service providers located outside India. This can
-                occur when arranging flights, accommodation, transfers, visas,
-                insurance or activities in another country.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Such information will be shared only where reasonably necessary
-                for the requested service, legal compliance or operational
-                requirements.
-              </p>
-            </section>
-
-            {/* 14 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                14. Photos, Reviews and Testimonials
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                If you voluntarily provide a review, testimonial, photograph or
-                other travel-related material to us, we may use it for service
-                improvement or promotional purposes where appropriate and
-                permitted.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                If you have a concern regarding the use of identifiable content
-                that you have provided to us, you may contact our team and we
-                will review your request.
-              </p>
-            </section>
-
-            {/* 15 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                15. Third-Party Websites
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Our website or communications may contain links to websites,
-                booking platforms or services operated by third parties. These
-                external websites may have their own privacy policies and
-                practices.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We recommend reviewing the privacy information of any
-                third-party website before providing personal information
-                through that platform.
-              </p>
-            </section>
-
-            {/* 16 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                16. Legal and Regulatory Requirements
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We may retain or disclose information where reasonably required
-                to comply with applicable laws, regulations, lawful requests,
-                court orders or requirements from authorised government
-                authorities.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                Information may also be processed where necessary to protect
-                our customers, business operations, systems or legal interests,
-                subject to applicable law.
-              </p>
-            </section>
-
-            {/* 17 */}
-            <section className="mb-12">
-              <h2 className="mb-5 font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
-                17. Changes to This Privacy Policy
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                We may update this Privacy Policy from time to time to reflect
-                changes in our services, technology, business processes or
-                applicable legal requirements.
-              </p>
-
-              <p className="mt-5 font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                When changes are made, the updated version will be published on
-                this page. We encourage visitors and customers to review the
-                policy periodically.
-              </p>
-            </section>
-
-            {/* Closing */}
-            <section className="border-t border-slate-200 pt-8">
-              <h2 className="mb-4 font-cg text-xl font-medium text-slate-900 sm:text-2xl">
-                Contact Us
-              </h2>
-
-              <p className="font-mont text-sm leading-7 text-slate-600 sm:text-base">
-                If you have questions about this Privacy Policy, wish to
-                enquire about the personal information we hold, or have a
-                privacy-related concern, please contact Travel Empire Holidays
-                through our official customer-support channels.
-              </p>
-
-              <p className="mt-6 font-mont text-sm font-medium text-slate-900 sm:text-base">
-                Travel Empire Holidays Private Limited
-              </p>
-
-              <p className="mt-1 font-mont text-sm text-slate-500">
-                Privacy Policy
-              </p>
-
-              <p className="mt-1 font-mont text-sm text-slate-500">
-                Last Updated: September 2026
-              </p>
-            </section>
-
+            )}
+
+            {/* Content from the backend */}
+            {!isLoading && !hasError && cleanHtml && (
+              <div
+                className={`mx-auto mt-8 max-w-4xl ${CONTENT_STYLES}`}
+                dangerouslySetInnerHTML={{ __html: cleanHtml }}
+              />
+            )}
           </div>
         </div>
       </motion.main>

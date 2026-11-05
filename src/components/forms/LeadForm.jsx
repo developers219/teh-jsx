@@ -699,6 +699,7 @@ function LeadForm({
             <Alert
               severity="error"
               sx={{
+                fontFamily: isCard ? "var(--font-inter)" : "var(--font-mont)",
                 borderRadius: 0,
                 border: "1px solid rgba(0,0,0,0.3)",
                 backgroundColor: "transparent",

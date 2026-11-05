@@ -76,11 +76,11 @@ export default function Carousel() {
 
               {/* Title */}
               <div className="absolute bottom-8 left-8 w-full max-w-7xl mx-auto lg:bottom-12 lg:left-12">
-                <p className="mb-2 font-mont text-sm uppercase tracking-[0.2em] text-white/80">
+                <p className="mb-2 font-inter text-sm uppercase tracking-[0.2em] text-white/80">
                   Corporate Travel
                 </p>
 
-                <h2 className="font-cg text-5xl text-white md:text-6xl lg:text-7xl">
+                <h2 className="font-eb text-5xl text-white md:text-6xl lg:text-7xl">
                   {slide.title}
                 </h2>
               </div>

@@ -41,7 +41,7 @@ export default function WhyUs() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.7, delay: 0.05 }}
-                className="font-cg leading-[0.95] text-black text-[clamp(2rem,4vw,3rem)]"
+                className="font-eb leading-[0.95] text-black text-[clamp(2rem,4vw,3rem)]"
               >
                 More than a trip.
                 <br />
@@ -54,7 +54,7 @@ export default function WhyUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.15 }}
-              className="max-w-sm mt-4 text-sm font-mont leading-7 text-[#66665D]"
+              className="max-w-sm mt-4 text-sm font-inter leading-7 text-[#66665D]"
             >
               Bring your team somewhere new and let us take care of the details
               that make travelling together feel effortless.
@@ -83,16 +83,16 @@ export default function WhyUs() {
                       <Icon size={19} strokeWidth={1.5} />
                     </div>
 
-                    <span className="font-mont text-xs text-black/30">
+                    <span className="font-inter text-xs text-black/30">
                       0{index + 1}
                     </span>
                   </div>
 
-                  <h3 className="mb-3 font-mont text-lg text-black">
+                  <h3 className="mb-3 font-inter text-lg text-black">
                     {item.title}
                   </h3>
 
-                  <p className="max-w-[300px] font-mont text-sm leading-7 text-[#6B6B5D]">
+                  <p className="max-w-[300px] font-inter text-sm leading-7 text-[#6B6B5D]">
                     {item.description}
                   </p>
 

@@ -2,6 +2,18 @@ import { useState } from "react";
 import { User, Phone, MapPin } from "lucide-react";
 import Modal from "./Modal";
 
+// Hidden on short screens (viewport height < 680px) so the form fits without scrolling
+const HIDE_ON_SHORT = "[@media(max-height:680px)]:hidden";
+
+// Shared field style (same look as the lead form card)
+const INPUT_CLASS =
+  "h-11 w-full rounded-[14px] border border-slate-300 bg-white pl-12 pr-4 text-[15px] text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-black focus:ring-0 sm:h-12";
+
+const LABEL_CLASS = "mb-1.5 block text-sm font-medium text-[#080b0b]";
+
+const ICON_CLASS =
+  "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400";
+
 const RequestCallback = ({ isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -30,42 +42,38 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="bg-white px-6 py-8 sm:px-10 sm:py-10 md:px-12 md:py-12">
-        
+      {/* Single card, same look as the lead form card */}
+      <div className="w-[92vw] max-w-md bg-slate-50 p-4 font-inter text-[#080b0b] sm:p-6">
         {/* Header */}
-        <div className="max-w-xl lg:pr-10">
-          <p className="mb-3 text-[11px] text-center font-cg font-semibold uppercase tracking-[0.22em] text-black/40">
+        <div className="mb-4 border-b border-slate-200 pb-4">
+          <p
+            className={`mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 ${HIDE_ON_SHORT}`}
+          >
             GET IN TOUCH
           </p>
 
-          <h2 className="text-3xl text-center font-cg font-semibold tracking-[-0.04em] text-black sm:text-4xl">
+          <h2 className="px-8 text-center font-eb text-[26px] font-medium leading-tight text-[#080b0b] sm:text-[30px]">
             Request a Callback
           </h2>
 
-          <p className="mx-auto mt-3 max-w-md text-center font-mont text-sm leading-5 text-black/50 sm:text-[15px]">
-    Share your details and one of our travel experts will get in
-    touch with you shortly.
-  </p>
+          <p
+            className={`mx-auto mt-2 max-w-sm text-center text-[13px] leading-5 text-slate-600 sm:text-sm ${HIDE_ON_SHORT}`}
+          >
+            Share your details and one of our travel experts will get in touch
+            with you shortly.
+          </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="mt-6 space-y-5">
-
+        <form onSubmit={handleSubmit} className="space-y-3">
           {/* Full Name */}
           <div>
-            <label
-              htmlFor="fullName"
-              className="mb-2 block text-sm font-medium text-black"
-            >
+            <label htmlFor="fullName" className={LABEL_CLASS}>
               Full Name
             </label>
 
             <div className="relative">
-              <User
-                size={19}
-                strokeWidth={1.7}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-black/35"
-              />
+              <User size={19} strokeWidth={1.7} className={ICON_CLASS} />
 
               <input
                 id="fullName"
@@ -75,37 +83,19 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
                 onChange={handleChange}
                 placeholder="Enter your full name"
                 required
-                className="
-                  h-14 w-full rounded-xl
-                  border border-black/10
-                  bg-white
-                  pl-12 pr-4
-                  text-sm text-black
-                  outline-none
-                  placeholder:text-black/30
-                  transition-all duration-200
-                  focus:border-black
-                  focus:ring-0
-                "
+                className={INPUT_CLASS}
               />
             </div>
           </div>
 
           {/* Phone Number */}
           <div>
-            <label
-              htmlFor="phone"
-              className="mb-2 block text-sm font-medium text-black"
-            >
+            <label htmlFor="phone" className={LABEL_CLASS}>
               Phone Number
             </label>
 
             <div className="relative">
-              <Phone
-                size={19}
-                strokeWidth={1.7}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-black/35"
-              />
+              <Phone size={19} strokeWidth={1.7} className={ICON_CLASS} />
 
               <input
                 id="phone"
@@ -115,37 +105,19 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
                 onChange={handleChange}
                 placeholder="Enter your phone number"
                 required
-                className="
-                  h-14 w-full rounded-xl
-                  border border-black/10
-                  bg-white
-                  pl-12 pr-4
-                  text-sm text-black
-                  outline-none
-                  placeholder:text-black/30
-                  transition-all duration-200
-                  focus:border-black
-                  focus:ring-0
-                "
+                className={INPUT_CLASS}
               />
             </div>
           </div>
 
           {/* Destination */}
           <div>
-            <label
-              htmlFor="destination"
-              className="mb-2 block text-sm font-medium text-black"
-            >
+            <label htmlFor="destination" className={LABEL_CLASS}>
               Destination
             </label>
 
             <div className="relative">
-              <MapPin
-                size={19}
-                strokeWidth={1.7}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-black/35"
-              />
+              <MapPin size={19} strokeWidth={1.7} className={ICON_CLASS} />
 
               <input
                 id="destination"
@@ -155,18 +127,7 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
                 onChange={handleChange}
                 placeholder="Where would you like to go?"
                 required
-                className="
-                  h-14 w-full rounded-xl
-                  border border-black/10
-                  bg-white
-                  pl-12 pr-4
-                  text-sm text-black
-                  outline-none
-                  placeholder:text-black/30
-                  transition-all duration-200
-                  focus:border-black
-                  focus:ring-0
-                "
+                className={INPUT_CLASS}
               />
             </div>
           </div>
@@ -174,34 +135,16 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
           {/* Submit */}
           <button
             type="submit"
-            className="
-              group mt-3 flex h-14 w-full
-              items-center justify-center gap-3
-              rounded-xl
-              bg-black
-              px-6
-              text-sm font-semibold
-              text-beige
-              transition-all duration-300
-              cursor-pointer
-             
-            "
+            className="mt-1 flex h-11 w-full cursor-pointer items-center justify-center rounded-[14px] bg-blue-400 px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-500 sm:h-12"
           >
             Request a Callback
-
-            {/* <ArrowRight
-              size={19}
-              strokeWidth={1.8}
-              className="
-                transition-transform duration-300
-                group-hover:translate-x-1
-              "
-            /> */}
           </button>
         </form>
 
         {/* Bottom note */}
-        <p className="mt-5 text-center text-[11px] text-black/35">
+        <p
+          className={`mt-4 text-center text-[11px] text-slate-500 ${HIDE_ON_SHORT}`}
+        >
           Our travel expert will contact you at your preferred number.
         </p>
       </div>

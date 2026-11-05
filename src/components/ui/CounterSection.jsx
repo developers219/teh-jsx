@@ -68,7 +68,7 @@ const CounterSection = () => {
   });
 
   return (
-    <section ref={sectionRef} className="w-full font-mont">
+    <section ref={sectionRef} className="w-full font-inter">
       <div className="mx-auto grid max-w-7xl grid-cols-2 border-y border-black/10 lg:grid-cols-4">
         {stats.map((stat, index) => (
           <motion.div

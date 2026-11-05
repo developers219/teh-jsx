@@ -37,7 +37,7 @@ export default function CorporateReviews() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="mb-3 font-mont text-xs uppercase tracking-[0.2em] text-[#6B6B5D]"
+              className="mb-3 font-inter text-xs uppercase tracking-[0.2em] text-[#6B6B5D]"
             >
               From teams we've travelled with
             </motion.p>
@@ -47,7 +47,7 @@ export default function CorporateReviews() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7 }}
-              className="font-cg text-[clamp(2rem,4vw,3rem)] leading-none text-black"
+              className="font-eb text-[clamp(2rem,4vw,3rem)] leading-none text-black"
             >
               Words from
               <br />
@@ -60,7 +60,7 @@ export default function CorporateReviews() {
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="flex items-center gap-2 font-mont text-xs uppercase tracking-wider text-[#6B6B5D]"
+            className="flex items-center gap-2 font-inter text-xs uppercase tracking-wider text-[#6B6B5D]"
           >
             Trusted journeys
             <ArrowUpRight size={15} />
@@ -94,26 +94,26 @@ export default function CorporateReviews() {
                     <Quote size={18} strokeWidth={1.5} />
                   </div>
 
-                  <span className="font-mont text-xs text-black/30">
+                  <span className="font-inter text-xs text-black/30">
                     0{index + 1}
                   </span>
                 </div>
 
-                <p className="font-mont text-base leading-[1.2] text-black md:text-xl">
+                <p className="font-inter text-base leading-[1.2] text-black md:text-xl">
                   “{review.quote}”
                 </p>
               </div>
 
               <div className="mt-10 border-t border-black/10 pt-5">
-                <p className="font-mont text-sm font-medium text-black">
+                <p className="font-inter text-sm font-medium text-black">
                   {review.name}
                 </p>
 
-                <p className="mt-1 font-mont text-xs text-black/50">
+                <p className="mt-1 font-inter text-xs text-black/50">
                   {review.role}
                 </p>
 
-                <p className="mt-3 font-mont text-xs uppercase tracking-[0.12em] text-black/60">
+                <p className="mt-3 font-inter text-xs uppercase tracking-[0.12em] text-black/60">
                   {review.company}
                 </p>
               </div>

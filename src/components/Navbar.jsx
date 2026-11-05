@@ -352,7 +352,7 @@ function Navbar() {
       className={`fixed inset-x-0 top-0 z-40 w-full font-mont text-white transition-all duration-300 ${
         isCompact
           ? "bg-black/70 py-3 shadow-lg backdrop-blur-md"
-          : "bg-linear-to-b from-black/70 via-black/30 to-transparent py-5"
+          : "bg-linear-to-b from-black/70 via-black/30 to-transparent py-3"
       }`}
     >
       <div className="relative mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">

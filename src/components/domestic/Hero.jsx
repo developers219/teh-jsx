@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Phone } from "lucide-react";
 import RequestCallback from "../ui/RequestCallback";
 import api from "../../services/api";
@@ -32,6 +33,26 @@ const DEFAULT_SLIDES = [
 ];
 
 const SLIDE_INTERVAL = 5000;
+const SLIDE_DURATION = 1.2;
+const SWIPE_THRESHOLD = 50; // px
+
+// "next" = new slide enters from the right, "prev" = from the left
+const SLIDE_VARIANTS = {
+  enter: (direction) => ({
+    x: direction === "next" ? "100%" : "-100%",
+    zIndex: 2,
+  }),
+  center: { x: 0, zIndex: 2 },
+  exit: (direction) => ({
+    x: direction === "next" ? "-100%" : "100%",
+    zIndex: 1,
+  }),
+};
+
+// Same size as the About Us hero: 70% of the screen height, but never taller
+// than 24.5rem (392px). The image always covers the whole box (object-cover),
+// on every screen size. The navbar (fixed, transparent at the top) sits on it.
+const HERO_SIZE = "h-[70vh] max-h-98 min-h-[21rem]";
 
 // WhatsApp logo as an outline icon (follows the button text colour)
 function WhatsAppIcon({ size = 20 }) {
@@ -393,19 +414,25 @@ function useGoogleFonts(fonts) {
 }
 
 /*
- * Domestic hero: same UI as before, but fully driven by the backend.
- *  - heading / subtitle text, fonts, sizes, colours
- *  - the two button labels + colours + WhatsApp number
- *  - the slider images
+ * Domestic hero: fully driven by the backend (text, fonts, colours, buttons,
+ * slider images). Size + image behaviour are the same as the About Us hero:
+ *  - height: 70vh, max 24.5rem (392px) on every screen size
+ *  - the image fills the whole box (object-cover), no bars on any screen
+ *  - content (title, text, buttons) at the bottom, inside the image
+ * Slider works with 1 image (static) or many images (auto + dots + swipe).
  * Buttons stay side by side on every screen size.
  */
 export default function Hero() {
   const [isCallbackOpen, setIsCallbackOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
-  const [direction, setDirection] = useState("right");
+  const [direction, setDirection] = useState("next");
+  const [failedImages, setFailedImages] = useState([]); // broken image urls
 
   const [hero, setHero] = useState(null); // null = nothing from backend
   const [isLoading, setIsLoading] = useState(true);
+
+  const touchStartX = useRef(null);
+  const reduceMotion = useReducedMotion();
 
   // ---- backend ----
   useEffect(() => {
@@ -474,26 +501,73 @@ export default function Hero() {
   useGoogleFonts([hero?.titleFont, hero?.subtitleFont]);
 
   // ---- slider ----
-  const slides = hero?.images?.length ? hero.images : DEFAULT_SLIDES;
-  const current = activeSlide % slides.length;
+  // Backend images (duplicates + broken urls removed) or the default images
+  const slides = useMemo(() => {
+    const usable = (list) =>
+      [...new Set(list)].filter((image) => !failedImages.includes(image));
 
-  // Auto change every 5 seconds (direction alternates right / left)
+    const fromBackend = usable(hero?.images ?? []);
+
+    return fromBackend.length ? fromBackend : usable(DEFAULT_SLIDES);
+  }, [hero, failedImages]);
+
+  const slideCount = slides.length;
+  const current = slideCount ? activeSlide % slideCount : 0;
+
+  // Auto change every 5 seconds. Depends on activeSlide, so the timer
+  // restarts after a manual change (dot click / swipe).
   useEffect(() => {
-    if (slides.length < 2) return undefined;
+    if (slideCount < 2) return undefined;
 
-    const interval = setInterval(() => {
-      setDirection((prev) => (prev === "right" ? "left" : "right"));
-      setActiveSlide((prev) => (prev + 1) % slides.length);
+    const timer = setTimeout(() => {
+      setDirection("next");
+      setActiveSlide((prev) => (prev + 1) % slideCount);
     }, SLIDE_INTERVAL);
 
-    return () => clearInterval(interval);
-  }, [slides.length]);
+    return () => clearTimeout(timer);
+  }, [slideCount, activeSlide]);
+
+  // Preload the next image so it is ready before it slides in
+  useEffect(() => {
+    if (slideCount < 2) return;
+
+    const preload = new Image();
+    preload.src = slides[(current + 1) % slideCount];
+  }, [slides, slideCount, current]);
 
   const goToSlide = (index) => {
     if (index === current) return;
 
-    setDirection(index > current ? "right" : "left");
+    setDirection(index > current ? "next" : "prev");
     setActiveSlide(index);
+  };
+
+  const step = (delta) => {
+    if (slideCount < 2) return;
+
+    setDirection(delta > 0 ? "next" : "prev");
+    setActiveSlide((current + delta + slideCount) % slideCount);
+  };
+
+  // Swipe on touch screens
+  const handleTouchStart = (event) => {
+    touchStartX.current = event.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (event) => {
+    if (touchStartX.current === null) return;
+
+    const distance = event.changedTouches[0].clientX - touchStartX.current;
+
+    touchStartX.current = null;
+
+    if (Math.abs(distance) < SWIPE_THRESHOLD) return;
+
+    step(distance < 0 ? 1 : -1);
+  };
+
+  const handleImageError = (image) => {
+    setFailedImages((prev) => (prev.includes(image) ? prev : [...prev, image]));
   };
 
   // Backend still loading: empty dark hero (no flash of default text)
@@ -501,7 +575,7 @@ export default function Hero() {
     return (
       <section
         aria-busy="true"
-        className="relative min-h-[26rem] overflow-hidden bg-slate-950 px-6 pb-8 pt-44 lg:px-8"
+        className={`relative w-full overflow-hidden bg-slate-950 ${HERO_SIZE}`}
       />
     );
   }
@@ -515,42 +589,52 @@ export default function Hero() {
   const hasOverlayValue = hero?.overlay !== null && hero?.overlay !== undefined;
 
   const buttonBase =
-    "inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 py-3.5 text-center font-inter text-[11px] font-semibold leading-tight text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 min-[360px]:text-xs min-[400px]:px-3 min-[400px]:text-[13px] sm:w-64 sm:flex-none sm:gap-2 sm:px-7 sm:text-sm";
+    "inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 py-2.5 text-center font-inter text-[11px] font-semibold leading-tight text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 min-[360px]:text-xs min-[400px]:px-3 min-[400px]:text-[13px] sm:w-64 sm:flex-none sm:gap-2 sm:px-7 sm:py-3 sm:text-sm";
 
   return (
-    <section className="relative overflow-hidden bg-slate-950 px-6 pb-8 pt-44 text-white lg:px-8">
-      {/* Background slides (only the image moves) */}
-      {slides.map((image, index) => {
-        const isActive = index === current;
+    <section
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+      className={`relative w-full overflow-hidden bg-slate-950 text-white ${HERO_SIZE}`}
+    >
+      {/* Image slider: always fills the whole hero (object-cover) */}
+      <div aria-hidden="true" className="absolute inset-0 overflow-hidden">
+        {/* initial={false}: the first image is shown without a slide-in */}
+        <AnimatePresence initial={false} custom={direction}>
+          {slideCount > 0 && (
+            <motion.div
+              key={slides[current]}
+              custom={direction}
+              variants={SLIDE_VARIANTS}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                duration: reduceMotion ? 0 : SLIDE_DURATION,
+                ease: [0.76, 0, 0.24, 1],
+              }}
+              className="absolute inset-0 overflow-hidden"
+            >
+              <img
+                src={slides[current]}
+                alt=""
+                draggable={false}
+                decoding="async"
+                onError={() => handleImageError(slides[current])}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-        return (
-          <div
-            key={`${image}-${index}`}
-            aria-hidden="true"
-            className={`absolute inset-0 overflow-hidden transition-transform duration-[1200ms] ease-[cubic-bezier(0.76,0,0.24,1)] ${
-              isActive
-                ? "z-10 translate-x-0"
-                : direction === "right"
-                  ? "z-0 -translate-x-full"
-                  : "z-0 translate-x-full"
-            }`}
-          >
-            <img
-              src={image}
-              alt=""
-              draggable={false}
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          </div>
-        );
-      })}
-
-      {/* Dark overlay so text stays readable (opacity can come from the backend) */}
+      {/* Dark overlay so text stays readable (opacity can come from the backend).
+          Default: stronger at the bottom (text) and a bit at the top (navbar). */}
       <div
         className={`absolute inset-0 z-20 ${
           hasOverlayValue
             ? ""
-            : "bg-gradient-to-t from-black/70 via-black/50 to-black/60"
+            : "bg-linear-to-t from-black/80 via-black/20 to-black/55"
         }`}
         style={
           hasOverlayValue
@@ -559,83 +643,99 @@ export default function Hero() {
         }
       />
 
-      <div className="relative z-30 mx-auto max-w-7xl">
-        <h1
-          className="mt-4 min-h-[1.25em] max-w-3xl break-words font-cg text-4xl font-bold capitalize sm:text-5xl"
-          style={{
-            fontFamily: hero?.titleFont,
-            fontSize: hero?.titleSize,
-            fontWeight: hero?.titleWeight,
-            color: hero?.titleColor,
-          }}
-        >
-          {title}
-        </h1>
+      {/* Hero content: INSIDE the image, bottom aligned (below the navbar) */}
+      <div className="absolute inset-x-0 bottom-0 top-20 z-30 lg:top-24">
+        <div className="mx-auto flex h-full w-full max-w-7xl items-end px-4 lg:px-6 xl:px-0">
+          <div className="flex w-full flex-col justify-end gap-3 pb-7 sm:gap-4 sm:pb-8 lg:gap-5 lg:pb-9">
+            {/* Text */}
+            <div
+              style={{ textShadow: "0 1px 6px rgba(0,0,0,0.55)" }}
+              className="flex w-full flex-col gap-1.5 px-0 sm:gap-2 sm:px-2 lg:gap-3"
+            >
+              <h1
+                className="line-clamp-2 max-w-3xl break-words font-cg text-2xl font-bold capitalize leading-tight sm:text-4xl lg:text-5xl"
+                style={{
+                  fontFamily: hero?.titleFont,
+                  fontSize: hero?.titleSize,
+                  fontWeight: hero?.titleWeight,
+                  color: hero?.titleColor,
+                }}
+              >
+                {title}
+              </h1>
 
-        <p
-          className="mt-4 max-w-2xl font-inter text-base leading-7 text-slate-200 sm:text-lg sm:leading-8"
-          style={{
-            fontFamily: hero?.subtitleFont,
-            fontSize: hero?.subtitleSize,
-            color: hero?.subtitleColor,
-          }}
-        >
-          {subtitle}
-        </p>
+              <p
+                className="line-clamp-2 max-w-2xl font-inter text-[13px] leading-5 text-slate-200 sm:line-clamp-3 sm:text-base sm:leading-7"
+                style={{
+                  fontFamily: hero?.subtitleFont,
+                  fontSize: hero?.subtitleSize,
+                  color: hero?.subtitleColor,
+                }}
+              >
+                {subtitle}
+              </p>
+            </div>
 
-        {/* Two buttons: always side by side, on every screen size */}
-        <div className="mt-6 flex items-stretch gap-2 sm:gap-3">
-          <button
-            type="button"
-            onClick={() => setIsCallbackOpen(true)}
-            className={`${buttonBase} cursor-pointer bg-white hover:bg-slate-100`}
-            style={{
-              backgroundColor: hero?.callbackBg,
-              color: hero?.callbackText,
-            }}
-          >
-            <Phone
-              size={16}
-              strokeWidth={2}
-              className="size-3.5 shrink-0 min-[400px]:size-4"
-            />
-            {callbackLabel}
-          </button>
+            {/* Two buttons: always side by side, on every screen size */}
+            <div className="flex w-full items-stretch gap-2 px-0 sm:gap-3 sm:px-2">
+              <button
+                type="button"
+                onClick={() => setIsCallbackOpen(true)}
+                className={`${buttonBase} cursor-pointer bg-white hover:bg-slate-100`}
+                style={{
+                  backgroundColor: hero?.callbackBg,
+                  color: hero?.callbackText,
+                }}
+              >
+                <Phone
+                  size={16}
+                  strokeWidth={2}
+                  className="size-3.5 shrink-0 min-[400px]:size-4"
+                />
+                {callbackLabel}
+              </button>
 
-          {/* WhatsApp button */}
-          <a
-            href={`https://wa.me/${whatsappNumber}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`${buttonBase} bg-yellow-400 hover:bg-yellow-300`}
-            style={{
-              backgroundColor: hero?.whatsappBg,
-              color: hero?.whatsappText,
-            }}
-          >
-            <span className="shrink-0 [&>svg]:size-4 min-[400px]:[&>svg]:size-[18px]">
-              <WhatsAppIcon size={18} />
-            </span>
-            {whatsappLabel}
-          </a>
+              {/* WhatsApp button */}
+              <a
+                href={`https://wa.me/${whatsappNumber}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${buttonBase} bg-yellow-400 hover:bg-yellow-300`}
+                style={{
+                  backgroundColor: hero?.whatsappBg,
+                  color: hero?.whatsappText,
+                }}
+              >
+                <span className="shrink-0 [&>svg]:size-4 min-[400px]:[&>svg]:size-[18px]">
+                  <WhatsAppIcon size={18} />
+                </span>
+                {whatsappLabel}
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Slide indicators */}
-      {slides.length > 1 && (
-        <div className="absolute bottom-3 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2">
+      {/* Slide indicators (only when there is more than one image) */}
+      {slideCount > 1 && (
+        <div className="absolute bottom-0 left-1/2 z-40 flex -translate-x-1/2 items-center sm:bottom-1 lg:bottom-2">
           {slides.map((image, index) => (
             <button
-              key={`${image}-${index}`}
+              key={image}
               type="button"
               onClick={() => goToSlide(index)}
               aria-label={`Show destination image ${index + 1}`}
-              className={`cursor-pointer rounded-full transition-all duration-500 ${
-                current === index
-                  ? "h-1.5 w-7 bg-white"
-                  : "h-1.5 w-1.5 bg-white/60 hover:bg-white"
-              }`}
-            />
+              aria-current={current === index}
+              className="group flex cursor-pointer items-center justify-center p-1.5"
+            >
+              <span
+                className={`block h-1.5 rounded-full shadow-sm transition-all duration-500 ${
+                  current === index
+                    ? "w-7 bg-white"
+                    : "w-1.5 bg-white/60 group-hover:bg-white"
+                }`}
+              />
+            </button>
           ))}
         </div>
       )}

@@ -104,11 +104,11 @@ const uniqueSorted = (arr) =>
 //     <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between md:gap-12">
 //       <h2
 //         id={id}
-//         className="font-cg text-4xl leading-[1.05] tracking-tight text-black md:text-6xl"
+//         className="font-eb text-4xl leading-[1.05] tracking-tight text-black md:text-6xl"
 //       >
 //         {title}
 //       </h2>
-//       <p className="max-w-md font-mont text-sm leading-7 text-black/60 md:text-base md:leading-8">
+//       <p className="max-w-md font-inter text-sm leading-7 text-black/60 md:text-base md:leading-8">
 //         {description}
 //       </p>
 //     </div>
@@ -197,14 +197,14 @@ function FeaturedCarousel({ items }) {
             >
               <motion.p
                 variants={itemVariants}
-                className="mb-4 font-mont text-[11px] uppercase tracking-[0.18em] text-[#F5F3EA]/85 md:text-xs"
+                className="mb-4 font-inter text-[11px] uppercase tracking-[0.18em] text-[#F5F3EA]/85 md:text-xs"
               >
                 {blog.tags?.slice(0, 3).join(" · ")}
               </motion.p>
 
               <motion.h2
                 variants={itemVariants}
-                className="font-cg text-[2rem] leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl"
+                className="font-eb text-[2rem] leading-[1.05] tracking-tight text-white sm:text-5xl lg:text-6xl"
                 style={{ textWrap: "balance" }}
               >
                 <Link
@@ -217,14 +217,14 @@ function FeaturedCarousel({ items }) {
 
               <motion.p
                 variants={itemVariants}
-                className="mt-4 line-clamp-3 max-w-xl font-mont text-sm leading-7 text-white/80 md:mt-5 md:text-base md:leading-8"
+                className="mt-4 line-clamp-3 max-w-xl font-inter text-sm leading-7 text-white/80 md:mt-5 md:text-base md:leading-8"
               >
                 {blog.short_desc}
               </motion.p>
 
               <motion.p
                 variants={itemVariants}
-                className="mt-5 font-mont text-xs uppercase tracking-[0.16em] text-[#F5F3EA]/70"
+                className="mt-5 font-inter text-xs uppercase tracking-[0.16em] text-[#F5F3EA]/70"
               >
                 {blog.read_time}
               </motion.p>
@@ -261,7 +261,7 @@ function FeaturedCarousel({ items }) {
             </div>
 
             <div className="flex items-center gap-3 sm:gap-4">
-              <p className="font-mont text-xs tabular-nums tracking-[0.14em] text-white/80">
+              <p className="font-inter text-xs tabular-nums tracking-[0.14em] text-white/80">
                 {pad(index + 1)} / {pad(count)}
               </p>
               <div className="flex gap-2">
@@ -304,7 +304,7 @@ function FilterSelect({ id, label, value, onChange, allLabel, options }) {
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={`h-12 w-full cursor-pointer appearance-none rounded-full border border-black py-0 pl-5 pr-11 font-mont text-sm text-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
+        className={`h-12 w-full cursor-pointer appearance-none rounded-full border border-black py-0 pl-5 pr-11 font-inter text-sm text-black transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
           active ? "bg-[#F5F3EA]" : "bg-white hover:bg-[#F5F3EA]/60"
         }`}
       >
@@ -362,7 +362,7 @@ function FilterBar({
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search stories..."
             autoComplete="off"
-            className={`h-12 w-full rounded-full border border-black pl-12 pr-5 font-mont text-sm text-black placeholder:text-black/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
+            className={`h-12 w-full rounded-full border border-black pl-12 pr-5 font-inter text-sm text-black placeholder:text-black/45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 ${
               search ? "bg-[#F5F3EA]" : "bg-white"
             }`}
           />
@@ -387,14 +387,14 @@ function FilterBar({
       </form>
 
       <div className="mt-6 flex items-center justify-between border-b border-black/10 pb-4">
-        <p aria-live="polite" className="font-mont text-sm text-black/60">
+        <p aria-live="polite" className="font-inter text-sm text-black/60">
           Showing {count} {count === 1 ? "story" : "stories"}
         </p>
         {hasFilters && (
           <button
             type="button"
             onClick={onClear}
-            className="inline-flex items-center gap-1.5 rounded-full font-mont text-sm text-black underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+            className="inline-flex items-center gap-1.5 rounded-full font-inter text-sm text-black underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
           >
             <X size={14} aria-hidden="true" />
             Clear filters
@@ -438,13 +438,13 @@ function BlogCard({ blog, index }) {
         </div>
 
         <div className="pt-5 md:pt-6">
-          <p className="font-mont text-[11px] uppercase tracking-[0.16em] text-black/55">
+          <p className="font-inter text-[11px] uppercase tracking-[0.16em] text-black/55">
             {blog.tags?.slice(0, 3).join(" · ")}
           </p>
 
           <div className="mt-3 flex items-start justify-between gap-4">
             <h3
-              className={`font-cg leading-[1.1] tracking-tight text-black 
+              className={`font-eb leading-[1.1] tracking-tight text-black 
                 
                   text-2xl md:text-3xl`}
               style={{ textWrap: "balance" }}
@@ -461,11 +461,11 @@ function BlogCard({ blog, index }) {
             </motion.span>
           </div>
 
-          <p className="mt-3 line-clamp-3 max-w-xl font-mont text-sm leading-7 text-black/60 md:text-[0.95rem]">
+          <p className="mt-3 line-clamp-3 max-w-xl font-inter text-sm leading-7 text-black/60 md:text-[0.95rem]">
             {blog.short_desc}
           </p>
 
-          <p className="mt-5 font-mont text-[11px] uppercase tracking-[0.14em] text-black/45">
+          <p className="mt-5 font-inter text-[11px] uppercase tracking-[0.14em] text-black/45">
             {blog.date_published} · {blog.read_time}
           </p>
         </div>
@@ -477,16 +477,16 @@ function BlogCard({ blog, index }) {
 function EmptyState({ onClear }) {
   return (
     <div className="flex flex-col items-center rounded-[28px] bg-[#F5F3EA] px-6 py-20 text-center md:py-28">
-      <h3 className="font-cg text-3xl text-black md:text-4xl">
+      <h3 className="font-eb text-3xl text-black md:text-4xl">
         No stories found.
       </h3>
-      <p className="mt-3 max-w-sm font-mont text-sm leading-7 text-black/60">
+      <p className="mt-3 max-w-sm font-inter text-sm leading-7 text-black/60">
         Try another destination, theme or search term.
       </p>
       <button
         type="button"
         onClick={onClear}
-        className="mt-8 h-12 rounded-full bg-black px-8 font-mont text-sm text-white transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+        className="mt-8 h-12 rounded-full bg-black px-8 font-inter text-sm text-white transition-colors hover:bg-black/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
       >
         Clear Filters
       </button>
@@ -545,7 +545,7 @@ export default function Blogs() {
         <div className="mx-auto max-w-7xl px-5 md:px-8 pt-5">
           {/* Page label + carousel */}
           <h1 className="sr-only">Travel Journal</h1>
-          {/* <p className="mb-5 font-mont text-[11px] uppercase tracking-[0.18em] text-black/50 md:mb-6">
+          {/* <p className="mb-5 font-inter text-[11px] uppercase tracking-[0.18em] text-black/50 md:mb-6">
             Blogs / Travel Journal
           </p> */}
           <FeaturedCarousel items={featured} />
@@ -559,7 +559,7 @@ export default function Blogs() {
             />
             {/* Trending blogs will be added later */}
             <div className="flex min-h-[200px] mt-8 items-center justify-center rounded-[28px] border border-black/10 bg-[#F5F3EA]/60 px-6 py-12 text-center">
-              <p className="max-w-xs font-cg text-xl leading-snug text-black/45 md:text-2xl">
+              <p className="max-w-xs font-eb text-xl leading-snug text-black/45 md:text-2xl">
                 A fresh selection is being curated.
               </p>
             </div>

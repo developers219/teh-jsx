@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { motion } from "motion/react";
-import Navbar from "../components/Navbar";
 
 const SUPPORT_PHONE =
   import.meta.env.VITE_SUPPORT_PHONE || "+91 92112 15500";
@@ -18,12 +17,9 @@ const CustomerSupport = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-white font-inter text-slate-900">
       {/* Top Black Area */}
-      <section className="h-18 bg-black lg:h-40"></section>
-
-      {/* Navbar */}
-      <Navbar />
+      <section className="h-18 bg-black lg:h-22"></section>
 
       {/* Main Content */}
       <motion.main
@@ -38,11 +34,11 @@ const CustomerSupport = () => {
         <div className="mx-auto w-full max-w-6xl">
           {/* Heading */}
           <div className="px-5 text-center sm:px-8 lg:px-0">
-            <h1 className="font-cg text-[clamp(2rem,4vw,3rem)] font-medium tracking-tight text-slate-900">
+            <h1 className="font-eb text-[clamp(2rem,4vw,3rem)] font-medium tracking-tight text-slate-900">
               Customer Support
             </h1>
 
-            <p className="mx-auto mt-3 max-w-3xl font-mont text-sm leading-7 text-slate-600 sm:text-base">
+            <p className="mx-auto mt-3 max-w-3xl font-inter text-sm leading-7 text-slate-600 sm:text-base">
               Our customer support team is here to assist you with your travel
               plans, bookings, and any concerns related to your journey.
             </p>
@@ -53,7 +49,7 @@ const CustomerSupport = () => {
 
           {/* Customer Support Details */}
           <section className="px-5 py-2 sm:px-8 lg:px-6">
-            <div className="font-mont text-sm leading-7 text-slate-700 sm:text-base">
+            <div className="font-inter text-sm leading-7 text-slate-700 sm:text-base">
               {/* Phone */}
               <p>
                 <strong className="font-semibold text-slate-900">
@@ -110,11 +106,11 @@ const CustomerSupport = () => {
           {/* Support Form */}
           <section className="mt-12 px-5 sm:px-8 lg:px-0">
             <div className="mb-7">
-              <h2 className="font-cg text-2xl font-medium text-slate-900 sm:text-3xl">
+              <h2 className="font-eb text-2xl font-medium text-slate-900 sm:text-3xl">
                 Contact Our Support Team
               </h2>
 
-              <p className="mt-3 max-w-3xl font-mont text-sm leading-7 text-slate-600 sm:text-base">
+              <p className="mt-3 max-w-3xl font-inter text-sm leading-7 text-slate-600 sm:text-base">
                 Please provide your details and tell us about your trip or
                 concern. Our team will review your request and get in touch
                 with you.
@@ -128,7 +124,7 @@ const CustomerSupport = () => {
                 <div>
                   <label
                     htmlFor="name"
-                    className="mb-2 block font-mont text-sm font-medium text-slate-800"
+                    className="mb-2 block font-inter text-sm font-medium text-slate-800"
                   >
                     Name
                   </label>
@@ -139,7 +135,7 @@ const CustomerSupport = () => {
                     name="name"
                     required
                     placeholder="Enter your name"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-mont text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-inter text-sm text-slate-900 outline-none transition focus:border-slate-500"
                   />
                 </div>
 
@@ -147,7 +143,7 @@ const CustomerSupport = () => {
                 <div>
                   <label
                     htmlFor="phone"
-                    className="mb-2 block font-mont text-sm font-medium text-slate-800"
+                    className="mb-2 block font-inter text-sm font-medium text-slate-800"
                   >
                     Phone
                   </label>
@@ -158,7 +154,7 @@ const CustomerSupport = () => {
                     name="phone"
                     required
                     placeholder="Enter your phone number"
-                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-mont text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                    className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-inter text-sm text-slate-900 outline-none transition focus:border-slate-500"
                   />
                 </div>
               </div>
@@ -167,7 +163,7 @@ const CustomerSupport = () => {
               <div className="mt-6">
                 <label
                   htmlFor="email"
-                  className="mb-2 block font-mont text-sm font-medium text-slate-800"
+                  className="mb-2 block font-inter text-sm font-medium text-slate-800"
                 >
                   Email
                 </label>
@@ -178,7 +174,7 @@ const CustomerSupport = () => {
                   name="email"
                   required
                   placeholder="Enter your email address"
-                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-mont text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-inter text-sm text-slate-900 outline-none transition focus:border-slate-500"
                 />
               </div>
 
@@ -186,7 +182,7 @@ const CustomerSupport = () => {
               <div className="mt-6">
                 <label
                   htmlFor="tripDetails"
-                  className="mb-2 block font-mont text-sm font-medium text-slate-800"
+                  className="mb-2 block font-inter text-sm font-medium text-slate-800"
                 >
                   Trip Details
                 </label>
@@ -196,7 +192,7 @@ const CustomerSupport = () => {
                   type="text"
                   name="tripDetails"
                   placeholder="Destination, travel dates, booking ID, etc."
-                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-mont text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                  className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 font-inter text-sm text-slate-900 outline-none transition focus:border-slate-500"
                 />
               </div>
 
@@ -204,7 +200,7 @@ const CustomerSupport = () => {
               <div className="mt-6">
                 <label
                   htmlFor="concern"
-                  className="mb-2 block font-mont text-sm font-medium text-slate-800"
+                  className="mb-2 block font-inter text-sm font-medium text-slate-800"
                 >
                   Your Concern
                 </label>
@@ -215,7 +211,7 @@ const CustomerSupport = () => {
                   required
                   rows={5}
                   placeholder="Please tell us how we can help..."
-                  className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 font-mont text-sm text-slate-900 outline-none transition focus:border-slate-500"
+                  className="w-full resize-none rounded-lg border border-slate-200 bg-white px-4 py-3 font-inter text-sm text-slate-900 outline-none transition focus:border-slate-500"
                 ></textarea>
               </div>
 
@@ -223,7 +219,7 @@ const CustomerSupport = () => {
               <div className="mt-7">
                 <button
                   type="submit"
-                  className="w-full cursor-pointer rounded-lg bg-black px-8 py-3.5 font-mont text-sm font-medium text-white transition"
+                  className="w-full cursor-pointer rounded-lg bg-blue-400 px-8 py-3.5 font-inter text-sm font-medium text-white transition-colors hover:bg-blue-500"
                 >
                   Submit Request
                 </button>

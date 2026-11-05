@@ -84,10 +84,10 @@ const CorporateTourForm = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div className="w-[calc(100vw-32px)] max-w-2xl bg-white p-6 font-mont sm:p-8">
+      <div className="w-[calc(100vw-32px)] max-w-2xl bg-white p-6 font-inter sm:p-8">
         {/* Header */}
         <div className="mb-7 pr-8">
-          <h2 className="font-cg  text-[clamp(2rem,4vw,3rem)] text-center font-medium text-slate-900 ">
+          <h2 className="font-eb  text-[clamp(2rem,4vw,3rem)] text-center font-medium text-slate-900 ">
             Corporate Tour Enquiry
           </h2>
 
@@ -302,7 +302,7 @@ const CorporateTourForm = ({ isOpen, setIsOpen }) => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-7 w-full cursor-pointer rounded-lg bg-black px-6 py-3.5 text-sm font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-7 w-full cursor-pointer rounded-lg bg-blue-400 px-6 py-3.5 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:bg-blue-400"
           >
             {isSubmitting ? "Submitting..." : "Submit Enquiry"}
           </button>

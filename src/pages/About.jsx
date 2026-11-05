@@ -1,7 +1,29 @@
 import { motion } from "motion/react";
-import SectionHeader from "../components/home/SectionHeader";
 import CounterSection from "../components/ui/CounterSection";
 import WhyChooseUs from "../components/home/WhyChooseUs";
+
+/*
+ * Section heading in the website font:
+ * title = font-eb, description = font-inter
+ */
+function SectionTitle({ title, description, align = "center" }) {
+  const alignmentClass =
+    align === "center" ? "mx-auto text-center" : "text-left";
+
+  return (
+    <div className={`max-w-3xl ${alignmentClass}`}>
+      <h2 className="font-eb text-[clamp(2rem,4vw,3rem)] font-normal leading-[1.12] text-slate-950">
+        {title}
+      </h2>
+
+      {description && (
+        <p className="mt-4 font-inter text-base leading-7 text-slate-600 sm:text-lg">
+          {description}
+        </p>
+      )}
+    </div>
+  );
+}
 
 const reveal = {
   initial: { opacity: 0, y: 35 },
@@ -15,7 +37,7 @@ const reveal = {
 
 export default function About() {
   return (
-    <section className="bg-white">
+    <section className="bg-white font-inter">
       {/* Hero */}
       <div className="relative h-[70vh] max-h-98">
         <img
@@ -37,7 +59,7 @@ export default function About() {
                     duration: 0.8,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="text-[clamp(2.25rem,6vw,3rem)] leading-none text-white"
+                  className="font-eb text-[clamp(2.25rem,6vw,3rem)] leading-none text-white"
                 >
                   About Us
                 </motion.h1>
@@ -50,7 +72,7 @@ export default function About() {
                   delay: 0.55,
                   duration: 0.6,
                 }}
-                className="mt-3 font-mont text-sm text-neutral-300 sm:text-base"
+                className="mt-3 font-inter text-sm text-neutral-300 sm:text-base"
               >
                 Know about our journey
               </motion.p>
@@ -63,7 +85,7 @@ export default function About() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10 xl:px-12">
         {/* Our Story */}
         <motion.div {...reveal} className="my-16">
-          <SectionHeader
+          <SectionTitle
             title="Our Story"
             description="From where we began to where your journey takes you"
           />
@@ -75,7 +97,7 @@ export default function About() {
             ...reveal.transition,
             delay: 0.1,
           }}
-          className="mt-8 grid gap-7 font-mont text-sm leading-7 text-black/65 sm:text-base sm:leading-8 md:grid-cols-2 md:gap-10 lg:gap-16"
+          className="mt-8 grid gap-7 font-inter text-sm leading-7 text-black/65 sm:text-base sm:leading-8 md:grid-cols-2 md:gap-10 lg:gap-16"
         >
           <p className="text-justify">
             What started with a passion for discovering new places grew into a
@@ -111,13 +133,13 @@ export default function About() {
         {/* Mission */}
         <div className="flex flex-col lg:flex-row gap-8 items-center">
           <motion.div {...reveal} className="flex-1">
-            <SectionHeader
+            <SectionTitle
               title="Our Mission"
               align="left"
               description="Making every journey feel personal, seamless, and worth remembering."
             />
 
-            <p className="my-7 font-mont text-sm leading-7 text-justify text-black/65 sm:my-8 sm:text-base sm:leading-8">
+            <p className="my-7 font-inter text-sm leading-7 text-justify text-black/65 sm:my-8 sm:text-base sm:leading-8">
               Our mission is to make meaningful travel more accessible through
               thoughtfully planned journeys built around each traveller. We
               bring together destination expertise, carefully chosen
@@ -129,13 +151,13 @@ export default function About() {
 
           {/* Vision */}
           <motion.div {...reveal} className="flex-1">
-            <SectionHeader
+            <SectionTitle
               title="Our Vision"
               description="To inspire people to see more of the world, to have meaningful journey."
               align="left"
             />
 
-            <p className="my-7  font-mont text-sm leading-7 text-justify text-black/65 sm:my-8 sm:text-base sm:leading-8">
+            <p className="my-7  font-inter text-sm leading-7 text-justify text-black/65 sm:my-8 sm:text-base sm:leading-8">
               We aspire to create a travel experience where every journey feels
               thoughtfully considered, effortless, and deeply personal. As we
               grow, we remain committed to building lasting relationships with

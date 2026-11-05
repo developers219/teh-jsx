@@ -902,7 +902,7 @@ function Footer() {
 
                 <div className="pt-0.5">
                   <span className="mt-1.5 block text-sm text-slate-400">
-                    hello@travelempireholidays.com
+                    support@travelempireholidays.com
                   </span>
                 </div>
               </div>

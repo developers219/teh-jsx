@@ -182,18 +182,26 @@ function LeadCapturePopup({ isOpen, setIsOpen, showImages = false }) {
     //   </div>
     // </div>
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      <div
-        className={`p-8 ${showImages ? "w-full lg:w-[55vw] max-w-5xl" : "w-fit"} bg-white flex flex-col lg:flex-row`}
-      >
-        {showImages && (
-          <div className="flex-1 flex items-center justify-center">
+      {showImages ? (
+        // Optional illustration layout (only when a page asks for showImages)
+        <div className="flex w-full max-w-5xl flex-col bg-white p-8 font-inter lg:w-[55vw] lg:flex-row [&_form+p]:text-[11px]">
+          <div className="flex flex-1 items-center justify-center">
             <img src={images[step - 1]} alt="steps" className="w-full" />
           </div>
-        )}
-        <div className="flex-1">
-          <LeadForm func={setStep} />
+          <div className="flex-1">
+            <LeadForm variant="card" func={setStep} />
+          </div>
         </div>
-      </div>
+      ) : (
+        // Single card: the lead form (card variant), no illustration.
+        // Fonts: only font-eb (headings) and font-inter (rest). font-inter is
+        // set here because the privacy note below the form inherits it.
+        // [&_form+p]: that note at 11px so it stays on one line.
+        // pt-14 on mobile keeps the heading clear of the close button.
+        <div className="w-[92vw] max-w-lg bg-slate-50 px-5 pb-6 pt-14 font-inter text-[#080b0b] sm:p-10 [&_form+p]:text-[11px]">
+          <LeadForm variant="card" func={setStep} />
+        </div>
+      )}
     </Modal>
   );
 }
