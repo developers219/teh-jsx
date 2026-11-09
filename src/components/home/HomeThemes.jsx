@@ -417,7 +417,7 @@ export default function HomeThemes() {
                       />
 
                       <div className="relative flex h-full w-full items-end justify-center">
-                        <p className="w-fit rounded-full bg-black/50 p-1 px-2 text-center font-inter text-[10px] text-white backdrop-blur-sm sm:px-3 sm:text-xs">
+                        <p className="w-fit rounded-full bg-black/50 p-1 px-2 text-center font-alex text-[10px] text-white backdrop-blur-sm sm:px-3 sm:text-xs">
                           {theme.name}
                         </p>
                       </div>

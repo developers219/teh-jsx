@@ -801,31 +801,34 @@ function LeadForm({
         ==================================================== */}
 
         {isCard ? (
-          <p className="mt-5 flex items-center justify-center gap-2 text-center text-[13px] leading-5 text-slate-600">
-            <svg
-              aria-hidden="true"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="shrink-0"
-            >
-              <rect x="5" y="11" width="14" height="9" rx="2" />
-              <path d="M8 11V8a4 4 0 018 0v3" />
-            </svg>
-            Your information is secure and will only be used to prepare your
-            travel plan.
-          </p>
-        ) : (
-          <p className="mt-6 text-[14px] leading-4 text-black/40">
-            Your information is secure and will only be used to prepare your
-            travel plan.
-          </p>
-        )}
+  <div className="mt-5 flex items-start justify-center gap-2 px-1">
+    <svg
+      aria-hidden="true"
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="mt-[3px] shrink-0 text-slate-500"
+    >
+      <rect x="5" y="11" width="14" height="9" rx="2" />
+      <path d="M8 11V8a4 4 0 018 0v3" />
+    </svg>
+
+    <p className="text-left text-[12.5px] leading-[1.55] text-slate-500">
+      Your information is secure and will only be used to prepare your
+      travel plan.
+    </p>
+  </div>
+) : (
+  <p className="mt-6 text-[14px] leading-4 text-black/40">
+    Your information is secure and will only be used to prepare your
+    travel plan.
+  </p>
+)}
       </div>
     </FormVariantContext.Provider>
   );

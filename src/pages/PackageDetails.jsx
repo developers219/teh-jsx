@@ -1201,17 +1201,18 @@ function PackageDetails() {
                       </div>
 
                       <button
-                        type="button"
-                        onClick={() => setIsOpen(true)}
-                        className="group flex w-full items-center justify-center gap-2 rounded-full bg-blue-400 px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-xl"
-                      >
-                        <Phone
-                          size={17}
-                          className="transition-transform duration-300 group-hover:translate-x-1"
-                        />
+  type="button"
+  aria-haspopup="dialog"
+  onClick={() => setIsOpen(true)}
+  className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-400 px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-blue-500 hover:shadow-xl"
+>
+  <Phone
+    aria-hidden="true"
+    className="size-3.5 shrink-0 min-[400px]:size-4"
+  />
 
-                        <span>Plan this trip</span>
-                      </button>
+  <span>Plan this trip</span>
+</button>
                     </div>
                   </div>
                 </div>

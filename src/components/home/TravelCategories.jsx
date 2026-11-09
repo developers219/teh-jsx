@@ -406,7 +406,7 @@ function TravelCategories() {
   }, []);
 
   return (
-    <section className="bg-white py-[clamp(2rem,5vw,4rem)] font-inter">
+    <section className="bg-white py-[clamp(2rem,5vw,4rem)] font-alex">
       <div className="mx-auto w-full max-w-7xl space-y-[clamp(1.6rem,5vw,4rem)] px-2 sm:px-4 lg:px-6 xl:px-0">
         {isLoading ? (
           <>

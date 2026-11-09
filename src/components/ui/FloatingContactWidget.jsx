@@ -66,8 +66,10 @@ function FloatingContactWidget({ isMenuOpen, isOpen, setIsOpen }) {
     };
   }, []);
 
+  // Below sm the widget sits ABOVE the centered "Plan a Trip" pill
+  // (pill height + gap = 4rem), so the pill never covers it.
   return (
-    <div className="fixed bottom-6 max-lg:bottom-[var(--widget-bottom,1.5rem)] font-inter right-6 z-50 flex flex-col items-end gap-1">
+    <div className="fixed bottom-6 max-lg:bottom-[var(--widget-bottom,1.5rem)] max-sm:bottom-[calc(var(--widget-bottom,1.5rem)+4rem)] font-inter right-6 max-sm:right-4 z-50 flex flex-col items-end gap-1">
       <div
         className="bg-white text-black mix-blend-difference mr-4 rounded-full p-1 cursor-pointer"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}

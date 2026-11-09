@@ -109,7 +109,7 @@ function useIsWide() {
 function BlankPage() {
   return (
     <div className="relative flex h-full w-full items-center justify-center bg-[#f5f1e8] p-8 text-center">
-      <p className="font-cg text-xl italic text-slate-400 sm:text-2xl">
+      <p className="font-eb text-xl italic text-slate-400 sm:text-2xl">
         More stories coming soon…
       </p>
     </div>
@@ -232,7 +232,7 @@ function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
       {/* Content */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5 lg:p-7">
         {(testimonial.destination || testimonial.date) && (
-          <div className="mb-3 flex flex-wrap items-center gap-2 font-mont text-[9px] uppercase tracking-[0.2em] text-white/70 sm:text-[10px]">
+          <div className="mb-3 flex flex-wrap items-center gap-2 font-eb text-[9px] uppercase tracking-[0.2em] text-white/70 sm:text-[10px]">
             {testimonial.destination && <span>{testimonial.destination}</span>}
 
             {testimonial.destination && testimonial.date && (
@@ -245,7 +245,7 @@ function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
 
         {testimonial.quote && (
           <motion.p
-            className="line-clamp-4 max-w-md font-cg text-lg font-medium leading-snug text-white sm:text-xl lg:text-2xl"
+            className="line-clamp-4 max-w-md font-eb text-lg font-medium leading-snug text-white sm:text-xl lg:text-2xl"
             animate={{ y: isActive ? 0 : 4 }}
           >
             “{testimonial.quote}”
@@ -253,7 +253,7 @@ function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
         )}
 
         <div className="mt-4 flex items-center justify-between gap-3">
-          <span className="font-mont text-[10px] font-medium uppercase tracking-[0.16em] text-white sm:text-xs">
+          <span className="font-inter text-[10px] font-medium uppercase tracking-[0.16em] text-white sm:text-xs">
             {testimonial.name}
           </span>
 
@@ -265,7 +265,7 @@ function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
             >
               {muted ? <VolumeX size={13} /> : <Volume2 size={13} />}
 
-              <span className="font-mont text-[9px] uppercase tracking-widest">
+              <span className="font-eb text-[9px] uppercase tracking-widest">
                 {muted ? "Sound off" : "Sound on"}
               </span>
             </motion.div>
@@ -277,7 +277,7 @@ function DiaryVideo({ testimonial, side, pageNumber, activeId, setActiveId }) {
       <div
         className={`pointer-events-none absolute top-5 ${
           side === "left" ? "left-5" : "right-5"
-        } font-mont text-[10px] uppercase tracking-[0.2em] text-white/60`}
+        } font-eb text-[10px] uppercase tracking-[0.2em] text-white/60`}
       >
         {String(pageNumber).padStart(2, "0")}
       </div>
@@ -422,15 +422,15 @@ export default function VideoTestimonials() {
     <section className="relative overflow-hidden px-5 py-20 sm:px-8 sm:py-24">
       {/* Heading (CMS driven) */}
       <div className="relative z-10 mx-auto mb-14 max-w-3xl text-center">
-        <p className="mb-4 font-mont text-[10px] font-medium uppercase tracking-[0.35em] text-slate-500">
+        <p className="mb-4 font-eb text-[10px] font-medium uppercase tracking-[0.35em] text-slate-500">
           {heading.eyebrow}
         </p>
 
-        <h2 className="font-cg text-[clamp(2rem,5vw,3rem)] font-semibold leading-tight tracking-tight text-slate-900">
+        <h2 className="font-eb text-[clamp(2rem,5vw,3rem)] font-medium leading-tight tracking-tight text-slate-900">
           {heading.title}
         </h2>
 
-        <p className="mx-auto mt-5 max-w-xl font-mont text-sm leading-7 text-slate-500 sm:text-base">
+        <p className="mx-auto mt-5 max-w-xl font-eb text-sm leading-7 text-slate-500 sm:text-base">
           <MultiLine text={heading.description} />
         </p>
       </div>
@@ -464,23 +464,23 @@ export default function VideoTestimonials() {
               <div className="absolute inset-y-0 left-0 w-5 bg-black/10 sm:w-7" />
 
               <div className="absolute inset-0 flex flex-col items-center justify-center text-yellow-100">
-                <div className="mb-5 font-mont text-[9px] uppercase tracking-[0.5em] opacity-70">
+                <div className="mb-5 font-eb text-[9px] uppercase tracking-[0.5em] opacity-70">
                   Travel stories
                 </div>
 
-                <h3 className="font-cg text-5xl text-yellow-400 font-semibold sm:text-7xl">
+                <h3 className="font-eb text-5xl text-yellow-400 font-medium sm:text-7xl">
                   Dear Diary
                 </h3>
 
                 <div className="mt-6 h-px w-20 bg-[#d7c6a0]/40" />
 
-                <p className="mt-5 font-mont text-[10px] uppercase tracking-[0.3em] opacity-70">
+                <p className="mt-5 font-eb text-[10px] uppercase tracking-[0.3em] opacity-70">
                   Open our memories
                 </p>
               </div>
 
               {/* Hover hint */}
-              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 font-mont text-[9px] uppercase tracking-[0.3em] text-[#e4d6b7]/50 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="absolute bottom-5 left-1/2 -translate-x-1/2 font-eb text-[9px] uppercase tracking-[0.3em] text-[#e4d6b7]/50 opacity-0 transition-opacity group-hover:opacity-100">
                 Tap to open
               </div>
             </motion.button>
@@ -503,7 +503,7 @@ export default function VideoTestimonials() {
             <button
               type="button"
               onClick={closeDiary}
-              className="absolute -top-12 right-0 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-400 transition hover:text-slate-900"
+              className="absolute -top-12 right-0 font-eb text-[10px] uppercase tracking-[0.25em] text-slate-400 transition hover:text-slate-900"
             >
               Close diary
             </button>
@@ -587,7 +587,7 @@ export default function VideoTestimonials() {
                 type="button"
                 onClick={previousPage}
                 disabled={spreadIndex === 0}
-                className="group flex items-center gap-3 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
+                className="group flex items-center gap-3 font-eb text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
               >
                 <ChevronLeft
                   size={16}
@@ -616,7 +616,7 @@ export default function VideoTestimonials() {
                 type="button"
                 onClick={nextPage}
                 disabled={spreadIndex === lastIndex}
-                className="group flex items-center gap-3 font-mont text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
+                className="group flex items-center gap-3 font-eb text-[10px] uppercase tracking-[0.25em] text-slate-500 transition hover:text-slate-900 disabled:pointer-events-none disabled:opacity-20"
               >
                 Next
                 <ChevronRight
@@ -626,7 +626,7 @@ export default function VideoTestimonials() {
               </button>
             </div>
 
-            <p className="mt-5 text-center font-mont text-[9px] uppercase tracking-[0.25em] text-slate-400">
+            <p className="mt-5 text-center font-eb text-[9px] uppercase tracking-[0.25em] text-slate-400">
               {isWide
                 ? "Drag the pages · Hover to watch · Click for sound"
                 : "Swipe the pages · Tap to watch · Tap again for sound"}

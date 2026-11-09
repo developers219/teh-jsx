@@ -1,10 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import PackageCard from "../components/packages/PackageCard";
+import api from "../services/api";
 import {
   getPackagesByTravellerType,
   getTravellerTypes,
 } from "../services/traveller-type.service";
+
+// Image na ho ya link toot jaye to ye dikhegi.
+// Apni site ka DEFAULT_IMAGE (jo TravelCategories / Themes me use hota hai) yahan daal sakti ho.
+const DEFAULT_HERO_IMAGE =
+  "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80";
+
+// Background refresh interval (backend me image change ho to khud update ho jaye)
+const REFRESH_MS = 60_000;
 
 // Backend traveller type object se naam nikalo (ExploreByPeople jaisi hi logic)
 function getTypeName(type, slug) {
@@ -19,17 +28,133 @@ function getTypeName(type, slug) {
   return slug ? slug.replace(/-/g, " ") : "";
 }
 
-// Backend traveller type object se image nikalo (ThemePackages jaisi hi logic)
-function getTypeBackendImage(type) {
-  const img =
-    type?.imageUrl ||
-    type?.image_url ||
-    type?.image ||
-    type?.thumbnail ||
-    type?.images?.[0]?.imageUrl ||
-    type?.images?.[0]?.url;
+/* ---------- Image resolve: sab formats, sab field names ---------- */
 
-  return typeof img === "string" && img.trim() ? img : null;
+// Jin field names me image hone ki ummeed hai
+const IMAGE_KEYS = [
+  "imageUrl",
+  "image_url",
+  "imageURL",
+  "image",
+  "images",
+  "img",
+  "imgUrl",
+  "img_url",
+  "imagePath",
+  "image_path",
+  "thumbnail",
+  "thumbnailUrl",
+  "thumbnail_url",
+  "photo",
+  "photoUrl",
+  "picture",
+  "coverImage",
+  "cover_image",
+  "coverImageUrl",
+  "banner",
+  "bannerImage",
+  "banner_image",
+  "heroImage",
+  "hero_image",
+  "icon",
+];
+
+// Field ka naam image jaisa ho to bina extension wala URL bhi chalega (CDN / cloud storage)
+const IMAGE_KEY_HINT = /image|img|photo|picture|thumb|cover|banner|hero/i;
+
+// Saare common image formats
+const IMAGE_FILE =
+  /\.(png|jpe?g|jfif|pjpeg|pjp|webp|avif|gif|svg|bmp|ico|tiff?|heic|heif)(\?.*)?(#.*)?$/i;
+
+// image can be "url", { url }, or [url], [{ imageUrl }]
+function toUrl(value) {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const url = toUrl(item);
+      if (url) return url;
+    }
+    return "";
+  }
+
+  if (value && typeof value === "object") {
+    return toUrl(
+      value.url ||
+        value.imageUrl ||
+        value.image_url ||
+        value.secure_url ||
+        value.src ||
+        value.path ||
+        value.location ||
+        value.fileUrl ||
+        value.file_url,
+    );
+  }
+
+  if (typeof value !== "string") return "";
+
+  // "uploads\a.jpg" -> "uploads/a.jpg", naam me space ho to %20
+  return value.trim().replace(/\\/g, "/").replace(/ /g, "%20");
+}
+
+// "/uploads/a.jpg" -> "https://<cms-domain>/uploads/a.jpg"
+function toAbsoluteUrl(url) {
+  if (
+    !url ||
+    /^(https?:)?\/\//i.test(url) ||
+    url.startsWith("data:") ||
+    url.startsWith("blob:")
+  ) {
+    return url;
+  }
+
+  try {
+    return new URL(url, new URL(api.defaults.baseURL).origin).href;
+  } catch {
+    return url;
+  }
+}
+
+function getTypeBackendImage(type) {
+  if (!type || typeof type !== "object") return "";
+
+  // 1) Known field names
+  for (const key of IMAGE_KEYS) {
+    const url = toUrl(type[key]);
+    if (url) return toAbsoluteUrl(url);
+  }
+
+  // 2) Koi bhi field jo image jaisa dikhe (extension ya base64) ya jiska naam image jaisa ho
+  for (const [key, value] of Object.entries(type)) {
+    const url = toUrl(value);
+    if (!url) continue;
+
+    if (url.startsWith("data:image/") || IMAGE_FILE.test(url)) {
+      return toAbsoluteUrl(url);
+    }
+
+    if (IMAGE_KEY_HINT.test(key) && /^(https?:)?\/\/|^\//i.test(url)) {
+      return toAbsoluteUrl(url);
+    }
+  }
+
+  return "";
+}
+
+// Image URL me _t param: backend me image badle to browser purani cached na dikhaye
+function withCacheBust(url, stamp) {
+  if (!url || url.startsWith("data:") || url.startsWith("blob:")) return url;
+
+  try {
+    const parsed = new URL(url);
+
+    // Signed URLs (S3 etc.) me extra param signature tod deta hai
+    if (/signature|x-amz|x-goog|token|expires/i.test(parsed.search)) return url;
+
+    parsed.searchParams.set("_t", String(stamp));
+    return parsed.href;
+  } catch {
+    return url;
+  }
 }
 
 function getTypeFromState(location, slug) {
@@ -58,32 +183,62 @@ function TravellerTypePackages() {
 
   // Home page se card click par type aa jaye to hero turant dikh jayega
   const [type, setType] = useState(() => getTypeFromState(location, slug));
+  const [typeStamp, setTypeStamp] = useState(() => Date.now());
+  const [failedImage, setFailedImage] = useState("");
   const [packages, setPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [errorDetails, setErrorDetails] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
 
-  // Hero: type badalte hi turant naya naam/image (pichla type dikhna band)
+  // Hero: type badalte hi turant naya naam/image + background me latest data
   useEffect(() => {
     let cancelled = false;
 
     setType(getTypeFromState(location, slug));
+    setTypeStamp(Date.now());
 
-    getTravellerTypes()
-      .then((types) => {
+    async function loadType({ silent = false } = {}) {
+      try {
+        const types = await getTravellerTypes({ fresh: true });
         if (cancelled) return;
+
         const found = Array.isArray(types)
           ? types.find((item) => item.slug === slug)
           : null;
-        if (found) setType(found);
-      })
-      .catch((error) => {
-        console.error("Failed to load traveller types:", error);
-      });
+
+        if (!found) return;
+
+        setType(found);
+        setTypeStamp(Date.now());
+
+        if (!silent && !getTypeBackendImage(found)) {
+          console.warn(
+            `Traveller type "${slug}" has NO image from CMS:`,
+            found,
+          );
+        }
+      } catch (error) {
+        if (!silent) console.error("Failed to load traveller types:", error);
+      }
+    }
+
+    loadType();
+
+    // Admin panel me image badalke wapas aate hi latest le aao
+    const refresh = () => {
+      if (document.visibilityState === "visible") loadType({ silent: true });
+    };
+
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("focus", refresh);
+    const intervalId = setInterval(refresh, REFRESH_MS);
 
     return () => {
       cancelled = true;
+      document.removeEventListener("visibilitychange", refresh);
+      window.removeEventListener("focus", refresh);
+      clearInterval(intervalId);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
@@ -100,7 +255,6 @@ function TravellerTypePackages() {
         setPackages([]);
 
         const list = await getPackagesByTravellerType(slug);
-        // console.log(`Packages for traveller type "${slug}" loaded:`, list);
 
         if (cancelled) return;
         setPackages(Array.isArray(list) ? list : []);
@@ -143,23 +297,33 @@ function TravellerTypePackages() {
   );
 
   const typeName = getTypeName(type, slug);
-  const heroImage = getTypeBackendImage(type);
+
+  // Backend image (cache-bust ke saath). Link toot jaye ya image na ho to fallback.
+  const backendImage = withCacheBust(getTypeBackendImage(type), typeStamp);
+  const heroImage =
+    backendImage && failedImage !== backendImage
+      ? backendImage
+      : DEFAULT_HERO_IMAGE;
 
   return (
     <main className="bg-slate-50 font-mont">
       {/* Header (top padding clears the fixed navbar) */}
       <section className="relative overflow-hidden bg-slate-950 px-6 pb-8 pt-44 text-white lg:px-8">
-        {/* Backend traveller type image as hero background */}
-        {heroImage && (
-          <img
-            key={heroImage}
-            src={heroImage}
-            alt=""
-            aria-hidden="true"
-            draggable={false}
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
+        {/* Traveller type image as hero background */}
+        <img
+          key={heroImage}
+          src={heroImage}
+          alt=""
+          aria-hidden="true"
+          draggable={false}
+          onError={() => {
+            if (heroImage === backendImage) {
+              console.warn("Traveller type image could not be loaded:", heroImage);
+              setFailedImage(backendImage);
+            }
+          }}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
 
         {/* Dark overlay so text stays readable */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/60" />

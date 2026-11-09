@@ -4,6 +4,7 @@ import LeadCapturePopup from "../components/forms/LeadCapturePopup";
 import Navbar from "../components/Navbar";
 import FloatingContactWidget from "../components/ui/FloatingContactWidget";
 import LeadGenerationLinks from "../components/ui/LeadGenerationLinks";
+import PlanATripPill from "../components/ui/PlanATripPill";
 import { useEffect, useState } from "react";
 function MainLayout() {
   const [isPopUpOpen, setIsPopUpOpen] = useState(false);
@@ -27,6 +28,8 @@ function MainLayout() {
         isMenuOpen={isPopUpOpen}
         setIsOpen={setIsWidgetOpen}
       />
+      {/* "Plan a Trip" pill on every public page */}
+      <PlanATripPill />
     </div>
   );
 }
