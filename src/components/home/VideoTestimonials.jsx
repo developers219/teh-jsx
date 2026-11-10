@@ -426,7 +426,7 @@ export default function VideoTestimonials() {
           {heading.eyebrow}
         </p>
 
-        <h2 className="font-eb text-[clamp(2rem,5vw,3rem)] font-medium leading-tight tracking-tight text-slate-900">
+        <h2 className="font-eb text-[clamp(1.5rem,5vw,3rem)] font-medium leading-tight tracking-tight text-slate-900">
           {heading.title}
         </h2>
 

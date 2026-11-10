@@ -15,6 +15,22 @@ const DEFAULT_HERO_IMAGE =
 // Background refresh interval (backend me image change ho to khud update ho jaye)
 const REFRESH_MS = 60_000;
 
+// Hero height model (same as the other page heroes / the home hero):
+//  - below lg (phones / tablets): the hero is as tall as the image itself
+//    (its real width / height ratio), so the WHOLE image is shown and the text
+//    sits on top of it. min-h-[16rem] keeps room for the text.
+//  - lg and up (desktop): fixed banner, same size as the About Us hero:
+//    70vh, max 24.5rem (392px). The image covers it (object-cover).
+const MIN_RATIO = 0.8;
+const MAX_RATIO = 2.4;
+const DEFAULT_RATIO = 16 / 9;
+const HERO_SIZE =
+  "aspect-(--hero-ratio) min-h-[16rem] lg:aspect-auto lg:h-[70vh] lg:max-h-98 lg:min-h-[21rem]";
+
+/* Fluid sizes: they scale smoothly with the screen width (same idea as ExploreByPeople) */
+const GAP = "clamp(1rem,2vw,1.5rem)"; // gap between package cards
+const SIDE_PADDING = "clamp(1rem,4vw,2rem)"; // left / right padding
+
 // Backend traveller type object se naam nikalo (ExploreByPeople jaisi hi logic)
 function getTypeName(type, slug) {
   const name =
@@ -185,6 +201,7 @@ function TravellerTypePackages() {
   const [type, setType] = useState(() => getTypeFromState(location, slug));
   const [typeStamp, setTypeStamp] = useState(() => Date.now());
   const [failedImage, setFailedImage] = useState("");
+  const [imageRatio, setImageRatio] = useState(null); // width / height of the hero image
   const [packages, setPackages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -305,10 +322,20 @@ function TravellerTypePackages() {
       ? backendImage
       : DEFAULT_HERO_IMAGE;
 
+  // Phones / tablets: hero height = ratio of the hero image (whole image shown)
+  const ratio = Math.min(
+    Math.max(imageRatio || DEFAULT_RATIO, MIN_RATIO),
+    MAX_RATIO,
+  );
+
   return (
     <main className="bg-slate-50 font-mont">
-      {/* Header (top padding clears the fixed navbar) */}
-      <section className="relative overflow-hidden bg-slate-950 px-6 pb-8 pt-44 text-white lg:px-8">
+      {/* Header: phones / tablets = the image's own ratio (whole image),
+          desktop = banner (70vh, max 392px). The fixed navbar sits on the image. */}
+      <section
+        style={{ "--hero-ratio": ratio }}
+        className={`relative w-full overflow-hidden bg-slate-950 text-white ${HERO_SIZE}`}
+      >
         {/* Traveller type image as hero background */}
         <img
           key={heroImage}
@@ -316,6 +343,12 @@ function TravellerTypePackages() {
           alt=""
           aria-hidden="true"
           draggable={false}
+          onLoad={(event) => {
+            const { naturalWidth, naturalHeight } = event.currentTarget;
+            if (naturalWidth && naturalHeight) {
+              setImageRatio(naturalWidth / naturalHeight);
+            }
+          }}
           onError={() => {
             if (heroImage === backendImage) {
               console.warn("Traveller type image could not be loaded:", heroImage);
@@ -325,30 +358,44 @@ function TravellerTypePackages() {
           className="absolute inset-0 h-full w-full object-cover"
         />
 
-        {/* Dark overlay so text stays readable */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/50 to-black/60" />
+        {/* Dark overlay so text stays readable (stronger at the bottom, a bit at the top for the navbar) */}
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-black/55" />
 
-        <div className="relative mx-auto max-w-7xl">
-          {/* Selected traveller type ka naam */}
-          <h1 className="mt-4 min-h-[1.25em] max-w-3xl font-cg text-4xl font-bold capitalize sm:text-5xl">
-            {typeName}
-          </h1>
+        {/* Hero content: INSIDE the image, bottom aligned (below the navbar) */}
+        <div
+          style={{ paddingInline: SIDE_PADDING }}
+          className="absolute inset-x-0 bottom-0 top-20 z-10 lg:top-24"
+        >
+          <div
+            style={{ textShadow: "0 1px 6px rgba(0,0,0,0.55)" }}
+            className="mx-auto flex h-full max-w-7xl flex-col justify-end pb-[clamp(1.5rem,3vw,2.25rem)]"
+          >
+            {/* Title: fluid size, 24px (small phones) -> 48px (large screens) */}
+            <h1 className="line-clamp-2 min-h-[1.25em] max-w-3xl font-eb text-[clamp(1.5rem,5vw,3rem)] font-bold capitalize leading-tight">
+              {typeName}
+            </h1>
 
-          {/* Package count */}
-          {!isLoading && !errorMessage && (
-            <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-200">
-              {packages.length > 0
-                ? `${packages.length} handpicked ${
-                    packages.length === 1 ? "package" : "packages"
-                  } for your next ${typeName.toLowerCase()} trip.`
-                : "Handpicked holiday packages for this traveller type."}
-            </p>
-          )}
+            {/* Package count (space is reserved, so the title does not jump) */}
+            <div className="mt-[clamp(0.5rem,1vw,0.75rem)] min-h-10 sm:min-h-7 lg:min-h-8">
+              {!isLoading && !errorMessage && (
+                <p className="line-clamp-2 max-w-2xl text-[clamp(0.875rem,2.2vw,1.125rem)] leading-[1.6] text-slate-200">
+                  {packages.length > 0
+                    ? `${packages.length} handpicked ${
+                        packages.length === 1 ? "package" : "packages"
+                      } for your next ${typeName.toLowerCase()} trip.`
+                    : "Handpicked holiday packages for this traveller type."}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Packages */}
-      <section className="px-6 pb-16 pt-10 lg:px-8">
+      <section
+        style={{ paddingInline: SIDE_PADDING }}
+        className="pb-[clamp(2.5rem,6vw,4rem)] pt-[clamp(1.5rem,4vw,2.5rem)]"
+      >
         <div className="mx-auto max-w-7xl">
           {/* Loading spinner */}
           {isLoading && (
@@ -358,19 +405,19 @@ function TravellerTypePackages() {
               className="flex min-h-[320px] flex-col items-center justify-center gap-4"
             >
               <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
-              <p className="text-sm font-medium text-slate-500">
+              <p className="text-[clamp(0.8125rem,1.8vw,0.875rem)] font-medium text-slate-500">
                 Loading packages…
               </p>
             </div>
           )}
 
           {!isLoading && errorMessage && (
-            <div className="rounded-md border border-red-200 bg-red-50 p-8 text-center text-red-700">
+            <div className="rounded-md border border-red-200 bg-red-50 p-[clamp(1.25rem,4vw,2rem)] text-center text-[clamp(0.875rem,2vw,1rem)] text-red-700">
               <p>{errorMessage}</p>
 
               {/* Sirf development mein: asli error dikhao */}
               {import.meta.env.DEV && errorDetails && (
-                <p className="mt-3 break-words font-mono text-xs text-red-500">
+                <p className="mt-3 break-words font-mono text-[clamp(0.6875rem,1.6vw,0.75rem)] text-red-500">
                   {errorDetails.status ? `HTTP ${errorDetails.status} · ` : ""}
                   {errorDetails.message}
                   {errorDetails.url ? ` · ${errorDetails.url}` : ""}
@@ -380,7 +427,7 @@ function TravellerTypePackages() {
               <button
                 type="button"
                 onClick={handleRetry}
-                className="mt-4 cursor-pointer rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold text-white transition hover:bg-black"
+                className="mt-4 cursor-pointer rounded-full bg-gray-900 px-[clamp(1rem,3vw,1.5rem)] py-2 text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-white transition hover:bg-black"
               >
                 Try again
               </button>
@@ -388,11 +435,11 @@ function TravellerTypePackages() {
           )}
 
           {!isLoading && !errorMessage && packages.length === 0 && (
-            <div className="rounded-md border border-slate-200 bg-white p-8 text-center text-slate-600">
+            <div className="rounded-md border border-slate-200 bg-white p-[clamp(1.25rem,4vw,2rem)] text-center text-[clamp(0.875rem,2vw,1rem)] text-slate-600">
               <p>No packages found for this traveller type yet.</p>
               <Link
                 to="/packages"
-                className="mt-4 inline-block rounded-full bg-gray-900 px-6 py-2 text-sm font-semibold text-white transition hover:bg-black"
+                className="mt-4 inline-block rounded-full bg-gray-900 px-[clamp(1rem,3vw,1.5rem)] py-2 text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-white transition hover:bg-black"
               >
                 Browse all packages
               </Link>
@@ -400,7 +447,10 @@ function TravellerTypePackages() {
           )}
 
           {!isLoading && !errorMessage && packages.length > 0 && (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div
+              style={{ gap: GAP }}
+              className="grid md:grid-cols-2 lg:grid-cols-3"
+            >
               {packages.map((travelPackage) => (
                 <PackageCard
                   key={travelPackage.id ?? travelPackage.slug}

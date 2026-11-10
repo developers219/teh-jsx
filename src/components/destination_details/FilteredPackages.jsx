@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
-import Heading from "../ui/Heading";
+import { Heading } from "../ui/Heading";
 import { SlidersHorizontal } from "lucide-react";
 import PackageCard from "../packages/PackageCard";
 import Carousel from "../ui/Carousel";
@@ -15,26 +15,29 @@ const initialFilters = {
   sortOrder: "",
 };
 
-// one style for every filter chip (site font, slate colours)
+// one style for every filter chip (site font, slate colours).
+// Text size and padding scale with the screen width.
 const selectClass =
-  "shrink-0 cursor-pointer whitespace-nowrap rounded-full border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 font-inter outline-none transition hover:border-slate-300 focus:border-blue-400";
+  "shrink-0 cursor-pointer whitespace-nowrap rounded-full border border-slate-200 bg-white px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.5rem,1.2vw,0.625rem)] text-[clamp(0.8125rem,1.8vw,0.875rem)] font-medium text-slate-700 font-inter outline-none transition hover:border-slate-300 focus:border-blue-400";
 
-// true below Tailwind's `md` breakpoint (768px) -> packages go in one swipeable row
-function useIsMobile(breakpoint = 768) {
-  const [isMobile, setIsMobile] = useState(
-    () => typeof window !== "undefined" && window.innerWidth < breakpoint,
-  );
+// Fluid gap between cards (px): 12px on small phones -> 24px on large screens
+function getCardGap() {
+  if (typeof window === "undefined") return 24;
+
+  return Math.round(Math.min(24, Math.max(12, window.innerWidth * 0.02)));
+}
+
+function useCardGap() {
+  const [gap, setGap] = useState(getCardGap);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < breakpoint);
-
-    handleResize();
+    const handleResize = () => setGap(getCardGap());
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
-  }, [breakpoint]);
+  }, []);
 
-  return isMobile;
+  return gap;
 }
 
 const PackageFilters = ({ filters, setFilters, themes, durations }) => {
@@ -75,7 +78,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
   };
 
   return (
-    <div className="my-6 w-full font-inter sm:my-8">
+    <div className="my-[clamp(1.5rem,3vw,2rem)] w-full font-inter">
       {/* =====================================================
           FILTER CHIPS
       ===================================================== */}
@@ -85,7 +88,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
           flex
           w-full
           items-center
-          gap-3
+          gap-[clamp(0.5rem,1.2vw,0.75rem)]
           overflow-x-auto
           overflow-y-hidden
           flex-nowrap
@@ -168,7 +171,7 @@ const PackageFilters = ({ filters, setFilters, themes, durations }) => {
         <button
           type="button"
           onClick={resetFilters}
-          className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap font-inter px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:text-slate-950"
+          className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap font-inter px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.5rem,1.2vw,0.625rem)] text-[clamp(0.8125rem,1.8vw,0.875rem)] font-medium text-slate-600 transition hover:text-slate-950"
         >
           <SlidersHorizontal size={16} />
           Reset
@@ -182,7 +185,7 @@ export const FilteredPackages = () => {
   const { slug } = useParams();
   const [searchParams] = useSearchParams();
   const sectionRef = useRef(null);
-  const isMobile = useIsMobile();
+  const gap = useCardGap();
 
   // Hero search can open this page with ?themeId=<id> -> preselect that theme
   const [filters, setFilters] = useState(() => ({
@@ -292,14 +295,15 @@ export const FilteredPackages = () => {
   return (
     <section
       ref={sectionRef}
-      className="scroll-mt-20 bg-white px-5 pb-10 pt-10 font-inter sm:px-6 sm:pb-16 sm:pt-14 lg:px-8"
+      className="scroll-mt-20 bg-white px-[clamp(1.25rem,3vw,2rem)] pb-[clamp(2.5rem,5vw,4rem)] pt-[clamp(2.5rem,4vw,3.5rem)] font-inter"
     >
       <div className="mx-auto max-w-7xl">
+        {/* Heading (size / spacing follow the screen width) */}
         <Heading
-          heading="Explore"
+          compact
+          heading="Explore "
           highlight="Packages"
           subheading="Choose what suits your needs."
-          className="mb-0"
         />
 
         <PackageFilters
@@ -317,45 +321,37 @@ export const FilteredPackages = () => {
             className="flex min-h-[320px] flex-col items-center justify-center gap-4"
           >
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
-            <p className="text-sm font-medium text-slate-500">
+            <p className="text-[clamp(0.8125rem,1.8vw,0.875rem)] font-medium text-slate-500">
               Loading packages…
             </p>
           </div>
         )}
 
         {!loading && error && (
-          <div className="rounded-md border border-red-200 bg-red-50 p-6 text-center text-red-700 sm:p-8">
+          <div className="rounded-md border border-red-200 bg-red-50 p-[clamp(1.25rem,4vw,2rem)] text-center text-[clamp(0.875rem,2vw,1rem)] text-red-700">
             <p>{error}</p>
           </div>
         )}
 
         {!loading && !error && packages.length === 0 && (
-          <div className="rounded-md border border-slate-200 bg-white p-6 text-center text-slate-600 sm:p-8">
+          <div className="rounded-md border border-slate-200 bg-white p-[clamp(1.25rem,4vw,2rem)] text-center text-[clamp(0.875rem,2vw,1rem)] text-slate-600">
             <p>No packages found. Try changing your filters.</p>
           </div>
         )}
 
-        {/* Small screens: ONE swipeable row (next card peeks in) */}
-        {!loading && !error && packages.length > 0 && isMobile && (
-          <div className="mt-6">
+        {/* ONE row on every screen, more cards on bigger screens
+            mobile: 1 card (next one peeks in), tablet: 2, desktop: 3 */}
+        {!loading && !error && packages.length > 0 && (
+          <div className="mt-[clamp(1rem,2vw,1.5rem)]">
             <Carousel
               items={packages}
               desktopItems={3}
               tabletItems={2}
               mobileItems={1.1}
-              gap={16}
+              gap={gap}
               showArrows={true}
               renderItem={(pkg) => <PackageCard travelPackage={pkg} />}
             />
-          </div>
-        )}
-
-        {/* md and above: same grid as before */}
-        {!loading && !error && packages.length > 0 && !isMobile && (
-          <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {packages.map((pkg) => (
-              <PackageCard key={pkg.id ?? pkg.slug} travelPackage={pkg} />
-            ))}
           </div>
         )}
       </div>

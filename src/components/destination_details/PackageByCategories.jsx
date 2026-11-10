@@ -1,8 +1,28 @@
 import { useEffect, useState } from "react";
-import Heading from "../ui/Heading";
+import { Heading } from "../ui/Heading";
 import PackageCard from "../packages/PackageCard";
 import Carousel from "../ui/Carousel";
 import api from "../../services/api";
+
+// Fluid gap between cards (px): 12px on small phones -> 24px on large screens
+function getCardGap() {
+  if (typeof window === "undefined") return 24;
+
+  return Math.round(Math.min(24, Math.max(12, window.innerWidth * 0.02)));
+}
+
+function useCardGap() {
+  const [gap, setGap] = useState(getCardGap);
+
+  useEffect(() => {
+    const handleResize = () => setGap(getCardGap());
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  return gap;
+}
 
 export default function PackageByCategories({
   heading,
@@ -12,6 +32,7 @@ export default function PackageByCategories({
 }) {
   // null = still loading, [] = nothing found / error, [...] = packages
   const [packages, setPackages] = useState(null);
+  const gap = useCardGap();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -56,27 +77,27 @@ export default function PackageByCategories({
   const highlightWord = headingWords.pop();
 
   return (
-    <section className="bg-white py-10 sm:py-14 lg:py-16">
-      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
-        {/* SECTION HEADER */}
-        <div className="mb-4 sm:mb-8 md:mb-12">
+    <section className="bg-white py-[clamp(2rem,5vw,4rem)]">
+      <div className="mx-auto max-w-7xl px-[clamp(1.25rem,3vw,2rem)]">
+        {/* SECTION HEADER (size / spacing follow the screen width) */}
+        <div className="mb-[clamp(0.5rem,2vw,1.5rem)]">
           <Heading
-            heading={headingWords.join(" ")}
+            compact
+            heading={`${headingWords.join(" ")} `}
             highlight={highlightWord}
             subheading={subheading}
-            className=""
           />
         </div>
 
-        {/* PACKAGE CAROUSEL
-            mobile: one row, the next card peeks in (swipe / arrows)
+        {/* PACKAGE CAROUSEL: always ONE row, more cards on bigger screens
+            mobile: 1 card, the next one peeks in (swipe / arrows)
             tablet: 2 cards, desktop: 3 cards */}
         <Carousel
           items={packages}
           desktopItems={3}
           tabletItems={2}
           mobileItems={1.1}
-          gap={24}
+          gap={gap}
           showArrows={true}
           renderItem={(travelPackage) => (
             <PackageCard travelPackage={travelPackage} />

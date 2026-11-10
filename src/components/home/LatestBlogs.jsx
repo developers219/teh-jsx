@@ -1498,6 +1498,7 @@ function LatestBlogs() {
             <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-3xl text-center">
           <Heading
+            compact
             heading="Latest"
             highlight="Blogs"
             subheading="Explore travel inspiration, destination guides, useful tips, and ideas to help you plan your next journey."

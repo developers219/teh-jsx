@@ -49,10 +49,20 @@ const SLIDE_VARIANTS = {
   }),
 };
 
-// Same size as the About Us hero: 70% of the screen height, but never taller
-// than 24.5rem (392px). The image always covers the whole box (object-cover),
-// on every screen size. The navbar (fixed, transparent at the top) sits on it.
-const HERO_SIZE = "h-[70vh] max-h-98 min-h-[21rem]";
+// Height model (same idea as the home hero, herotemp):
+//  - below lg (phones / tablets): the hero is as tall as the image itself
+//    (its real width / height ratio), so the WHOLE image is shown and the text
+//    sits on top of it. min-h-[16rem] keeps room for the text: if the image
+//    would be shorter than that, the hero grows a little (small side crop).
+//  - lg and up (desktop): fixed banner, same size as the About Us hero:
+//    70vh, max 24.5rem (392px). The image covers it (object-cover), so a
+//    wide banner shows only a strip of the image - raise lg:max-h-98 to show more.
+// The navbar (fixed, transparent at the top) sits on the image.
+const MIN_RATIO = 0.8;
+const MAX_RATIO = 2.4;
+const DEFAULT_RATIO = 16 / 9;
+const HERO_SIZE =
+  "aspect-(--hero-ratio) min-h-[16rem] lg:aspect-auto lg:h-[70vh] lg:max-h-98 lg:min-h-[21rem]";
 
 // WhatsApp logo as an outline icon (follows the button text colour)
 function WhatsAppIcon({ size = 20 }) {
@@ -415,9 +425,11 @@ function useGoogleFonts(fonts) {
 
 /*
  * Domestic hero: fully driven by the backend (text, fonts, colours, buttons,
- * slider images). Size + image behaviour are the same as the About Us hero:
- *  - height: 70vh, max 24.5rem (392px) on every screen size
- *  - the image fills the whole box (object-cover), no bars on any screen
+ * slider images).
+ *  - phones / tablets (< lg): hero height = the image's own ratio, so the whole
+ *    image is shown (like the home hero), text + buttons on top of it
+ *  - desktop (lg+): banner like the About Us hero (70vh, max 24.5rem),
+ *    image covers it
  *  - content (title, text, buttons) at the bottom, inside the image
  * Slider works with 1 image (static) or many images (auto + dots + swipe).
  * Buttons stay side by side on every screen size.
@@ -427,6 +439,7 @@ export default function Hero() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [direction, setDirection] = useState("next");
   const [failedImages, setFailedImages] = useState([]); // broken image urls
+  const [imageRatio, setImageRatio] = useState(null); // width / height of the 1st image
 
   const [hero, setHero] = useState(null); // null = nothing from backend
   const [isLoading, setIsLoading] = useState(true);
@@ -514,6 +527,28 @@ export default function Hero() {
   const slideCount = slides.length;
   const current = slideCount ? activeSlide % slideCount : 0;
 
+  // Phones / tablets: hero height = ratio of the first image (whole image shown).
+  // Other images with a different ratio just cover the same box.
+  const firstSlide = slides[0];
+
+  useEffect(() => {
+    if (!firstSlide) return undefined;
+
+    let isActive = true;
+    const probe = new Image();
+
+    probe.onload = () => {
+      if (isActive && probe.naturalWidth && probe.naturalHeight) {
+        setImageRatio(probe.naturalWidth / probe.naturalHeight);
+      }
+    };
+    probe.src = firstSlide;
+
+    return () => {
+      isActive = false;
+    };
+  }, [firstSlide]);
+
   // Auto change every 5 seconds. Depends on activeSlide, so the timer
   // restarts after a manual change (dot click / swipe).
   useEffect(() => {
@@ -570,11 +605,17 @@ export default function Hero() {
     setFailedImages((prev) => (prev.includes(image) ? prev : [...prev, image]));
   };
 
+  const ratio = Math.min(
+    Math.max(imageRatio || DEFAULT_RATIO, MIN_RATIO),
+    MAX_RATIO,
+  );
+
   // Backend still loading: empty dark hero (no flash of default text)
   if (isLoading) {
     return (
       <section
         aria-busy="true"
+        style={{ "--hero-ratio": ratio }}
         className={`relative w-full overflow-hidden bg-slate-950 ${HERO_SIZE}`}
       />
     );
@@ -588,13 +629,15 @@ export default function Hero() {
 
   const hasOverlayValue = hero?.overlay !== null && hero?.overlay !== undefined;
 
+  // Fluid button: text size, padding, gap scale smoothly with the screen width
   const buttonBase =
-    "inline-flex min-w-0 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-full px-2 py-2.5 text-center font-inter text-[11px] font-semibold leading-tight text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 min-[360px]:text-xs min-[400px]:px-3 min-[400px]:text-[13px] sm:w-64 sm:flex-none sm:gap-2 sm:px-7 sm:py-3 sm:text-sm";
+    "inline-flex min-w-0 flex-1 items-center justify-center gap-[clamp(0.375rem,1vw,0.5rem)] whitespace-nowrap rounded-full px-[clamp(0.5rem,2vw,1.75rem)] py-[clamp(0.625rem,1.2vw,0.75rem)] text-center font-inter text-[clamp(0.6875rem,2.6vw,0.875rem)] font-semibold leading-tight text-slate-900 shadow-xl transition-all duration-300 hover:-translate-y-1 sm:w-64 sm:flex-none";
 
   return (
     <section
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      style={{ "--hero-ratio": ratio }}
       className={`relative w-full overflow-hidden bg-slate-950 text-white ${HERO_SIZE}`}
     >
       {/* Image slider: always fills the whole hero (object-cover) */}
@@ -646,14 +689,15 @@ export default function Hero() {
       {/* Hero content: INSIDE the image, bottom aligned (below the navbar) */}
       <div className="absolute inset-x-0 bottom-0 top-20 z-30 lg:top-24">
         <div className="mx-auto flex h-full w-full max-w-7xl items-end px-4 lg:px-6 xl:px-0">
-          <div className="flex w-full flex-col justify-end gap-3 pb-7 sm:gap-4 sm:pb-8 lg:gap-5 lg:pb-9">
+          <div className="flex w-full flex-col justify-end gap-[clamp(0.75rem,1.5vw,1.25rem)] pb-[clamp(1.5rem,3vw,2.25rem)]">
             {/* Text */}
             <div
               style={{ textShadow: "0 1px 6px rgba(0,0,0,0.55)" }}
-              className="flex w-full flex-col gap-1.5 px-0 sm:gap-2 sm:px-2 lg:gap-3"
+              className="flex w-full flex-col gap-[clamp(0.375rem,1vw,0.75rem)] px-0 sm:px-2"
             >
+              {/* Title: fluid size, 24px (small phones) -> 48px (large screens) */}
               <h1
-                className="line-clamp-2 max-w-3xl break-words font-cg text-2xl font-bold capitalize leading-tight sm:text-4xl lg:text-5xl"
+                className="line-clamp-2 max-w-3xl break-words font-eb text-[clamp(1.5rem,5vw,3rem)] font-semibold capitalize leading-tight"
                 style={{
                   fontFamily: hero?.titleFont,
                   fontSize: hero?.titleSize,
@@ -665,7 +709,7 @@ export default function Hero() {
               </h1>
 
               <p
-                className="line-clamp-2 max-w-2xl font-inter text-[13px] leading-5 text-slate-200 sm:line-clamp-3 sm:text-base sm:leading-7"
+                className="line-clamp-2 max-w-2xl font-inter text-[clamp(0.875rem,2.2vw,1.125rem)] leading-[1.6] text-slate-200 sm:line-clamp-3"
                 style={{
                   fontFamily: hero?.subtitleFont,
                   fontSize: hero?.subtitleSize,
@@ -677,7 +721,7 @@ export default function Hero() {
             </div>
 
             {/* Two buttons: always side by side, on every screen size */}
-            <div className="flex w-full items-stretch gap-2 px-0 sm:gap-3 sm:px-2">
+            <div className="flex w-full items-stretch gap-[clamp(0.5rem,1.2vw,0.75rem)] px-0 sm:px-2">
               <button
                 type="button"
                 onClick={() => setIsCallbackOpen(true)}
@@ -690,7 +734,7 @@ export default function Hero() {
                 <Phone
                   size={16}
                   strokeWidth={2}
-                  className="size-3.5 shrink-0 min-[400px]:size-4"
+                  className="size-[clamp(0.875rem,2.6vw,1rem)] shrink-0"
                 />
                 {callbackLabel}
               </button>
@@ -706,7 +750,7 @@ export default function Hero() {
                   color: hero?.whatsappText,
                 }}
               >
-                <span className="shrink-0 [&>svg]:size-4 min-[400px]:[&>svg]:size-[18px]">
+                <span className="shrink-0 [&>svg]:size-[clamp(1rem,3vw,1.125rem)]">
                   <WhatsAppIcon size={18} />
                 </span>
                 {whatsappLabel}

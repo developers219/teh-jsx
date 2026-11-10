@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ArrowRight, SlidersHorizontal } from "lucide-react";
 
-import Heading from "../ui/Heading";
+import { Heading } from "../ui/Heading";
 import api from "../../services/api";
 import { getDestinationsByTheme, getThemes } from "../../services/destination.service";
 
@@ -15,6 +15,9 @@ const DEFAULT_IMAGE =
 
 // Background refresh: CMS me image/destination badalte hi live site par aa jaye
 const REFRESH_MS = 60_000;
+
+// Same gap as HomeThemes / ExploreByPeople
+const GAP = "clamp(0.25rem,2vw,1rem)";
 
 // ---------------------------------------------------------------------------
 // Image helpers (same logic as home TravelCategories)
@@ -188,7 +191,8 @@ function DestinationTile({ destination, category = "dom" }) {
 
       <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/30 to-transparent" />
 
-      <div className="relative flex min-h-[15%] w-full items-center justify-center break-words bg-linear-to-t from-black/30 to-transparent px-2 py-2 text-center text-sm font-semibold leading-tight text-white backdrop-blur-xs min-[400px]:text-base sm:text-lg lg:text-xl">
+      {/* Destination name: fluid size, 14px (phones) -> 20px (large screens) */}
+      <div className="relative flex min-h-[15%] w-full items-center justify-center break-words bg-linear-to-t from-black/30 to-transparent px-2 py-2 text-center font-alex text-[clamp(0.875rem,1.8vw,1.25rem)] font-bold leading-tight text-white backdrop-blur-xs">
         {name}
       </div>
     </Link>
@@ -220,8 +224,8 @@ function CategoryChip({ label, active, onClick }) {
       aria-selected={active}
       onClick={onClick}
       className={[
-        "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-4 py-2.5",
-        "font-inter text-[13.5px] font-medium transition-colors duration-200",
+        "shrink-0 cursor-pointer whitespace-nowrap rounded-full border px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.5rem,1.2vw,0.625rem)]",
+        "font-inter text-[clamp(0.75rem,1.8vw,0.84375rem)] font-medium transition-colors duration-200",
         active
           ? "border-slate-900 bg-slate-900 text-white"
           : "border-slate-300 bg-white text-slate-800 hover:border-slate-900",
@@ -503,14 +507,14 @@ export default function Themes() {
     >
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
         <Heading
-          heading="Explore destinations that"
+          compact
+          heading="Explore destinations that "
           highlight="inspire"
           subheading="From serene beaches to majestic mountains, find places that match your vibe."
-          className="mb-6 sm:mb-8"
         />
 
         {/* Theme filter chips (no "All" chip: nothing selected = all destinations) */}
-        <div className="flex items-center gap-3">
+        <div className="mt-[clamp(1rem,2vw,1.5rem)] flex items-center gap-3">
           <NavButton
             direction="left"
             onClick={() => scrollChips(-1)}
@@ -523,7 +527,7 @@ export default function Themes() {
               onScroll={updateChipNav}
               role="tablist"
               aria-label="Destination themes"
-              className="flex snap-x snap-mandatory gap-2.5 overflow-x-auto overscroll-x-contain px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              className="flex snap-x snap-mandatory gap-[clamp(0.5rem,1vw,0.625rem)] overflow-x-auto overscroll-x-contain px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
             >
               {themes.map((theme) => (
                 <div key={theme.id} className="shrink-0 snap-start">
@@ -548,7 +552,7 @@ export default function Themes() {
             <button
               type="button"
               onClick={resetFilter}
-              className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border border-slate-300 bg-white px-4 py-2.5 font-inter text-[13.5px] font-medium text-slate-800 transition-colors duration-200 hover:border-slate-900"
+              className="flex shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border border-slate-300 bg-white px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.5rem,1.2vw,0.625rem)] font-inter text-[clamp(0.75rem,1.8vw,0.84375rem)] font-medium text-slate-800 transition-colors duration-200 hover:border-slate-900"
             >
               <SlidersHorizontal size={16} />
               Reset
@@ -557,8 +561,8 @@ export default function Themes() {
         </div>
 
         {/* Header line */}
-        <div className="mt-8 flex items-end justify-between border-b border-slate-200 pb-2 lg:mt-10">
-          <span className="font-inter text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <div className="mt-[clamp(2rem,3vw,2.5rem)] flex items-end justify-between border-b border-slate-200 pb-2">
+          <span className="font-inter text-[clamp(0.6875rem,1.6vw,0.75rem)] font-semibold uppercase tracking-[0.18em] text-slate-500">
             {isAll ? "All Destinations" : `${activeThemeName} Destinations`}
           </span>
         </div>
@@ -571,20 +575,20 @@ export default function Themes() {
             className="flex min-h-[320px] flex-col items-center justify-center gap-4"
           >
             <div className="h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-cyan-500" />
-            <p className="font-inter text-sm font-medium text-slate-500">
+            <p className="font-inter text-[clamp(0.8125rem,1.8vw,0.875rem)] font-medium text-slate-500">
               Loading destinations…
             </p>
           </div>
         )}
 
         {!isLoading && hasError && (
-          <div className="mt-8 rounded-md border border-red-200 bg-red-50 p-8 text-center font-inter text-red-700">
+          <div className="mt-8 rounded-md border border-red-200 bg-red-50 p-[clamp(1.25rem,4vw,2rem)] text-center font-inter text-[clamp(0.875rem,2vw,1rem)] text-red-700">
             We could not load destinations right now. Please try again later.
           </div>
         )}
 
         {!isLoading && !hasError && destinations.length === 0 && (
-          <div className="mt-8 rounded-md border border-slate-200 bg-white p-8 text-center font-inter text-slate-600">
+          <div className="mt-8 rounded-md border border-slate-200 bg-white p-[clamp(1.25rem,4vw,2rem)] text-center font-inter text-[clamp(0.875rem,2vw,1rem)] text-slate-600">
             {isAll
               ? "No destinations are available yet."
               : "No destinations are available for this theme yet."}
@@ -593,7 +597,10 @@ export default function Themes() {
 
         {/* Destination grid: 5 cards in a row on desktop, every destination is shown */}
         {!isLoading && !hasError && destinations.length > 0 && (
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-5 md:grid-cols-3 lg:grid-cols-5">
+          <div
+            className="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5"
+            style={{ gap: GAP }}
+          >
             {destinations.map((destination) => (
               <DestinationTile
                 key={destination.id}

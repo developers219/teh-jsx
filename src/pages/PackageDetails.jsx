@@ -126,13 +126,12 @@ const activityName = (activity) =>
     ? activity
     : activity?.activity || activity?.title || activity?.name || "Activity";
 
-// small uppercase label used inside the itinerary cards
+// small uppercase label used inside the itinerary cards (fluid size)
 const MICRO_LABEL =
-  "text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-400";
+  "text-[clamp(0.625rem,1.5vw,0.6875rem)] font-semibold uppercase tracking-[0.12em] text-slate-400";
 
-// gallery photo height: grows with the screen (desktop stays 500px)
-const GALLERY_HEIGHT =
-  "h-[280px] min-[400px]:h-[340px] sm:h-[400px] md:h-[440px] lg:h-[500px]";
+// gallery photo height: grows smoothly with the screen (280px -> 500px)
+const GALLERY_HEIGHT = "h-[clamp(17.5rem,55vw,31.25rem)]";
 
 function PackageGallery({ images = [], title = "Package" }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -166,7 +165,7 @@ function PackageGallery({ images = [], title = "Package" }) {
       <div
         className={`flex items-center justify-center rounded-2xl bg-slate-100 sm:rounded-[28px] ${GALLERY_HEIGHT}`}
       >
-        <p className="text-sm font-semibold text-slate-500">
+        <p className="text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-slate-500">
           No images available
         </p>
       </div>
@@ -297,7 +296,7 @@ function PackageGallery({ images = [], title = "Package" }) {
                 />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                  <span className="text-base font-black sm:text-lg">
+                  <span className="text-[clamp(1rem,2.4vw,1.125rem)] font-black">
                     +{normalizedImages.length - 4}
                   </span>
 
@@ -359,7 +358,7 @@ function PackageGallery({ images = [], title = "Package" }) {
 
             {/* Image counter */}
 
-            <div className="font-inter pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-black/70 px-3 py-1.5 text-[11px] text-white backdrop-blur-md sm:bottom-5 sm:left-5 sm:px-4 sm:py-2 sm:text-xs">
+            <div className="font-inter pointer-events-none absolute bottom-3 left-3 z-10 rounded-full bg-black/70 px-3 py-1.5 text-[clamp(0.6875rem,1.6vw,0.75rem)] text-white backdrop-blur-md sm:bottom-5 sm:left-5 sm:px-4 sm:py-2">
               {activeIndex + 1} / {normalizedImages.length}
             </div>
 
@@ -396,11 +395,11 @@ function PackageGallery({ images = [], title = "Package" }) {
 
             <div className="flex items-center justify-between pb-3 sm:pb-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-white/50">
+                <p className="text-[clamp(0.6875rem,1.6vw,0.75rem)] font-bold uppercase tracking-[0.2em] text-white/50">
                   Gallery
                 </p>
 
-                <p className="mt-1 text-sm font-semibold text-white">
+                <p className="mt-1 text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-white">
                   {modalIndex + 1} / {normalizedImages.length}
                 </p>
               </div>
@@ -643,7 +642,7 @@ function PackageDetails() {
 
   if (isLoading) {
     return (
-      <main className="min-h-screen bg-white px-5 py-8 sm:px-8 lg:px-12">
+      <main className="min-h-screen bg-white px-[clamp(1.25rem,4vw,3rem)] py-8">
         <div className="mx-auto max-w-7xl">
           <Skeleton
             variant="rounded"
@@ -690,21 +689,23 @@ function PackageDetails() {
 
   if (errorMessage) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-white px-5 sm:px-6">
+      <main className="flex min-h-screen items-center justify-center bg-white px-[clamp(1.25rem,4vw,1.5rem)]">
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-black/40">
+          <p className="text-[clamp(0.6875rem,1.6vw,0.75rem)] font-black uppercase tracking-[0.2em] text-black/40">
             Something went wrong
           </p>
 
-          <h1 className="mt-3 text-2xl font-black sm:text-3xl">
+          <h1 className="mt-3 text-[clamp(1.5rem,4vw,1.875rem)] font-black">
             Package unavailable
           </h1>
 
-          <p className="mt-3 text-sm text-black/50">{errorMessage}</p>
+          <p className="mt-3 text-[clamp(0.8125rem,1.8vw,0.875rem)] text-black/50">
+            {errorMessage}
+          </p>
 
           <Link
             to="/packages"
-            className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-slate-900 px-6 py-3 text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-white transition hover:bg-slate-700"
           >
             <ArrowLeft size={16} />
             Back to packages
@@ -717,7 +718,7 @@ function PackageDetails() {
   if (!travelPackage) {
     return (
       <main className="flex min-h-screen items-center justify-center px-5">
-        <p className="text-center text-sm text-black/50">
+        <p className="text-center text-[clamp(0.8125rem,1.8vw,0.875rem)] text-black/50">
           Package details are not available.
         </p>
       </main>
@@ -803,7 +804,7 @@ function PackageDetails() {
           MAIN
       ====================================================== */}
 
-      <section className="px-4 sm:px-8 lg:px-12">
+      <section className="px-[clamp(1rem,4vw,3rem)]">
         <div className="mx-auto max-w-7xl">
           {/* =================================================
               INTRO + BOOKING
@@ -820,14 +821,14 @@ function PackageDetails() {
                   className="flex flex-wrap gap-2 font-inter font-medium"
                 >
                   {themeName && (
-                    <span className="flex items-center gap-1.5 rounded-full bg-black px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-white sm:px-4 sm:py-2">
+                    <span className="flex items-center gap-1.5 rounded-full bg-black px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.625rem,1.4vw,0.6875rem)] uppercase tracking-[0.16em] text-white">
                       <Sparkles size={12} />
                       {themeName}
                     </span>
                   )}
 
                   {durationName && (
-                    <span className="flex items-center gap-1.5 rounded-full border bg-black px-3 py-1.5 text-[10px] uppercase tracking-[0.16em] text-white sm:px-4 sm:py-2">
+                    <span className="flex items-center gap-1.5 rounded-full border bg-black px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-[clamp(0.625rem,1.4vw,0.6875rem)] uppercase tracking-[0.16em] text-white">
                       <Clock3 size={12} />
                       {durationName}
                     </span>
@@ -838,7 +839,7 @@ function PackageDetails() {
 
                 <motion.h1
                   variants={reveal}
-                  className="my-5 max-w-5xl break-words font-eb text-[clamp(1.6rem,5vw,2.8rem)] font-bold capitalize leading-[1.1] tracking-tight sm:my-7"
+                  className="my-[clamp(1.25rem,2.5vw,1.75rem)] max-w-5xl break-words font-eb text-[clamp(1.6rem,5vw,2.8rem)] font-bold capitalize leading-[1.1] tracking-tight"
                 >
                   {title}
                 </motion.h1>
@@ -913,7 +914,7 @@ function PackageDetails() {
                             setActiveSection(item.id);
                             scrollToPackageSection(item.id, item.key);
                           }}
-                          className={`group relative shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 font-inter text-[13px] font-semibold transition-colors duration-300 focus-visible:outline-none sm:px-4 sm:py-3 sm:text-base ${
+                          className={`group relative shrink-0 whitespace-nowrap rounded-xl px-3 py-2.5 font-inter text-[clamp(0.8125rem,2vw,1rem)] font-semibold transition-colors duration-300 focus-visible:outline-none sm:px-4 sm:py-3 ${
                             isActiveTab
                               ? "text-blue-500"
                               : "text-slate-600 hover:text-blue-500"
@@ -944,7 +945,7 @@ function PackageDetails() {
                     isOpen={openSections.overview}
                     onToggle={() => toggleSection("overview")}
                   >
-                    <p className="max-w-3xl font-inter text-sm leading-7 text-slate-600 sm:text-base">
+                    <p className="max-w-3xl font-inter text-[clamp(0.875rem,2vw,1rem)] leading-[1.75] text-slate-600">
                       {overview}
                     </p>
                   </CollapsibleSection>
@@ -1040,14 +1041,14 @@ function PackageDetails() {
                     {inclusions.length > 0 && (
                       <div
                         id="package-inclusions"
-                        className="min-w-0 scroll-mt-36 rounded-[28px] bg-slate-900 p-5 text-white sm:p-7 lg:p-9"
+                        className="min-w-0 scroll-mt-36 rounded-[28px] bg-slate-900 p-[clamp(1.25rem,3vw,2.25rem)] text-white"
                       >
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-400 text-white">
                             <Check size={18} />
                           </div>
 
-                          <h3 className="font-eb text-xl font-medium sm:text-2xl">
+                          <h3 className="font-eb text-[clamp(1.25rem,3vw,1.5rem)] font-medium">
                             Included
                           </h3>
                         </div>
@@ -1063,7 +1064,7 @@ function PackageDetails() {
                                 className="mt-0.5 shrink-0 text-green-500"
                               />
 
-                              <p className="min-w-0 break-words text-sm leading-6 text-white">
+                              <p className="min-w-0 break-words text-[clamp(0.8125rem,1.8vw,0.875rem)] leading-6 text-white">
                                 {item.description}
                               </p>
                             </div>
@@ -1077,14 +1078,14 @@ function PackageDetails() {
                     {exclusions.length > 0 && (
                       <div
                         id="package-exclusions"
-                        className="min-w-0 scroll-mt-36 rounded-[28px] border border-slate-200 p-5 sm:p-7 lg:p-9"
+                        className="min-w-0 scroll-mt-36 rounded-[28px] border border-slate-200 p-[clamp(1.25rem,3vw,2.25rem)]"
                       >
                         <div className="flex items-center gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-slate-900 text-white">
                             <X size={18} />
                           </div>
 
-                          <h3 className="font-eb text-xl font-medium sm:text-2xl">
+                          <h3 className="font-eb text-[clamp(1.25rem,3vw,1.5rem)] font-medium">
                             Not included
                           </h3>
                         </div>
@@ -1100,7 +1101,7 @@ function PackageDetails() {
                                 className="mt-0.5 shrink-0 text-red-500"
                               />
 
-                              <p className="min-w-0 break-words text-sm leading-6 text-slate-800">
+                              <p className="min-w-0 break-words text-[clamp(0.8125rem,1.8vw,0.875rem)] leading-6 text-slate-800">
                                 {item.description}
                               </p>
                             </div>
@@ -1125,7 +1126,7 @@ function PackageDetails() {
                   {/* MOBILE / TABLET */}
                   <div
                     id="package-mobile-bar"
-                    className="flex items-center justify-between gap-3 px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-8 sm:py-4 lg:hidden"
+                    className="flex items-center justify-between gap-3 px-[clamp(1rem,4vw,2rem)] py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:py-4 lg:hidden"
                   >
                     <div className="min-w-0">
                       {/* <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-400">
@@ -1133,12 +1134,12 @@ function PackageDetails() {
                       </p> */}
 
                       <div className="flex items-baseline gap-2">
-                        <span className="truncate text-xl font-semibold tracking-[-0.03em] sm:text-2xl">
+                        <span className="truncate text-[clamp(1.25rem,3.5vw,1.5rem)] font-semibold tracking-[-0.03em]">
                           ₹{finalPrice.toLocaleString("en-IN")}
                         </span>
 
                         {hasDiscount && (
-                          <span className="text-xs text-slate-400 line-through">
+                          <span className="text-[clamp(0.6875rem,1.6vw,0.75rem)] text-slate-400 line-through">
                             ₹{starting.toLocaleString("en-IN")}
                           </span>
                         )}
@@ -1148,7 +1149,7 @@ function PackageDetails() {
                     <button
                       type="button"
                       onClick={() => setIsOpen(true)}
-                      className="flex shrink-0 items-center gap-2 rounded-full bg-blue-400 px-4 py-2.5 text-xs font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-xl sm:px-5 sm:py-3"
+                      className="flex shrink-0 items-center gap-2 rounded-full bg-blue-400 px-[clamp(1rem,2.5vw,1.25rem)] py-2.5 text-[clamp(0.75rem,1.8vw,0.8125rem)] font-semibold text-white transition-all duration-300 hover:bg-blue-500 hover:shadow-xl sm:py-3"
                     >
                       <Phone size={15} />
                       <span>Book Now</span>
@@ -1201,18 +1202,18 @@ function PackageDetails() {
                       </div>
 
                       <button
-  type="button"
-  aria-haspopup="dialog"
-  onClick={() => setIsOpen(true)}
-  className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-400 px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-blue-500 hover:shadow-xl"
->
-  <Phone
-    aria-hidden="true"
-    className="size-3.5 shrink-0 min-[400px]:size-4"
-  />
+                        type="button"
+                        aria-haspopup="dialog"
+                        onClick={() => setIsOpen(true)}
+                        className="group flex w-full cursor-pointer items-center justify-center gap-2 rounded-full bg-blue-400 px-6 py-4 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-1 hover:bg-blue-500 hover:shadow-xl"
+                      >
+                        <Phone
+                          aria-hidden="true"
+                          className="size-3.5 shrink-0 min-[400px]:size-4"
+                        />
 
-  <span>Plan this trip</span>
-</button>
+                        <span>Plan this trip</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1264,18 +1265,18 @@ function ActivityItem({ activity }) {
       )}
 
       <div className="min-w-0 flex-1 py-0.5">
-        <h4 className="break-words text-sm font-semibold text-slate-900 sm:text-[15px]">
+        <h4 className="break-words text-[clamp(0.875rem,1.9vw,0.9375rem)] font-semibold text-slate-900">
           {name}
         </h4>
 
         {description && (
-          <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500 sm:text-sm">
+          <p className="mt-1 line-clamp-2 text-[clamp(0.75rem,1.7vw,0.875rem)] leading-[1.6] text-slate-500">
             {description}
           </p>
         )}
 
         {(hasDuration || startTime) && (
-          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 sm:text-xs">
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[clamp(0.6875rem,1.6vw,0.75rem)] text-slate-500">
             {hasDuration && (
               <span className="inline-flex items-center gap-1">
                 <Clock3 size={12} className="text-blue-500" />
@@ -1309,7 +1310,7 @@ function ItineraryDay({ day, dayIndex }) {
     <div className="relative grid grid-cols-[30px_minmax(0,1fr)] gap-1.5 sm:grid-cols-[48px_minmax(0,1fr)] sm:gap-3">
       {/* Number on the vertical timeline */}
       <div className="relative z-10 flex justify-center pt-4 sm:pt-6">
-        <div className="flex size-7 items-center justify-center rounded-full bg-blue-400 text-xs font-semibold text-white shadow-sm sm:size-9 sm:text-sm">
+        <div className="flex size-7 items-center justify-center rounded-full bg-blue-400 text-[clamp(0.75rem,1.6vw,0.875rem)] font-semibold text-white shadow-sm sm:size-9">
           {day.dayNumber ?? dayIndex + 1}
         </div>
       </div>
@@ -1321,7 +1322,7 @@ function ItineraryDay({ day, dayIndex }) {
       >
         <summary className="flex cursor-pointer list-none items-center gap-3 px-3 py-3.5 marker:hidden sm:px-4 sm:py-4 [&::-webkit-details-marker]:hidden">
           <div className="min-w-0 flex-1">
-            <h3 className="break-words font-eb text-base font-medium leading-snug text-slate-900 sm:text-xl">
+            <h3 className="break-words font-eb text-[clamp(1rem,2.4vw,1.25rem)] font-medium leading-snug text-slate-900">
               {day.title || `Day ${day.dayNumber ?? dayIndex + 1}`}
             </h3>
           </div>
@@ -1339,7 +1340,7 @@ function ItineraryDay({ day, dayIndex }) {
         </summary>
 
         {location && (
-          <div className="flex items-center gap-1.5 px-3 pb-3 text-xs font-medium text-slate-500 sm:px-4 md:hidden">
+          <div className="flex items-center gap-1.5 px-3 pb-3 text-[clamp(0.75rem,1.7vw,0.8125rem)] font-medium text-slate-500 sm:px-4 md:hidden">
             <MapPin size={13} className="shrink-0 text-blue-500" />
             <span className="min-w-0 break-words">{location}</span>
           </div>
@@ -1347,7 +1348,7 @@ function ItineraryDay({ day, dayIndex }) {
 
         <div className="space-y-4 border-t border-slate-100 px-3 pb-4 pt-4 sm:space-y-5 sm:px-5 sm:pb-6 sm:pt-5">
           {day.description && (
-            <p className="text-sm leading-6 text-slate-600 sm:text-[15px] sm:leading-7">
+            <p className="text-[clamp(0.875rem,1.9vw,0.9375rem)] leading-[1.7] text-slate-600">
               {day.description}
             </p>
           )}
@@ -1359,7 +1360,7 @@ function ItineraryDay({ day, dayIndex }) {
 
               <div className="min-w-0 flex-1">
                 <p className={MICRO_LABEL}>Accommodation</p>
-                <p className="mt-0.5 break-words text-sm font-medium text-slate-900 sm:text-[15px]">
+                <p className="mt-0.5 break-words text-[clamp(0.875rem,1.9vw,0.9375rem)] font-medium text-slate-900">
                   {hotelName}
                 </p>
               </div>
@@ -1391,7 +1392,7 @@ function ItineraryDay({ day, dayIndex }) {
 
               <div className="min-w-0 flex-1">
                 <p className={MICRO_LABEL}>Meals</p>
-                <p className="mt-0.5 break-words text-sm capitalize text-slate-900 sm:text-[15px]">
+                <p className="mt-0.5 break-words text-[clamp(0.875rem,1.9vw,0.9375rem)] capitalize text-slate-900">
                   {mealsText}
                 </p>
               </div>
@@ -1404,7 +1405,7 @@ function ItineraryDay({ day, dayIndex }) {
               {dayInclusions.map((item, index) => (
                 <span
                   key={index}
-                  className="break-words rounded-full bg-slate-100 px-3 py-1.5 text-xs text-slate-600"
+                  className="break-words rounded-full bg-slate-100 px-3 py-1.5 text-[clamp(0.6875rem,1.6vw,0.75rem)] text-slate-600"
                 >
                   {formatValue(item)}
                 </span>
@@ -1440,12 +1441,12 @@ function HotelCard({ hotel }) {
       )}
 
       <div className="min-w-0 flex-1">
-        <h3 className="break-words text-sm font-semibold text-slate-900 sm:text-base">
+        <h3 className="break-words text-[clamp(0.875rem,2vw,1rem)] font-semibold text-slate-900">
           {name}
         </h3>
 
         {hotel.city && (
-          <p className="mt-1 flex items-center gap-1.5 text-xs text-slate-500 sm:text-sm">
+          <p className="mt-1 flex items-center gap-1.5 text-[clamp(0.75rem,1.7vw,0.875rem)] text-slate-500">
             <MapPin size={13} className="shrink-0 text-blue-500" />
             <span className="min-w-0 break-words">{hotel.city}</span>
           </p>
@@ -1455,7 +1456,9 @@ function HotelCard({ hotel }) {
       {hotel.starRating != null && (
         <div className="flex shrink-0 items-center gap-1 rounded-full bg-slate-100 px-2.5 py-1.5 sm:px-3 sm:py-2">
           <Star size={14} className="fill-amber-400 text-amber-500" />
-          <span className="text-sm">{hotel.starRating}</span>
+          <span className="text-[clamp(0.8125rem,1.8vw,0.875rem)]">
+            {hotel.starRating}
+          </span>
         </div>
       )}
     </div>
@@ -1489,11 +1492,11 @@ function FlightCard({ flight }) {
         )}
 
         <div className="min-w-0">
-          <h3 className="break-words text-sm font-semibold text-slate-900 sm:text-lg">
+          <h3 className="break-words text-[clamp(0.875rem,2.4vw,1.125rem)] font-semibold text-slate-900">
             {airline}
           </h3>
 
-          <p className="mt-0.5 break-words text-xs text-slate-500">
+          <p className="mt-0.5 break-words text-[clamp(0.6875rem,1.6vw,0.75rem)] text-slate-500">
             Flight No: {flight.flightNumber || "Not specified"}
           </p>
         </div>
@@ -1502,15 +1505,15 @@ function FlightCard({ flight }) {
       {/* Route */}
       <div className="mt-4 grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:mt-5 sm:gap-3">
         <div className="min-w-0">
-          <p className="break-words text-sm font-semibold text-slate-900">
+          <p className="break-words text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-slate-900">
             {flight.fromLocation || "--"}
           </p>
 
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          <p className="text-[clamp(0.625rem,1.5vw,0.6875rem)] font-semibold uppercase tracking-wider text-slate-400">
             Departure
           </p>
 
-          <p className="mt-1 break-words text-[11px] font-medium text-slate-600 sm:text-xs">
+          <p className="mt-1 break-words text-[clamp(0.6875rem,1.6vw,0.75rem)] font-medium text-slate-600">
             {flight.departureTime
               ? formatDateTime(flight.departureTime)
               : "Time not specified"}
@@ -1523,15 +1526,15 @@ function FlightCard({ flight }) {
         </div>
 
         <div className="min-w-0 text-right">
-          <p className="break-words text-sm font-semibold text-slate-900">
+          <p className="break-words text-[clamp(0.8125rem,1.8vw,0.875rem)] font-semibold text-slate-900">
             {flight.toLocation || "--"}
           </p>
 
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+          <p className="text-[clamp(0.625rem,1.5vw,0.6875rem)] font-semibold uppercase tracking-wider text-slate-400">
             Arrival
           </p>
 
-          <p className="mt-1 break-words text-[11px] font-medium text-slate-600 sm:text-xs">
+          <p className="mt-1 break-words text-[clamp(0.6875rem,1.6vw,0.75rem)] font-medium text-slate-600">
             {flight.arrivalTime
               ? formatDateTime(flight.arrivalTime)
               : "Time not specified"}
@@ -1567,12 +1570,12 @@ function CollapsibleSection({
         className="flex w-full items-center justify-between gap-3 text-left sm:gap-4"
       >
         <div className="min-w-0 max-w-2xl">
-          <h2 className="font-eb text-xl font-medium tracking-tight sm:text-3xl">
+          <h2 className="font-eb text-[clamp(1.25rem,3.6vw,1.875rem)] font-medium tracking-tight">
             {title}
           </h2>
 
           {description && (
-            <p className="mt-1 font-inter text-[13px] leading-6 text-slate-500 sm:text-base sm:leading-7">
+            <p className="mt-1 font-inter text-[clamp(0.8125rem,1.9vw,1rem)] leading-[1.7] text-slate-500">
               {description}
             </p>
           )}

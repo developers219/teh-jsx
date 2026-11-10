@@ -315,6 +315,7 @@ function PopularDestinations() {
       <div className="mx-auto h-full w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
         <div className="flex h-full flex-col gap-[clamp(0.25rem,2vw,2rem)]">
           <Heading
+            compact
             heading="Where to "
             highlight="Next ?"
             subheading="The Places You'll Talk About Forever."

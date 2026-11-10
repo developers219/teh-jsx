@@ -56,7 +56,11 @@ function PersonalizedHolidayPlan() {
         ====================================================== */}
 
         <div className="relative flex min-w-0 flex-col">
-          <Heading heading="Let’s plan your next" highlight="journey." />
+          <Heading
+            compact
+            heading="Let’s plan your next"
+            highlight="journey."
+          />
 
           <img
             src={Contact}

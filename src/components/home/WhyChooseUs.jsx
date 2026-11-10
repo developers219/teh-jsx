@@ -96,6 +96,7 @@ export default function WhyChooseUs() {
         ========================== */}
         <div className="mx-auto max-w-3xl text-center">
           <Heading
+            compact
             heading="Why choose"
             highlight="us?"
             subheading="Travel planning that feels effortless, from the first idea to the moment you return home."

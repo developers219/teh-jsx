@@ -1572,7 +1572,7 @@ function StepTitle({ title }) {
   if (isCard) {
     return (
       <div className="mb-6 border-b border-[#8c866b]/45 pb-5">
-        <h3 className="text-center font-eb text-[30px] font-medium leading-none text-[#080b0b] sm:text-[34px]">
+        <h3 className="text-center font-eb text-[24px] font-medium leading-none text-[#080b0b] sm:text-[30px] lg:text-[34px]">
           {title}
         </h3>
       </div>

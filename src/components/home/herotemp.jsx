@@ -876,7 +876,7 @@ export default function HeroSection() {
               </form>
 
               {/* Rating (calculated from backend reviews) */}
-              <div className="flex items-center font-mont">
+              <div className="flex items-center font-inter">
                 <Star
                   size={24}
                   className="text-yellow-400"

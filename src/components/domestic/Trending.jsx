@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "motion/react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import Heading from "../ui/Heading";
-import Carousel from "../ui/Carousel";
+import { Heading } from "../ui/Heading";
 import api from "../../services/api";
 
 // Shown only when the CMS sent no image for a destination
@@ -11,6 +12,20 @@ const DEFAULT_IMAGE =
 
 // Background refresh: CMS me image/destination badalte hi live site par aa jaye
 const REFRESH_MS = 60_000;
+
+// Same gap as HomeThemes / ExploreByPeople
+const GAP = "clamp(0.25rem,2vw,1rem)";
+
+// Cards visible in one row: mobile 2, tablet 3, desktop 4
+function getVisibleSlides() {
+  if (typeof window === "undefined") return 4;
+
+  const width = window.innerWidth;
+
+  if (width < 640) return 2;
+  if (width < 1024) return 3;
+  return 4;
+}
 
 // ---------------------------------------------------------------------------
 // Image helpers (same logic as home TravelCategories / Themes)
@@ -183,7 +198,8 @@ function DestinationTile({ destination, category = "dom" }) {
 
       <div className="absolute inset-0 bg-linear-to-b from-black/80 via-black/30 to-transparent" />
 
-      <div className="relative flex min-h-[15%] w-full items-center justify-center break-words bg-linear-to-t from-black/30 to-transparent px-2 py-2 text-center text-sm font-semibold leading-tight text-white backdrop-blur-xs min-[400px]:text-base sm:text-lg lg:text-xl">
+      {/* Destination name: fluid size, 14px (phones) -> 20px (large screens) */}
+      <div className="relative flex min-h-[15%] w-full items-center justify-center break-words bg-linear-to-t from-black/30 to-transparent px-2 py-2 text-center font-alex text-[clamp(0.875rem,1.8vw,1.25rem)] font-bold leading-tight text-white backdrop-blur-xs">
         {name}
       </div>
     </Link>
@@ -191,15 +207,21 @@ function DestinationTile({ destination, category = "dom" }) {
 }
 
 // ---------------------------------------------------------------------------
-// Main component
+// Main component  (carousel: same engine as HomeThemes / ExploreByPeople)
 // ---------------------------------------------------------------------------
 
 export default function Trending() {
   const [trendingDestinations, setTrendingDestinations] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const mobileScrollRef = useRef(null);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  // Carousel state
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [viewSlides, setViewSlides] = useState(getVisibleSlides);
+  const [step, setStep] = useState(0);
+
+  const trackRef = useRef(null);
+  const startX = useRef(0);
+  const endX = useRef(0);
 
   // Fetch trending (featured) domestic destinations
   useEffect(() => {
@@ -263,102 +285,149 @@ export default function Trending() {
     };
   }, []);
 
-  // Mobile / tablet scroll thumb
+  // Responsive slides per view
   useEffect(() => {
-    const container = mobileScrollRef.current;
+    const handleResize = () => setViewSlides(getVisibleSlides());
 
-    if (!container) return;
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
-    const handleScroll = () => {
-      const maxScroll = container.scrollWidth - container.clientWidth;
+  // Cards per row depend ONLY on the screen (mobile 2 / tablet 3 / desktop 4).
+  // With few destinations the cards keep the same size (they do not stretch).
+  const visibleSlides = viewSlides;
+  const maxIndex = Math.max(trendingDestinations.length - visibleSlides, 0);
 
-      if (maxScroll <= 0) {
-        setScrollProgress(0);
-        return;
-      }
+  // Width of one slide (card + gap) for the translate animation
+  useEffect(() => {
+    const measure = () => {
+      const track = trackRef.current;
+      const firstCard = track?.children[0];
 
-      setScrollProgress(container.scrollLeft / maxScroll);
+      if (!firstCard) return;
+
+      const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+      setStep(firstCard.offsetWidth + gap);
     };
 
-    container.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
+    measure();
 
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, [trendingDestinations]);
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [trendingDestinations.length, visibleSlides, loading]);
+
+  // Keep the active slide valid when the layout changes
+  useEffect(() => {
+    setActiveIndex((current) => Math.min(current, maxIndex));
+  }, [maxIndex]);
+
+  const next = () => setActiveIndex((current) => Math.min(current + 1, maxIndex));
+  const prev = () => setActiveIndex((current) => Math.max(current - 1, 0));
+
+  const handleTouchStart = (e) => {
+    startX.current = e.touches[0].clientX;
+    endX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    endX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const distance = startX.current - endX.current;
+
+    if (distance > 50) next();
+    if (distance < -50) prev();
+  };
+
+  const cardStyle = {
+    flex: "0 0 auto",
+    width: `calc((100% - ${visibleSlides - 1} * ${GAP}) / ${visibleSlides})`,
+  };
 
   return (
     <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
-        <Heading
-          heading="Trending"
-          highlight="destinations"
-          subheading="Discover our most popular destinations and start planning your next journey."
-          className="mb-4 sm:mb-6"
-        />
+        {/* Heading + arrows: exactly like HomeThemes.
+            Arrows are positioned absolutely, so they never add any height. */}
+        <div className="relative">
+          <Heading
+            compact
+            heading="Trending"
+            highlight="destinations"
+            subheading="Discover our most popular destinations and start planning your next journey."
+          />
 
-        {/* Desktop carousel */}
-        {!loading && trendingDestinations.length > 0 && (
-          <div className="hidden lg:block">
-            <Carousel
-              items={trendingDestinations}
-              desktopItems={4}
-              tabletItems={2}
-              mobileItems={1}
-              gap={20}
-              renderItem={(destination) => (
-                <DestinationTile destination={destination} category="dom" />
-              )}
-            />
-          </div>
-        )}
+          {!loading && maxIndex > 0 && (
+            <div className="absolute bottom-0 right-0 flex gap-[clamp(0.25rem,2vw,0.5rem)]">
+              <button
+                type="button"
+                onClick={prev}
+                disabled={activeIndex === 0}
+                aria-label="Previous destinations"
+                className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
+              >
+                <ArrowLeft size={18} />
+              </button>
 
-        {/* Mobile + tablet: swipe row */}
-        {!loading && trendingDestinations.length > 0 && (
-          <div className="lg:hidden">
-            <div
-              ref={mobileScrollRef}
-              className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain pb-1 sm:gap-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-            >
-              {trendingDestinations.map((destination) => (
-                <div
-                  key={destination.id || destination._id}
-                  className="w-[calc(50%-6px)] min-w-0 shrink-0 snap-start sm:w-[calc((100%-32px)/3)]"
-                >
-                  <DestinationTile destination={destination} category="dom" />
-                </div>
-              ))}
+              <button
+                type="button"
+                onClick={next}
+                disabled={activeIndex >= maxIndex}
+                aria-label="Next destinations"
+                className="cursor-pointer rounded-full bg-black/30 p-1 text-white backdrop-blur-sm transition duration-300 hover:text-blue-200 disabled:cursor-default disabled:opacity-40 disabled:hover:text-white"
+              >
+                <ArrowRight size={18} />
+              </button>
             </div>
+          )}
+        </div>
 
-            {trendingDestinations.length > 1 && (
-              <div className="mt-6 flex justify-center">
-                <div className="relative h-[3px] w-[100px] overflow-hidden rounded-full bg-slate-200 sm:w-[120px]">
-                  <div
-                    className="absolute left-0 top-0 h-full w-[25%] rounded-full bg-slate-900"
-                    style={{
-                      transform: `translateX(${scrollProgress * 300}%)`,
-                    }}
-                  />
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Loading skeleton */}
+        {/* Loading skeleton (single row) */}
         {loading && (
-          <div className="flex gap-3 overflow-hidden sm:gap-4 lg:gap-5">
-            {[1, 2, 3, 4].map((item) => (
+          <div className="flex" style={{ gap: GAP }}>
+            {Array.from({ length: viewSlides }).map((_, i) => (
               <div
-                key={item}
-                className="h-[300px] w-[calc(50%-6px)] shrink-0 animate-pulse rounded bg-slate-100 sm:w-[calc((100%-32px)/3)] lg:w-auto lg:flex-1"
+                key={i}
+                style={{
+                  flex: "0 0 auto",
+                  width: `calc((100% - ${viewSlides - 1} * ${GAP}) / ${viewSlides})`,
+                }}
+                className="aspect-[3/4] animate-pulse rounded-2xl bg-gray-200"
               />
             ))}
           </div>
         )}
 
+        {/* Carousel viewport */}
+        {!loading && trendingDestinations.length > 0 && (
+          <div
+            className="-mx-2 overflow-x-clip px-2 sm:-mx-4 sm:px-4 lg:-mx-6 lg:px-6"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <motion.div
+              animate={{ x: -(activeIndex * step) }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            >
+              <div ref={trackRef} className="flex" style={{ gap: GAP }}>
+                {trendingDestinations.map((destination) => (
+                  <div
+                    key={destination.id || destination._id}
+                    style={cardStyle}
+                  >
+                    <DestinationTile destination={destination} category="dom" />
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+
         {/* Empty state */}
         {!loading && trendingDestinations.length === 0 && (
-          <div className="py-10 text-center font-inter text-slate-500">
+          <div className="py-10 text-center font-inter text-[clamp(0.875rem,2vw,1rem)] text-slate-500">
             No trending destinations available.
           </div>
         )}

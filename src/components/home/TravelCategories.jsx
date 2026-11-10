@@ -261,6 +261,7 @@ function DestinationSection({
   return (
     <div className="w-full">
       <Heading
+        compact
         heading={heading}
         highlight={highlight}
         subheading={subheading}

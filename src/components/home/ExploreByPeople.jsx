@@ -90,7 +90,7 @@ function PeopleCard({ type, style }) {
     <Link
       to={`/packages/traveller-type/${type.slug}`}
       style={style}
-      className="group relative flex aspect-[4/3] cursor-pointer items-end overflow-hidden rounded-2xl bg-gray-200 shadow-people"
+      className="group relative flex aspect-[16/10] cursor-pointer sm:aspect-[4/3] items-end overflow-hidden rounded-2xl bg-gray-200 shadow-people"
     >
       {image ? (
         <img
@@ -228,11 +228,12 @@ function ExploreByPeople() {
   };
 
   return (
-    <section className="overflow-x-clip bg-white py-[clamp(2rem,5vw,4rem)]">
+    <section className="overflow-x-clip bg-white py-[clamp(1.5rem,5vw,4rem)]">
       <div className="mx-auto w-full max-w-7xl px-2 sm:px-4 lg:px-6 xl:px-0">
         {/* Heading + arrows: exactly like HomeThemes */}
         <div className="relative">
           <Heading
+            compact
             heading=" Pick Your "
             highlight="People"
             subheading="Solo, couple or the whole crew — every trip, expertly crafted."
@@ -274,7 +275,7 @@ function ExploreByPeople() {
                   flex: "0 0 auto",
                   width: `calc((100% - ${viewSlides - 1} * ${GAP}) / ${viewSlides})`,
                 }}
-                className="!aspect-[4/3] !h-auto !rounded-2xl"
+                className="!aspect-[16/10] !h-auto !rounded-2xl sm:!aspect-[4/3]"
               />
             ))}
           </div>
