@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react";
 import { useState } from "react";
-import Heading from "./Heading";
+import { Heading } from "./Heading";
 
 const faqData = [
   {
@@ -44,12 +44,13 @@ export default function FAQ() {
   };
 
   return (
-    <section className="w-full bg-white py-16 font-inter md:py-20">
-      <div className="mx-auto w-full max-w-7xl px-5 sm:px-8">
-        {/* Header */}
-        <div className="mb-10 md:mb-12">
+    <section className="w-full bg-white py-[clamp(2rem,5vw,4rem)] font-inter">
+      <div className="mx-auto w-full max-w-7xl px-[clamp(1.25rem,4vw,2rem)]">
+        {/* Header (size / spacing follow the screen width) */}
+        <div className="mb-[clamp(1.5rem,4vw,3rem)]">
           <Heading
-            heading="Frequently asked"
+            compact
+            heading="Frequently asked "
             highlight="questions"
             subheading="Your right to know!"
             className="items-center text-center"
@@ -57,7 +58,7 @@ export default function FAQ() {
         </div>
 
         {/* FAQ List */}
-        <div className="space-y-3">
+        <div className="space-y-[clamp(0.5rem,1.2vw,0.75rem)]">
           {faqData.map((faq, index) => {
             const isOpen = openIndex === index;
 
@@ -72,18 +73,18 @@ export default function FAQ() {
                 <button
                   type="button"
                   onClick={() => handleToggle(index)}
-                  className={`flex w-full items-center justify-between gap-5 px-4 py-2 text-left ${
+                  className={`flex w-full items-center justify-between gap-[clamp(0.75rem,2vw,1.25rem)] px-[clamp(0.75rem,2vw,1rem)] py-[clamp(0.375rem,1vw,0.5rem)] text-left ${
                     isOpen ? " border-b border-gray-200 " : ""
                   }`}
                   aria-expanded={isOpen}
                 >
                   <div className="flex min-w-0 items-start gap-2">
-                    <span className="shrink-0 text-sm font-medium sm:text-[19px] text-black">
+                    <span className="shrink-0 text-[clamp(0.875rem,2vw,1.1875rem)] font-medium leading-[1.5] text-black">
                       Q:
                     </span>
 
                     <span
-                      className={`text-sm leading-6 sm:text-[19px] ${
+                      className={`text-[clamp(0.875rem,2vw,1.1875rem)] leading-[1.5] ${
                         isOpen
                           ? "font-medium text-black"
                           : "font-normal text-black"
@@ -95,7 +96,7 @@ export default function FAQ() {
 
                   {/* Arrow */}
                   <span
-                    className={`flex size-10 cursor-pointer shrink-0 items-center justify-center rounded-full bg-slate-100 transition-transform hover:bg-slate-200 duration-300 ${
+                    className={`flex size-[clamp(2rem,4vw,2.5rem)] cursor-pointer shrink-0 items-center justify-center rounded-full bg-slate-100 transition-transform hover:bg-slate-200 duration-300 ${
                       isOpen ? "rotate-90" : "rotate-0"
                     }`}
                   >
@@ -112,12 +113,12 @@ export default function FAQ() {
                   }`}
                 >
                   <div className="overflow-hidden">
-                    <div className="flex gap-2.5 px-4 pb-5 sm:px-5">
-                      <span className="shrink-0 text-sm sm:text-[17px] font-medium text-black">
+                    <div className="flex gap-2.5 px-[clamp(1rem,2vw,1.25rem)] pb-[clamp(1rem,2vw,1.25rem)]">
+                      <span className="shrink-0 text-[clamp(0.875rem,1.8vw,1.0625rem)] font-medium leading-[1.65] text-black">
                         A:
                       </span>
 
-                      <p className="text-sm leading-6 text-black/60 sm:text-[17px]">
+                      <p className="text-[clamp(0.875rem,1.8vw,1.0625rem)] leading-[1.65] text-black/60">
                         {faq.answer}
                       </p>
                     </div>
