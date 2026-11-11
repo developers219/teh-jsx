@@ -190,12 +190,19 @@ function LeadCapturePopup({
     // </div>
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
       {showImages ? (
-        // Optional illustration layout (only when a page asks for showImages)
-        <div className="flex w-full max-w-5xl flex-col bg-white p-8 font-inter lg:w-[55vw] lg:flex-row [&_form+p]:text-[11px]">
-          <div className="flex flex-1 items-center justify-center">
-            <img src={images[step - 1]} alt="steps" className="w-full" />
+        // Optional illustration layout (only when a page asks for showImages).
+        // Padding and the gap between image and form follow the screen width.
+        // Image size: small on phones (centered above the form), full column
+        // width on desktop (lg+), never taller than ~38% of the screen height.
+        <div className="flex w-[92vw] max-w-5xl flex-col gap-[clamp(1rem,3vw,2rem)] bg-white p-[clamp(1rem,4vw,2rem)] font-inter lg:w-[55vw] lg:flex-row [&_form+p]:text-[11px]">
+          <div className="flex items-center justify-center lg:flex-1">
+            <img
+              src={images[step - 1]}
+              alt="steps"
+              className="h-auto max-h-[38vh] w-[clamp(9rem,48vw,20rem)] max-w-full object-contain lg:max-h-none lg:w-full"
+            />
           </div>
-          <div className="flex-1">
+          <div className="min-w-0 flex-1">
             <LeadForm
               variant="card"
               func={setStep}
@@ -208,13 +215,15 @@ function LeadCapturePopup({
         // Fonts: only font-eb (headings) and font-inter (rest). font-inter is
         // set here because the privacy note below the form inherits it.
         // [&_form+p]: that note at 11px so it stays on one line.
-        // pt-14 on mobile keeps the heading clear of the close button.
-        <div className="w-[92vw] max-w-lg bg-slate-50 px-5 pb-6 pt-14 font-inter text-[#080b0b] sm:p-10 [&_form+p]:text-[11px]">
+        // Same padding on all four sides (scales with the screen width).
+        // [&_h3]:px-9 keeps the heading text away from the close button, so no
+        // extra top padding is needed.
+        <div className="w-[92vw] max-w-lg bg-slate-50 p-[clamp(1.25rem,5vw,2.5rem)] font-inter text-[#080b0b] [&_h3]:px-9 [&_form+p]:text-[11px]">
           <LeadForm
-              variant="card"
-              func={setStep}
-              initialValues={initialValues}
-            />
+            variant="card"
+            func={setStep}
+            initialValues={initialValues}
+          />
         </div>
       )}
     </Modal>

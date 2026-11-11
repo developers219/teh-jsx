@@ -801,34 +801,35 @@ function LeadForm({
         ==================================================== */}
 
         {isCard ? (
-  <div className="mt-5 flex items-start justify-center gap-2 px-1">
-    <svg
-      aria-hidden="true"
-      width="15"
-      height="15"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="mt-[3px] shrink-0 text-slate-500"
-    >
-      <rect x="5" y="11" width="14" height="9" rx="2" />
-      <path d="M8 11V8a4 4 0 018 0v3" />
-    </svg>
-
-    <p className="text-left text-[12.5px] leading-[1.55] text-slate-500">
-      Your information is secure and will only be used to prepare your
-      travel plan.
-    </p>
-  </div>
-) : (
-  <p className="mt-6 text-[14px] leading-4 text-black/40">
-    Your information is secure and will only be used to prepare your
-    travel plan.
+  <p className="mt-5 flex justify-center">
+    <span className="inline-flex max-w-full items-start gap-2 text-left text-[clamp(0.75rem,3.2vw,0.8125rem)] leading-5 text-slate-600">
+      <svg
+        aria-hidden="true"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="mt-0.5 shrink-0"
+      >
+        <rect x="5" y="11" width="14" height="9" rx="2" />
+        <path d="M8 11V8a4 4 0 018 0v3" />
+      </svg>
+      <span>
+        Your information is secure and will only be used to prepare your
+        travel plan.
+      </span>
+    </span>
   </p>
-)}
+) : (
+          <p className="mt-6 text-[14px] leading-4 text-black/40">
+            Your information is secure and will only be used to prepare your
+            travel plan.
+          </p>
+        )}
       </div>
     </FormVariantContext.Provider>
   );
@@ -903,7 +904,7 @@ function PageOne({
             cursor-pointer
             items-center
             gap-2
-            text-[11px]
+            text-[clamp(0.6875rem,3vw,0.75rem)]
             font-medium
             text-[#080b0b]
           "
@@ -999,7 +1000,7 @@ function PageTwo({
         <label
           className={
             isCard
-              ? "flex cursor-pointer items-center gap-2 text-[13px] font-medium text-slate-700"
+              ? "flex cursor-pointer items-center gap-2 text-[clamp(0.75rem,3.4vw,0.8125rem)] font-medium text-slate-700"
               : "flex min-h-[42px] cursor-pointer items-center gap-2 border-b border-black/30 text-[11px] font-medium"
           }
         >
@@ -1394,7 +1395,7 @@ function PageFour({
           disabled={isSubmitting}
           fullWidth
           sx={{
-            minHeight: isCard ? 56 : 42,
+            minHeight: isCard ? "clamp(2.75rem,12vw,3.5rem)" : 42,
             borderRadius: isCard ? "14px" : 0,
 
             backgroundColor: "#60A5FA",
@@ -1403,7 +1404,7 @@ function PageFour({
 
             fontFamily: "inherit",
 
-            fontSize: isCard ? "15px" : "10px",
+            fontSize: isCard ? "clamp(0.8125rem,3.6vw,0.9375rem)" : "10px",
 
             fontWeight: 700,
 
@@ -1443,7 +1444,7 @@ const UNDERLINE_INPUT_CLASS =
   "block h-[36px] w-full rounded-none border-0 border-b border-black/50 bg-transparent px-0 pb-2 text-[12px] text-[#080b0b] outline-none placeholder:text-black/40 focus:border-black focus:bg-transparent focus:outline-none focus:ring-0 [&:-webkit-autofill]:bg-transparent [&:-webkit-autofill]:text-[#080b0b] [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#c5bd96_inset] [&:-webkit-autofill:hover]:bg-transparent [&:-webkit-autofill:focus]:bg-transparent [&:-webkit-autofill:active]:bg-transparent";
 
 const CARD_INPUT_CLASS =
-  "block h-[52px] w-full rounded-[14px] border border-[#8c866b] bg-white/80 px-[18px] text-[15px] text-slate-900 outline-none placeholder:text-gray-500 focus:border-black focus:outline-none focus:ring-0 [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#f6f3e9_inset]";
+  "block h-[clamp(2.75rem,12vw,3.25rem)] w-full rounded-[14px] border border-[#8c866b] bg-white/80 px-[clamp(0.875rem,4vw,1.125rem)] text-[clamp(0.875rem,3.8vw,0.9375rem)] text-slate-900 outline-none placeholder:text-gray-500 focus:border-black focus:outline-none focus:ring-0 [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#f6f3e9_inset]";
 
 /* =========================================================
    MINIMAL FIELD
@@ -1467,7 +1468,7 @@ function MinimalField({
       <label
         className={
           isCard
-            ? "mb-2 block text-sm font-medium text-slate-900"
+            ? "mb-[clamp(0.375rem,1.6vw,0.5rem)] block text-[clamp(0.8125rem,3.5vw,0.875rem)] font-medium text-slate-900"
             : "mb-2 block text-lg font-medium text-[#080b0b]"
         }
       >
@@ -1505,7 +1506,7 @@ function MinimalField({
         <p
           className={
             isCard
-              ? "mt-1.5 text-xs text-red-700"
+              ? "mt-1.5 text-[clamp(0.6875rem,3vw,0.75rem)] text-red-700"
               : "mt-1 text-[9px] text-black-600"
           }
         >
@@ -1551,7 +1552,7 @@ function MinimalInput({
         <p
           className={
             isCard
-              ? "mt-1.5 text-xs text-red-700"
+              ? "mt-1.5 text-[clamp(0.6875rem,3vw,0.75rem)] text-red-700"
               : "mt-1 text-[9px] text-red-600"
           }
         >
@@ -1571,8 +1572,8 @@ function StepTitle({ title }) {
 
   if (isCard) {
     return (
-      <div className="mb-6 border-b border-[#8c866b]/45 pb-5">
-        <h3 className="text-center font-eb text-[24px] font-medium leading-none text-[#080b0b] sm:text-[30px] lg:text-[34px]">
+      <div className="mb-[clamp(1rem,4.5vw,1.5rem)] border-b border-[#8c866b]/45 pb-[clamp(0.75rem,3.8vw,1.25rem)]">
+        <h3 className="text-center font-eb text-[clamp(1.5rem,6.4vw,2.125rem)] font-medium leading-none text-[#080b0b]">
           {title}
         </h3>
       </div>
@@ -1610,7 +1611,7 @@ function ChoiceSection({ title, smallText, children }) {
         <span
           className={
             isCard
-              ? "text-[15px] font-medium text-slate-900"
+              ? "text-[clamp(0.875rem,3.8vw,0.9375rem)] font-medium text-slate-900"
               : "text-[23px] font-semibold text-[#080b0b]"
           }
         >
@@ -1620,7 +1621,7 @@ function ChoiceSection({ title, smallText, children }) {
         {smallText && (
           <span
             className={
-              isCard ? "text-xs text-slate-600" : "text-[9px] text-black/40"
+              isCard ? "text-[clamp(0.6875rem,3vw,0.75rem)] text-slate-600" : "text-[9px] text-black/40"
             }
           >
             {smallText}
@@ -1648,12 +1649,12 @@ function ChoiceButton({ children, selected, onClick }) {
         type="button"
         onClick={onClick}
         className={`
-          min-h-[48px]
+          min-h-[clamp(2.5rem,11vw,3rem)]
           rounded-[12px]
           border
           px-3
           py-2
-          text-sm
+          text-[clamp(0.8125rem,3.5vw,0.875rem)]
           font-medium
           transition-all
           duration-150
@@ -1709,7 +1710,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
         <span
           className={
             isCard
-              ? "text-sm font-medium text-slate-900"
+              ? "text-[clamp(0.8125rem,3.5vw,0.875rem)] font-medium text-slate-900"
               : "text-[23px] font-semibold text-[#080b0b]"
           }
         >
@@ -1719,7 +1720,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
         <span
           className={
             isCard
-              ? "ml-1 text-xs text-slate-600"
+              ? "ml-1 text-[clamp(0.6875rem,3vw,0.75rem)] text-slate-600"
               : "ml-1 text-[11px] text-black/40"
           }
         >
@@ -1737,7 +1738,7 @@ function TravellerSelect({ label, subtitle, value, registration, onChange }) {
         }}
         className={
           isCard
-            ? "h-[48px] w-full rounded-[12px] border border-[#8c866b] bg-white/80 px-3 text-sm text-[#080b0b] outline-none focus:border-black focus:outline-none focus:ring-0"
+            ? "h-[clamp(2.5rem,11.5vw,3rem)] w-full rounded-[12px] border border-[#8c866b] bg-white/80 px-3 text-[clamp(0.8125rem,3.5vw,0.875rem)] text-[#080b0b] outline-none focus:border-black focus:outline-none focus:ring-0"
             : "h-[42px] w-full appearance-none rounded-none border-0 border-b border-black/50 bg-transparent px-0 text-[11px] text-[#080b0b] outline-none focus:border-black focus:bg-transparent focus:outline-none focus:ring-0"
         }
       >
@@ -1765,7 +1766,7 @@ function NextButton({ onClick, className = "" }) {
         onClick={onClick}
         className={`
           flex
-          h-14
+          h-[clamp(2.75rem,12vw,3.5rem)]
           w-full
           items-center
           justify-center
@@ -1774,7 +1775,7 @@ function NextButton({ onClick, className = "" }) {
           bg-blue-400
           hover:bg-blue-500
           px-6
-          text-[15px]
+          text-[clamp(0.8125rem,3.6vw,0.9375rem)]
           font-semibold
           uppercase
           tracking-[0.14em]
@@ -1849,7 +1850,7 @@ function BackButton({ onClick }) {
       onClick={onClick}
       className={
         isCard
-          ? "h-14 min-w-24 rounded-[14px] border  bg-blue-400 px-6 text-[15px] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-blue-500"
+          ? "h-[clamp(2.75rem,12vw,3.5rem)] min-w-24 rounded-[14px] border  bg-blue-400 px-6 text-[clamp(0.8125rem,3.6vw,0.9375rem)] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-blue-500"
           : "min-h-10.5 min-w-20 border border-black bg-transparent px-5 text-[15px] font-semibold uppercase tracking-wide text-black transition hover:bg-black hover:text-yellow-200"
       }
     >

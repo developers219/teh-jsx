@@ -822,32 +822,37 @@ export default function HeroSection() {
 
               {/* Search pill */}
               <form
-                ref={searchRef}
-                onSubmit={handleExplore}
-                style={{ textShadow: "none" }}
-                className="relative flex w-full items-center rounded-full bg-white p-1 font-mont text-slate-500 shadow-lg sm:w-[80%]"
-              >
-                <span className="shrink-0 rounded-full p-3 sm:p-4">
-                  <Search size={20} />
-                </span>
+  ref={searchRef}
+  onSubmit={handleExplore}
+  style={{
+    textShadow: "none",
+    width: "min(100%, 40rem)",
+    padding: "0.375rem",
+  }}
+  className="relative flex items-center gap-1 rounded-full bg-white font-mont text-slate-500 shadow-lg"
+>
+  <span className="flex size-[clamp(2.25rem,5vw,3rem)] shrink-0 items-center justify-center rounded-full">
+    <Search className="size-[clamp(1rem,2vw,1.25rem)]" />
+  </span>
 
-                <div className="min-w-0 flex-1 text-sm text-gray-500 sm:text-base">
-                  <Typewriter
-                    words={placeholderWords}
-                    value={destination}
-                    onChange={handleSearchChange}
-                    onFocus={() => setIsOpen(true)}
-                    onKeyDown={handleSearchKeyDown}
-                  />
-                </div>
+  <div className="min-w-0 flex-1 text-[clamp(0.75rem,1.6vw,1rem)] text-gray-500">
+    <Typewriter
+      words={placeholderWords}
+      value={destination}
+      onChange={handleSearchChange}
+      onFocus={() => setIsOpen(true)}
+      onKeyDown={handleSearchKeyDown}
+    />
+  </div>
 
-                <button
-                  type="submit"
-                  aria-label="Explore destination"
-                  className="shrink-0 cursor-pointer rounded-full bg-gray-900 p-3 text-white transition hover:bg-black sm:p-4"
-                >
-                  <ArrowRight size={20} />
-                </button>
+  <button
+    type="submit"
+    aria-label="Explore destination"
+    className="flex size-[clamp(2.25rem,5vw,3rem)] shrink-0 cursor-pointer items-center justify-center rounded-full bg-black text-white transition hover:bg-black"
+  >
+    <ArrowRight className="size-[clamp(1rem,2vw,1.25rem)]" />
+  </button>
+
 
                 {/* Suggestions (opens upward so the hero never clips it) */}
                 {showDropdown && (

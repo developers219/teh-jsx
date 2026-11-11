@@ -20,6 +20,46 @@ import {
   EMAIL_LABELS,
   PHONE_LABELS,
 } from "../../types/customer.types";
+
+/* ---------------------------------------------------------------
+   RESPONSIVE LOOK
+   - Text in every MUI field / label / checkbox / alert scales with the
+     screen width (clamp), set once on the <form> below.
+   - Email / phone rows stack on phones, 2 columns on tablets and
+     one single line on desktop (they used fixed pixel columns before).
+   - Section titles, spacing and the save button also follow the screen.
+---------------------------------------------------------------- */
+
+// Text of the MUI parts, applied from the <form> (one place for every field)
+const FLUID_MUI_TEXT = [
+  "[&_.MuiInputBase-root]:text-[clamp(0.875rem,3.8vw,1rem)]",
+  "[&_.MuiInputLabel-root]:text-[clamp(0.875rem,3.8vw,1rem)]",
+  "[&_.MuiFormControlLabel-label]:text-[clamp(0.8125rem,3.5vw,0.9375rem)]",
+  "[&_.MuiMenuItem-root]:text-[clamp(0.875rem,3.8vw,1rem)]",
+  "[&_.MuiAlert-message]:text-[clamp(0.8125rem,3.5vw,0.875rem)]",
+  "[&_.MuiButton-root]:text-[clamp(0.8125rem,3.5vw,0.9375rem)]",
+].join(" ");
+
+// One email / phone row: phone = 1 column, tablet = 2, desktop = single line
+const CONTACT_ROW_CLASS =
+  "grid items-center gap-[clamp(0.75rem,3vw,1rem)] rounded-[10px] border border-slate-200 p-[clamp(0.75rem,3vw,1rem)] sm:grid-cols-[minmax(0,1fr)_170px] lg:grid-cols-[minmax(0,1fr)_170px_auto_auto]";
+
+// Section title sizes (MUI sx = plain CSS, so spaces inside clamp are fine)
+const SECTION_LABEL_SX = {
+  mb: { xs: 2, md: 3 },
+  fontWeight: 700,
+  textTransform: "uppercase",
+  color: "primary.main",
+  letterSpacing: 1,
+  fontSize: "clamp(0.75rem, 0.7rem + 0.3vw, 0.875rem)",
+};
+
+const SECTION_TITLE_SX = {
+  mb: { xs: 2, md: 3 },
+  fontWeight: 700,
+  fontSize: "clamp(1.125rem, 0.95rem + 0.9vw, 1.375rem)",
+};
+
 const emptyTravelPreferences = {
   travelStyle: "",
   preferredDestinations: "",
@@ -195,26 +235,21 @@ function CustomerForm({
     }
   }
   return (
-    <form className="space-y-7" onSubmit={submit} noValidate>
+    <form
+      className={`flex flex-col gap-[clamp(1.5rem,5vw,1.75rem)] ${FLUID_MUI_TEXT}`}
+      onSubmit={submit}
+      noValidate
+    >
       {errorMessage ? <Alert severity="error">{errorMessage}</Alert> : null}
 
       <section>
-        <Typography
-          variant="subtitle2"
-          sx={{
-            mb: 3,
-            fontWeight: 700,
-            textTransform: "uppercase",
-            color: "primary.main",
-            letterSpacing: 1,
-          }}
-        >
+        <Typography variant="subtitle2" sx={SECTION_LABEL_SX}>
           Customer Profile
         </Typography>
 
         <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={3}>
-            <Grid size={{ xs: 12, md: 4 }}>
+          <Grid container spacing={{ xs: 2, md: 3 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -234,7 +269,7 @@ function CustomerForm({
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 label="First name"
@@ -247,7 +282,7 @@ function CustomerForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 label="Last name"
@@ -259,7 +294,7 @@ function CustomerForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 type="date"
@@ -273,7 +308,7 @@ function CustomerForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -290,7 +325,7 @@ function CustomerForm({
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 label="Nationality"
@@ -302,7 +337,7 @@ function CustomerForm({
               />
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -321,7 +356,7 @@ function CustomerForm({
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 select
@@ -340,7 +375,7 @@ function CustomerForm({
               </TextField>
             </Grid>
 
-            <Grid size={{ xs: 12, md: 4 }}>
+            <Grid size={{ xs: 12, sm: 6, md: 4 }}>
               <TextField
                 fullWidth
                 label="Customer source"
@@ -353,14 +388,8 @@ function CustomerForm({
         </Box>
       </section>
 
-      <section style={{ marginBottom: "40px" }}>
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 3,
-            fontWeight: 700,
-          }}
-        >
+      <section className="mb-[clamp(1.5rem,5vw,2.5rem)]">
+        <Typography variant="h6" sx={SECTION_TITLE_SX}>
           Contact details
         </Typography>
 
@@ -373,8 +402,8 @@ function CustomerForm({
             updateField("preferredContactMethod", event.target.value)
           }
           sx={{
-            width: 300,
-            mb: 3,
+            width: { xs: "100%", sm: 300 },
+            mb: { xs: 2, md: 3 },
           }}
         >
           {CONTACT_METHODS.map((method) => (
@@ -386,26 +415,9 @@ function CustomerForm({
 
         {/* EMAILS */}
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-          }}
-        >
+        <div className="flex flex-col gap-[clamp(0.75rem,3vw,1rem)]">
           {form.emails.map((email, index) => (
-            <div
-              key={`email-${index}`}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 170px auto auto",
-                gap: "16px",
-                alignItems: "center",
-                padding: "16px",
-                border: "1px solid #e2e8f0",
-                borderRadius: "10px",
-              }}
-            >
+            <div key={`email-${index}`} className={CONTACT_ROW_CLASS}>
               <TextField
                 fullWidth
                 label={`Email  ${index + 1}`}
@@ -454,6 +466,7 @@ function CustomerForm({
                   color="error"
                   disabled={form.emails.length === 1}
                   onClick={() => removeEmail(index)}
+                  sx={{ justifySelf: { xs: "start", lg: "auto" } }}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -479,27 +492,9 @@ function CustomerForm({
 
         {/* PHONES */}
 
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "16px",
-            marginTop: "32px",
-          }}
-        >
+        <div className="mt-[clamp(1.5rem,5vw,2rem)] flex flex-col gap-[clamp(0.75rem,3vw,1rem)]">
           {form.phones.map((phone, index) => (
-            <div
-              key={`phone-${index}`}
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 170px auto auto",
-                gap: "16px",
-                alignItems: "center",
-                padding: "16px",
-                border: "1px solid #e2e8f0",
-                borderRadius: "10px",
-              }}
-            >
+            <div key={`phone-${index}`} className={CONTACT_ROW_CLASS}>
               <TextField
                 fullWidth
                 label={`Phone number ${index + 1}`}
@@ -529,7 +524,7 @@ function CustomerForm({
                 ))}
               </TextField>
 
-              <div>
+              <div className="flex flex-wrap">
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -564,6 +559,7 @@ function CustomerForm({
                   color="error"
                   disabled={form.phones.length === 1}
                   onClick={() => removePhone(index)}
+                  sx={{ justifySelf: { xs: "start", lg: "auto" } }}
                 >
                   <DeleteIcon />
                 </IconButton>
@@ -588,24 +584,13 @@ function CustomerForm({
         )}
       </section>
 
-      <section style={{ marginBottom: "40px" }}>
-        <Typography
-          variant="h6"
-          sx={{
-            mb: 3,
-            fontWeight: 700,
-          }}
-        >
+      <section className="mb-[clamp(1.5rem,5vw,2.5rem)]">
+        <Typography variant="h6" sx={SECTION_TITLE_SX}>
           and travel preferences
         </Typography>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-            gap: "20px",
-          }}
-        >
+        {/* min(100%, 260px): a column never gets wider than a small phone screen */}
+        <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,260px),1fr))] gap-[clamp(1rem,3vw,1.25rem)]">
           <TextField
             fullWidth
             label=" line 1"
@@ -715,7 +700,7 @@ function CustomerForm({
           label="Travel notes"
           value={form.travelNotes}
           disabled={readOnly}
-          sx={{ mt: 3 }}
+          sx={{ mt: { xs: 2, md: 3 } }}
           onChange={(event) => updateField("travelNotes", event.target.value)}
         />
 
@@ -726,7 +711,7 @@ function CustomerForm({
           label="Internal notes"
           value={form.internalNotes}
           disabled={readOnly}
-          sx={{ mt: 3 }}
+          sx={{ mt: { xs: 2, md: 3 } }}
           onChange={(event) => updateField("internalNotes", event.target.value)}
         />
       </section>
@@ -743,6 +728,10 @@ function CustomerForm({
             bgcolor: "#0891b2",
             textTransform: "none",
             fontWeight: 900,
+            // full width on phones, normal width from tablet up
+            width: { xs: "100%", sm: "auto" },
+            alignSelf: { sm: "flex-start" },
+            minHeight: "clamp(2.75rem, 2.4rem + 1vw, 3rem)",
             "&:hover": { bgcolor: "#0e7490" },
           }}
         >

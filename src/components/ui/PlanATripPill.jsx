@@ -84,7 +84,7 @@ function PlanATripPill() {
         type="button"
         onClick={() => setIsOpen(true)}
         aria-label="Plan a trip"
-        className="group fixed bottom-6 left-1/2 z-50 flex w-[min(17rem,calc(100vw-2rem))] -translate-x-1/2 cursor-pointer items-center justify-between gap-3 rounded-full bg-white py-1.5 pl-4 pr-1.5 font-inter text-sm font-medium text-slate-500 shadow-xl ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl max-lg:bottom-[var(--widget-bottom,1.5rem)] sm:w-[26rem] sm:pl-5 sm:text-base md:w-[30rem] lg:w-[36rem] lg:py-2 lg:pl-7 lg:pr-2 lg:text-lg xl:w-[44rem] 2xl:w-[48rem]"
+        className="group fixed bottom-6 left-1/2 z-50 flex w-[min(17rem,calc(100vw-2rem))] -translate-x-1/2 cursor-pointer items-center justify-between gap-3 rounded-full bg-white p-1.5 pl-4 font-inter text-sm font-medium text-slate-500 shadow-xl ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-2xl max-lg:bottom-[var(--widget-bottom,1.5rem)] sm:w-[26rem] sm:pl-5 sm:text-base md:w-[30rem] lg:w-[36rem] lg:pl-7 lg:text-lg xl:w-[44rem] 2xl:w-[48rem]"
       >
         {/* Search icon + typewriter label (same icon as the hero search bar) */}
         <span className="flex min-w-0 items-center gap-3 lg:gap-4">
@@ -102,9 +102,9 @@ function PlanATripPill() {
           </span>
         </span>
 
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors duration-300 group-hover:bg-black sm:h-10 sm:w-10 lg:h-12 lg:w-12">
-          <ArrowRight strokeWidth={2} className="size-[18px]" />
-        </span>
+        <span className="flex size-[clamp(2.25rem,5vw,3rem)] shrink-0 items-center justify-center rounded-full bg-black text-white transition-colors duration-300 group-hover:bg-black">
+  <ArrowRight className="size-[clamp(1rem,2vw,1.25rem)]" strokeWidth={2} />
+</span>
       </button>
 
       {isOpen ? (

@@ -1,18 +1,62 @@
 import { useState } from "react";
-import { User, Phone, MapPin } from "lucide-react";
 import Modal from "./Modal";
 
-// Hidden on short screens (viewport height < 680px) so the form fits without scrolling
-const HIDE_ON_SHORT = "[@media(max-height:680px)]:hidden";
+/* ---------------------------------------------------------------
+   Looks and scales exactly like the "Submit Enquiry" popup
+   (LeadCapturePopup + LeadForm, card variant):
+     title + divider  ->  fields with * labels  ->  blue button  ->  lock note
+   Every size / spacing below is copied from LeadForm, so both popups are
+   identical on every screen.
+---------------------------------------------------------------- */
 
-// Shared field style (same look as the lead form card)
+// Card: same as the LeadCapturePopup single card
+// ([&_h3]:px-9 / px-9 on the title keep the text away from the close button)
+const CARD_CLASS =
+  "w-[92vw] max-w-lg bg-slate-50 p-[clamp(1.25rem,5vw,2.5rem)] font-inter text-[#080b0b]";
+
+// Title + divider (LeadForm StepTitle, card variant)
+const HEADER_CLASS =
+  "mb-[clamp(1rem,4.5vw,1.5rem)] border-b border-[#8c866b]/45 pb-[clamp(0.75rem,3.8vw,1.25rem)]";
+
+const TITLE_CLASS =
+  "px-9 text-center font-eb text-[clamp(1.5rem,6.4vw,2.125rem)] font-medium leading-none text-[#080b0b]";
+
+// Label (LeadForm MinimalField, card variant)
+const LABEL_CLASS =
+  "mb-[clamp(0.375rem,1.6vw,0.5rem)] block text-[clamp(0.8125rem,3.5vw,0.875rem)] font-medium text-slate-900";
+
+// Field (LeadForm CARD_INPUT_CLASS)
 const INPUT_CLASS =
-  "h-11 w-full rounded-[14px] border border-slate-300 bg-white pl-12 pr-4 text-[15px] text-slate-900 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-black focus:ring-0 sm:h-12";
+  "block h-[clamp(2.75rem,12vw,3.25rem)] w-full rounded-[14px] border border-[#8c866b] bg-white/80 px-[clamp(0.875rem,4vw,1.125rem)] text-[clamp(0.875rem,3.8vw,0.9375rem)] text-slate-900 outline-none placeholder:text-gray-500 focus:border-black focus:outline-none focus:ring-0 [&:-webkit-autofill]:shadow-[0_0_0px_1000px_#f6f3e9_inset]";
 
-const LABEL_CLASS = "mb-1.5 block text-sm font-medium text-[#080b0b]";
+// Button (LeadForm NextButton / Submit, card variant)
+const BUTTON_CLASS =
+  "flex h-[clamp(2.75rem,12vw,3.5rem)] w-full cursor-pointer items-center justify-center rounded-[14px] bg-blue-400 px-6 text-[clamp(0.8125rem,3.6vw,0.9375rem)] font-semibold uppercase tracking-[0.14em] text-white transition hover:bg-blue-500";
 
-const ICON_CLASS =
-  "pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-400";
+// One field: label (with the amber *) + input
+function Field({ id, label, type = "text", placeholder, value, onChange }) {
+  return (
+    <div className="w-full">
+      <label htmlFor={id} className={LABEL_CLASS}>
+        {label}
+        <span className="ml-1 text-amber-700">*</span>
+      </label>
+
+      <input
+        id={id}
+        name={id}
+        type={type}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        required
+        autoComplete="off"
+        spellCheck="false"
+        className={INPUT_CLASS}
+      />
+    </div>
+  );
+}
 
 const RequestCallback = ({ isOpen, setIsOpen }) => {
   const [formData, setFormData] = useState({
@@ -42,110 +86,69 @@ const RequestCallback = ({ isOpen, setIsOpen }) => {
 
   return (
     <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
-      {/* Single card, same look as the lead form card */}
-      <div className="w-[92vw] max-w-md bg-slate-50 p-4 font-inter text-[#080b0b] sm:p-6">
-        {/* Header */}
-        <div className="mb-4 border-b border-slate-200 pb-4">
-          <p
-            className={`mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-500 ${HIDE_ON_SHORT}`}
-          >
-            GET IN TOUCH
-          </p>
-
-          <h2 className="px-8 text-center font-eb text-[26px] font-medium leading-tight text-[#080b0b] sm:text-[30px]">
-            Request a Callback
-          </h2>
-
-          <p
-            className={`mx-auto mt-2 max-w-sm text-center text-[13px] leading-5 text-slate-600 sm:text-sm ${HIDE_ON_SHORT}`}
-          >
-            Share your details and one of our travel experts will get in touch
-            with you shortly.
-          </p>
+      <div className={CARD_CLASS}>
+        {/* Title + divider */}
+        <div className={HEADER_CLASS}>
+          <h2 className={TITLE_CLASS}>Request a Callback</h2>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          {/* Full Name */}
-          <div>
-            <label htmlFor="fullName" className={LABEL_CLASS}>
-              Full Name
-            </label>
+        {/* Form (same gap between fields as the lead form: space-y-5) */}
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <Field
+            id="fullName"
+            label="Full Name"
+            placeholder="Enter your full name"
+            value={formData.fullName}
+            onChange={handleChange}
+          />
 
-            <div className="relative">
-              <User size={19} strokeWidth={1.7} className={ICON_CLASS} />
+          <Field
+            id="phone"
+            label="Phone Number"
+            type="tel"
+            placeholder="Enter your phone number"
+            value={formData.phone}
+            onChange={handleChange}
+          />
 
-              <input
-                id="fullName"
-                name="fullName"
-                type="text"
-                value={formData.fullName}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                required
-                className={INPUT_CLASS}
-              />
-            </div>
+          <Field
+            id="destination"
+            label="Destination"
+            placeholder="Where would you like to go?"
+            value={formData.destination}
+            onChange={handleChange}
+          />
+
+          {/* Submit (same spacing as the lead form buttons) */}
+          <div className="!mt-7">
+            <button type="submit" className={BUTTON_CLASS}>
+              Request a Callback
+            </button>
           </div>
-
-          {/* Phone Number */}
-          <div>
-            <label htmlFor="phone" className={LABEL_CLASS}>
-              Phone Number
-            </label>
-
-            <div className="relative">
-              <Phone size={19} strokeWidth={1.7} className={ICON_CLASS} />
-
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="Enter your phone number"
-                required
-                className={INPUT_CLASS}
-              />
-            </div>
-          </div>
-
-          {/* Destination */}
-          <div>
-            <label htmlFor="destination" className={LABEL_CLASS}>
-              Destination
-            </label>
-
-            <div className="relative">
-              <MapPin size={19} strokeWidth={1.7} className={ICON_CLASS} />
-
-              <input
-                id="destination"
-                name="destination"
-                type="text"
-                value={formData.destination}
-                onChange={handleChange}
-                placeholder="Where would you like to go?"
-                required
-                className={INPUT_CLASS}
-              />
-            </div>
-          </div>
-
-          {/* Submit */}
-          <button
-            type="submit"
-            className="mt-1 flex h-11 w-full cursor-pointer items-center justify-center rounded-[14px] bg-blue-400 px-6 text-sm font-semibold text-white transition-all duration-300 hover:bg-blue-500 sm:h-12"
-          >
-            Request a Callback
-          </button>
         </form>
 
-        {/* Bottom note */}
-        <p
-          className={`mt-4 text-center text-[11px] text-slate-500 ${HIDE_ON_SHORT}`}
-        >
-          Our travel expert will contact you at your preferred number.
+        {/* Note with lock icon (same as the lead form privacy note) */}
+        <p className="mt-5 flex justify-center">
+          <span className="inline-flex max-w-full items-start gap-2 text-left text-[clamp(0.75rem,3.2vw,0.8125rem)] leading-5 text-slate-600">
+            <svg
+              aria-hidden="true"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="mt-0.5 shrink-0"
+            >
+              <rect x="5" y="11" width="14" height="9" rx="2" />
+              <path d="M8 11V8a4 4 0 018 0v3" />
+            </svg>
+            <span>
+              Our travel expert will contact you at your preferred number.
+            </span>
+          </span>
         </p>
       </div>
     </Modal>
